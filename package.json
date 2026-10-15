@@ -1,0 +1,16 @@
+{
+  "name": "techtojob-platform",
+  "private": true,
+  "description": "Plataforma de TechToJob: bolsa de empleo, perfiles y API",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.28.0"
+}

@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Builds
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Entorno: nunca se suben claves ni connection strings
+.env*
+!.env.example
+
+# Sistema y editores
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Logs
+*.log

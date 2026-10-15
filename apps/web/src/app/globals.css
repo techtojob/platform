@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/*
+ * Colores de marca de TechToJob (los de la landing).
+ * El equipo de diseño los irá ajustando: cámbialos aquí y se aplican en toda la web.
+ */
+:root {
+  --tinta: #1c2230;
+  --azul: #2b5cf0;
+  --subrayador: #fff176;
+  --pizarra: #fcfbf7;
+}
+
+@theme inline {
+  --color-tinta: var(--tinta);
+  --color-azul: var(--azul);
+  --color-subrayador: var(--subrayador);
+  --color-pizarra: var(--pizarra);
+  --font-sans: var(--font-sora);
+}
+
+body {
+  background: var(--pizarra);
+  color: var(--tinta);
+  font-family: var(--font-sora), sans-serif;
+}
