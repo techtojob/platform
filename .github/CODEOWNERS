@@ -1,0 +1,11 @@
+# Quién revisa cada parte del repo. GitHub pide su revisión automáticamente en cada PR.
+# Cada team decide internamente quién revisa (su responsable es el Maintainer del team).
+
+/apps/web/          @techtojob/frontend
+/apps/api/          @techtojob/backend
+
+# Las listas y tipos compartidos afectan a los dos lados
+/packages/shared/   @techtojob/frontend @techtojob/backend
+
+# Configuración del repo y de la CI
+/.github/           @pablopr3
