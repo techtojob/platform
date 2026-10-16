@@ -16,6 +16,16 @@ packages/
 
 La landing está en otro repo, [techtojob/landing](https://github.com/techtojob/landing), y ocupa la raíz de techtojob.com.
 
+## Diseño
+
+Todo el diseño de la fase 0 está en Figma: [Bolsa de empleo – Fase 0](https://www.figma.com/design/vwPWI3ny45ONm0WruVGrRM/Bolsa-de-empleo-%E2%80%93-Fase-0).
+
+- **Estilos y componentes:** colores, tipografía (Sora) y componentes comunes.
+- **Pantallas:** una sección por pantalla, numerada igual que su issue (02 Listado de ofertas … 10 Créditos y legales).
+- **Borradores:** para probar ideas.
+
+Diseño edita; el resto del equipo tiene acceso de lectura. Si no puedes entrar, pídelo en Discord.
+
 ## Arrancar en local (5 minutos)
 
 Necesitas **Node.js 22** y **pnpm**:
