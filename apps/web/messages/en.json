@@ -42,5 +42,26 @@
     "publico": "Public",
     "registrados": "Registered users only",
     "oculto": "Hidden"
+  },
+  "componentes": {
+    "titulo": "Base components",
+    "descripcion": "Internal catalogue for the team: this is how the job board components look. Change one and it changes everywhere.",
+    "botones": "Buttons",
+    "primario": "Primary",
+    "secundario": "Secondary",
+    "fantasma": "Ghost",
+    "peligro": "Delete",
+    "desactivado": "Disabled",
+    "grande": "Large",
+    "etiquetas": "Tags",
+    "chips": "Filters",
+    "quitar": "Remove filter {filtro}",
+    "campos": "Fields",
+    "campoNombre": "Name or alias",
+    "campoNombreAyuda": "This is what companies will see.",
+    "campoGithub": "GitHub",
+    "campoGithubError": "That link is not a GitHub link.",
+    "tarjeta": "Card",
+    "tarjetaTexto": "The base box for job offers, profiles and forms."
   }
 }

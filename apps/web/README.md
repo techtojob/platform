@@ -10,6 +10,25 @@ pnpm dev        # desde la raíz del repo → http://localhost:3000 (te lleva a 
 - Listas fijas (áreas, tecnologías…): se importan de `@techtojob/shared`, nunca se copian aquí.
 - Antes de escribir código, lee `AGENTS.md`: esta versión de Next.js tiene cambios respecto a lo que conoces.
 
+## Dónde va cada cosa
+
+La regla: **lo que hace la web y cómo se ve van separados**. Así se puede programar antes de tener el diseño final y cambiar el diseño después sin romper nada.
+
+```
+src/
+  app/[locale]/      Páginas. Delgadas: piden datos, los pasan a componentes y poco más.
+  components/ui/     Componentes base (Boton, Campo, Etiqueta, ChipFiltro, Tarjeta…).
+                     Todo el aspecto visual vive aquí y en globals.css.
+  components/        Componentes de la bolsa hechos con los de ui/ (tarjeta de oferta, filtros…).
+  lib/               Lógica sin aspecto visual: llamadas al API, filtros, formatos… Sin JSX.
+  i18n/              Idiomas y rutas.
+  app/globals.css    Colores, tamaños de título y redondeos. Un cambio aquí afecta a toda la web.
+```
+
+- **Nunca un botón, campo o chip hecho a mano** en una página: se usa el de `@/components/ui`. Si falta alguno, se añade allí.
+- **Nada de colores sueltos** (`#84c0bf`, `bg-[#…]`): se usan los del tema (`bg-primary`, `text-peligro`…).
+- **El catálogo** con todos los componentes está en `/empleo/componentes`. Útil para revisar cambios de diseño de un vistazo.
+
 ## Idiomas
 
 Cada idioma tiene su propia dirección y sus rutas traducidas:
