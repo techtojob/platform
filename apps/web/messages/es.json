@@ -42,5 +42,26 @@
     "publico": "Público",
     "registrados": "Solo usuarios registrados",
     "oculto": "Oculto"
+  },
+  "componentes": {
+    "titulo": "Componentes base",
+    "descripcion": "Catálogo interno para el equipo: así se ven los componentes de la bolsa. Si cambias uno, se cambia en toda la web.",
+    "botones": "Botones",
+    "primario": "Principal",
+    "secundario": "Secundario",
+    "fantasma": "Fantasma",
+    "peligro": "Borrar",
+    "desactivado": "Desactivado",
+    "grande": "Grande",
+    "etiquetas": "Etiquetas",
+    "chips": "Filtros",
+    "quitar": "Quitar filtro {filtro}",
+    "campos": "Campos",
+    "campoNombre": "Nombre o alias",
+    "campoNombreAyuda": "Es lo que verán las empresas.",
+    "campoGithub": "GitHub",
+    "campoGithubError": "Ese enlace no es de GitHub.",
+    "tarjeta": "Tarjeta",
+    "tarjetaTexto": "La caja base para ofertas, perfiles y formularios."
   }
 }

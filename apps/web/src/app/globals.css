@@ -1,22 +1,48 @@
 @import "tailwindcss";
 
 /*
- * Colores de marca de TechToJob: los mismos que la landing (techtojob/landing, app/global.css).
- * Si cambian allí, se cambian aquí también para que las dos webs se vean iguales.
+ * Estilos base de la bolsa. Todo lo visual sale de aquí: si diseño cambia un color,
+ * un tamaño o un redondeo, se cambia en este archivo y se aplica en toda la web.
+ *
+ * Colores de marca: los mismos que la landing (techtojob/landing, app/global.css).
  */
 :root {
   --ink: #2f3436;     /* fondo principal */
   --slate: #3b4245;   /* fondo de secciones */
   --primary: #84c0bf; /* color principal: botones, enlaces, destacados */
   --postit: #e4d7bf;  /* post-its y etiquetas */
+  --peligro: #f3a3a3; /* errores y acciones que borran */
 }
 
 @theme inline {
+  /* Colores: bg-ink, text-primary, border-peligro… */
   --color-ink: var(--ink);
   --color-slate: var(--slate);
   --color-primary: var(--primary);
   --color-postit: var(--postit);
+  --color-peligro: var(--peligro);
+
+  /* Tipografía */
   --font-sans: var(--font-sora);
+
+  /* Tamaños de título: text-display, text-titulo-1, text-titulo-2, text-titulo-3.
+     El texto normal usa los tamaños de Tailwind (text-sm, text-base, text-lg). */
+  --text-display: clamp(2.75rem, 6vw, 4.75rem);
+  --text-display--line-height: 1.03;
+  --text-display--letter-spacing: -0.04em;
+  --text-titulo-1: clamp(2.25rem, 4.5vw, 3.5rem);
+  --text-titulo-1--line-height: 1.05;
+  --text-titulo-1--letter-spacing: -0.035em;
+  --text-titulo-2: 1.75rem;
+  --text-titulo-2--line-height: 1.15;
+  --text-titulo-2--letter-spacing: -0.03em;
+  --text-titulo-3: 1.25rem;
+  --text-titulo-3--line-height: 1.25;
+  --text-titulo-3--letter-spacing: -0.02em;
+
+  /* Redondeos: rounded-control (campos), rounded-tarjeta, rounded-full (botones y chips) */
+  --radius-control: 0.875rem;
+  --radius-tarjeta: 1.5rem;
 }
 
 body {
@@ -28,4 +54,10 @@ body {
 ::selection {
   background: var(--primary);
   color: var(--ink);
+}
+
+/* Foco visible para quien navega con teclado, igual que en la landing. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
 }

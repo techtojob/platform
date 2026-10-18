@@ -13,7 +13,8 @@
         "/cuenta/perfil": "/cuenta/perfil",
         "/cuenta/ajustes": "/cuenta/ajustes",
         "/creditos": "/creditos",
-        "/staff": "/staff"
+        "/staff": "/staff",
+        "/componentes": "/componentes"
       }
     },
     "en": {
@@ -28,12 +29,35 @@
         "/cuenta/perfil": "/account/profile",
         "/cuenta/ajustes": "/account/settings",
         "/creditos": "/credits",
-        "/staff": "/staff"
+        "/staff": "/staff",
+        "/componentes": "/components"
       }
     }
   },
   "idiomaParaOtrosPaises": "en",
   "paisesPorIdioma": {
-    "es": ["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "UY", "PR", "GQ"]
+    "es": [
+      "ES",
+      "MX",
+      "AR",
+      "CO",
+      "CL",
+      "PE",
+      "VE",
+      "EC",
+      "GT",
+      "CU",
+      "BO",
+      "DO",
+      "HN",
+      "PY",
+      "SV",
+      "NI",
+      "CR",
+      "PA",
+      "UY",
+      "PR",
+      "GQ"
+    ]
   }
 }
