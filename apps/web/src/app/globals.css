@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 /*
- * Colores de marca de TechToJob (los de la landing).
- * El equipo de diseño los irá ajustando: cámbialos aquí y se aplican en toda la web.
+ * Colores de marca de TechToJob: los mismos que la landing (techtojob/landing, app/global.css).
+ * Si cambian allí, se cambian aquí también para que las dos webs se vean iguales.
  */
 :root {
-  --tinta: #1c2230;
-  --azul: #2b5cf0;
-  --subrayador: #fff176;
-  --pizarra: #fcfbf7;
+  --ink: #2f3436;     /* fondo principal */
+  --slate: #3b4245;   /* fondo de secciones */
+  --primary: #84c0bf; /* color principal: botones, enlaces, destacados */
+  --postit: #e4d7bf;  /* post-its y etiquetas */
 }
 
 @theme inline {
-  --color-tinta: var(--tinta);
-  --color-azul: var(--azul);
-  --color-subrayador: var(--subrayador);
-  --color-pizarra: var(--pizarra);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-primary: var(--primary);
+  --color-postit: var(--postit);
   --font-sans: var(--font-sora);
 }
 
 body {
-  background: var(--pizarra);
-  color: var(--tinta);
+  background: var(--ink);
+  color: #ffffff;
   font-family: var(--font-sora), sans-serif;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--ink);
 }
