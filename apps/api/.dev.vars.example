@@ -1,0 +1,6 @@
+# Copia este archivo como .dev.vars (no se sube a GitHub) y rellénalo.
+# Connection string de la rama `dev` de Neon: Neon → proyecto techtojob → rama dev → Connect.
+DATABASE_URL="postgresql://usuario:contraseña@ep-xxxx.eu-central-1.aws.neon.tech/techtojob?sslmode=require"
+
+# Permite que `db:datos-prueba` borre y cargue datos inventados. Solo en la rama dev.
+PERMITIR_DATOS_PRUEBA="si"

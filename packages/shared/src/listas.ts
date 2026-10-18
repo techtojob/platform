@@ -53,3 +53,11 @@ export type Seniority = (typeof SENIORITY)[number];
 export type Modalidad = (typeof MODALIDADES)[number];
 export type Disponibilidad = (typeof DISPONIBILIDAD)[number];
 export type VisibilidadPerfil = (typeof VISIBILIDAD_PERFIL)[number];
+
+/** Estado de una oferta en la bolsa. Solo las "publicada" se ven en la web. */
+export const ESTADOS_OFERTA = ["pendiente", "publicada", "rechazada", "cerrada"] as const;
+export type EstadoOferta = (typeof ESTADOS_OFERTA)[number];
+
+/** Cómo llegó la oferta: la trajo un conector (automática) o la subió el staff (manual). */
+export const ORIGENES_OFERTA = ["automatica", "manual"] as const;
+export type OrigenOferta = (typeof ORIGENES_OFERTA)[number];
