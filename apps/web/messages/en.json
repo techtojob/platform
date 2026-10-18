@@ -63,5 +63,32 @@
     "campoGithubError": "That link is not a GitHub link.",
     "tarjeta": "Card",
     "tarjetaTexto": "The base box for job offers, profiles and forms."
+  },
+  "ofertas": {
+    "titulo": "Tech job offers",
+    "subtitulo": "Reviewed by the TechToJob staff. You only see the ones that ask for languages you speak.",
+    "hablo": "I speak",
+    "cambiarIdiomas": "Change",
+    "elegirIdiomas": "Which languages do you speak?",
+    "ayudaIdiomas": "You will only see job offers that ask for languages on this list.",
+    "guardar": "Save",
+    "cancelar": "Cancel",
+    "total": "{count, plural, =0 {No job offers} one {# job offer} other {# job offers}}",
+    "ocultas": "{count, plural, one {There is # more job offer that asks for {idioma}.} other {There are # more job offers that ask for {idioma}.}}",
+    "anadirIdioma": "I speak {idioma}",
+    "vacio": "There are no matching job offers right now. Come back soon: the staff reviews new ones every day.",
+    "error": "We couldn't load the job offers. Please try again in a moment.",
+    "cargando": "Loading job offers…",
+    "remotoDesde": "Remote from {zona}",
+    "pide": "Requires",
+    "nativo": "native",
+    "verOferta": "View offer",
+    "publicada": "Posted {tiempo}"
+  },
+  "regiones": {
+    "es": "Spain",
+    "eu": "Europe",
+    "latam": "Latin America",
+    "mundo": "anywhere"
   }
 }

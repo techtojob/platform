@@ -1,33 +1,26 @@
-import { AREAS } from "@techtojob/shared";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { use } from "react";
+import { Suspense, use } from "react";
+import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
 import type { Locale } from "@/i18n/routing";
 
-// Página provisional. Se sustituye por el listado de ofertas cuando el equipo
-// de diseño tenga las pantallas aprobadas.
+/** Inicio de la bolsa: el listado de ofertas. */
 export default function Inicio({ params }: PageProps<"/[locale]">) {
   const { locale } = use(params);
   setRequestLocale(locale as Locale);
-  const t = useTranslations();
+  const t = useTranslations("ofertas");
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-6 px-6 py-20">
-      <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-        {t("inicio.etiqueta")}
-      </p>
-      <h1 className="text-4xl font-bold leading-tight">{t("inicio.titulo")}</h1>
-      <p className="text-lg text-white/70">{t("inicio.descripcion")}</p>
-      <ul className="flex flex-wrap gap-2" aria-label={t("inicio.areas")}>
-        {AREAS.map((area) => (
-          <li
-            key={area}
-            className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm"
-          >
-            {t(`areas.${area}`)}
-          </li>
-        ))}
-      </ul>
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 px-6 py-12">
+      <header className="flex flex-col gap-3">
+        <h1 className="text-titulo-1 font-bold">{t("titulo")}</h1>
+        <p className="max-w-[60ch] text-lg text-white/75">{t("subtitulo")}</p>
+      </header>
+
+      {/* El listado depende de los idiomas de cada persona: se carga en cada visita. */}
+      <Suspense fallback={<p className="text-white/70">{t("cargando")}</p>}>
+        <ListadoOfertas />
+      </Suspense>
     </main>
   );
 }

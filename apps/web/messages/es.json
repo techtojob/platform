@@ -63,5 +63,32 @@
     "campoGithubError": "Ese enlace no es de GitHub.",
     "tarjeta": "Tarjeta",
     "tarjetaTexto": "La caja base para ofertas, perfiles y formularios."
+  },
+  "ofertas": {
+    "titulo": "Ofertas de empleo tech",
+    "subtitulo": "Revisadas por el staff de TechToJob. Solo ves las que piden idiomas que hablas.",
+    "hablo": "Hablo",
+    "cambiarIdiomas": "Cambiar",
+    "elegirIdiomas": "¿Qué idiomas hablas?",
+    "ayudaIdiomas": "Solo verás ofertas que piden idiomas de esta lista.",
+    "guardar": "Guardar",
+    "cancelar": "Cancelar",
+    "total": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
+    "ocultas": "{count, plural, one {Hay # oferta más que pide {idioma}.} other {Hay # ofertas más que piden {idioma}.}}",
+    "anadirIdioma": "Hablo {idioma}",
+    "vacio": "Ahora mismo no hay ofertas que encajen. Vuelve pronto: el staff revisa ofertas nuevas cada día.",
+    "error": "No hemos podido cargar las ofertas. Inténtalo de nuevo en un momento.",
+    "cargando": "Cargando ofertas…",
+    "remotoDesde": "Remoto desde {zona}",
+    "pide": "Pide",
+    "nativo": "nativo",
+    "verOferta": "Ver oferta",
+    "publicada": "Publicada {tiempo}"
+  },
+  "regiones": {
+    "es": "España",
+    "eu": "Europa",
+    "latam": "Latinoamérica",
+    "mundo": "cualquier lugar"
   }
 }

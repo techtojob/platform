@@ -3,8 +3,11 @@
 La web de la bolsa de empleo: Next.js + TypeScript + Tailwind CSS.
 
 ```bash
-pnpm dev        # desde la raíz del repo → http://localhost:3000 (te lleva a /empleo o /jobs)
+pnpm dev:api    # en una terminal: el API (ver apps/api/README.md)
+pnpm dev        # en otra: la web → http://localhost:3000 (te lleva a /empleo o /jobs)
 ```
+
+La web pide los datos al API de `API_URL` (por defecto `http://localhost:8787`). Las llamadas están en `src/lib/api.ts`; las páginas nunca usan `fetch` directamente.
 
 - Colores y tipografía de la marca: `src/app/globals.css` (`bg-ink`, `bg-slate`, `text-primary`, `bg-postit`), iguales que en la landing.
 - Listas fijas (áreas, tecnologías…): se importan de `@techtojob/shared`, nunca se copian aquí.

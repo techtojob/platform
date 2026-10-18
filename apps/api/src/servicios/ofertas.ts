@@ -1,4 +1,4 @@
-import type { Area, Idioma, Modalidad, NivelIdioma, Seniority } from "@techtojob/shared";
+import type { Area, Idioma, Modalidad, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { and, arrayOverlaps, countDistinct, desc, eq, inArray, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas } from "../db/esquema";
@@ -16,35 +16,7 @@ export type FiltrosOfertas = {
   despues?: string | null;
 };
 
-export type OfertaListado = {
-  id: string;
-  slug: string;
-  titulo: string;
-  resumen: string | null;
-  idioma: Idioma;
-  empresa: { nombre: string; slug: string; logoUrl: string | null };
-  area: Area;
-  seniority: Seniority;
-  modalidad: Modalidad;
-  tecnologias: string[];
-  pais: string | null;
-  ciudad: string | null;
-  remotoDesde: string | null;
-  salario: { min: number | null; max: number | null; moneda: string | null } | null;
-  idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
-  publicadaEn: string;
-};
-
-export type ResultadoOfertas = {
-  ofertas: OfertaListado[];
-  /** Para pedir la página siguiente; null si no hay más. */
-  siguiente: string | null;
-  /**
-   * Ofertas que cumplen los filtros pero piden un idioma que la persona no ha marcado,
-   * por idioma: { en: 12 }. Para el aviso "Hay 12 ofertas más que piden inglés".
-   */
-  ocultasPorIdioma: Partial<Record<Idioma, number>>;
-};
+export type { OfertaListado, ResultadoOfertas } from "@techtojob/shared";
 
 export const LIMITE_POR_DEFECTO = 20;
 export const LIMITE_MAXIMO = 50;
