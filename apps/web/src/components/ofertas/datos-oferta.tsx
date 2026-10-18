@@ -1,75 +1,35 @@
-import { TECNOLOGIAS, type OfertaListado } from "@techtojob/shared";
+import type { OfertaListado } from "@techtojob/shared";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
-import { Etiqueta } from "@/components/ui";
-import { nombreIdioma } from "@/lib/idiomas-usuario";
 
-/** Trozos de una oferta que salen igual en la tarjeta del listado y en la página de la oferta. */
+/** Trozos de una oferta que salen igual en la fila del listado y en la página de la oferta. */
 
-const nombresTecnologias = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
 const ZONAS_REMOTO = ["es", "eu", "latam", "mundo"] as const;
 
-/** "Las Palmas de Gran Canaria, España · Remoto desde Europa · 38.000 € – 46.000 €" */
-export function LugarYSalario({ oferta, className }: { oferta: OfertaListado; className?: string }) {
+/** "Las Palmas de Gran Canaria · Híbrido" o "Remoto (Europa)", para la fila del listado. */
+export function useLugarCorto(oferta: OfertaListado): string {
   const t = useTranslations();
   const locale = useLocale();
-  const format = useFormatter();
-
-  const lugar = [
-    oferta.ciudad,
-    oferta.pais ? new Intl.DisplayNames([locale], { type: "region" }).of(oferta.pais) : null,
-  ]
-    .filter(Boolean)
-    .join(", ");
   const zona = ZONAS_REMOTO.find((z) => z === oferta.remotoDesde);
+  if (oferta.modalidad === "remoto") {
+    return zona ? t("ofertas.remotoZona", { zona: t(`regiones.${zona}`) }) : t("modalidades.remoto");
+  }
+  const sitio = oferta.ciudad ?? (oferta.pais ? new Intl.DisplayNames([locale], { type: "region" }).of(oferta.pais) : null);
+  return [sitio, t(`modalidades.${oferta.modalidad}`)].filter(Boolean).join(" · ");
+}
 
+/** "38.000 – 46.000 €", o null si la oferta no lo dice. */
+export function useSalario(oferta: OfertaListado): string | null {
+  const format = useFormatter();
   const moneda = oferta.salario?.moneda;
-  const salario = moneda
-    ? [oferta.salario!.min, oferta.salario!.max]
-        .filter((n): n is number => n != null)
-        .map((n) => format.number(n, { style: "currency", currency: moneda, maximumFractionDigits: 0 }))
-        .join(" – ")
-    : null;
-
-  if (!lugar && !zona && !salario) return null;
-  return (
-    <p className={className ?? "flex flex-wrap gap-x-4 gap-y-1 text-sm text-suave"}>
-      {lugar && <span>{lugar}</span>}
-      {zona && <span>{t("ofertas.remotoDesde", { zona: t(`regiones.${zona}`) })}</span>}
-      {salario && <span className="font-bold text-texto">{salario}</span>}
-    </p>
-  );
+  if (!moneda) return null;
+  const cifras = [oferta.salario!.min, oferta.salario!.max].filter((n): n is number => n != null);
+  if (!cifras.length) return null;
+  return cifras.map((n) => format.number(n, { style: "currency", currency: moneda, maximumFractionDigits: 0 })).join(" – ");
 }
 
-/** Nivel, modalidad y tecnologías. */
-export function EtiquetasOferta({ oferta }: { oferta: OfertaListado }) {
-  const t = useTranslations();
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Etiqueta tono="postit">{t(`seniority.${oferta.seniority}`)}</Etiqueta>
-      <Etiqueta>{t(`modalidades.${oferta.modalidad}`)}</Etiqueta>
-      {oferta.tecnologias.map((id) => (
-        <Etiqueta key={id} tono="borde">
-          {nombresTecnologias.get(id) ?? id}
-        </Etiqueta>
-      ))}
-    </div>
-  );
-}
-
-/** "Pide: Inglés C1 · Español" */
-export function IdiomasRequeridos({ oferta }: { oferta: OfertaListado }) {
-  const t = useTranslations();
-  const locale = useLocale();
-  return (
-    <p className="text-sm text-suave">
-      <span className="font-bold text-texto">{t("ofertas.pide")}: </span>
-      {oferta.idiomasRequeridos
-        .map(({ idioma, nivel }) =>
-          [nombreIdioma(idioma, locale), nivel && (nivel === "nativo" ? t("ofertas.nativo") : nivel.toUpperCase())]
-            .filter(Boolean)
-            .join(" "),
-        )
-        .join(" · ")}
-    </p>
-  );
+/** "EN B2 · ES": los idiomas que pide, en corto. */
+export function codigosIdiomas(oferta: OfertaListado): string {
+  return oferta.idiomasRequeridos
+    .map(({ idioma, nivel }) => [idioma.toUpperCase(), nivel && nivel !== "nativo" ? nivel.toUpperCase() : null].filter(Boolean).join(" "))
+    .join(" · ");
 }

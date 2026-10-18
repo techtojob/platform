@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aParametros, alternar, hayFiltros, leerFiltros, SIN_FILTROS } from "./filtros";
+import { aParametros, alternar, cambiar, cuantosFiltros, hayFiltros, leerFiltros, SIN_FILTROS } from "./filtros";
 
 describe("leer filtros de la dirección", () => {
   it("lee varios valores separados por comas", () => {
@@ -18,6 +18,14 @@ describe("leer filtros de la dirección", () => {
 
   it("acepta el parámetro repetido (?area=a&area=b)", () => {
     expect(leerFiltros({ area: ["desarrollo", "datos-ia"] }).areas).toEqual(["desarrollo", "datos-ia"]);
+  });
+
+  it("lee el texto buscado (sin espacios de más, 100 letras como mucho) y el salario", () => {
+    const f = leerFiltros({ q: "  data engineer ", salario: "1" });
+    expect(f.q).toBe("data engineer");
+    expect(f.conSalario).toBe(true);
+    expect(leerFiltros({ q: "x".repeat(150) }).q).toHaveLength(100);
+    expect(leerFiltros({ salario: "si" }).conSalario).toBeUndefined();
   });
 
   it("guarda la página siguiente", () => {
@@ -48,6 +56,17 @@ describe("poner y quitar filtros", () => {
 
   it("al cambiar un filtro vuelve a la primera página", () => {
     expect(alternar({ ...SIN_FILTROS, despues: "abc" }, "areas", "desarrollo").despues).toBeUndefined();
+  });
+
+  it("cambiar el texto vuelve a la primera página y se escribe en la dirección", () => {
+    const f = cambiar({ ...SIN_FILTROS, despues: "abc" }, { q: "react" });
+    expect(f.despues).toBeUndefined();
+    expect(aParametros(cambiar(f, { conSalario: true }))).toEqual({ q: "react", salario: "1" });
+  });
+
+  it("cuenta los filtros puestos sin contar el texto", () => {
+    expect(cuantosFiltros({ ...SIN_FILTROS, areas: ["desarrollo"], conSalario: true, q: "data" })).toBe(2);
+    expect(hayFiltros({ ...SIN_FILTROS, q: "data" })).toBe(true);
   });
 
   it("sabe si hay alguno puesto", () => {

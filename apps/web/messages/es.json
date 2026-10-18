@@ -62,39 +62,48 @@
     "campoGithub": "GitHub",
     "campoGithubError": "Ese enlace no es de GitHub.",
     "tarjeta": "Tarjeta",
-    "tarjetaTexto": "La caja base para ofertas, perfiles y formularios."
+    "tarjetaTexto": "La caja base para ofertas, perfiles y formularios.",
+    "casillas": "Casillas de filtro",
+    "aviso": "Aviso (post-it)"
   },
   "ofertas": {
-    "titulo": "Ofertas de empleo tech",
-    "subtitulo": "Revisadas por el staff de TechToJob. Solo ves las que piden idiomas que hablas.",
     "hablo": "Hablo",
     "cambiarIdiomas": "Cambiar",
     "elegirIdiomas": "¿Qué idiomas hablas?",
     "ayudaIdiomas": "Solo verás ofertas que piden idiomas de esta lista.",
     "guardar": "Guardar",
     "cancelar": "Cancelar",
-    "total": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
     "ocultas": "{count, plural, one {Hay # oferta más que pide {idioma}.} other {Hay # ofertas más que piden {idioma}.}}",
     "anadirIdioma": "Hablo {idioma}",
     "vacio": "Ahora mismo no hay ofertas que encajen. Vuelve pronto: el staff revisa ofertas nuevas cada día.",
     "error": "No hemos podido cargar las ofertas. Inténtalo de nuevo en un momento.",
-    "cargando": "Cargando ofertas…",
-    "remotoDesde": "Remoto desde {zona}",
-    "pide": "Pide",
     "nativo": "nativo",
-    "verOferta": "Ver oferta",
     "publicada": "Publicada {tiempo}",
     "vacioConFiltros": "No hay ofertas con estos filtros. Prueba a quitar alguno.",
     "paginas": "Más ofertas",
     "masOfertas": "Ver más ofertas",
     "primeraPagina": "Volver a las más recientes",
-    "volver": "Todas las ofertas",
+    "volver": "Volver a las ofertas",
     "escritaEn": "Escrita en {idioma}",
     "faltanIdiomas": "{count, plural, one {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.} other {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.}}",
     "sinDescripcion": "La empresa no ha publicado más detalles. Los tienes en su web.",
-    "aplicar": "Aplicar en la web de la empresa",
+    "aplicar": "Aplicar en su web",
     "abreOtraWeb": "se abre en otra pestaña",
-    "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos."
+    "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos.",
+    "tituloConTotal": "{count, plural, =0 {Ninguna oferta de empleo tech} one {# oferta de empleo tech} other {# ofertas de empleo tech}}",
+    "nueva": "Nueva",
+    "remotoZona": "Remoto ({zona})",
+    "loQuePide": "Lo que pide",
+    "idiomas": "Idiomas",
+    "tecnologias": "Tecnologías",
+    "loHablas": "lo hablas",
+    "noLoHablas": "no lo tienes marcado",
+    "salarioAnual": "{salario} al año",
+    "parecidas": "Ofertas parecidas",
+    "copiarEnlace": "Copiar enlace",
+    "enlaceCopiado": "Enlace copiado",
+    "revisada": "Revisada por el staff de TechToJob.",
+    "aplicarAyudaCorta": "Se abre su web. TechToJob no guarda tus datos."
   },
   "regiones": {
     "es": "España",
@@ -104,16 +113,16 @@
   },
   "filtros": {
     "titulo": "Filtros",
+    "tituloConActivos": "Filtros ({count})",
     "area": "Área",
     "nivel": "Nivel",
     "modalidad": "Modalidad",
-    "tecnologia": "Tecnología",
-    "tecnologiaEjemplo": "React, Python, AWS…",
-    "anadir": "Añadir",
-    "tecnologiaDesconocida": "No conocemos «{texto}». Prueba con otro nombre.",
+    "conSalario": "Solo con salario publicado",
+    "conSalarioCorto": "Con salario",
+    "activos": "Filtros puestos",
     "quitar": "Quitar {filtro}",
-    "limpiar": "Quitar filtros",
-    "tituloConActivos": "Filtros ({count})"
+    "limpiar": "Quitar todos",
+    "ver": "{count, plural, =0 {Ninguna oferta} one {Ver # oferta} other {Ver # ofertas}}"
   },
   "noEncontrada": {
     "titulo": "Esta página no existe",
@@ -127,5 +136,9 @@
     "aClaro": "Cambiar a modo claro",
     "aOscuro": "Cambiar a modo oscuro",
     "cambiar": "Cambiar entre modo claro y oscuro"
+  },
+  "buscador": {
+    "etiqueta": "Buscar ofertas",
+    "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…"
   }
 }

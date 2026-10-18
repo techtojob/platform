@@ -38,11 +38,12 @@ export function IdiomasQueHablo({ actuales }: { actuales: Idioma[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span className="font-bold">{t("hablo")}:</span>
-        <span className="text-texto">{actuales.map((i) => nombreIdioma(i, locale)).join(" · ")}</span>
+      <p className="flex flex-wrap items-center gap-x-2 text-suave">
+        <span>{t("hablo")}</span>
+        <strong className="font-semibold text-texto">{actuales.map((i) => nombreIdioma(i, locale)).join(" · ")}</strong>
         <Boton
           variante="fantasma"
+          className="min-h-9 px-2"
           aria-expanded={abierto}
           aria-controls="panel-idiomas"
           onClick={() => {
@@ -94,6 +95,7 @@ export function AnadirIdioma({ actuales, idioma, texto }: { actuales: Idioma[]; 
   const [pendiente, startTransition] = useTransition();
   return (
     <Boton
+      variante="sobrePostit"
       disabled={pendiente}
       onClick={() => {
         guardarIdiomas([...actuales, idioma]);

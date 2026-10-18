@@ -1,5 +1,5 @@
-import type { Area, Idioma, Modalidad, OfertaDetalle, OfertaListado, ResultadoOfertas, Seniority } from "@techtojob/shared";
-import { and, arrayOverlaps, count, countDistinct, desc, eq, inArray, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
+import { buscarTecnologia, type Area, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
+import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, ilike, inArray, isNotNull, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
 
@@ -11,6 +11,10 @@ export type FiltrosOfertas = {
   modalidades?: Modalidad[];
   /** Ofertas con al menos una de estas tecnologías. */
   tecnologias?: string[];
+  /** Texto libre: busca en título, resumen, empresa y, si es una tecnología, en tecnologías. */
+  q?: string;
+  /** Solo ofertas con salario publicado. */
+  conSalario?: boolean;
   limite?: number;
   /** Código de la página siguiente (lo devuelve la llamada anterior). */
   despues?: string | null;
@@ -35,13 +39,37 @@ function leerCursor(cursor: string): { publicadaEn: Date; id: string } | null {
   }
 }
 
-/** Condiciones comunes: publicada y filtros de área, nivel, modalidad y tecnologías. */
-function condicionesBase(f: FiltrosOfertas): SQL[] {
+/** Que % y _ se busquen como texto en un LIKE, no como comodines. */
+function escaparLike(texto: string) {
+  return texto.replace(/[\\%_]/g, (c) => `\\${c}`);
+}
+
+/** Búsqueda de texto: título, resumen, nombre de la empresa o, si lo escrito es una tecnología, sus ofertas. */
+function buscarTexto(db: Db, q: string): SQL {
+  const patron = `%${escaparLike(q)}%`;
+  const tecnologia = buscarTecnologia(q);
+  return or(
+    ilike(ofertas.titulo, patron),
+    ilike(ofertas.resumen, patron),
+    inArray(ofertas.empresaId, db.select({ id: empresas.id }).from(empresas).where(ilike(empresas.nombre, patron))),
+    ...(tecnologia ? [arrayContains(ofertas.tecnologias, [tecnologia.id])] : []),
+  )!;
+}
+
+type Grupo = "area" | "seniority" | "modalidad";
+
+/**
+ * Condiciones comunes: publicada y filtros. `sin` deja fuera un grupo de filtros:
+ * sirve para contar cuántas habría con cada valor de ese grupo (facetas).
+ */
+function condicionesBase(db: Db, f: FiltrosOfertas, sin?: Grupo): SQL[] {
   const c: SQL[] = [eq(ofertas.estado, "publicada")];
-  if (f.areas?.length) c.push(inArray(ofertas.area, f.areas));
-  if (f.seniority?.length) c.push(inArray(ofertas.seniority, f.seniority));
-  if (f.modalidades?.length) c.push(inArray(ofertas.modalidad, f.modalidades));
+  if (sin !== "area" && f.areas?.length) c.push(inArray(ofertas.area, f.areas));
+  if (sin !== "seniority" && f.seniority?.length) c.push(inArray(ofertas.seniority, f.seniority));
+  if (sin !== "modalidad" && f.modalidades?.length) c.push(inArray(ofertas.modalidad, f.modalidades));
   if (f.tecnologias?.length) c.push(arrayOverlaps(ofertas.tecnologias, f.tecnologias));
+  if (f.q?.trim()) c.push(buscarTexto(db, f.q.trim()));
+  if (f.conSalario) c.push(or(isNotNull(ofertas.salarioMin), isNotNull(ofertas.salarioMax))!);
   return c;
 }
 
@@ -87,7 +115,7 @@ function aListado(
 /** Ofertas publicadas que puede hacer quien busca, de la más nueva a la más antigua. */
 export async function listarOfertas(db: Db, filtros: FiltrosOfertas): Promise<ResultadoOfertas> {
   const limite = Math.min(Math.max(filtros.limite ?? LIMITE_POR_DEFECTO, 1), LIMITE_MAXIMO);
-  const condiciones = [...condicionesBase(filtros), pideSoloIdiomas(db, filtros.idiomas)];
+  const condiciones = [...condicionesBase(db, filtros), pideSoloIdiomas(db, filtros.idiomas)];
 
   const cursor = filtros.despues ? leerCursor(filtros.despues) : null;
   const condicionesPagina = cursor
@@ -124,7 +152,9 @@ export async function listarOfertas(db: Db, filtros: FiltrosOfertas): Promise<Re
     ofertas: pagina.map(({ oferta, empresa }) => aListado(oferta, empresa, idiomas)),
     total: Number(total),
     siguiente: hayMas && ultima?.publicadaEn ? codificarCursor(ultima.publicadaEn, ultima.id) : null,
-    ocultasPorIdioma: filtros.despues ? {} : await contarOcultasPorIdioma(db, filtros),
+    ...(filtros.despues
+      ? { ocultasPorIdioma: {}, facetas: { area: {}, seniority: {}, modalidad: {} } }
+      : await contarExtras(db, filtros)),
   };
 }
 
@@ -153,13 +183,42 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
   };
 }
 
+/** Lo que solo hace falta en la primera página: avisos de idiomas y recuentos de cada filtro. */
+async function contarExtras(db: Db, filtros: FiltrosOfertas) {
+  const [ocultasPorIdioma, area, seniority, modalidad] = await Promise.all([
+    contarOcultasPorIdioma(db, filtros),
+    contarPor(db, filtros, "area"),
+    contarPor(db, filtros, "seniority"),
+    contarPor(db, filtros, "modalidad"),
+  ]);
+  return {
+    ocultasPorIdioma,
+    facetas: {
+      area: area as Partial<Record<Area, number>>,
+      seniority: seniority as Partial<Record<Seniority, number>>,
+      modalidad: modalidad as Partial<Record<Modalidad, number>>,
+    },
+  };
+}
+
+/** Cuántas ofertas hay con cada valor de un grupo, con los demás filtros puestos. */
+async function contarPor(db: Db, filtros: FiltrosOfertas, grupo: Grupo): Promise<Record<string, number>> {
+  const columna = ofertas[grupo];
+  const filas = await db
+    .select({ valor: columna, total: count() })
+    .from(ofertas)
+    .where(and(...condicionesBase(db, filtros, grupo), pideSoloIdiomas(db, filtros.idiomas)))
+    .groupBy(columna);
+  return Object.fromEntries(filas.map((f) => [f.valor, Number(f.total)]));
+}
+
 /** Cuántas ofertas quedan fuera por cada idioma que la persona no ha marcado. */
 async function contarOcultasPorIdioma(db: Db, filtros: FiltrosOfertas) {
   const filas = await db
     .select({ idioma: ofertaIdiomas.idioma, total: countDistinct(ofertas.id) })
     .from(ofertas)
     .innerJoin(ofertaIdiomas, eq(ofertaIdiomas.ofertaId, ofertas.id))
-    .where(and(...condicionesBase(filtros), notInArray(ofertaIdiomas.idioma, filtros.idiomas)))
+    .where(and(...condicionesBase(db, filtros), notInArray(ofertaIdiomas.idioma, filtros.idiomas)))
     .groupBy(ofertaIdiomas.idioma);
   return Object.fromEntries(filas.map((f) => [f.idioma, Number(f.total)])) as Partial<Record<Idioma, number>>;
 }

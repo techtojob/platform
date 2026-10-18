@@ -45,6 +45,15 @@ export type ResultadoOfertas = {
   siguiente: string | null;
   /** Ofertas que quedan fuera por cada idioma que la persona no habla: { en: 12 }. */
   ocultasPorIdioma: Partial<Record<Idioma, number>>;
+  /**
+   * Cuántas ofertas hay con cada valor de cada filtro, contando el resto de filtros
+   * puestos: el "Desarrollo 12" junto a cada casilla. Solo en la primera página.
+   */
+  facetas: {
+    area: Partial<Record<Area, number>>;
+    seniority: Partial<Record<Seniority, number>>;
+    modalidad: Partial<Record<Modalidad, number>>;
+  };
 };
 
 /** Respuesta de error de cualquier ruta. */

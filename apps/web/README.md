@@ -36,8 +36,9 @@ src/
 
 ## Ofertas
 
-- **Listado** (`/empleo`): filtros de área, nivel, modalidad y tecnología. Se guardan en la dirección (`/empleo?nivel=junior&tec=react`), así se pueden compartir y funcionan los botones de atrás y adelante. La lógica está en `src/lib/filtros.ts`.
-- **Una oferta** (`/empleo/ofertas/<slug>-<id>`): lo que cuenta es el id del final. Si el slug no coincide (el título cambió), lleva a la dirección buena. Si pide un idioma que la persona no ha marcado, se le avisa pero puede verla.
+- **Buscador** (cabecera, `src/components/buscador.tsx`): busca en título, empresa y resumen mientras se escribe. Si lo escrito es una tecnología ("react", "k8s") y se pulsa Enter, se convierte en filtro.
+- **Listado** (`/empleo`): filas compactas y filtros de área, nivel, modalidad y "solo con salario", con cuántas ofertas hay en cada uno. En el móvil, los filtros van en un panel que sube desde abajo. Todo se guarda en la dirección (`/empleo?q=data&nivel=junior&tec=react&salario=1`), así se puede compartir y funcionan atrás y adelante. La lógica está en `src/lib/filtros.ts`.
+- **Una oferta** (`/empleo/ofertas/<slug>-<id>`): lo que cuenta es el id del final. Si el slug no coincide (el título cambió), lleva a la dirección buena. "Lo que pide" va arriba y marca qué idiomas habla la persona; si falta alguno, se le avisa pero puede verla. Al final, ofertas parecidas (misma área).
 - **El idioma de la página** se lee con `next/root-params`, no con `params`: así las páginas con partes variables también se precompilan.
 
 ## Idiomas

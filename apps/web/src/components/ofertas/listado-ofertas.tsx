@@ -1,17 +1,18 @@
 import type { Idioma } from "@techtojob/shared";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { cookies, headers } from "next/headers";
-import { clasesBoton } from "@/components/ui";
+import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { obtenerOfertas } from "@/lib/api";
 import { aParametros, hayFiltros, leerFiltros } from "@/lib/filtros";
 import { COOKIE_HABLO, idiomasDelUsuario, nombreIdioma } from "@/lib/idiomas-usuario";
+import { FilaOferta } from "./fila-oferta";
+import { FiltrosActivos } from "./filtros-activos";
 import { FiltrosOfertas } from "./filtros-ofertas";
 import { AnadirIdioma, IdiomasQueHablo } from "./idiomas-que-hablo";
-import { TarjetaOferta } from "./tarjeta-oferta";
 
 /**
- * Listado de ofertas según los idiomas de quien visita y los filtros de la dirección.
+ * Listado de ofertas según los idiomas de quien visita, lo que busca y los filtros de la dirección.
  * Lee cookies, cabeceras y la dirección, así que se pinta en cada visita (dentro de un <Suspense>).
  */
 export async function ListadoOfertas({ searchParams }: { searchParams: PageProps<"/[locale]">["searchParams"] }) {
@@ -36,90 +37,93 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
   } catch (error) {
     console.error("No se pudieron cargar las ofertas:", error);
   }
+  // "Ahora" de esta visita, el mismo para todas las filas (para "Nueva" y "hace 3 h").
+  const ahora = (await getNow()).getTime();
 
-  const ocultas = resultado ? (Object.entries(resultado.ocultasPorIdioma) as Array<[Idioma, number]>) : [];
+  if (!resultado) {
+    return (
+      <p role="alert" className="rounded-tarjeta border border-peligro p-6 text-peligro">
+        {t("ofertas.error")}
+      </p>
+    );
+  }
+
+  const ocultas = (Object.entries(resultado.ocultasPorIdioma) as Array<[Idioma, number]>).sort((a, b) => b[1] - a[1]);
+  const conFiltros = hayFiltros(filtros);
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[18rem_1fr] lg:items-start">
-      <aside className="lg:sticky lg:top-6">
-        <FiltrosOfertas filtros={filtros} />
+    <div className="grid gap-6 lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-12">
+      <aside className="hidden lg:block">
+        <FiltrosOfertas modo="lateral" filtros={filtros} facetas={resultado.facetas} total={resultado.total} />
       </aside>
 
-      <div className="flex min-w-0 flex-col gap-6">
-        <IdiomasQueHablo actuales={idiomas} />
+      <div className="flex min-w-0 flex-col gap-4">
+        <header className="flex flex-col gap-2">
+          <h1 className="text-titulo-2 font-bold" aria-live="polite">
+            {t("ofertas.tituloConTotal", { count: resultado.total })}
+          </h1>
+          <IdiomasQueHablo actuales={idiomas} />
+        </header>
 
-        {!resultado ? (
-          <p role="alert" className="rounded-tarjeta border border-peligro/50 p-6 text-peligro">
-            {t("ofertas.error")}
-          </p>
+        <div className="flex flex-col gap-3 lg:hidden">
+          <div className="flex">
+            <FiltrosOfertas modo="movil" filtros={filtros} facetas={resultado.facetas} total={resultado.total} />
+          </div>
+        </div>
+
+        <FiltrosActivos filtros={filtros} />
+
+        {resultado.ofertas.length === 0 ? (
+          <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-superficie p-6">
+            <p className="font-semibold">{conFiltros ? t("ofertas.vacioConFiltros") : t("ofertas.vacio")}</p>
+            {conFiltros && (
+              <Link href="/" className={clasesBoton({ variante: "secundario" })}>
+                {t("filtros.limpiar")}
+              </Link>
+            )}
+          </div>
         ) : (
-          <>
-            <p className="text-sm font-bold text-suave" aria-live="polite">
-              {t("ofertas.total", { count: resultado.total })}
-            </p>
-
-            {resultado.ofertas.length === 0 ? (
-              <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde p-6 text-texto">
-                <p>{hayFiltros(filtros) ? t("ofertas.vacioConFiltros") : t("ofertas.vacio")}</p>
-                {hayFiltros(filtros) && (
-                  <Link href="/" className={clasesBoton({ variante: "secundario" })}>
-                    {t("filtros.limpiar")}
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <ul className="flex flex-col gap-4">
-                {resultado.ofertas.map((oferta) => (
-                  <li key={oferta.id}>
-                    <TarjetaOferta oferta={oferta} />
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {(resultado.siguiente || filtros.despues) && (
-              <nav aria-label={t("ofertas.paginas")} className="flex flex-wrap gap-3">
-                {filtros.despues && (
-                  <Link
-                    href={{ pathname: "/", query: aParametros({ ...filtros, despues: undefined }) }}
-                    className={clasesBoton({ variante: "secundario" })}
-                  >
-                    {t("ofertas.primeraPagina")}
-                  </Link>
-                )}
-                {resultado.siguiente && (
-                  <Link
-                    href={{ pathname: "/", query: aParametros({ ...filtros, despues: resultado.siguiente }) }}
-                    className={clasesBoton()}
-                  >
-                    {t("ofertas.masOfertas")}
-                  </Link>
-                )}
-              </nav>
-            )}
-
-            {ocultas.length > 0 && (
-              <aside className="flex flex-col gap-3 rounded-tarjeta bg-postit p-6 text-ink">
-                {ocultas
-                  .sort((a, b) => b[1] - a[1])
-                  .map(([idioma, total]) => {
-                    const nombre = nombreIdioma(idioma, locale, { enFrase: true });
-                    return (
-                      <div key={idioma} className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="font-bold">{t("ofertas.ocultas", { count: total, idioma: nombre })}</p>
-                        <AnadirIdioma
-                          actuales={idiomas}
-                          idioma={idioma}
-                          texto={t("ofertas.anadirIdioma", { idioma: nombre })}
-                        />
-                      </div>
-                    );
-                  })}
-              </aside>
-            )}
-          </>
+          <ul className="divide-y divide-borde overflow-hidden rounded-tarjeta border border-borde bg-superficie">
+            {resultado.ofertas.map((oferta) => (
+              <li key={oferta.id}>
+                <FilaOferta oferta={oferta} ahora={ahora} />
+              </li>
+            ))}
+          </ul>
         )}
+
+        {(resultado.siguiente || filtros.despues) && (
+          <nav aria-label={t("ofertas.paginas")} className="flex flex-wrap gap-3">
+            {filtros.despues && (
+              <Link
+                href={{ pathname: "/", query: aParametros({ ...filtros, despues: undefined }) }}
+                className={clasesBoton({ variante: "secundario" })}
+              >
+                {t("ofertas.primeraPagina")}
+              </Link>
+            )}
+            {resultado.siguiente && (
+              <Link
+                href={{ pathname: "/", query: aParametros({ ...filtros, despues: resultado.siguiente }) }}
+                className={clasesBoton({ variante: "secundario" })}
+              >
+                {t("ofertas.masOfertas")}
+              </Link>
+            )}
+          </nav>
+        )}
+
+        {ocultas.map(([idioma, total]) => {
+          const nombre = nombreIdioma(idioma, locale, { enFrase: true });
+          return (
+            <Aviso key={idioma} className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-semibold">{t("ofertas.ocultas", { count: total, idioma: nombre })}</p>
+              <AnadirIdioma actuales={idiomas} idioma={idioma} texto={t("ofertas.anadirIdioma", { idioma: nombre })} />
+            </Aviso>
+          );
+        })}
       </div>
     </div>
   );
 }
+

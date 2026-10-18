@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getNow } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { Suspense } from "react";
 import { FichaOferta } from "@/components/ofertas/ficha-oferta";
 import { redirect } from "@/i18n/navigation";
-import { obtenerOferta } from "@/lib/api";
+import { obtenerOferta, obtenerOfertas } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
 
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** Página de una oferta: /empleo/ofertas/<slug>-<id> o /jobs/offers/<slug>-<id>. */
 export default function PaginaOferta({ params }: Props) {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-12">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
       {/* La oferta se pide en cada visita: así siempre sale la versión revisada por el staff. */}
       <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-hover" />}>
         <CargarOferta params={params} />
@@ -44,13 +44,17 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
     redirect({ href: { pathname: "/ofertas/[slug]", params: { slug: correcto } }, locale });
   }
 
-  // Idiomas que pide y que la persona no ha marcado: se le avisa, pero puede verla.
+  // Idiomas que habla: para marcar "lo hablas" o avisar de los que no ha marcado (la puede ver igual).
   const hablo = idiomasDelUsuario({
     cookie: almacen.get(COOKIE_HABLO)?.value,
     acceptLanguage: cabeceras.get("accept-language"),
     idiomaWeb: locale,
   });
-  const faltan = oferta.idiomasRequeridos.map((r) => r.idioma).filter((i) => !hablo.includes(i));
 
-  return <FichaOferta oferta={oferta} faltan={faltan} />;
+  // Ofertas parecidas: misma área, que la persona pueda hacer. Si fallan, la página sale igual.
+  const parecidas = await obtenerOfertas({ idiomas: hablo, areas: [oferta.area], limite: 4 })
+    .then((r) => r.ofertas.filter((o) => o.id !== oferta.id).slice(0, 3))
+    .catch(() => []);
+
+  return <FichaOferta oferta={oferta} hablo={hablo} parecidas={parecidas} ahora={(await getNow()).getTime()} />;
 }

@@ -35,6 +35,9 @@ export type FiltrosListado = {
   seniority?: Seniority[];
   modalidades?: Modalidad[];
   tecnologias?: string[];
+  q?: string;
+  conSalario?: boolean;
+  limite?: number;
   despues?: string;
 };
 
@@ -44,6 +47,9 @@ export function obtenerOfertas(f: FiltrosListado): Promise<ResultadoOfertas> {
   if (f.seniority?.length) q.set("nivel", f.seniority.join(","));
   if (f.modalidades?.length) q.set("modalidad", f.modalidades.join(","));
   if (f.tecnologias?.length) q.set("tec", f.tecnologias.join(","));
+  if (f.q) q.set("q", f.q);
+  if (f.conSalario) q.set("salario", "1");
+  if (f.limite) q.set("limite", String(f.limite));
   if (f.despues) q.set("despues", f.despues);
   return pedir<ResultadoOfertas>(`/ofertas?${q}`);
 }

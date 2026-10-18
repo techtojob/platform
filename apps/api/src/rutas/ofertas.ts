@@ -16,7 +16,7 @@ function lista<T extends string>(valor: string | undefined, permitidos: readonly
 }
 
 /**
- * GET /ofertas?idiomas=es,en&area=desarrollo&nivel=junior&modalidad=remoto&tec=python,react&limite=20&despues=…
+ * GET /ofertas?idiomas=es,en&q=data&area=desarrollo&nivel=junior&modalidad=remoto&tec=python,react&salario=1&limite=20&despues=…
  *
  * `idiomas` es obligatorio: los idiomas que habla quien busca (los manda la web,
  * sacados del navegador o del perfil).
@@ -35,12 +35,17 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
     throw new HTTPException(400, { message: '"limite" tiene que ser un número entero.' });
   }
 
+  const texto = q.q?.trim();
+  if (texto && texto.length > 100) throw new HTTPException(400, { message: '"q" no puede tener más de 100 caracteres.' });
+
   const resultado = await listarOfertas(c.var.db, {
     idiomas: idiomas as Idioma[],
     areas: lista(q.area, AREAS, "area"),
     seniority: lista(q.nivel, SENIORITY, "nivel"),
     modalidades: lista(q.modalidad, MODALIDADES, "modalidad"),
     tecnologias,
+    q: texto || undefined,
+    conSalario: q.salario === "1",
     limite,
     despues: q.despues ?? null,
   });

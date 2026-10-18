@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { use, type ReactNode } from "react";
 import { ChipsDemo } from "@/components/catalogo/chips-demo";
-import { Boton, Campo, Etiqueta, Tarjeta } from "@/components/ui";
+import { Aviso, Boton, Campo, Casilla, Etiqueta, Tarjeta } from "@/components/ui";
 import type { Locale } from "@/i18n/routing";
 
 // Catálogo interno: no aparece en buscadores.
@@ -58,6 +58,21 @@ export default function Componentes({ params }: PageProps<"/[locale]/componentes
             ...MODALIDADES.map((id) => ({ id, nombre: t(`modalidades.${id}`) })),
           ]}
         />
+      </Seccion>
+
+      <Seccion titulo={t("componentes.casillas")}>
+        <div className="flex max-w-xs flex-col">
+          <Casilla etiqueta={t("areas.desarrollo")} cuenta={12} defaultChecked />
+          <Casilla etiqueta={t("areas.datos-ia")} cuenta={5} />
+          <Casilla etiqueta={t("filtros.conSalario")} />
+        </div>
+      </Seccion>
+
+      <Seccion titulo={t("componentes.aviso")}>
+        <Aviso className="flex flex-wrap items-center justify-between gap-3">
+          <p className="font-semibold">{t("ofertas.ocultas", { count: 3, idioma: "inglés" })}</p>
+          <Boton variante="sobrePostit">{t("ofertas.anadirIdioma", { idioma: "inglés" })}</Boton>
+        </Aviso>
       </Seccion>
 
       <Seccion titulo={t("componentes.campos")}>

@@ -72,6 +72,51 @@ describe("otros filtros", () => {
   });
 });
 
+describe("buscador", () => {
+  const todos = ["es", "en", "de"] as const;
+
+  it("busca en el título sin importar mayúsculas", async () => {
+    const r = await listarOfertas(db, { idiomas: [...todos], q: "DATA engineer" });
+    expect(titulos(r)).toEqual(["Junior Data Engineer"]);
+  });
+
+  it("busca por el nombre de la empresa", async () => {
+    const r = await listarOfertas(db, { idiomas: [...todos], q: "teide" });
+    expect(titulos(r)).toEqual(["Técnico/a de soporte IT N1"]);
+  });
+
+  it("si lo escrito es una tecnología (o un alias), salen sus ofertas", async () => {
+    const r = await listarOfertas(db, { idiomas: [...todos], q: "reactjs" });
+    expect(titulos(r)).toEqual(["Desarrollador/a Frontend Junior"]);
+  });
+
+  it("% y _ se buscan tal cual, no como comodines", async () => {
+    const r = await listarOfertas(db, { idiomas: [...todos], q: "%" });
+    expect(r.ofertas).toHaveLength(0);
+  });
+
+  it("solo con salario publicado", async () => {
+    const r = await listarOfertas(db, { idiomas: [...todos], conSalario: true });
+    expect(titulos(r)).toEqual(["Backend Developer (Node.js)"]);
+  });
+});
+
+describe("recuentos de cada filtro (facetas)", () => {
+  it("cuentan solo lo que la persona puede ver", async () => {
+    const r = await listarOfertas(db, { idiomas: ["es", "en"] });
+    expect(r.facetas.area).toEqual({ desarrollo: 2, "datos-ia": 1, "soporte-it": 1 });
+    expect(r.facetas.modalidad).toEqual({ hibrido: 1, remoto: 2, presencial: 1 });
+  });
+
+  it("cada grupo cuenta con los demás filtros puestos, pero no con el suyo", async () => {
+    const r = await listarOfertas(db, { idiomas: ["es", "en"], seniority: ["junior"], modalidades: ["remoto"] });
+    // Nivel: no se filtra por nivel, sí por remoto → junior 1 (data), mid 1 (backend).
+    expect(r.facetas.seniority).toEqual({ junior: 1, mid: 1 });
+    // Modalidad: no se filtra por modalidad, sí por junior → híbrido 1 (frontend), remoto 1 (data).
+    expect(r.facetas.modalidad).toEqual({ hibrido: 1, remoto: 1 });
+  });
+});
+
 describe("paginación", () => {
   it("de dos en dos, sin repetir ni saltarse ninguna", async () => {
     const vistas: string[] = [];
@@ -136,6 +181,13 @@ describe("GET /ofertas", () => {
   it("con un valor que no existe responde 400", async () => {
     expect((await pedir("?idiomas=es&nivel=experto")).status).toBe(400);
     expect((await pedir("?idiomas=klingon")).status).toBe(400);
+  });
+
+  it("acepta q y salario", async () => {
+    const res = await pedir("?idiomas=es,en&q=backend&salario=1");
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { total: number }).total).toBe(1);
+    expect((await pedir(`?idiomas=es&q=${"x".repeat(101)}`)).status).toBe(400);
   });
 
   it("GET /ofertas/:id devuelve la oferta, o 404", async () => {

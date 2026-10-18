@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-export type VarianteBoton = "primario" | "secundario" | "fantasma" | "peligro";
+export type VarianteBoton = "primario" | "secundario" | "fantasma" | "peligro" | "sobrePostit";
 export type TamanoBoton = "md" | "lg";
 
 const variantes: Record<VarianteBoton, string> = {
@@ -9,6 +9,8 @@ const variantes: Record<VarianteBoton, string> = {
   secundario: "border border-borde-fuerte bg-superficie text-texto hover:bg-hover",
   fantasma: "text-enlace hover:bg-hover",
   peligro: "bg-peligro text-fondo hover:brightness-105",
+  /** Dentro de un Aviso (post-it): borde y texto oscuros en los dos modos. */
+  sobrePostit: "border border-ink text-ink hover:bg-ink/10",
 };
 
 const tamanos: Record<TamanoBoton, string> = {
