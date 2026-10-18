@@ -4,16 +4,24 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { locale as idiomaDeLaRuta } from "next/root-params";
-import { SelectorIdioma } from "@/components/selector-idioma";
+import { Cabecera } from "@/components/cabecera";
+import { ScriptTema } from "@/components/tema/script-tema";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-// Sora, la tipografía de la marca, alojada en el propio proyecto (paquete
-// @fontsource-variable/sora): no depende de Google Fonts ni envía datos a terceros.
+// Tipografías alojadas en el propio proyecto (paquetes @fontsource-variable/…):
+// no dependen de Google Fonts ni envían datos a terceros.
+// Sora, la de la marca, para títulos y logo. Instrument Sans para el resto: se lee mejor en tamaños pequeños.
 const sora = localFont({
   src: "../../../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2",
   variable: "--font-sora",
   weight: "100 800",
+  display: "swap",
+});
+const instrument = localFont({
+  src: "../../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2",
+  variable: "--font-instrument",
+  weight: "400 700",
   display: "swap",
 });
 
@@ -37,12 +45,14 @@ export default async function LayoutIdioma({ children }: LayoutProps<"/[locale]"
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${sora.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    // suppressHydrationWarning: ScriptTema añade data-tema a <html> antes de que cargue React.
+    <html lang={locale} className={`${sora.variable} ${instrument.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <ScriptTema />
+      </head>
+      <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
-          <header className="flex justify-end px-6 py-4">
-            <SelectorIdioma />
-          </header>
+          <Cabecera />
           {children}
         </NextIntlClientProvider>
       </body>

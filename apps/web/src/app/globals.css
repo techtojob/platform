@@ -4,60 +4,121 @@
  * Estilos base de la bolsa. Todo lo visual sale de aquí: si diseño cambia un color,
  * un tamaño o un redondeo, se cambia en este archivo y se aplica en toda la web.
  *
- * Colores de marca: los mismos que la landing (techtojob/landing, app/global.css).
+ * COLORES CON NOMBRE DE FUNCIÓN, no de color: `bg-fondo`, `text-suave`, `border-borde`…
+ * Cada uno tiene un valor en modo claro y otro en modo oscuro. Los componentes solo
+ * usan estos nombres, nunca `text-white` ni `#84c0bf`: así los dos modos salen solos.
+ *
+ * Qué modo se ve: el atributo `data-tema` de <html> ("claro" u "oscuro"), que pone
+ * src/components/tema/script-tema.tsx según la elección de la persona. Sin elección,
+ * el del sistema (prefers-color-scheme).
+ *
+ * Colores de la marca (los de la landing): ink #2f3436, slate #3b4245,
+ * turquesa #84c0bf, post-it #e4d7bf.
  */
+
+/* Modo claro (por defecto) */
 :root {
-  --ink: #2f3436;     /* fondo principal */
-  --slate: #3b4245;   /* fondo de secciones */
-  --primary: #84c0bf; /* color principal: botones, enlaces, destacados */
-  --postit: #e4d7bf;  /* post-its y etiquetas */
-  --peligro: #f3a3a3; /* errores y acciones que borran */
+  color-scheme: light;
+  --fondo: #f7f5f0;        /* fondo de la página: papel cálido */
+  --superficie: #ffffff;   /* listas, paneles, tarjetas */
+  --texto: #2f3436;        /* texto principal (ink) */
+  --suave: #5c6467;        /* texto secundario: empresa, fechas, ayudas */
+  --borde: #e7e2d8;        /* separadores */
+  --borde-fuerte: #d6d0c4; /* bordes de campos y botones */
+  --enlace: #2a7371;       /* texto en color y enlaces: turquesa oscurecido para que se lea */
+  --chip: #efebe3;         /* fondo de etiquetas (tecnologías) */
+  --hover: #faf8f4;        /* fila al pasar el ratón */
+  --peligro: #b3261e;      /* errores */
+}
+
+/* Modo oscuro: elegido a mano, o el del sistema si no se eligió nada */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --fondo: #2f3436;
+  --superficie: #353b3d;
+  --texto: #f4f2ee;
+  --suave: #b6bdbf;
+  --borde: #454d50;
+  --borde-fuerte: #566064;
+  --enlace: #84c0bf;
+  --chip: #434b4e;
+  --hover: #3b4245;
+  --peligro: #f3a3a3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    color-scheme: dark;
+    --fondo: #2f3436;
+    --superficie: #353b3d;
+    --texto: #f4f2ee;
+    --suave: #b6bdbf;
+    --borde: #454d50;
+    --borde-fuerte: #566064;
+    --enlace: #84c0bf;
+    --chip: #434b4e;
+    --hover: #3b4245;
+    --peligro: #f3a3a3;
+  }
 }
 
 @theme inline {
-  /* Colores: bg-ink, text-primary, border-peligro… */
-  --color-ink: var(--ink);
-  --color-slate: var(--slate);
-  --color-primary: var(--primary);
-  --color-postit: var(--postit);
+  /* Colores que cambian con el modo */
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-texto: var(--texto);
+  --color-suave: var(--suave);
+  --color-borde: var(--borde);
+  --color-borde-fuerte: var(--borde-fuerte);
+  --color-enlace: var(--enlace);
+  --color-chip: var(--chip);
+  --color-hover: var(--hover);
   --color-peligro: var(--peligro);
 
-  /* Tipografía */
-  --font-sans: var(--font-sora);
+  /* Colores fijos de la marca, iguales en los dos modos */
+  --color-acento: #84c0bf;      /* botones principales, casillas marcadas */
+  --color-sobre-acento: #1f2a2b; /* texto encima del acento */
+  --color-postit: #e4d7bf;      /* avisos importantes (el de idiomas) */
+  --color-ink: #2f3436;         /* texto encima del post-it */
 
-  /* Tamaños de título: text-display, text-titulo-1, text-titulo-2, text-titulo-3.
+  /* Tipografía: Sora para títulos y logo (font-titulo), Instrument Sans para el resto */
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  --font-titulo: var(--font-sora), var(--font-instrument), sans-serif;
+
+  /* Tamaños de título: text-titulo-1, text-titulo-2, text-titulo-3.
      El texto normal usa los tamaños de Tailwind (text-sm, text-base, text-lg). */
-  --text-display: clamp(2.75rem, 6vw, 4.75rem);
-  --text-display--line-height: 1.03;
-  --text-display--letter-spacing: -0.04em;
-  --text-titulo-1: clamp(2.25rem, 4.5vw, 3.5rem);
-  --text-titulo-1--line-height: 1.05;
-  --text-titulo-1--letter-spacing: -0.035em;
-  --text-titulo-2: 1.75rem;
-  --text-titulo-2--line-height: 1.15;
-  --text-titulo-2--letter-spacing: -0.03em;
-  --text-titulo-3: 1.25rem;
-  --text-titulo-3--line-height: 1.25;
-  --text-titulo-3--letter-spacing: -0.02em;
+  --text-titulo-1: clamp(1.75rem, 3.5vw, 2.75rem);
+  --text-titulo-1--line-height: 1.1;
+  --text-titulo-1--letter-spacing: -0.03em;
+  --text-titulo-2: 1.625rem;
+  --text-titulo-2--line-height: 1.2;
+  --text-titulo-2--letter-spacing: -0.02em;
+  --text-titulo-3: 1.0625rem;
+  --text-titulo-3--line-height: 1.35;
+  --text-titulo-3--letter-spacing: -0.01em;
 
-  /* Redondeos: rounded-control (campos), rounded-tarjeta, rounded-full (botones y chips) */
-  --radius-control: 0.875rem;
-  --radius-tarjeta: 1.5rem;
+  /* Redondeos: rounded-control (campos y botones), rounded-tarjeta (listas y paneles) */
+  --radius-control: 0.625rem;
+  --radius-tarjeta: 0.75rem;
 }
 
 body {
-  background: var(--ink);
-  color: #ffffff;
-  font-family: var(--font-sora), sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-instrument), system-ui, sans-serif;
+}
+
+/* Los títulos, en Sora (la de la marca) */
+:where(h1, h2, h3) {
+  font-family: var(--font-sora), var(--font-instrument), sans-serif;
 }
 
 ::selection {
-  background: var(--primary);
-  color: var(--ink);
+  background: #84c0bf;
+  color: #1f2a2b;
 }
 
-/* Foco visible para quien navega con teclado, igual que en la landing. */
+/* Foco visible para quien navega con teclado. */
 :where(a, button, input, select, textarea, summary):focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 3px;
+  outline: 2px solid var(--enlace);
+  outline-offset: 2px;
 }

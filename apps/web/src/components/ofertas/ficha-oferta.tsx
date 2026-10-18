@@ -22,14 +22,14 @@ export function FichaOferta({ oferta, faltan }: { oferta: OfertaDetalle; faltan:
 
   return (
     <article className="flex flex-col gap-8">
-      <Link href="/" className="self-start text-sm font-bold text-primary hover:underline">
+      <Link href="/" className="self-start text-sm font-bold text-enlace hover:underline">
         ← {t("volver")}
       </Link>
 
       <header className="flex flex-col gap-4">
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-bold text-white/75">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-bold text-suave">
           {oferta.empresa.web ? (
-            <a href={oferta.empresa.web} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+            <a href={oferta.empresa.web} target="_blank" rel="noopener noreferrer" className="hover:text-enlace">
               {oferta.empresa.nombre}
             </a>
           ) : (
@@ -42,7 +42,7 @@ export function FichaOferta({ oferta, faltan }: { oferta: OfertaDetalle; faltan:
         <h1 className="text-titulo-1 font-bold" lang={oferta.idioma}>
           {oferta.titulo}
         </h1>
-        <LugarYSalario oferta={oferta} className="flex flex-wrap gap-x-5 gap-y-1 text-white/80" />
+        <LugarYSalario oferta={oferta} className="flex flex-wrap gap-x-5 gap-y-1 text-texto" />
         <EtiquetasOferta oferta={oferta} />
       </header>
 
@@ -53,8 +53,8 @@ export function FichaOferta({ oferta, faltan }: { oferta: OfertaDetalle; faltan:
       )}
 
       <div className="grid gap-8 lg:grid-cols-[1fr_18rem] lg:items-start">
-        <div className="flex max-w-[65ch] flex-col gap-5 text-white/85" lang={oferta.idioma}>
-          {oferta.resumen && <p className="text-lg font-semibold text-white">{oferta.resumen}</p>}
+        <div className="flex max-w-[65ch] flex-col gap-5 text-texto" lang={oferta.idioma}>
+          {oferta.resumen && <p className="text-lg font-semibold text-texto">{oferta.resumen}</p>}
           {parrafos.map((p, i) => (
             <p key={i} className="whitespace-pre-line">
               {p}
@@ -73,9 +73,9 @@ export function FichaOferta({ oferta, faltan }: { oferta: OfertaDetalle; faltan:
             {t("aplicar")}
             <span className="sr-only"> ({t("abreOtraWeb")})</span>
           </a>
-          <p className="text-sm text-white/65">{t("aplicarAyuda", { empresa: oferta.empresa.nombre })}</p>
+          <p className="text-sm text-suave">{t("aplicarAyuda", { empresa: oferta.empresa.nombre })}</p>
           <IdiomasRequeridos oferta={oferta} />
-          <p className="text-sm text-white/55">
+          <p className="text-sm text-suave">
             {t("publicada", { tiempo: format.relativeTime(new Date(oferta.publicadaEn)) })}
           </p>
         </Tarjeta>

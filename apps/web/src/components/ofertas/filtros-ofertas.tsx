@@ -87,7 +87,7 @@ export function FiltrosOfertas({ filtros }: { filtros: Filtros }) {
       <div id="panel-filtros" className={cn("flex-col gap-6", abierto ? "flex" : "hidden lg:flex")}>
         {GRUPOS_CHIPS.map(({ grupo, titulo, textos }) => (
           <fieldset key={grupo} className="flex flex-col gap-3">
-            <legend className="mb-3 text-sm font-bold text-white/70">{t(`filtros.${titulo}`)}</legend>
+            <legend className="mb-3 text-sm font-bold text-suave">{t(`filtros.${titulo}`)}</legend>
             <div className="flex flex-wrap gap-2">
               {PARAMETROS[grupo].valores.map((valor) => (
                 <ChipFiltro

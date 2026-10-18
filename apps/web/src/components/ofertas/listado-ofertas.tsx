@@ -54,12 +54,12 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
           </p>
         ) : (
           <>
-            <p className="text-sm font-bold text-white/70" aria-live="polite">
+            <p className="text-sm font-bold text-suave" aria-live="polite">
               {t("ofertas.total", { count: resultado.total })}
             </p>
 
             {resultado.ofertas.length === 0 ? (
-              <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-white/10 p-6 text-white/80">
+              <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde p-6 text-texto">
                 <p>{hayFiltros(filtros) ? t("ofertas.vacioConFiltros") : t("ofertas.vacio")}</p>
                 {hayFiltros(filtros) && (
                   <Link href="/" className={clasesBoton({ variante: "secundario" })}>

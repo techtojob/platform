@@ -1,19 +1,19 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-/** Etiqueta fija: nivel, modalidad, tecnología de una oferta… */
+/** Etiqueta fija: tecnología (neutro), nivel (postit), idiomas que pide (borde)… */
 export function Etiqueta({
   tono = "neutro",
   className,
   ...props
-}: ComponentProps<"span"> & { tono?: "neutro" | "postit" | "primario" }) {
+}: ComponentProps<"span"> & { tono?: "neutro" | "postit" | "borde" }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold",
-        tono === "neutro" && "bg-white/10 text-white",
-        tono === "postit" && "bg-postit text-ink",
-        tono === "primario" && "border border-primary/50 text-primary",
+        "inline-flex items-center rounded-md px-2 py-0.5 text-[0.8125rem] font-medium",
+        tono === "neutro" && "bg-chip text-texto",
+        tono === "postit" && "bg-postit font-semibold text-ink",
+        tono === "borde" && "border border-borde-fuerte font-semibold text-texto",
         className,
       )}
       {...props}
@@ -32,10 +32,8 @@ export function ChipFiltro({
       type="button"
       aria-pressed={activo}
       className={cn(
-        "inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold transition",
-        activo
-          ? "bg-primary text-ink"
-          : "border border-white/20 text-white hover:border-white/40",
+        "inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold transition",
+        activo ? "bg-acento text-sobre-acento" : "border border-borde-fuerte text-texto hover:bg-hover",
         className,
       )}
       {...props}
@@ -54,15 +52,15 @@ export function ChipQuitable({
   onQuitar: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-primary/20 py-1 pl-3 pr-1 text-sm font-bold text-primary">
+    <span className="inline-flex h-9 shrink-0 items-center gap-0.5 rounded-full bg-chip pl-3 pr-1 text-sm font-semibold text-texto">
       {children}
       <button
         type="button"
         onClick={onQuitar}
         aria-label={etiquetaQuitar}
-        className="grid size-8 place-items-center rounded-full hover:bg-primary/20"
+        className="grid size-8 place-items-center rounded-full hover:bg-borde"
       >
-        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
           <path d="M6 6l12 12M18 6 6 18" />
         </svg>
       </button>

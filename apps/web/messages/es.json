@@ -119,5 +119,13 @@
     "titulo": "Esta página no existe",
     "texto": "Puede que la oferta ya no esté publicada o que el enlace esté mal copiado.",
     "volver": "Ver las ofertas"
+  },
+  "cabecera": {
+    "seccion": "empleo"
+  },
+  "tema": {
+    "aClaro": "Cambiar a modo claro",
+    "aOscuro": "Cambiar a modo oscuro",
+    "cambiar": "Cambiar entre modo claro y oscuro"
   }
 }

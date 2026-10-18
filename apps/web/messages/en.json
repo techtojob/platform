@@ -119,5 +119,13 @@
     "titulo": "This page doesn't exist",
     "texto": "The job offer may no longer be published, or the link may be incomplete.",
     "volver": "See job offers"
+  },
+  "cabecera": {
+    "seccion": "jobs"
+  },
+  "tema": {
+    "aClaro": "Switch to light mode",
+    "aOscuro": "Switch to dark mode",
+    "cambiar": "Switch between light and dark mode"
   }
 }

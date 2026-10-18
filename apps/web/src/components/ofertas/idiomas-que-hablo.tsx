@@ -40,7 +40,7 @@ export function IdiomasQueHablo({ actuales }: { actuales: Idioma[] }) {
     <div className="flex flex-col gap-3">
       <p className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <span className="font-bold">{t("hablo")}:</span>
-        <span className="text-white/85">{actuales.map((i) => nombreIdioma(i, locale)).join(" · ")}</span>
+        <span className="text-texto">{actuales.map((i) => nombreIdioma(i, locale)).join(" · ")}</span>
         <Boton
           variante="fantasma"
           aria-expanded={abierto}
@@ -56,15 +56,15 @@ export function IdiomasQueHablo({ actuales }: { actuales: Idioma[] }) {
       </p>
 
       {abierto && (
-        <fieldset id="panel-idiomas" className="flex flex-col gap-4 rounded-tarjeta border border-white/15 p-5">
+        <fieldset id="panel-idiomas" className="flex flex-col gap-4 rounded-tarjeta border border-borde p-5">
           <legend className="px-1 font-bold">{t("elegirIdiomas")}</legend>
-          <p className="text-sm text-white/70">{t("ayudaIdiomas")}</p>
+          <p className="text-sm text-suave">{t("ayudaIdiomas")}</p>
           <div className="grid max-h-72 grid-cols-2 gap-1 overflow-y-auto sm:grid-cols-3">
             {opciones.map((i) => (
               <label key={i} className="flex min-h-10 items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  className="size-5 accent-primary"
+                  className="size-5 accent-[#2a7371]"
                   checked={elegidos.includes(i)}
                   onChange={(e) =>
                     setElegidos((lista) => (e.target.checked ? [...lista, i] : lista.filter((x) => x !== i)))

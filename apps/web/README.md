@@ -9,7 +9,9 @@ pnpm dev        # en otra: la web → http://localhost:3000 (te lleva a /empleo 
 
 La web pide los datos al API de `API_URL` (por defecto `http://localhost:8787`). Las llamadas están en `src/lib/api.ts`; las páginas nunca usan `fetch` directamente.
 
-- Colores y tipografía de la marca: `src/app/globals.css` (`bg-ink`, `bg-slate`, `text-primary`, `bg-postit`), iguales que en la landing.
+- Colores y tipografía: `src/app/globals.css`. Los colores tienen **nombre de función**, no de color (`bg-fondo`, `bg-superficie`, `text-texto`, `text-suave`, `border-borde`, `text-enlace`, `bg-acento`, `bg-postit`…). Cada uno tiene su valor en modo claro y en modo oscuro, así los dos modos salen solos.
+- Modo claro u oscuro: por defecto, el del sistema. El botón de la cabecera lo cambia y lo guarda en la cookie `TTJ_TEMA`; `src/components/tema/script-tema.tsx` lo aplica antes de pintar para que no haya destellos.
+- Tipografías: Sora en títulos y logo (`font-titulo`, y todos los `h1`–`h3`), Instrument Sans en el resto.
 - Listas fijas (áreas, tecnologías…): se importan de `@techtojob/shared`, nunca se copian aquí.
 - Antes de escribir código, lee `AGENTS.md`: esta versión de Next.js tiene cambios respecto a lo que conoces.
 
@@ -29,7 +31,7 @@ src/
 ```
 
 - **Nunca un botón, campo o chip hecho a mano** en una página: se usa el de `@/components/ui`. Si falta alguno, se añade allí.
-- **Nada de colores sueltos** (`#84c0bf`, `bg-[#…]`): se usan los del tema (`bg-primary`, `text-peligro`…).
+- **Nada de colores sueltos** (`#84c0bf`, `bg-[#…]`, `text-white`): se usan los del tema (`bg-acento`, `text-suave`, `text-peligro`…). Si no, ese trozo se rompe en uno de los dos modos.
 - **El catálogo** con todos los componentes está en `/empleo/componentes`. Útil para revisar cambios de diseño de un vistazo.
 
 ## Ofertas

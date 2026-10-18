@@ -26,7 +26,7 @@ export default function PaginaOferta({ params }: Props) {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-12">
       {/* La oferta se pide en cada visita: así siempre sale la versión revisada por el staff. */}
-      <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-white/5" />}>
+      <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-hover" />}>
         <CargarOferta params={params} />
       </Suspense>
     </main>

@@ -32,10 +32,10 @@ export function LugarYSalario({ oferta, className }: { oferta: OfertaListado; cl
 
   if (!lugar && !zona && !salario) return null;
   return (
-    <p className={className ?? "flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/75"}>
+    <p className={className ?? "flex flex-wrap gap-x-4 gap-y-1 text-sm text-suave"}>
       {lugar && <span>{lugar}</span>}
       {zona && <span>{t("ofertas.remotoDesde", { zona: t(`regiones.${zona}`) })}</span>}
-      {salario && <span className="font-bold text-white">{salario}</span>}
+      {salario && <span className="font-bold text-texto">{salario}</span>}
     </p>
   );
 }
@@ -48,7 +48,7 @@ export function EtiquetasOferta({ oferta }: { oferta: OfertaListado }) {
       <Etiqueta tono="postit">{t(`seniority.${oferta.seniority}`)}</Etiqueta>
       <Etiqueta>{t(`modalidades.${oferta.modalidad}`)}</Etiqueta>
       {oferta.tecnologias.map((id) => (
-        <Etiqueta key={id} tono="primario">
+        <Etiqueta key={id} tono="borde">
           {nombresTecnologias.get(id) ?? id}
         </Etiqueta>
       ))}
@@ -61,8 +61,8 @@ export function IdiomasRequeridos({ oferta }: { oferta: OfertaListado }) {
   const t = useTranslations();
   const locale = useLocale();
   return (
-    <p className="text-sm text-white/65">
-      <span className="font-bold text-white/80">{t("ofertas.pide")}: </span>
+    <p className="text-sm text-suave">
+      <span className="font-bold text-texto">{t("ofertas.pide")}: </span>
       {oferta.idiomasRequeridos
         .map(({ idioma, nivel }) =>
           [nombreIdioma(idioma, locale), nivel && (nivel === "nativo" ? t("ofertas.nativo") : nivel.toUpperCase())]

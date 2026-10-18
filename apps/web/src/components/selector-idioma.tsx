@@ -48,7 +48,7 @@ function Selector({ onCambiar, pendiente = false }: { onCambiar?: (l: Locale) =>
         value={locale}
         disabled={pendiente || !onCambiar}
         onChange={(e) => onCambiar?.(e.target.value as Locale)}
-        className="min-h-11 rounded-full border border-white/20 bg-ink px-4 text-white"
+        className="h-11 rounded-control border border-borde-fuerte bg-superficie px-2 text-sm font-semibold text-texto sm:px-3"
       >
         {locales.map((l) => (
           <option key={l} value={l}>

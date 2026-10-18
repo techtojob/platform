@@ -13,8 +13,8 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaListado }) {
   return (
     <Tarjeta className="flex flex-col gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <p className="text-sm font-bold text-white/70">{oferta.empresa.nombre}</p>
-        <p className="text-sm text-white/55">
+        <p className="text-sm font-bold text-suave">{oferta.empresa.nombre}</p>
+        <p className="text-sm text-suave">
           {t("ofertas.publicada", { tiempo: format.relativeTime(new Date(oferta.publicadaEn)) })}
         </p>
       </div>
@@ -22,14 +22,14 @@ export function TarjetaOferta({ oferta }: { oferta: OfertaListado }) {
       <h2 className="text-titulo-3 font-bold" lang={oferta.idioma}>
         <Link
           href={{ pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } }}
-          className="hover:text-primary"
+          className="hover:text-enlace"
         >
           {oferta.titulo}
         </Link>
       </h2>
 
       {oferta.resumen && (
-        <p className="max-w-[65ch] text-white/80" lang={oferta.idioma}>
+        <p className="max-w-[65ch] text-texto" lang={oferta.idioma}>
           {oferta.resumen}
         </p>
       )}
