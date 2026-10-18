@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "titulo": "TechToJob – Empleo tech",
+    "descripcion": "Ofertas de empleo tech revisadas por la comunidad y perfiles de talento."
+  },
+  "selectorIdioma": {
+    "etiqueta": "Idioma"
+  },
+  "inicio": {
+    "etiqueta": "TechToJob · Fase 0",
+    "titulo": "La bolsa de empleo tech está en construcción.",
+    "descripcion": "Ofertas revisadas por el staff y perfiles de talento de la comunidad.",
+    "areas": "Áreas"
+  },
+  "areas": {
+    "desarrollo": "Desarrollo",
+    "datos-ia": "Datos e IA",
+    "ciberseguridad": "Ciberseguridad",
+    "producto-diseno": "Producto y diseño",
+    "infra-devops": "Infra y DevOps",
+    "soporte-it": "Soporte IT"
+  },
+  "seniority": {
+    "sin-experiencia": "Sin experiencia",
+    "junior": "Junior",
+    "mid": "Mid",
+    "senior": "Senior",
+    "lead": "Lead"
+  },
+  "modalidades": {
+    "remoto": "Remoto",
+    "hibrido": "Híbrido",
+    "presencial": "Presencial"
+  },
+  "disponibilidad": {
+    "buscando": "Buscando activamente",
+    "abierto": "Abierto a ofertas",
+    "freelance": "Freelance",
+    "no-busca": "No busca ahora"
+  },
+  "visibilidad": {
+    "publico": "Público",
+    "registrados": "Solo usuarios registrados",
+    "oculto": "Oculto"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "titulo": "TechToJob – Tech jobs",
+    "descripcion": "Tech job offers reviewed by the community, and talent profiles."
+  },
+  "selectorIdioma": {
+    "etiqueta": "Language"
+  },
+  "inicio": {
+    "etiqueta": "TechToJob · Phase 0",
+    "titulo": "The tech job board is under construction.",
+    "descripcion": "Job offers reviewed by our staff and talent profiles from the community.",
+    "areas": "Areas"
+  },
+  "areas": {
+    "desarrollo": "Development",
+    "datos-ia": "Data & AI",
+    "ciberseguridad": "Cybersecurity",
+    "producto-diseno": "Product & design",
+    "infra-devops": "Infra & DevOps",
+    "soporte-it": "IT support"
+  },
+  "seniority": {
+    "sin-experiencia": "No experience",
+    "junior": "Junior",
+    "mid": "Mid",
+    "senior": "Senior",
+    "lead": "Lead"
+  },
+  "modalidades": {
+    "remoto": "Remote",
+    "hibrido": "Hybrid",
+    "presencial": "On-site"
+  },
+  "disponibilidad": {
+    "buscando": "Actively looking",
+    "abierto": "Open to offers",
+    "freelance": "Freelance",
+    "no-busca": "Not looking now"
+  },
+  "visibilidad": {
+    "publico": "Public",
+    "registrados": "Registered users only",
+    "oculto": "Hidden"
+  }
+}

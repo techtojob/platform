@@ -8,7 +8,7 @@ La bolsa de empleo de [TechToJob](https://techtojob.com): ofertas tech revisadas
 
 ```
 apps/
-  web/        La web de la bolsa (Next.js + TypeScript + Tailwind) → techtojob.com/empleo
+  web/        La web de la bolsa (Next.js + TypeScript + Tailwind) → techtojob.com/empleo (español) y techtojob.com/jobs (inglés)
   api/        El API → api.techtojob.com (framework pendiente de decidir por backend)
 packages/
   shared/     Tipos y listas fijas compartidas: áreas, seniority, modalidad, tecnologías…
@@ -35,7 +35,7 @@ corepack enable            # activa pnpm, viene con Node
 git clone https://github.com/techtojob/platform.git
 cd platform
 pnpm install
-pnpm dev                   # → http://localhost:3000/empleo
+pnpm dev                   # → http://localhost:3000 (te lleva a /empleo o /jobs)
 ```
 
 Comandos desde la raíz:
