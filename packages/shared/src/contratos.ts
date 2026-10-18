@@ -28,9 +28,19 @@ export type OfertaListado = {
   publicadaEn: string;
 };
 
+/** Una oferta entera (GET /ofertas/:id): lo del listado y además el texto completo y el enlace para aplicar. */
+export type OfertaDetalle = OfertaListado & {
+  descripcion: string | null;
+  /** A donde se manda a la gente para aplicar: la oferta en la web de la empresa. */
+  urlOriginal: string;
+  empresa: OfertaListado["empresa"] & { web: string | null };
+};
+
 /** Respuesta de GET /ofertas. */
 export type ResultadoOfertas = {
   ofertas: OfertaListado[];
+  /** Cuántas ofertas hay en total con estos filtros e idiomas (no solo en esta página). */
+  total: number;
   /** Para pedir la página siguiente (`despues=`); null si no hay más. */
   siguiente: string | null;
   /** Ofertas que quedan fuera por cada idioma que la persona no habla: { en: 12 }. */

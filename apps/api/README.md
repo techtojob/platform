@@ -46,7 +46,8 @@ Postgres en [Neon](https://neon.tech) con [Drizzle](https://orm.drizzle.team). L
 | Ruta | Qué hace |
 | --- | --- |
 | `GET /salud` | Comprueba que el API está vivo. |
-| `GET /ofertas?idiomas=es,en` | Ofertas publicadas que piden solo idiomas de la lista, de la más nueva a la más antigua. Filtros opcionales: `area`, `nivel`, `modalidad`, `tec` (separados por comas), `limite` y `despues` (página siguiente). Devuelve también `ocultasPorIdioma`: cuántas quedan fuera por cada idioma que no hablas. |
+| `GET /ofertas?idiomas=es,en` | Ofertas publicadas que piden solo idiomas de la lista, de la más nueva a la más antigua. Filtros opcionales: `area`, `nivel`, `modalidad`, `tec` (separados por comas), `limite` y `despues` (página siguiente). Devuelve también `total` (todas las páginas) y `ocultasPorIdioma`: cuántas quedan fuera por cada idioma que no hablas. |
+| `GET /ofertas/:id` | Una oferta publicada entera: descripción, enlace para aplicar (`urlOriginal`) y web de la empresa. No filtra por idiomas. 404 si no existe o no está publicada. |
 
 ## Normas
 

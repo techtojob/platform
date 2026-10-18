@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { crearApp } from "../src/app";
 import type { Db } from "../src/db/cliente";
-import { listarOfertas } from "../src/servicios/ofertas";
+import { listarOfertas, obtenerOferta } from "../src/servicios/ofertas";
 import { crearDbPrueba } from "./db";
 
 let db: Db;
@@ -84,6 +84,32 @@ describe("paginación", () => {
     expect(vistas).toHaveLength(5);
     expect(new Set(vistas).size).toBe(5);
   });
+
+  it("el total cuenta todas las páginas, no solo la primera", async () => {
+    const r = await listarOfertas(db, { idiomas: ["es", "en"], limite: 2 });
+    expect(r.ofertas).toHaveLength(2);
+    expect(r.total).toBe(4);
+  });
+});
+
+describe("una oferta entera", () => {
+  it("trae la descripción, el enlace para aplicar y la web de la empresa", async () => {
+    const o = await obtenerOferta(db, "p3v8d2xe");
+    expect(o?.titulo).toBe("Junior Data Engineer");
+    expect(o?.descripcion).toContain("Python");
+    expect(o?.urlOriginal).toBe("https://example.com/ofertas/2");
+    expect(o?.empresa).toHaveProperty("web");
+    expect(o?.idiomasRequeridos).toEqual([{ idioma: "en", nivel: "b2" }]);
+  });
+
+  it("no filtra por idiomas: con el enlace se puede ver", async () => {
+    expect(await obtenerOferta(db, "m5r1k8vf")).not.toBeNull();
+  });
+
+  it("las pendientes de revisar y las que no existen no se ven", async () => {
+    expect(await obtenerOferta(db, "b8t3y6np")).toBeNull();
+    expect(await obtenerOferta(db, "no-existe")).toBeNull();
+  });
 });
 
 describe("GET /ofertas", () => {
@@ -110,5 +136,15 @@ describe("GET /ofertas", () => {
   it("con un valor que no existe responde 400", async () => {
     expect((await pedir("?idiomas=es&nivel=experto")).status).toBe(400);
     expect((await pedir("?idiomas=klingon")).status).toBe(400);
+  });
+
+  it("GET /ofertas/:id devuelve la oferta, o 404", async () => {
+    const res = await pedir("/k7x2m9qa");
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { titulo: string }).titulo).toBe("Desarrollador/a Frontend Junior");
+
+    const no = await pedir("/b8t3y6np");
+    expect(no.status).toBe(404);
+    expect(((await no.json()) as { error: { codigo: string } }).error.codigo).toBe("no_encontrado");
   });
 });

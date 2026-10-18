@@ -83,12 +83,41 @@
     "pide": "Requires",
     "nativo": "native",
     "verOferta": "View offer",
-    "publicada": "Posted {tiempo}"
+    "publicada": "Posted {tiempo}",
+    "vacioConFiltros": "No job offers match these filters. Try removing some.",
+    "paginas": "More job offers",
+    "masOfertas": "Show more job offers",
+    "primeraPagina": "Back to the newest",
+    "volver": "All job offers",
+    "escritaEn": "Written in {idioma}",
+    "faltanIdiomas": "{count, plural, one {This offer requires {idiomas}, which is not among the languages you speak.} other {This offer requires {idiomas}, which are not among the languages you speak.}}",
+    "sinDescripcion": "The company hasn't published more details. You'll find them on their website.",
+    "aplicar": "Apply on the company's website",
+    "abreOtraWeb": "opens in a new tab",
+    "aplicarAyuda": "You apply to {empresa} on their own website. TechToJob doesn't store your data."
   },
   "regiones": {
     "es": "Spain",
     "eu": "Europe",
     "latam": "Latin America",
     "mundo": "anywhere"
+  },
+  "filtros": {
+    "titulo": "Filters",
+    "area": "Area",
+    "nivel": "Level",
+    "modalidad": "Work mode",
+    "tecnologia": "Technology",
+    "tecnologiaEjemplo": "React, Python, AWS…",
+    "anadir": "Add",
+    "tecnologiaDesconocida": "We don't know “{texto}”. Try another name.",
+    "quitar": "Remove {filtro}",
+    "limpiar": "Clear filters",
+    "tituloConActivos": "Filters ({count})"
+  },
+  "noEncontrada": {
+    "titulo": "This page doesn't exist",
+    "texto": "The job offer may no longer be published, or the link may be incomplete.",
+    "volver": "See job offers"
   }
 }

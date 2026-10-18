@@ -2,7 +2,7 @@ import { AREAS, esIdioma, MODALIDADES, SENIORITY, TECNOLOGIAS, type Idioma } fro
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Entorno } from "../app";
-import { listarOfertas } from "../servicios/ofertas";
+import { listarOfertas, obtenerOferta } from "../servicios/ofertas";
 
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));
 
@@ -46,4 +46,12 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
   });
 
   return c.json(resultado);
-});
+})
+  /** GET /ofertas/:id → la oferta entera, o 404 si no existe o aún no está publicada. */
+  .get("/:id", async (c) => {
+    const oferta = await obtenerOferta(c.var.db, c.req.param("id"));
+    if (!oferta) {
+      return c.json({ error: { codigo: "no_encontrado", mensaje: "Esta oferta no existe o ya no está publicada." } }, 404);
+    }
+    return c.json(oferta);
+  });

@@ -83,12 +83,41 @@
     "pide": "Pide",
     "nativo": "nativo",
     "verOferta": "Ver oferta",
-    "publicada": "Publicada {tiempo}"
+    "publicada": "Publicada {tiempo}",
+    "vacioConFiltros": "No hay ofertas con estos filtros. Prueba a quitar alguno.",
+    "paginas": "Más ofertas",
+    "masOfertas": "Ver más ofertas",
+    "primeraPagina": "Volver a las más recientes",
+    "volver": "Todas las ofertas",
+    "escritaEn": "Escrita en {idioma}",
+    "faltanIdiomas": "{count, plural, one {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.} other {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.}}",
+    "sinDescripcion": "La empresa no ha publicado más detalles. Los tienes en su web.",
+    "aplicar": "Aplicar en la web de la empresa",
+    "abreOtraWeb": "se abre en otra pestaña",
+    "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos."
   },
   "regiones": {
     "es": "España",
     "eu": "Europa",
     "latam": "Latinoamérica",
     "mundo": "cualquier lugar"
+  },
+  "filtros": {
+    "titulo": "Filtros",
+    "area": "Área",
+    "nivel": "Nivel",
+    "modalidad": "Modalidad",
+    "tecnologia": "Tecnología",
+    "tecnologiaEjemplo": "React, Python, AWS…",
+    "anadir": "Añadir",
+    "tecnologiaDesconocida": "No conocemos «{texto}». Prueba con otro nombre.",
+    "quitar": "Quitar {filtro}",
+    "limpiar": "Quitar filtros",
+    "tituloConActivos": "Filtros ({count})"
+  },
+  "noEncontrada": {
+    "titulo": "Esta página no existe",
+    "texto": "Puede que la oferta ya no esté publicada o que el enlace esté mal copiado.",
+    "volver": "Ver las ofertas"
   }
 }

@@ -1,7 +1,7 @@
-import type { Area, Idioma, Modalidad, ResultadoOfertas, Seniority } from "@techtojob/shared";
-import { and, arrayOverlaps, countDistinct, desc, eq, inArray, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
+import type { Area, Idioma, Modalidad, OfertaDetalle, OfertaListado, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import { and, arrayOverlaps, count, countDistinct, desc, eq, inArray, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertaIdiomas, ofertas } from "../db/esquema";
+import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
 
 export type FiltrosOfertas = {
   /** Idiomas que habla quien busca. Solo salen ofertas que piden idiomas de esta lista. */
@@ -16,7 +16,7 @@ export type FiltrosOfertas = {
   despues?: string | null;
 };
 
-export type { OfertaListado, ResultadoOfertas } from "@techtojob/shared";
+export type { OfertaDetalle, OfertaListado, ResultadoOfertas } from "@techtojob/shared";
 
 export const LIMITE_POR_DEFECTO = 20;
 export const LIMITE_MAXIMO = 50;
@@ -55,28 +55,61 @@ function pideSoloIdiomas(db: Db, idiomas: Idioma[]): SQL {
   );
 }
 
+/** Pasa una fila de la base de datos a la forma del contrato del API. */
+function aListado(
+  o: Oferta,
+  empresa: OfertaListado["empresa"],
+  idiomas: OfertaIdioma[],
+): OfertaListado {
+  return {
+    id: o.id,
+    slug: o.slug,
+    titulo: o.titulo,
+    resumen: o.resumen,
+    idioma: o.idioma,
+    empresa,
+    area: o.area,
+    seniority: o.seniority,
+    modalidad: o.modalidad,
+    tecnologias: o.tecnologias,
+    pais: o.pais,
+    ciudad: o.ciudad,
+    remotoDesde: o.remotoDesde,
+    salario:
+      o.salarioMin != null || o.salarioMax != null ? { min: o.salarioMin, max: o.salarioMax, moneda: o.moneda } : null,
+    idiomasRequeridos: idiomas
+      .filter((i) => i.ofertaId === o.id)
+      .map((i) => ({ idioma: i.idioma, nivel: i.nivel })),
+    publicadaEn: o.publicadaEn!.toISOString(),
+  };
+}
+
 /** Ofertas publicadas que puede hacer quien busca, de la más nueva a la más antigua. */
 export async function listarOfertas(db: Db, filtros: FiltrosOfertas): Promise<ResultadoOfertas> {
   const limite = Math.min(Math.max(filtros.limite ?? LIMITE_POR_DEFECTO, 1), LIMITE_MAXIMO);
   const condiciones = [...condicionesBase(filtros), pideSoloIdiomas(db, filtros.idiomas)];
 
   const cursor = filtros.despues ? leerCursor(filtros.despues) : null;
-  if (cursor) {
-    condiciones.push(
-      or(
-        lt(ofertas.publicadaEn, cursor.publicadaEn),
-        and(eq(ofertas.publicadaEn, cursor.publicadaEn), lt(ofertas.id, cursor.id)),
-      )!,
-    );
-  }
+  const condicionesPagina = cursor
+    ? [
+        ...condiciones,
+        or(
+          lt(ofertas.publicadaEn, cursor.publicadaEn),
+          and(eq(ofertas.publicadaEn, cursor.publicadaEn), lt(ofertas.id, cursor.id)),
+        )!,
+      ]
+    : condiciones;
 
-  const filas = await db
-    .select({ oferta: ofertas, empresa: { nombre: empresas.nombre, slug: empresas.slug, logoUrl: empresas.logoUrl } })
-    .from(ofertas)
-    .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
-    .where(and(...condiciones))
-    .orderBy(desc(ofertas.publicadaEn), desc(ofertas.id))
-    .limit(limite + 1);
+  const [filas, [{ total }]] = await Promise.all([
+    db
+      .select({ oferta: ofertas, empresa: { nombre: empresas.nombre, slug: empresas.slug, logoUrl: empresas.logoUrl } })
+      .from(ofertas)
+      .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+      .where(and(...condicionesPagina))
+      .orderBy(desc(ofertas.publicadaEn), desc(ofertas.id))
+      .limit(limite + 1),
+    db.select({ total: count() }).from(ofertas).where(and(...condiciones)),
+  ]);
 
   const hayMas = filas.length > limite;
   const pagina = filas.slice(0, limite);
@@ -88,31 +121,35 @@ export async function listarOfertas(db: Db, filtros: FiltrosOfertas): Promise<Re
 
   const ultima = pagina.at(-1)?.oferta;
   return {
-    ofertas: pagina.map(({ oferta: o, empresa }) => ({
-      id: o.id,
-      slug: o.slug,
-      titulo: o.titulo,
-      resumen: o.resumen,
-      idioma: o.idioma,
-      empresa,
-      area: o.area,
-      seniority: o.seniority,
-      modalidad: o.modalidad,
-      tecnologias: o.tecnologias,
-      pais: o.pais,
-      ciudad: o.ciudad,
-      remotoDesde: o.remotoDesde,
-      salario:
-        o.salarioMin != null || o.salarioMax != null
-          ? { min: o.salarioMin, max: o.salarioMax, moneda: o.moneda }
-          : null,
-      idiomasRequeridos: idiomas
-        .filter((i) => i.ofertaId === o.id)
-        .map((i) => ({ idioma: i.idioma, nivel: i.nivel })),
-      publicadaEn: o.publicadaEn!.toISOString(),
-    })),
+    ofertas: pagina.map(({ oferta, empresa }) => aListado(oferta, empresa, idiomas)),
+    total: Number(total),
     siguiente: hayMas && ultima?.publicadaEn ? codificarCursor(ultima.publicadaEn, ultima.id) : null,
     ocultasPorIdioma: filtros.despues ? {} : await contarOcultasPorIdioma(db, filtros),
+  };
+}
+
+/**
+ * Una oferta publicada, entera. No filtra por idiomas: quien tenga el enlace la puede
+ * ver (la web le avisa si pide un idioma que no ha marcado). null si no existe o no está publicada.
+ */
+export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle | null> {
+  const [fila] = await db
+    .select({
+      oferta: ofertas,
+      empresa: { nombre: empresas.nombre, slug: empresas.slug, logoUrl: empresas.logoUrl, web: empresas.web },
+    })
+    .from(ofertas)
+    .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+    .where(and(eq(ofertas.id, id), eq(ofertas.estado, "publicada")))
+    .limit(1);
+  if (!fila) return null;
+
+  const idiomas = await db.select().from(ofertaIdiomas).where(eq(ofertaIdiomas.ofertaId, id));
+  return {
+    ...aListado(fila.oferta, fila.empresa, idiomas),
+    empresa: fila.empresa,
+    descripcion: fila.oferta.descripcion,
+    urlOriginal: fila.oferta.urlOriginal,
   };
 }
 

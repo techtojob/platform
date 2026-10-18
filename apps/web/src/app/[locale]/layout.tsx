@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
+import { locale as idiomaDeLaRuta } from "next/root-params";
 import { SelectorIdioma } from "@/components/selector-idioma";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -21,15 +22,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
-  const { locale } = await params;
+// El idioma se lee con `next/root-params` y no con `params`: así las páginas con
+// partes variables (/ofertas/[slug]) también tienen su versión rápida precompilada.
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await idiomaDeLaRuta();
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "metadata" });
   return { title: t("titulo"), description: t("descripcion") };
 }
 
-export default async function LayoutIdioma({ children, params }: LayoutProps<"/[locale]">) {
-  const { locale } = await params;
+export default async function LayoutIdioma({ children }: LayoutProps<"/[locale]">) {
+  const locale = await idiomaDeLaRuta();
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 

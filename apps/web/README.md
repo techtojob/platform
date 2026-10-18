@@ -32,6 +32,12 @@ src/
 - **Nada de colores sueltos** (`#84c0bf`, `bg-[#…]`): se usan los del tema (`bg-primary`, `text-peligro`…).
 - **El catálogo** con todos los componentes está en `/empleo/componentes`. Útil para revisar cambios de diseño de un vistazo.
 
+## Ofertas
+
+- **Listado** (`/empleo`): filtros de área, nivel, modalidad y tecnología. Se guardan en la dirección (`/empleo?nivel=junior&tec=react`), así se pueden compartir y funcionan los botones de atrás y adelante. La lógica está en `src/lib/filtros.ts`.
+- **Una oferta** (`/empleo/ofertas/<slug>-<id>`): lo que cuenta es el id del final. Si el slug no coincide (el título cambió), lleva a la dirección buena. Si pide un idioma que la persona no ha marcado, se le avisa pero puede verla.
+- **El idioma de la página** se lee con `next/root-params`, no con `params`: así las páginas con partes variables también se precompilan.
+
 ## Idiomas
 
 Cada idioma tiene su propia dirección y sus rutas traducidas:

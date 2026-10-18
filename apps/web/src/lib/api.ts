@@ -1,5 +1,6 @@
 import "server-only";
-import type { Area, ErrorApi, Idioma, Modalidad, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, ErrorApi, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import { cache } from "react";
 
 /**
  * Llamadas al API desde el servidor de la web. Las páginas no usan `fetch`
@@ -46,3 +47,16 @@ export function obtenerOfertas(f: FiltrosListado): Promise<ResultadoOfertas> {
   if (f.despues) q.set("despues", f.despues);
   return pedir<ResultadoOfertas>(`/ofertas?${q}`);
 }
+
+/**
+ * Una oferta entera, o null si no existe o no está publicada.
+ * Con `cache`, la página y sus metadatos (título de la pestaña) hacen una sola llamada.
+ */
+export const obtenerOferta = cache(async (id: string): Promise<OfertaDetalle | null> => {
+  try {
+    return await pedir<OfertaDetalle>(`/ofertas/${encodeURIComponent(id)}`);
+  } catch (error) {
+    if (error instanceof ErrorDeApi && error.estado === 404) return null;
+    throw error;
+  }
+});
