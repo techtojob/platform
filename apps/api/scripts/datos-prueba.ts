@@ -10,6 +10,10 @@ if (!url) {
   console.error("Falta DATABASE_URL. Cópiala en apps/api/.dev.vars (mira .dev.vars.example).");
   process.exit(1);
 }
+if (url.includes("ep-xxxx") || url.includes("usuario:contraseña")) {
+  console.error("DATABASE_URL todavía es la de ejemplo. Pega en apps/api/.dev.vars la connection string de la rama dev de Neon.");
+  process.exit(1);
+}
 if (process.env.PERMITIR_DATOS_PRUEBA !== "si") {
   console.error('Por seguridad, este script borra datos. Añade PERMITIR_DATOS_PRUEBA="si" en .dev.vars, solo si apunta a la rama dev.');
   process.exit(1);
