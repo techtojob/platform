@@ -21,3 +21,8 @@ next-env.d.ts
 
 # Logs
 *.log
+
+# Cloudflare Workers (API): carpeta local de wrangler y tipos generados con `wrangler types`
+.wrangler/
+.dev.vars*
+apps/api/worker-configuration.d.ts

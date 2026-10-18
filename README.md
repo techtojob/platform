@@ -9,7 +9,7 @@ La bolsa de empleo de [TechToJob](https://techtojob.com): ofertas tech revisadas
 ```
 apps/
   web/        La web de la bolsa (Next.js + TypeScript + Tailwind) → techtojob.com/empleo (español) y techtojob.com/jobs (inglés)
-  api/        El API → api.techtojob.com (framework pendiente de decidir por backend)
+  api/        El API (Hono en Cloudflare Workers) → api.techtojob.com
 packages/
   shared/     Tipos y listas fijas compartidas: áreas, seniority, modalidad, tecnologías…
 ```
@@ -43,11 +43,13 @@ Comandos desde la raíz:
 | Comando | Qué hace |
 | --- | --- |
 | `pnpm dev` | Arranca la web en modo desarrollo |
+| `pnpm dev:api` | Arranca el API en modo desarrollo → http://localhost:8787/salud |
 | `pnpm typecheck` | Comprueba los tipos de todo el repo |
 | `pnpm lint` | Revisa el estilo del código |
+| `pnpm test` | Pasa las pruebas |
 | `pnpm build` | Compila todo, igual que en producción |
 
-Las tres últimas se ejecutan solas en cada pull request; si fallan, el PR no se puede unir.
+Las cuatro últimas se ejecutan solas en cada pull request; si fallan, el PR no se puede unir.
 
 ## Cómo trabajamos
 

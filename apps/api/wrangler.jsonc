@@ -1,0 +1,15 @@
+// Configuración del API en Cloudflare Workers. Ver apps/api/README.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "techtojob-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    // Webs que pueden llamar al API desde el navegador (CORS), separadas por comas.
+    "ORIGENES_PERMITIDOS": "https://techtojob.com,http://localhost:3000"
+  }
+  // Al desplegar (issue #16) se añadirá el dominio:
+  // "routes": [{ "pattern": "api.techtojob.com", "custom_domain": true }]
+}
