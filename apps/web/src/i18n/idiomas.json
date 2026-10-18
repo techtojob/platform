@@ -1,0 +1,39 @@
+{
+  "porDefecto": "es",
+  "idiomas": {
+    "es": {
+      "nombre": "Español",
+      "base": "/empleo",
+      "rutas": {
+        "/": "/",
+        "/ofertas/[slug]": "/ofertas/[slug]",
+        "/talento": "/talento",
+        "/talento/[alias]": "/talento/[alias]",
+        "/entrar": "/entrar",
+        "/cuenta/perfil": "/cuenta/perfil",
+        "/cuenta/ajustes": "/cuenta/ajustes",
+        "/creditos": "/creditos",
+        "/staff": "/staff"
+      }
+    },
+    "en": {
+      "nombre": "English",
+      "base": "/jobs",
+      "rutas": {
+        "/": "/",
+        "/ofertas/[slug]": "/offers/[slug]",
+        "/talento": "/talent",
+        "/talento/[alias]": "/talent/[alias]",
+        "/entrar": "/login",
+        "/cuenta/perfil": "/account/profile",
+        "/cuenta/ajustes": "/account/settings",
+        "/creditos": "/credits",
+        "/staff": "/staff"
+      }
+    }
+  },
+  "idiomaParaOtrosPaises": "en",
+  "paisesPorIdioma": {
+    "es": ["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "UY", "PR", "GQ"]
+  }
+}
