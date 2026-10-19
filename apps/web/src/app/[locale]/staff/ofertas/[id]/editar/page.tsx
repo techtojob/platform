@@ -1,12 +1,11 @@
-import { getTranslations } from "next-intl/server";
+import { getNow } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { FormularioOferta } from "@/components/staff/formulario-oferta";
+import { FormularioOferta } from "@/components/staff/formulario/formulario-oferta";
 import { Portada } from "@/components/sitio/portada";
 import { exigirStaff, listarEmpresas, obtenerOfertaStaff } from "@/lib/api-staff";
 import { valoresDeOferta } from "@/lib/formulario-oferta";
-import { guardarOferta } from "../../../acciones";
 
 type Props = PageProps<"/[locale]/staff/ofertas/[id]/editar">;
 
@@ -21,7 +20,7 @@ export default function PaginaEditar({ params }: Props) {
         compacta
       />
       <section className="rejilla flex-1 px-[var(--margen)] py-12">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-[80rem]">
           <Suspense fallback={<div aria-busy="true" className="h-[40rem] animate-pulse rounded-tarjeta bg-tarjeta" />}>
             <Formulario params={params} />
           </Suspense>
@@ -34,14 +33,7 @@ export default function PaginaEditar({ params }: Props) {
 async function Formulario({ params }: Pick<Props, "params">) {
   await exigirStaff();
   const { id } = await params;
-  const [oferta, empresas, t] = await Promise.all([obtenerOfertaStaff(id), listarEmpresas(), getTranslations("staff")]);
+  const [oferta, empresas, ahora] = await Promise.all([obtenerOfertaStaff(id), listarEmpresas(), getNow()]);
   if (!oferta) notFound();
-  return (
-    <FormularioOferta
-      empresas={empresas}
-      inicial={valoresDeOferta(oferta)}
-      accion={guardarOferta.bind(null, oferta.id)}
-      textoBoton={t("guardarCambios")}
-    />
-  );
+  return <FormularioOferta empresas={empresas} inicial={valoresDeOferta(oferta)} ofertaId={oferta.id} ahora={ahora.getTime()} />;
 }

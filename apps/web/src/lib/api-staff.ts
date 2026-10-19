@@ -1,5 +1,5 @@
 import "server-only";
-import type { Comprobacion, EmpresaStaff, EstadoOferta, OfertaStaff } from "@techtojob/shared";
+import type { Comprobacion, EmpresaStaff, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
@@ -64,4 +64,14 @@ export async function accionOferta(id: string, { accion, ...datos }: AccionStaff
     `/staff/ofertas/${encodeURIComponent(id)}/${accion}`,
     await conCookie({ method: "POST", body: JSON.stringify(datos) }),
   );
+}
+
+export async function importarEnApi(url: string): Promise<OfertaImportada> {
+  return pedir<OfertaImportada>("/staff/importar", await conCookie({ method: "POST", body: JSON.stringify({ url }) }));
+}
+
+export async function buscarRepetidaEnApi(url: string, sin: string | null): Promise<OfertaRepetida | null> {
+  const q = new URLSearchParams({ url });
+  if (sin) q.set("sin", sin);
+  return (await pedir<{ repetida: OfertaRepetida | null }>(`/staff/repetida?${q}`, await conCookie())).repetida;
 }

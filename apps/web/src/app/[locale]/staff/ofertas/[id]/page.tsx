@@ -113,7 +113,7 @@ function VistaPrevia({ oferta }: { oferta: OfertaStaff }) {
     [t("staff.form.area"), t(`areas.${oferta.area}`)],
     [t("staff.form.seniority"), t(`seniority.${oferta.seniority}`)],
     [t("staff.detalle.lugar"), lugar],
-    [t("staff.form.salario"), salario ?? t("staff.detalle.sinSalario")],
+    [t("staff.form.seccionSalario"), salario ?? t("staff.detalle.sinSalario")],
     [t("staff.form.idioma"), nombreIdioma(oferta.idioma, locale)],
     [
       t("staff.form.idiomasQuePide"),
