@@ -195,21 +195,40 @@
   },
   "navegacion": {
     "empleo": "Empleo",
+    "irALanding": "TechToJob: ir a la web de la comunidad",
+    "inicio": "TechToJob",
+    "migas": "Ruta de navegación",
+    "ofertas": "Ofertas",
     "talento": "Talento",
-    "empresas": "Empresas",
-    "torneos": "Torneos",
-    "noticias": "Noticias",
-    "quienesSomos": "Quiénes somos",
-    "principal": "Navegación principal",
-    "abrir": "Abrir navegación",
-    "inicio": "Inicio",
-    "migas": "Ruta de navegación"
+    "principal": "Menú de la bolsa",
+    "abrir": "Abrir menú"
   },
   "pie": {
-    "explorar": "Explorar",
-    "legal": "Legal",
+    "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",
+    "empleo": "Empleo",
+    "ofertas": "Ofertas",
+    "miCuenta": "Mi cuenta",
+    "irALanding": "Ir a techtojob.com",
+    "discord": "Únete al Discord",
+    "redes": "Redes de TechToJob",
     "privacidad": "Privacidad",
     "avisoLegal": "Aviso legal",
-    "comunidad": "Comunidad"
+    "talento": "Talento"
+  },
+  "talento": {
+    "titulo": "Talento de la comunidad",
+    "entradilla": "Perfiles de la gente de TechToJob: su stack, su nivel, si está buscando trabajo y lo que ha construido. Para que las empresas te conozcan antes de la entrevista.",
+    "pronto": "Muy pronto",
+    "que": "Qué tendrá tu perfil",
+    "puntos": {
+      "stack": "Tu stack y tu nivel",
+      "disponibilidad": "Si buscas trabajo, estás abierto a ofertas o haces freelance",
+      "proyectos": "Proyectos y torneos en los que has participado",
+      "visibilidad": "Tú decides quién lo ve: todos, solo usuarios registrados o nadie"
+    },
+    "mientras": "Mientras tanto",
+    "mientrasTexto": "Preséntate en el Discord: cuenta tu stack y en qué estás aprendiendo. Cuando abramos los perfiles, ya tendrás contexto en la comunidad.",
+    "discord": "Entrar al Discord",
+    "verOfertas": "Ver ofertas"
   }
 }

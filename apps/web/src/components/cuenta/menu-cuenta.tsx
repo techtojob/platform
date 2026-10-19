@@ -12,7 +12,7 @@ export async function MenuCuenta() {
 
   if (!cuenta) {
     return (
-      <Link href="/entrar" className={clasesBoton({ className: "ml-1" })}>
+      <Link href="/entrar" className={clasesBoton({ className: "ml-1 px-4 min-[50rem]:px-5" })}>
         {t("entrar")}
       </Link>
     );

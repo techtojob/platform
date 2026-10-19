@@ -195,21 +195,40 @@
   },
   "navegacion": {
     "empleo": "Jobs",
+    "irALanding": "TechToJob: go to the community website",
+    "inicio": "TechToJob",
+    "migas": "Breadcrumb",
+    "ofertas": "Job offers",
     "talento": "Talent",
-    "empresas": "Companies",
-    "torneos": "Tournaments",
-    "noticias": "News",
-    "quienesSomos": "About us",
-    "principal": "Main navigation",
-    "abrir": "Open navigation",
-    "inicio": "Home",
-    "migas": "Breadcrumb"
+    "principal": "Job board menu",
+    "abrir": "Open menu"
   },
   "pie": {
-    "explorar": "Explore",
-    "legal": "Legal",
+    "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",
+    "empleo": "Jobs",
+    "ofertas": "Job offers",
+    "miCuenta": "My account",
+    "irALanding": "Go to techtojob.com",
+    "discord": "Join the Discord",
+    "redes": "TechToJob social media",
     "privacidad": "Privacy",
     "avisoLegal": "Legal notice",
-    "comunidad": "Community"
+    "talento": "Talent"
+  },
+  "talento": {
+    "titulo": "Community talent",
+    "entradilla": "Profiles of the TechToJob people: their stack, their level, whether they're looking for a job and what they've built. So companies get to know you before the interview.",
+    "pronto": "Coming soon",
+    "que": "What your profile will have",
+    "puntos": {
+      "stack": "Your stack and level",
+      "disponibilidad": "Whether you're job hunting, open to offers or freelancing",
+      "proyectos": "Projects and tournaments you've taken part in",
+      "visibilidad": "You decide who sees it: everyone, registered users only or nobody"
+    },
+    "mientras": "In the meantime",
+    "mientrasTexto": "Introduce yourself on the Discord: share your stack and what you're learning. When profiles open, you'll already have context in the community.",
+    "discord": "Join the Discord",
+    "verOfertas": "See job offers"
   }
 }
