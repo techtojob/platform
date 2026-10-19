@@ -58,3 +58,26 @@ export type ResultadoOfertas = {
 
 /** Respuesta de error de cualquier ruta. */
 export type ErrorApi = { error: { codigo: string; mensaje: string } };
+
+/** Respuesta de GET /cuenta: quién ha iniciado sesión y su Discord. 401 si nadie. */
+export type Cuenta = {
+  usuario: { id: string; nombre: string; email: string; imagen: string | null };
+  /** Con qué puede entrar o qué tiene vinculado: "google", "github", "discord". */
+  proveedores: string[];
+  discord: {
+    /** Si en este entorno se puede vincular Discord (está configurado). */
+    disponible: boolean;
+    vinculado: boolean;
+    /** Id interno de la vinculación (para desvincular). */
+    cuentaId: string | null;
+    /** Nombre de usuario de Discord. */
+    nombre: string | null;
+    enServidor: boolean;
+    /** Ids de sus roles en el servidor. */
+    roles: string[];
+    /** Fecha ISO de la última comprobación. */
+    comprobadoEn: string | null;
+    /** Invitación al servidor, para quien aún no está. */
+    invitacion: string | null;
+  };
+};

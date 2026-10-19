@@ -15,6 +15,13 @@
       "when": 1792352791402,
       "tag": "0001_descripcion-ofertas",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792400344444,
+      "tag": "0002_usuarios-y-sesiones",
+      "breakpoints": true
     }
   ]
 }

@@ -140,5 +140,46 @@
   "buscador": {
     "etiqueta": "Buscar ofertas",
     "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…"
+  },
+  "cuenta": {
+    "entrar": "Entrar",
+    "miCuenta": "Mi cuenta",
+    "titulo": "Mi cuenta",
+    "formasDeEntrar": "Cómo entras",
+    "mismoEmail": "Si entras con Google y con GitHub usando el mismo email, es la misma cuenta.",
+    "cerrarSesion": "Cerrar sesión",
+    "discord": {
+      "noDisponible": "Vincular Discord aún no está disponible.",
+      "porQue": "Vincula tu Discord para que sepamos que eres de la comunidad de TechToJob. Solo vemos tu nombre de usuario; Discord no sirve para entrar.",
+      "vincular": "Vincular Discord",
+      "vinculado": "Discord vinculado",
+      "miembro": "Miembro de la comunidad",
+      "noMiembro": "Fuera del servidor",
+      "enServidor": "Estás en el servidor de TechToJob.",
+      "fueraServidor": "Aún no estás en el servidor de TechToJob. Únete y vuelve a comprobarlo.",
+      "unirme": "Unirme al servidor",
+      "yaMeHeUnido": "Ya me he unido, comprobar",
+      "comprobando": "Comprobando…",
+      "comprobado": "Comprobado {tiempo}",
+      "desvincular": "Desvincular Discord",
+      "errorVincular": "No se ha podido vincular Discord. Inténtalo de nuevo.",
+      "errorDesvincular": "No se ha podido desvincular. Inténtalo de nuevo.",
+      "errorComprobar": "No se ha podido comprobar. Inténtalo de nuevo.",
+      "errorNoResponde": "Discord no responde ahora mismo. Prueba en un rato."
+    }
+  },
+  "entrar": {
+    "titulo": "Entra en TechToJob",
+    "texto": "Con tu cuenta de Google o de GitHub. No hace falta crear contraseña.",
+    "google": "Continuar con Google",
+    "github": "Continuar con GitHub",
+    "abriendo": "Abriendo…",
+    "privacidad": "Solo guardamos tu nombre, tu email y tu foto. Tu Discord lo puedes vincular después, en Mi cuenta.",
+    "errores": {
+      "discord_solo_vincular": "Con Discord no se puede entrar. Entra con Google o GitHub y vincula tu Discord en Mi cuenta.",
+      "account_not_linked": "Ya hay una cuenta con ese email. Entra con la forma que usaste la primera vez.",
+      "access_denied": "Has cancelado el inicio de sesión.",
+      "otro": "No se ha podido iniciar sesión. Inténtalo de nuevo."
+    }
   }
 }

@@ -2,7 +2,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
+import { crearAuth, RUTA_AUTH, type Auth, type EnvAuth } from "./auth";
 import { conectar, type Db } from "./db/cliente";
+import { rutasCuenta } from "./rutas/cuenta";
 import { rutasOfertas } from "./rutas/ofertas";
 import { rutasSalud } from "./rutas/salud";
 
@@ -11,11 +13,18 @@ import { rutasSalud } from "./rutas/salud";
  * puente: recibe la petición, llama a la lógica de src/servicios/ y responde.
  */
 export type Entorno = {
-  Bindings: Env & {
-    /** Connection string de Neon. Secreto: .dev.vars en local, `wrangler secret put` en Cloudflare. */
-    DATABASE_URL: string;
+  Bindings: Env &
+    EnvAuth & {
+      /** Connection string de Neon. Secreto: .dev.vars en local, `wrangler secret put` en Cloudflare. */
+      DATABASE_URL: string;
+      /** Invitación al servidor de Discord, para quien aún no está. */
+      DISCORD_INVITACION?: string;
+    };
+  Variables: {
+    db: Db;
+    auth: Auth;
+    usuario: { id: string; name: string; email: string; image?: string | null };
   };
-  Variables: { db: Db };
 };
 
 type Opciones = {
@@ -42,8 +51,16 @@ export function crearApp(opciones: Opciones = {}) {
     await next();
   });
 
+  // Inicio de sesión: base de datos + Better Auth.
+  const conAuth = createMiddleware<Entorno>(async (c, next) => {
+    c.set("auth", crearAuth(c.var.db, c.env));
+    await next();
+  });
+
   app.route("/salud", rutasSalud);
   app.use("/ofertas", conDb).use("/ofertas/*", conDb).route("/ofertas", rutasOfertas);
+  app.use(`${RUTA_AUTH}/*`, conDb, conAuth).on(["GET", "POST"], `${RUTA_AUTH}/*`, (c) => c.var.auth.handler(c.req.raw));
+  app.use("/cuenta", conDb, conAuth).use("/cuenta/*", conDb, conAuth).route("/cuenta", rutasCuenta);
 
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));

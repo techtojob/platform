@@ -140,5 +140,46 @@
   "buscador": {
     "etiqueta": "Search job offers",
     "ejemplo": "Search by role, company or technology: data engineer, React…"
+  },
+  "cuenta": {
+    "entrar": "Log in",
+    "miCuenta": "My account",
+    "titulo": "My account",
+    "formasDeEntrar": "How you log in",
+    "mismoEmail": "If you log in with Google and GitHub using the same email, it's the same account.",
+    "cerrarSesion": "Log out",
+    "discord": {
+      "noDisponible": "Linking Discord isn't available yet.",
+      "porQue": "Link your Discord so we know you're part of the TechToJob community. We only see your username; Discord can't be used to log in.",
+      "vincular": "Link Discord",
+      "vinculado": "Discord linked",
+      "miembro": "Community member",
+      "noMiembro": "Not in the server",
+      "enServidor": "You're in the TechToJob server.",
+      "fueraServidor": "You're not in the TechToJob server yet. Join and check again.",
+      "unirme": "Join the server",
+      "yaMeHeUnido": "I've joined, check again",
+      "comprobando": "Checking…",
+      "comprobado": "Checked {tiempo}",
+      "desvincular": "Unlink Discord",
+      "errorVincular": "Couldn't link Discord. Please try again.",
+      "errorDesvincular": "Couldn't unlink. Please try again.",
+      "errorComprobar": "Couldn't check. Please try again.",
+      "errorNoResponde": "Discord isn't responding right now. Try again later."
+    }
+  },
+  "entrar": {
+    "titulo": "Log in to TechToJob",
+    "texto": "With your Google or GitHub account. No password needed.",
+    "google": "Continue with Google",
+    "github": "Continue with GitHub",
+    "abriendo": "Opening…",
+    "privacidad": "We only store your name, email and photo. You can link your Discord later, in My account.",
+    "errores": {
+      "discord_solo_vincular": "You can't log in with Discord. Log in with Google or GitHub and link Discord in My account.",
+      "account_not_linked": "There's already an account with that email. Log in the way you did the first time.",
+      "access_denied": "You cancelled the login.",
+      "otro": "Couldn't log in. Please try again."
+    }
   }
 }

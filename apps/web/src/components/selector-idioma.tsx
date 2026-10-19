@@ -51,8 +51,9 @@ function Selector({ onCambiar, pendiente = false }: { onCambiar?: (l: Locale) =>
         className="h-11 rounded-control border border-borde-fuerte bg-superficie px-2 text-sm font-semibold text-texto sm:px-3"
       >
         {locales.map((l) => (
-          <option key={l} value={l}>
-            {l.toUpperCase()} · {nombresIdiomas[l]}
+          // Solo el código para que quepa en el móvil; el nombre, para lectores de pantalla.
+          <option key={l} value={l} aria-label={nombresIdiomas[l]}>
+            {l.toUpperCase()}
           </option>
         ))}
       </select>

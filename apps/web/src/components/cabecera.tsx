@@ -1,11 +1,13 @@
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { Buscador } from "./buscador";
+import { MenuCuenta, MenuCuentaCargando } from "./cuenta/menu-cuenta";
 import { SelectorIdioma } from "./selector-idioma";
 import { BotonTema } from "./tema/boton-tema";
 
 /**
- * Cabecera de todas las páginas: logo, buscador, idioma y modo claro/oscuro.
+ * Cabecera de todas las páginas: logo, buscador, idioma, modo claro/oscuro y cuenta.
  * En el móvil el buscador baja a su propia fila, a todo lo ancho.
  */
 export function Cabecera() {
@@ -23,6 +25,10 @@ export function Cabecera() {
         <div className="flex items-center gap-2 sm:ml-auto">
           <SelectorIdioma />
           <BotonTema />
+          {/* Depende de la sesión de cada persona: se carga en cada visita. */}
+          <Suspense fallback={<MenuCuentaCargando />}>
+            <MenuCuenta />
+          </Suspense>
         </div>
       </div>
     </header>

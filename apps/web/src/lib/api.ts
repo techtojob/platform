@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, ErrorApi, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorApi, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -20,8 +20,8 @@ export class ErrorDeApi extends Error {
   }
 }
 
-async function pedir<T>(ruta: string): Promise<T> {
-  const res = await fetch(`${API_URL}${ruta}`, { cache: "no-store" });
+async function pedir<T>(ruta: string, init: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${API_URL}${ruta}`, { cache: "no-store", ...init });
   if (!res.ok) {
     const cuerpo = (await res.json().catch(() => null)) as ErrorApi | null;
     throw new ErrorDeApi(res.status, cuerpo?.error.codigo ?? "desconocido", cuerpo?.error.mensaje ?? res.statusText);
@@ -66,3 +66,27 @@ export const obtenerOferta = cache(async (id: string): Promise<OfertaDetalle | n
     throw error;
   }
 });
+
+/**
+ * "Mi cuenta" de quien visita, o null si no ha iniciado sesión.
+ * Se le pasa la cabecera Cookie de la visita: el API reconoce la sesión por ella.
+ */
+export const obtenerCuenta = cache(async (cookie: string | null): Promise<Cuenta | null> => {
+  if (!cookie || !tieneCookieDeSesion(cookie)) return null;
+  try {
+    return await pedir<Cuenta>("/cuenta", { headers: { cookie } });
+  } catch (error) {
+    if (error instanceof ErrorDeApi && error.estado === 401) return null;
+    throw error;
+  }
+});
+
+/** Vuelve a preguntar al bot si está en el servidor de Discord. */
+export function comprobarDiscordEnApi(cookie: string): Promise<Cuenta> {
+  return pedir<Cuenta>("/cuenta/discord/comprobar", { method: "POST", headers: { cookie } });
+}
+
+/** ¿Lleva la cookie de sesión de Better Auth? Si no, ni se pregunta al API. */
+export function tieneCookieDeSesion(cookie: string): boolean {
+  return /(^|;\s*)(__Secure-)?better-auth\.session_token=/.test(cookie);
+}

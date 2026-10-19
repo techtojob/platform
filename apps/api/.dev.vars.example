@@ -4,3 +4,20 @@ DATABASE_URL="postgresql://usuario:contraseña@ep-xxxx.eu-central-1.aws.neon.tec
 
 # Permite que `db:datos-prueba` borre y cargue datos inventados. Solo en la rama dev.
 PERMITIR_DATOS_PRUEBA="si"
+
+# ── Inicio de sesión ───────────────────────────────────────────────
+# Secreto para firmar las sesiones: 32+ caracteres al azar. Genera uno con:
+#   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+BETTER_AUTH_SECRET=""
+
+# Apps de GitHub y Google (ver apps/api/README.md, "Inicio de sesión").
+# Si se dejan vacías, ese botón no funciona, pero el resto de la web sí.
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# Discord: solo para vincular y comprobar si está en el servidor.
+DISCORD_CLIENT_ID=""
+DISCORD_CLIENT_SECRET=""
+DISCORD_BOT_TOKEN=""

@@ -8,7 +8,12 @@
   "observability": { "enabled": true },
   "vars": {
     // Webs que pueden llamar al API desde el navegador (CORS), separadas por comas.
-    "ORIGENES_PERMITIDOS": "https://techtojob.com,http://localhost:3000"
+    "ORIGENES_PERMITIDOS": "https://techtojob.com,http://localhost:3000",
+    // Dirección de la web: el inicio de sesión vuelve aquí. En producción, https://techtojob.com.
+    "WEB_URL": "http://localhost:3000",
+    // Servidor de Discord de TechToJob (no es secreto) y su invitación.
+    "DISCORD_SERVIDOR_ID": "",
+    "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA"
   }
   // Al desplegar (issue #16) se añadirá el dominio:
   // "routes": [{ "pattern": "api.techtojob.com", "custom_domain": true }]
