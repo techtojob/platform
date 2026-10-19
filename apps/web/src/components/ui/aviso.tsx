@@ -17,7 +17,7 @@ export function Aviso({
     <div className={cn("relative rounded-tarjeta bg-postit p-5 text-ink shadow-tarjeta sm:px-6", giro, className)} {...props}>
       {chincheta && (
         <Image
-          src="/images/pin.svg"
+          src="/empleo-recursos/pin.svg"
           alt=""
           width={32}
           height={36}

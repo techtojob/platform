@@ -48,7 +48,7 @@ function PostitRevision() {
       <ul className="mt-4 grid gap-2.5">
         {(["empresa", "enlace", "idiomas", "salario"] as const).map((clave) => (
           <li key={clave} className="flex items-start gap-2.5 border-t border-ink/15 pt-2.5 text-sm font-bold">
-            <Image src="/images/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto shrink-0" />
+            <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto shrink-0" />
             {t(clave)}
           </li>
         ))}

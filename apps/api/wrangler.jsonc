@@ -16,7 +16,26 @@
     "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
     // Rol de moderador del servidor: quien lo tiene (con su Discord vinculado) entra al panel de staff.
     "DISCORD_ROL_STAFF": "1500449244102787149"
+  },
+  // Producción: `wrangler deploy --env production` (lo hace GitHub al subir a main).
+  // Las claves (DATABASE_URL, BETTER_AUTH_SECRET, GITHUB_CLIENT_*, STAFF_EMAILS…) van como
+  // secretos de Cloudflare: `wrangler secret put NOMBRE --env production`. Ver apps/api/README.md.
+  "env": {
+    "production": {
+      "name": "techtojob-api",
+      "routes": [
+        // El API, para la web (desde el servidor) y para lo que venga después.
+        { "pattern": "api.techtojob.com", "custom_domain": true },
+        // El inicio de sesión, en el propio dominio: así la cookie de sesión es de techtojob.com.
+        { "pattern": "techtojob.com/api/auth/*", "zone_name": "techtojob.com" }
+      ],
+      "vars": {
+        "ORIGENES_PERMITIDOS": "https://techtojob.com",
+        "WEB_URL": "https://techtojob.com",
+        "DISCORD_SERVIDOR_ID": "",
+        "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
+        "DISCORD_ROL_STAFF": "1500449244102787149"
+      }
+    }
   }
-  // Al desplegar (issue #16) se añadirá el dominio:
-  // "routes": [{ "pattern": "api.techtojob.com", "custom_domain": true }]
 }

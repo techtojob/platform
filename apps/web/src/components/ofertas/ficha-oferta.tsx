@@ -94,7 +94,7 @@ export function FichaOferta({ oferta, hablo, parecidas, ahora }: Props) {
                   {oferta.idiomasRequeridos.map(({ idioma, nivel }) => (
                     <dd key={idioma} className="flex items-center gap-1.5 font-bold">
                       {hablo.includes(idioma) && (
-                        <Image src="/images/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />
+                        <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />
                       )}
                       {nombreIdioma(idioma, locale)}
                       {nivel && ` ${nivel === "nativo" ? t("ofertas.nativo") : nivel.toUpperCase()}`}
@@ -167,7 +167,7 @@ export function FichaOferta({ oferta, hablo, parecidas, ahora }: Props) {
               </p>
               <CopiarEnlace variante="sobreAcento" />
               <p className="flex items-center gap-2 border-t border-ink/20 pt-4 text-sm font-bold">
-                <Image src="/images/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />
+                <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />
                 {t("ofertas.revisada")}
               </p>
             </div>

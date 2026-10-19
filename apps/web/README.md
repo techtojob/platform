@@ -41,7 +41,7 @@ src/
 - **Buscador** (cabecera, `src/components/buscador.tsx`): busca en título, empresa y resumen mientras se escribe. Si lo escrito es una tecnología ("react", "k8s") y se pulsa Enter, se convierte en filtro.
 - **Listado** (`/empleo`): filas compactas y filtros de área, nivel, modalidad y "solo con salario", con cuántas ofertas hay en cada uno. En el móvil, los filtros van en un panel que sube desde abajo. Todo se guarda en la dirección (`/empleo?q=data&nivel=junior&tec=react&salario=1`), así se puede compartir y funcionan atrás y adelante. La lógica está en `src/lib/filtros.ts`.
 - **Una oferta** (`/empleo/ofertas/<slug>-<id>`): lo que cuenta es el id del final. Si el slug no coincide (el título cambió), lleva a la dirección buena. "Lo que pide" va arriba y marca qué idiomas habla la persona; si falta alguno, se le avisa pero puede verla. Al final, ofertas parecidas (misma área).
-- **El idioma de la página** se lee con `next/root-params`, no con `params`: así las páginas con partes variables también se precompilan.
+- **Sin Cache Components** (`cacheComponents` en `next.config.ts`): Cloudflare Workers todavía no los soporta y las páginas se quedaban colgadas. Las páginas se pintan en cada visita. Cuando OpenNext lo arregle, se puede volver a activar.
 
 ## Idiomas
 
@@ -80,3 +80,20 @@ Cada idioma tiene su propia dirección y sus rutas traducidas:
 3. En Cloudflare, añadir la ruta `techtojob.com/<base>*` hacia esta app.
 
 `pnpm typecheck` comprueba que las bases no choquen y que las rutas cuadren, y avisa de los textos que faltan por traducir.
+
+## Despliegue
+
+La web va en **Cloudflare Workers** con [OpenNext](https://opennext.js.org/cloudflare), en el mismo dominio que la landing:
+
+| Dirección | Va a |
+| --- | --- |
+| `techtojob.com/empleo…`, `techtojob.com/jobs…` | esta web (worker `techtojob-empleo`) |
+| `techtojob.com/api/auth/…` | el API (inicio de sesión, para que la cookie sea de techtojob.com) |
+| `api.techtojob.com` | el API |
+| todo lo demás | la landing |
+
+En Cloudflare, una ruta concreta gana a la del dominio entero, así que la landing no se toca.
+
+- **Archivos con prefijo:** la landing también es una app de Next y usa `/_next/…`. Para no pisarse, los de la bolsa van en `/empleo-recursos/…` (`assetPrefix` en `next.config.ts`; las imágenes están en `public/empleo-recursos/`). Una imagen nueva va en esa carpeta y se usa como `/empleo-recursos/nombre.svg`.
+- **Se despliega solo** al subir a `main` (`.github/workflows/desplegar.yml`), o a mano desde GitHub → Actions → Desplegar → *Run workflow*.
+- **Probar en local la versión de Cloudflare** (con el API en marcha): `pnpm --filter web build:cloudflare` y luego `pnpm --filter web preview:cloudflare` → http://localhost:8790/empleo. En Windows, OpenNext funciona mejor dentro de WSL; si falla, deja que lo construya GitHub.

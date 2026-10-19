@@ -1,6 +1,5 @@
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
-import { locale as idiomaDeLaRuta } from "next/root-params";
 import { routing } from "./routing";
 
 type Mensajes = Record<string, unknown>;
@@ -19,8 +18,8 @@ function mezclar(base: Mensajes, encima: Mensajes): Mensajes {
 }
 
 export default getRequestConfig(async ({ requestLocale }) => {
-  // El idioma sale de la dirección (/empleo → es). `requestLocale` queda de respaldo.
-  const pedido = (await idiomaDeLaRuta()) ?? (await requestLocale);
+  // El idioma sale de la dirección (/empleo → es): lo pone el layout con setRequestLocale.
+  const pedido = await requestLocale;
   const locale = hasLocale(routing.locales, pedido) ? pedido : routing.defaultLocale;
 
   const propios = (await import(`../../messages/${locale}.json`)).default as Mensajes;

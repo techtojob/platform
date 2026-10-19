@@ -3,7 +3,7 @@ export type RedSocial = "discord" | "linkedin" | "instagram" | "x" | "tiktok";
 // Iconos de las redes, los mismos de la landing (components/social-icon.tsx). Decorativos: el enlace lleva el nombre.
 export function IconoRed({ network }: Readonly<{ network: RedSocial }>) {
   if (network === "discord") {
-    return <span aria-hidden="true" className="size-6 bg-current [mask:url('/images/discord-light.svg')_center/contain_no-repeat]" />;
+    return <span aria-hidden="true" className="size-6 bg-current [mask:url('/empleo-recursos/discord-light.svg')_center/contain_no-repeat]" />;
   }
 
   return (

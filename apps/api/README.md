@@ -88,3 +88,20 @@ En producción, lo mismo con `https://techtojob.com` y los secretos con `wrangle
 - **Errores** siempre con el mismo formato: `{ "error": { "codigo": "no_encontrado", "mensaje": "…" } }`.
 - **Secretos** (connection string, claves de login…) en `.dev.vars` en local (no se sube) y con `wrangler secret put` en Cloudflare. Nunca en el código ni en `wrangler.jsonc`.
 - **CORS:** solo pueden llamar al API las webs de `ORIGENES_PERMITIDOS` (en `wrangler.jsonc`).
+
+## Producción
+
+El API va en Cloudflare Workers (`wrangler deploy --env production`, lo hace GitHub al subir a `main`): en `api.techtojob.com` y en `techtojob.com/api/auth/*`. La configuración pública está en `wrangler.jsonc` (`env.production`).
+
+**Secretos** (una vez, desde tu ordenador, con `pnpm exec wrangler login` hecho). Cada uno lo pide sin que se vea en pantalla:
+
+```
+cd apps/api
+pnpm exec wrangler secret put DATABASE_URL --env production          # rama production de Neon
+pnpm exec wrangler secret put BETTER_AUTH_SECRET --env production    # uno nuevo, distinto del de local
+pnpm exec wrangler secret put GITHUB_CLIENT_ID --env production      # app de GitHub de producción
+pnpm exec wrangler secret put GITHUB_CLIENT_SECRET --env production
+pnpm exec wrangler secret put STAFF_EMAILS --env production
+```
+
+**Migraciones en producción:** crea `apps/api/.produccion.vars` (no se sube a GitHub) con una sola línea `DATABASE_URL="…"` de la rama **production** de Neon, y ejecuta `pnpm --filter api db:migrar:produccion`. Nunca ejecutes `db:datos-prueba` contra producción: sin `PERMITIR_DATOS_PRUEBA` se niega.

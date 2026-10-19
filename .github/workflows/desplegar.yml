@@ -1,0 +1,44 @@
+name: Desplegar
+
+# Publica el API y la web en Cloudflare al subir a main, o a mano desde Actions → Desplegar.
+# Necesita dos secretos en GitHub (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN  (plantilla "Edit Cloudflare Workers")
+#   CLOUDFLARE_ACCOUNT_ID
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un despliegue cada vez: si llegan dos seguidos, el segundo espera.
+concurrency:
+  group: desplegar
+  cancel-in-progress: false
+
+jobs:
+  desplegar:
+    name: API y web en Cloudflare
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Primero el API: la web lo necesita.
+      - name: API
+        run: pnpm --filter api run deploy
+
+      - name: Web
+        run: pnpm --filter web run deploy
+        env:
+          API_URL: https://api.techtojob.com
+          NEXT_PUBLIC_LANDING_URL: https://techtojob.com

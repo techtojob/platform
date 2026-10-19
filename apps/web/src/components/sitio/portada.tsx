@@ -92,7 +92,7 @@ export function Resaltado({ children }: { children: ReactNode }) {
     <span className="relative inline-block whitespace-nowrap">
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[52%] h-[118%] w-[114%] -translate-x-1/2 -translate-y-1/2 -rotate-2 bg-current [mask:url('/images/circle_highlight.svg')_center/100%_100%_no-repeat]"
+        className="pointer-events-none absolute left-1/2 top-[52%] h-[118%] w-[114%] -translate-x-1/2 -translate-y-1/2 -rotate-2 bg-current [mask:url('/empleo-recursos/circle_highlight.svg')_center/100%_100%_no-repeat]"
       />
       <span className="relative">{children}</span>
     </span>

@@ -29,7 +29,7 @@ export async function Pie() {
         <div className="grid gap-14 min-[60rem]:grid-cols-[1fr_1.1fr] min-[60rem]:gap-24">
           <div className="flex flex-col items-start justify-center gap-6">
             <a href={LANDING_URL} className="block w-full max-w-[22rem]" aria-label={t("irALanding")}>
-              <Image src="/images/brand-logo.svg" alt="TechToJob" width={140} height={78} unoptimized className="h-auto w-full" />
+              <Image src="/empleo-recursos/brand-logo.svg" alt="TechToJob" width={140} height={78} unoptimized className="h-auto w-full" />
             </a>
             <p className="max-w-[40ch] text-sm leading-relaxed text-suave">{t("lema")}</p>
           </div>

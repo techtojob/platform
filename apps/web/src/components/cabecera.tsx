@@ -26,7 +26,7 @@ export async function Cabecera() {
         <div className="flex items-center gap-3 min-[50rem]:gap-4">
           <a href={LANDING_URL} className="flex shrink-0 items-center" aria-label={t("irALanding")}>
             <Image
-              src="/images/brand-logo.svg"
+              src="/empleo-recursos/brand-logo.svg"
               alt=""
               width={140}
               height={78}
