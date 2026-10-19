@@ -1,5 +1,5 @@
 import { buscarTecnologia, type Area, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
-import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, ilike, inArray, isNotNull, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
+import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, gt, ilike, inArray, isNotNull, isNull, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
 
@@ -58,12 +58,17 @@ function buscarTexto(db: Db, q: string): SQL {
 
 type Grupo = "area" | "seniority" | "modalidad";
 
+/** Que no haya caducado (sin fecha de caducidad, no caduca). */
+function vigente(): SQL {
+  return or(isNull(ofertas.caducaEn), gt(ofertas.caducaEn, sql`now()`))!;
+}
+
 /**
  * Condiciones comunes: publicada y filtros. `sin` deja fuera un grupo de filtros:
  * sirve para contar cuántas habría con cada valor de ese grupo (facetas).
  */
 function condicionesBase(db: Db, f: FiltrosOfertas, sin?: Grupo): SQL[] {
-  const c: SQL[] = [eq(ofertas.estado, "publicada")];
+  const c: SQL[] = [eq(ofertas.estado, "publicada"), vigente()];
   if (sin !== "area" && f.areas?.length) c.push(inArray(ofertas.area, f.areas));
   if (sin !== "seniority" && f.seniority?.length) c.push(inArray(ofertas.seniority, f.seniority));
   if (sin !== "modalidad" && f.modalidades?.length) c.push(inArray(ofertas.modalidad, f.modalidades));
@@ -170,7 +175,7 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
     })
     .from(ofertas)
     .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
-    .where(and(eq(ofertas.id, id), eq(ofertas.estado, "publicada")))
+    .where(and(eq(ofertas.id, id), eq(ofertas.estado, "publicada"), vigente()))
     .limit(1);
   if (!fila) return null;
 

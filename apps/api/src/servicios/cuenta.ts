@@ -12,7 +12,7 @@ type Usuario = { id: string; name: string; email: string; image?: string | null 
 export async function datosCuenta(
   db: Db,
   usuario: Usuario,
-  opciones: { discordDisponible: boolean; invitacion: string | null },
+  opciones: { discordDisponible: boolean; invitacion: string | null; esStaff: boolean },
 ): Promise<Cuenta> {
   const [vinculadas, [estado]] = await Promise.all([
     db.select({ id: cuentas.id, proveedor: cuentas.providerId, idExterno: cuentas.accountId }).from(cuentas).where(eq(cuentas.userId, usuario.id)),
@@ -26,6 +26,7 @@ export async function datosCuenta(
 
   return {
     usuario: { id: usuario.id, nombre: usuario.name, email: usuario.email, imagen: usuario.image ?? null },
+    esStaff: opciones.esStaff,
     proveedores: vinculadas.map((c) => c.proveedor),
     discord: {
       disponible: opciones.discordDisponible,

@@ -21,3 +21,8 @@ GOOGLE_CLIENT_SECRET=""
 DISCORD_CLIENT_ID=""
 DISCORD_CLIENT_SECRET=""
 DISCORD_BOT_TOKEN=""
+
+# ── Panel de staff ─────────────────────────────────────────────────
+# Emails que entran al panel aunque no tengan Discord vinculado (separados por comas).
+# Útil en local. En producción, mejor el rol de moderador del Discord (DISCORD_ROL_STAFF en wrangler.jsonc).
+STAFF_EMAILS=""

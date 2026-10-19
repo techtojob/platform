@@ -20,7 +20,8 @@ type OfertaPrueba = Omit<NuevaOferta, "origen" | "estado"> & {
   pide: Array<{ idioma: string; nivel?: string }>;
 };
 
-const hace = (dias: number) => new Date(Date.UTC(2026, 9, 18, 10) - dias * 86_400_000);
+// Fechas relativas a hoy: así las ofertas de prueba nunca caducan solas.
+const hace = (dias: number) => new Date(Date.now() - dias * 86_400_000);
 
 export const OFERTAS_PRUEBA: OfertaPrueba[] = [
   {
@@ -83,6 +84,7 @@ export async function cargarDatosPrueba(db: Db) {
       estado: estado ?? "publicada",
       publicadaEn: publicada ? o.publicadaEn : null,
       revisadaEn: publicada ? o.publicadaEn : null,
+      caducaEn: publicada && o.publicadaEn ? new Date(o.publicadaEn.getTime() + 45 * 86_400_000) : null,
     });
     await db.insert(ofertaIdiomas).values(
       pide.map((p) => ({ ofertaId: o.id, idioma: p.idioma, nivel: p.nivel ?? null }) as typeof ofertaIdiomas.$inferInsert),

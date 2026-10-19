@@ -13,7 +13,9 @@
     "WEB_URL": "http://localhost:3000",
     // Servidor de Discord de TechToJob (no es secreto) y su invitación.
     "DISCORD_SERVIDOR_ID": "",
-    "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA"
+    "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
+    // Rol de moderador del servidor: quien lo tiene (con su Discord vinculado) entra al panel de staff.
+    "DISCORD_ROL_STAFF": "1500449244102787149"
   }
   // Al desplegar (issue #16) se añadirá el dominio:
   // "routes": [{ "pattern": "api.techtojob.com", "custom_domain": true }]

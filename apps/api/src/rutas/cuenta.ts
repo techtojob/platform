@@ -3,7 +3,10 @@ import { Hono } from "hono";
 import type { Entorno } from "../app";
 import { configDiscord } from "../auth";
 import { cuentas } from "../db/esquema";
+import type { Db } from "../db/cliente";
 import { datosCuenta } from "../servicios/cuenta";
+import { esStaff } from "../servicios/staff";
+import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
 
 /**
@@ -13,15 +16,8 @@ import { actualizarEstadoDiscord } from "../servicios/discord";
  * POST /cuenta/discord/comprobar   → vuelve a preguntar al bot si está en el servidor.
  */
 export const rutasCuenta = new Hono<Entorno>()
-  .use(async (c, next) => {
-    const sesion = await c.var.auth.api.getSession({ headers: c.req.raw.headers });
-    if (!sesion) {
-      return c.json({ error: { codigo: "sin_sesion", mensaje: "Inicia sesión para ver tu cuenta." } }, 401);
-    }
-    c.set("usuario", sesion.user);
-    await next();
-  })
-  .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, opciones(c.env))))
+  .use(conSesion)
+  .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
   .post("/discord/comprobar", async (c) => {
     const config = configDiscord(c.env);
     const usuario = c.var.usuario;
@@ -39,9 +35,13 @@ export const rutasCuenta = new Hono<Entorno>()
       console.error(error);
       return c.json({ error: { codigo: "discord_no_responde", mensaje: "Discord no responde. Prueba en un rato." } }, 502);
     }
-    return c.json(await datosCuenta(c.var.db, usuario, opciones(c.env)));
+    return c.json(await datosCuenta(c.var.db, usuario, await opciones(c.var.db, c.env, usuario)));
   });
 
-function opciones(env: Entorno["Bindings"]) {
-  return { discordDisponible: !!(env.DISCORD_CLIENT_ID && configDiscord(env)), invitacion: env.DISCORD_INVITACION || null };
+async function opciones(db: Db, env: Entorno["Bindings"], usuario: Entorno["Variables"]["usuario"]) {
+  return {
+    discordDisponible: !!(env.DISCORD_CLIENT_ID && configDiscord(env)),
+    invitacion: env.DISCORD_INVITACION || null,
+    esStaff: await esStaff(db, env, usuario),
+  };
 }

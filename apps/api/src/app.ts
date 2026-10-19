@@ -7,6 +7,7 @@ import { conectar, type Db } from "./db/cliente";
 import { rutasCuenta } from "./rutas/cuenta";
 import { rutasOfertas } from "./rutas/ofertas";
 import { rutasSalud } from "./rutas/salud";
+import { rutasStaff } from "./rutas/staff";
 
 /**
  * El API de la bolsa. Cada grupo de rutas vive en src/rutas/ y solo hace de
@@ -19,6 +20,10 @@ export type Entorno = {
       DATABASE_URL: string;
       /** Invitación al servidor de Discord, para quien aún no está. */
       DISCORD_INVITACION?: string;
+      /** Rol del servidor de Discord que da acceso al panel de staff (moderadores). */
+      DISCORD_ROL_STAFF?: string;
+      /** Emails con acceso al panel de staff aunque no tengan Discord, separados por comas. */
+      STAFF_EMAILS?: string;
     };
   Variables: {
     db: Db;
@@ -61,6 +66,7 @@ export function crearApp(opciones: Opciones = {}) {
   app.use("/ofertas", conDb).use("/ofertas/*", conDb).route("/ofertas", rutasOfertas);
   app.use(`${RUTA_AUTH}/*`, conDb, conAuth).on(["GET", "POST"], `${RUTA_AUTH}/*`, (c) => c.var.auth.handler(c.req.raw));
   app.use("/cuenta", conDb, conAuth).use("/cuenta/*", conDb, conAuth).route("/cuenta", rutasCuenta);
+  app.use("/staff/*", conDb, conAuth).route("/staff", rutasStaff);
 
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));

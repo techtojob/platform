@@ -91,6 +91,8 @@ export const ofertas = pgTable(
     revisadaPor: text("revisada_por"),
     revisadaEn: timestamp("revisada_en", { withTimezone: true }),
     publicadaEn: timestamp("publicada_en", { withTimezone: true }),
+    /** Deja de salir en la bolsa a partir de esta fecha (45 días al publicar; el staff la puede alargar). */
+    caducaEn: timestamp("caduca_en", { withTimezone: true }),
     ...fechas,
   },
   (t) => [

@@ -1,5 +1,5 @@
 import type { Idioma, NivelIdioma } from "./idiomas";
-import type { Area, Modalidad, Seniority } from "./listas";
+import type { Area, EstadoOferta, Modalidad, Seniority } from "./listas";
 
 /**
  * Contratos del API: la forma exacta de lo que devuelve cada ruta.
@@ -62,6 +62,8 @@ export type ErrorApi = { error: { codigo: string; mensaje: string } };
 /** Respuesta de GET /cuenta: quién ha iniciado sesión y su Discord. 401 si nadie. */
 export type Cuenta = {
   usuario: { id: string; nombre: string; email: string; imagen: string | null };
+  /** Si puede usar el panel de staff (rol de moderador en Discord o email en la lista de staff). */
+  esStaff: boolean;
   /** Con qué puede entrar o qué tiene vinculado: "google", "github", "discord". */
   proveedores: string[];
   discord: {
@@ -81,3 +83,57 @@ export type Cuenta = {
     invitacion: string | null;
   };
 };
+
+/* ── Panel de staff ─────────────────────────────────────────────── */
+
+/** Zonas desde las que se puede trabajar en remoto. */
+export const ZONAS_REMOTO = ["es", "eu", "latam", "mundo"] as const;
+export type ZonaRemoto = (typeof ZONAS_REMOTO)[number];
+
+export const MONEDAS = ["EUR", "USD", "GBP"] as const;
+export type Moneda = (typeof MONEDAS)[number];
+
+/** Lo que el staff escribe al crear o editar una oferta (POST/PUT /staff/ofertas). */
+export type DatosOferta = {
+  empresaId: string;
+  titulo: string;
+  resumen: string | null;
+  descripcion: string | null;
+  /** Idioma en que está escrita. */
+  idioma: Idioma;
+  urlOriginal: string;
+  area: Area;
+  seniority: Seniority;
+  modalidad: Modalidad;
+  tecnologias: string[];
+  pais: string | null;
+  ciudad: string | null;
+  remotoDesde: ZonaRemoto | null;
+  salarioMin: number | null;
+  salarioMax: number | null;
+  moneda: Moneda | null;
+  idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+};
+
+/** Una oferta vista por el staff: todo, en cualquier estado. */
+export type OfertaStaff = DatosOferta & {
+  id: string;
+  slug: string;
+  empresa: { id: string; nombre: string; slug: string; web: string | null };
+  estado: EstadoOferta;
+  motivoRechazo: string | null;
+  /** Fechas ISO. */
+  creadaEn: string;
+  publicadaEn: string | null;
+  caducaEn: string | null;
+  revisadaEn: string | null;
+};
+
+/** Lo que el staff marca antes de publicar: lo que promete el post-it del listado. */
+export const COMPROBACIONES = ["empresa", "enlace", "idiomas"] as const;
+export type Comprobacion = (typeof COMPROBACIONES)[number];
+
+export type EmpresaStaff = { id: string; nombre: string; slug: string; web: string | null; ofertas: number };
+
+/** Error 400 con los campos que están mal: { campos: { titulo: "corto" } }. */
+export type ErrorValidacion = ErrorApi & { campos: Record<string, string> };
