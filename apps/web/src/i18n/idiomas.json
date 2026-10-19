@@ -17,6 +17,7 @@
         "/staff/nueva": "/staff/nueva",
         "/staff/ofertas/[id]": "/staff/ofertas/[id]",
         "/staff/ofertas/[id]/editar": "/staff/ofertas/[id]/editar",
+        "/staff/reportes": "/staff/reportes",
         "/componentes": "/componentes"
       }
     },
@@ -36,6 +37,7 @@
         "/staff/nueva": "/staff/new",
         "/staff/ofertas/[id]": "/staff/offers/[id]",
         "/staff/ofertas/[id]/editar": "/staff/offers/[id]/edit",
+        "/staff/reportes": "/staff/reports",
         "/componentes": "/components"
       }
     }

@@ -7,9 +7,10 @@ import { Avatar } from "@/components/cuenta/avatar";
 import { CerrarSesion } from "@/components/cuenta/cerrar-sesion";
 import { SeccionDiscord } from "@/components/cuenta/seccion-discord";
 import { Portada } from "@/components/sitio/portada";
-import { Etiqueta, Tarjeta, Ventana } from "@/components/ui";
-import { redirect } from "@/i18n/navigation";
-import { obtenerCuenta } from "@/lib/api";
+import { clasesBoton, Etiqueta, Tarjeta, Ventana } from "@/components/ui";
+import { getPathname, Link, redirect } from "@/i18n/navigation";
+import { obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
+import { LANDING_URL } from "@/lib/sitio";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -34,8 +35,10 @@ export default function PaginaAjustes() {
 
 async function Contenido() {
   const [t, locale, cabeceras] = await Promise.all([getTranslations("cuenta"), getLocale(), headers()]);
-  const cuenta = await obtenerCuenta(cabeceras.get("cookie"));
+  const cookie = cabeceras.get("cookie");
+  const cuenta = await obtenerCuenta(cookie);
   if (!cuenta) redirect({ href: "/entrar", locale });
+  const mio = cookie ? await obtenerMiPerfil(cookie).catch(() => null) : null;
   const { usuario, proveedores, discord } = cuenta!;
   const formasDeEntrar = proveedores.filter((p) => p in NOMBRES_PROVEEDOR);
 
@@ -61,6 +64,28 @@ async function Contenido() {
           ))}
         </div>
         <p className="text-sm text-suave">{t("mismoEmail")}</p>
+      </Tarjeta>
+
+      {/* Perfil de talento: crearlo o ir a él */}
+      <Tarjeta className="flex flex-col gap-3 p-5">
+        <h2 className="text-titulo-3 font-bold">{t("perfilTitulo")}</h2>
+        <p className="text-suave">
+          {mio?.perfil
+            ? t("perfilTienes", {
+                direccion: `${new URL(LANDING_URL).host}${getPathname({ href: { pathname: "/talento/[alias]", params: { alias: mio.perfil.alias } }, locale })}`,
+              })
+            : t("perfilNoTienes")}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/cuenta/perfil" className={clasesBoton({ variante: mio?.perfil ? "secundario" : "primario" })}>
+            {mio?.perfil ? t("perfilEditar") : t("perfilCrear")}
+          </Link>
+          {mio?.perfil && (
+            <Link href={{ pathname: "/talento/[alias]", params: { alias: mio.perfil.alias } }} className={clasesBoton({ variante: "fantasma" })}>
+              {t("perfilVer")}
+            </Link>
+          )}
+        </div>
       </Tarjeta>
 
       {/* Discord, en su ventana tipo Discord */}

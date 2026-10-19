@@ -7,7 +7,7 @@ import { comprobarEnlace, importarDesdeEnlace } from "@/app/[locale]/staff/accio
 import { Boton, Campo } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { aplicarImportada, type ValoresOferta } from "@/lib/formulario-oferta";
-import { AreaTexto } from "./piezas";
+import { AreaTexto } from "@/components/formulario/piezas";
 
 type Mensaje = { tono: "bien" | "regular" | "mal"; texto: string };
 

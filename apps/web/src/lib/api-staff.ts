@@ -1,5 +1,5 @@
 import "server-only";
-import type { Comprobacion, EmpresaStaff, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
+import type { Comprobacion, EmpresaStaff, ReportePerfil, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
@@ -9,7 +9,13 @@ import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
  * el API decide si es staff (rol de moderador en Discord o STAFF_EMAILS).
  */
 
-export type ListaStaff = { estado: EstadoOferta; ofertas: OfertaStaff[]; cuentas: Partial<Record<EstadoOferta, number>> };
+export type ListaStaff = {
+  estado: EstadoOferta;
+  ofertas: OfertaStaff[];
+  cuentas: Partial<Record<EstadoOferta, number>>;
+  /** Reportes de perfiles sin revisar. */
+  reportes: number;
+};
 
 async function cookie(): Promise<string> {
   return (await headers()).get("cookie") ?? "";
@@ -74,4 +80,12 @@ export async function buscarRepetidaEnApi(url: string, sin: string | null): Prom
   const q = new URLSearchParams({ url });
   if (sin) q.set("sin", sin);
   return (await pedir<{ repetida: OfertaRepetida | null }>(`/staff/repetida?${q}`, await conCookie())).repetida;
+}
+
+export async function listarReportes(): Promise<ReportePerfil[]> {
+  return pedir<ReportePerfil[]>("/staff/reportes", await conCookie());
+}
+
+export async function resolverReporteEnApi(id: string, accion: "descartar" | "ocultar"): Promise<ReportePerfil[]> {
+  return pedir<ReportePerfil[]>(`/staff/reportes/${encodeURIComponent(id)}/${accion}`, await conCookie({ method: "POST" }));
 }

@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -96,4 +96,49 @@ export function comprobarDiscordEnApi(cookie: string): Promise<Cuenta> {
 /** ¿Lleva la cookie de sesión de Better Auth? Si no, ni se pregunta al API. */
 export function tieneCookieDeSesion(cookie: string): boolean {
   return /(^|;\s*)(__Secure-)?better-auth\.session_token=/.test(cookie);
+}
+
+/* ───────────── Talento ───────────── */
+
+/** Perfiles para el buscador. Con la cookie, también los de "solo registrados". */
+export function obtenerTalento(parametros: Record<string, string>, cookie: string | null): Promise<ResultadoTalento> {
+  return pedir<ResultadoTalento>(`/talento?${new URLSearchParams(parametros)}`, { headers: conCookie(cookie) });
+}
+
+/** Un perfil: el perfil, "solo_registrados" si hay que entrar para verlo, o null si no existe. */
+export const obtenerPerfilPublico = cache(
+  async (alias: string, cookie: string | null): Promise<PerfilPublico | "solo_registrados" | null> => {
+    try {
+      return await pedir<PerfilPublico>(`/talento/${encodeURIComponent(alias)}`, { headers: conCookie(cookie) });
+    } catch (error) {
+      if (error instanceof ErrorDeApi && error.estado === 404) return null;
+      if (error instanceof ErrorDeApi && error.codigo === "solo_registrados") return "solo_registrados";
+      throw error;
+    }
+  },
+);
+
+export function obtenerMiPerfil(cookie: string): Promise<MiPerfil> {
+  return pedir<MiPerfil>("/cuenta/perfil", { headers: { cookie } });
+}
+
+export function guardarMiPerfilEnApi(cookie: string, datos: unknown): Promise<MiPerfil> {
+  return pedir<MiPerfil>("/cuenta/perfil", { method: "PUT", headers: { cookie, "content-type": "application/json" }, body: JSON.stringify(datos) });
+}
+
+export function borrarMiPerfilEnApi(cookie: string): Promise<{ ok: true }> {
+  return pedir("/cuenta/perfil", { method: "DELETE", headers: { cookie } });
+}
+
+export function reportarPerfilEnApi(cookie: string, alias: string, motivo: string): Promise<{ ok: true }> {
+  return pedir(`/talento/${encodeURIComponent(alias)}/reportar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ motivo }),
+  });
+}
+
+/** Solo manda la cookie si es de sesión (si no, el API la ignoraría igual). */
+function conCookie(cookie: string | null): Record<string, string> {
+  return cookie && tieneCookieDeSesion(cookie) ? { cookie } : {};
 }

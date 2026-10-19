@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AvatarBlob, Campo } from "@/components/ui";
 import type { ValoresOferta } from "@/lib/formulario-oferta";
-import { Buscador } from "./buscador";
-import { TextoError } from "./piezas";
+import { Buscador } from "@/components/formulario/buscador";
+import { TextoError } from "@/components/formulario/piezas";
 
 type Empresa = NonNullable<ValoresOferta["empresa"]>;
 

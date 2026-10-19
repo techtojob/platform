@@ -134,7 +134,8 @@
     "quitar": "Quitar {filtro}",
     "limpiar": "Quitar todos",
     "ver": "{count, plural, =0 {Ninguna oferta} one {Ver # oferta} other {Ver # ofertas}}",
-    "canal": "filtros"
+    "canal": "filtros",
+    "disponibilidad": "Disponibilidad"
   },
   "noEncontrada": {
     "titulo": "Esta página no existe",
@@ -177,7 +178,14 @@
       "errorComprobar": "No se ha podido comprobar. Inténtalo de nuevo.",
       "errorNoResponde": "Discord no responde ahora mismo. Prueba en un rato."
     },
-    "staff": "Staff"
+    "staff": "Staff",
+    "perfilTitulo": "Tu perfil de talento",
+    "perfilNoTienes": "Aún no tienes perfil. Créalo para que las empresas de la comunidad te encuentren.",
+    "perfilTienes": "Tu perfil está en {direccion}.",
+    "perfilCrear": "Crear mi perfil",
+    "perfilEditar": "Editar mi perfil",
+    "perfilVer": "Ver mi perfil",
+    "miPerfil": "Mi perfil"
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -218,19 +226,61 @@
   },
   "talento": {
     "titulo": "Talento de la comunidad",
-    "entradilla": "Perfiles de la gente de TechToJob: su stack, su nivel, si está buscando trabajo y lo que ha construido. Para que las empresas te conozcan antes de la entrevista.",
-    "pronto": "Muy pronto",
-    "que": "Qué tendrá tu perfil",
-    "puntos": {
-      "stack": "Tu stack y tu nivel",
-      "disponibilidad": "Si buscas trabajo, estás abierto a ofertas o haces freelance",
-      "proyectos": "Proyectos y torneos en los que has participado",
-      "visibilidad": "Tú decides quién lo ve: todos, solo usuarios registrados o nadie"
+    "portadaTitulo": "Gente tech que <resaltado>sabe</resaltado> lo que hace",
+    "entradilla": "Perfiles de la comunidad de TechToJob: su stack, su nivel, si busca trabajo y dónde encontrar lo que ha construido.",
+    "buscadorEjemplo": "Busca rol, nombre o tecnología: data engineer, React…",
+    "postitTitulo": "¿Buscas trabajo?",
+    "postitTexto": "Crea tu perfil en dos minutos y que las empresas te encuentren. Tú decides quién lo ve.",
+    "crearMiPerfil": "Crear mi perfil",
+    "postitTienes": "Ya tienes perfil",
+    "postitTienesTexto": "Mantenlo al día: los perfiles que se tocan hace poco salen primero.",
+    "editarMiPerfil": "Editar mi perfil",
+    "tituloSeccion": "{count, plural, =0 {Ningún perfil} one {# perfil} other {# perfiles}}",
+    "verPerfiles": "{count, plural, =0 {Sin perfiles} one {Ver # perfil} other {Ver # perfiles}}",
+    "soloVerificados": "Solo miembros verificados",
+    "pais": "País",
+    "todosLosPaises": "Todos",
+    "vacio": "Todavía no hay perfiles. ¡Sé de los primeros!",
+    "vacioConFiltros": "No hay perfiles con estos filtros. Prueba a quitar alguno.",
+    "error": "No hemos podido cargar los perfiles. Inténtalo de nuevo en un momento.",
+    "paginas": "Más perfiles",
+    "masPerfiles": "Ver más perfiles",
+    "primeraPagina": "Volver al principio",
+    "entraParaVerMas": "{count, plural, one {Hay # perfil más que solo ven los usuarios registrados.} other {Hay # perfiles más que solo ven los usuarios registrados.}}",
+    "verificado": "Verificado",
+    "verificadoAyuda": "Miembro de la comunidad: tiene su Discord vinculado y está en el servidor de TechToJob.",
+    "emblemasTitulo": "Emblemas",
+    "emblemas": {
+      "fundador": "Miembro fundador",
+      "torneo": "Ganador de un torneo",
+      "quiz": "Top del quiz"
     },
-    "mientras": "Mientras tanto",
-    "mientrasTexto": "Preséntate en el Discord: cuenta tu stack y en qué estás aprendiendo. Cuando abramos los perfiles, ya tendrás contexto en la comunidad.",
-    "discord": "Entrar al Discord",
-    "verOfertas": "Ver ofertas"
+    "soloRegistradosTitulo": "Perfil solo para registrados",
+    "soloRegistradosTexto": "Esta persona ha elegido que su perfil solo lo vean usuarios registrados. Entra con Google o GitHub para verlo.",
+    "esMio": "Este es tu perfil. Ahora mismo es visible para: {visibilidad}.",
+    "sobreMi": "Sobre mí",
+    "sinSobreMi": "Todavía no ha escrito nada sobre sí.",
+    "stack": "Stack",
+    "idiomas": "Idiomas",
+    "enlaces": "Dónde ver su trabajo",
+    "portfolio": "Portfolio",
+    "reportar": {
+      "boton": "Reportar perfil",
+      "titulo": "Reportar este perfil",
+      "motivo": "¿Qué pasa? (spam, perfil falso, contenido ofensivo…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar un perfil tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propio perfil.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    }
   },
   "staff": {
     "titulo": "Panel de staff",
@@ -472,6 +522,141 @@
       },
       "salario": {
         "falta": "Escribe el salario o marca «La oferta no dice el salario»."
+      }
+    },
+    "reportes": {
+      "pestana": "Reportes",
+      "titulo": "Perfiles reportados",
+      "entradilla": "Revisa cada reporte: si el perfil está bien, descártalo; si no, ocúltalo (solo lo verá su dueño).",
+      "vacio": "No hay reportes pendientes.",
+      "verPerfil": "Ver perfil",
+      "descartar": "Está bien, descartar",
+      "ocultar": "Ocultar perfil",
+      "reportado": "Reportado {tiempo}",
+      "visibilidad": "Ahora: {visibilidad}"
+    }
+  },
+  "formulario": {
+    "tecnologias": "Tecnologías",
+    "tecnologiasAyuda": "Como mucho {max}. Entiende abreviaturas: js, k8s, postgres…",
+    "tecnologiasBuscar": "Busca: react, python, aws…",
+    "tecnologiasLleno": "Ya hay {max}: quita alguna para añadir otra",
+    "tecnologiaNoEsta": "No está en la lista. Si hace falta, pídela al equipo.",
+    "tecnologiasElegidas": "Tecnologías elegidas",
+    "enElTexto": "Salen en el texto:",
+    "anadirTodas": "Añadir todas",
+    "tipicasDelArea": "Típicas de esta área:",
+    "anadir": "Añadir {nombre}",
+    "quitar": "Quitar {nombre}",
+    "idiomas": "Idiomas",
+    "otroIdioma": "+ Otro idioma",
+    "nivel": "Nivel",
+    "sinNivel": "Sin nivel",
+    "nativo": "Nativo",
+    "quitarCorto": "Quitar"
+  },
+  "miPerfil": {
+    "titulo": "Mi perfil",
+    "entradilla": "Lo que la gente verá de ti en Talento. Nunca se enseña tu email.",
+    "seccionTu": "Tú",
+    "alias": "Alias",
+    "aliasAyuda": "Tu dirección: {direccion}. Minúsculas, números y guiones.",
+    "nombre": "Nombre",
+    "nombreAyuda": "Tu nombre o como quieras que te conozcan.",
+    "titular": "Titular",
+    "titularAyuda": "Una línea que diga qué haces.",
+    "titularEjemplo": "Desarrolladora frontend junior",
+    "mostrarFoto": "Mostrar mi foto de Google o GitHub (si no, un avatar de la comunidad)",
+    "sinFoto": "Tu cuenta no tiene foto: saldrá un avatar de la comunidad.",
+    "seccionSobre": "Sobre ti",
+    "sobreMi": "Sobre mí (opcional)",
+    "sobreMiAyuda": "Qué haces, qué te gusta, qué buscas. Las tecnologías que nombres te las proponemos abajo. Quedan {quedan} caracteres.",
+    "seccionHaces": "Lo que haces",
+    "area": "Área",
+    "seniority": "Nivel",
+    "tecnologias": "Tu stack",
+    "tecnologiasAyuda": "Con lo que trabajas. Como mucho {max}.",
+    "seccionDonde": "Disponibilidad y dónde",
+    "disponibilidad": "¿Buscas trabajo?",
+    "modalidades": "Cómo prefieres trabajar",
+    "modalidadesAyuda": "Puedes marcar varias.",
+    "ciudad": "Ciudad (opcional)",
+    "pais": "País",
+    "sinPais": "Prefiero no decirlo",
+    "seccionIdiomas": "Idiomas que hablas",
+    "idiomasAyuda": "Y tu nivel, si quieres.",
+    "seccionEnlaces": "Enlaces",
+    "enlacesAyuda": "Opcionales. Nunca se enseña tu email ni tu teléfono.",
+    "portfolio": "Portfolio o web",
+    "seccionVisibilidad": "Quién puede verlo",
+    "recomendado": "Recomendado",
+    "visibilidadAyuda": {
+      "publico": "Cualquiera, también Google. Útil si quieres que te encuentren desde fuera.",
+      "registrados": "Solo quien ha iniciado sesión en TechToJob: empresas y comunidad.",
+      "oculto": "Nadie más que tú. Útil mientras lo preparas."
+    },
+    "vistaPrevia": "Así saldrá en el buscador",
+    "vistaNombre": "Tu nombre",
+    "vistaTitular": "Tu titular",
+    "faltan": "{count, plural, one {Falta # cosa:} other {Faltan # cosas:}}",
+    "listo": "Todo listo.",
+    "campo": {
+      "alias": "Alias",
+      "nombre": "Nombre",
+      "titular": "Titular",
+      "sobreMi": "Sobre mí",
+      "area": "Área",
+      "seniority": "Nivel",
+      "tecnologias": "Stack",
+      "ciudad": "Ciudad",
+      "pais": "País",
+      "modalidades": "Cómo trabajar",
+      "disponibilidad": "Disponibilidad",
+      "idiomas": "Idiomas",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portfolio",
+      "visibilidad": "Visibilidad"
+    },
+    "crear": "Crear mi perfil",
+    "guardar": "Guardar cambios",
+    "guardando": "Guardando…",
+    "creado": "¡Perfil creado! Ya sale en Talento.",
+    "guardado": "Cambios guardados.",
+    "errorGuardar": "No se ha podido guardar. Inténtalo de nuevo.",
+    "verComoQueda": "Ver cómo queda",
+    "borrar": "Borrar mi perfil",
+    "borrarSeguro": "¿Seguro? Desaparece de Talento. Tu cuenta sigue.",
+    "borrarSi": "Sí, borrarlo",
+    "cancelar": "Cancelar",
+    "borrado": "Perfil borrado. Puedes crear otro cuando quieras.",
+    "errorBorrar": "No se ha podido borrar. Inténtalo de nuevo.",
+    "errores": {
+      "alias": {
+        "falta": "Elige un alias.",
+        "corto": "Al menos 3 caracteres.",
+        "largo": "Como mucho 30 caracteres.",
+        "formato": "Solo minúsculas, números y guiones (sin guion al principio ni al final).",
+        "reservado": "Ese alias está reservado. Elige otro.",
+        "ocupado": "Ese alias ya lo usa otra persona."
+      },
+      "titular": {
+        "corto": "Al menos 5 caracteres."
+      },
+      "modalidades": {
+        "falta": "Marca al menos una."
+      },
+      "idiomas": {
+        "falta": "Marca al menos un idioma."
+      },
+      "linkedin": {
+        "url": "Tiene que ser un perfil de LinkedIn: linkedin.com/in/…"
+      },
+      "github": {
+        "url": "Tiene que ser un perfil de GitHub: github.com/…"
+      },
+      "portfolio": {
+        "url": "Tiene que ser una dirección web."
       }
     }
   }

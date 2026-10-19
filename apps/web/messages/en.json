@@ -134,7 +134,8 @@
     "quitar": "Remove {filtro}",
     "limpiar": "Clear all",
     "ver": "{count, plural, =0 {No job offers} one {Show # job offer} other {Show # job offers}}",
-    "canal": "filters"
+    "canal": "filters",
+    "disponibilidad": "Availability"
   },
   "noEncontrada": {
     "titulo": "This page doesn't exist",
@@ -177,7 +178,14 @@
       "errorComprobar": "Couldn't check. Please try again.",
       "errorNoResponde": "Discord isn't responding right now. Try again later."
     },
-    "staff": "Staff"
+    "staff": "Staff",
+    "perfilTitulo": "Your talent profile",
+    "perfilNoTienes": "You don't have a profile yet. Create it so community companies can find you.",
+    "perfilTienes": "Your profile is at {direccion}.",
+    "perfilCrear": "Create my profile",
+    "perfilEditar": "Edit my profile",
+    "perfilVer": "See my profile",
+    "miPerfil": "My profile"
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -218,19 +226,61 @@
   },
   "talento": {
     "titulo": "Community talent",
-    "entradilla": "Profiles of the TechToJob people: their stack, their level, whether they're looking for a job and what they've built. So companies get to know you before the interview.",
-    "pronto": "Coming soon",
-    "que": "What your profile will have",
-    "puntos": {
-      "stack": "Your stack and level",
-      "disponibilidad": "Whether you're job hunting, open to offers or freelancing",
-      "proyectos": "Projects and tournaments you've taken part in",
-      "visibilidad": "You decide who sees it: everyone, registered users only or nobody"
+    "portadaTitulo": "Tech people who <resaltado>know</resaltado> what they do",
+    "entradilla": "Profiles from the TechToJob community: their stack, their level, whether they're looking for work and where to see what they've built.",
+    "buscadorEjemplo": "Search role, name or technology: data engineer, React…",
+    "postitTitulo": "Looking for work?",
+    "postitTexto": "Create your profile in two minutes and let companies find you. You decide who sees it.",
+    "crearMiPerfil": "Create my profile",
+    "postitTienes": "You have a profile",
+    "postitTienesTexto": "Keep it up to date: recently updated profiles show up first.",
+    "editarMiPerfil": "Edit my profile",
+    "tituloSeccion": "{count, plural, =0 {No profiles} one {# profile} other {# profiles}}",
+    "verPerfiles": "{count, plural, =0 {No profiles} one {See # profile} other {See # profiles}}",
+    "soloVerificados": "Verified members only",
+    "pais": "Country",
+    "todosLosPaises": "All",
+    "vacio": "No profiles yet. Be one of the first!",
+    "vacioConFiltros": "No profiles match these filters. Try removing some.",
+    "error": "We couldn't load the profiles. Try again in a moment.",
+    "paginas": "More profiles",
+    "masPerfiles": "See more profiles",
+    "primeraPagina": "Back to the start",
+    "entraParaVerMas": "{count, plural, one {There's # more profile only registered users can see.} other {There are # more profiles only registered users can see.}}",
+    "verificado": "Verified",
+    "verificadoAyuda": "Community member: has linked Discord and is in the TechToJob server.",
+    "emblemasTitulo": "Badges",
+    "emblemas": {
+      "fundador": "Founding member",
+      "torneo": "Tournament winner",
+      "quiz": "Quiz top player"
     },
-    "mientras": "In the meantime",
-    "mientrasTexto": "Introduce yourself on the Discord: share your stack and what you're learning. When profiles open, you'll already have context in the community.",
-    "discord": "Join the Discord",
-    "verOfertas": "See job offers"
+    "soloRegistradosTitulo": "Profile for registered users only",
+    "soloRegistradosTexto": "This person chose to show their profile only to registered users. Log in with Google or GitHub to see it.",
+    "esMio": "This is your profile. Right now it's visible to: {visibilidad}.",
+    "sobreMi": "About me",
+    "sinSobreMi": "Nothing written yet.",
+    "stack": "Stack",
+    "idiomas": "Languages",
+    "enlaces": "Where to see their work",
+    "portfolio": "Portfolio",
+    "reportar": {
+      "boton": "Report profile",
+      "titulo": "Report this profile",
+      "motivo": "What's wrong? (spam, fake profile, offensive content…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. The staff will review it.",
+      "entraAntes": "You need to be logged in to report a profile.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own profile.",
+        "otro": "It couldn't be sent. Try again."
+      }
+    }
   },
   "staff": {
     "titulo": "Staff panel",
@@ -472,6 +522,141 @@
       },
       "salario": {
         "falta": "Write the salary or tick “The offer doesn't state the salary”."
+      }
+    },
+    "reportes": {
+      "pestana": "Reports",
+      "titulo": "Reported profiles",
+      "entradilla": "Review each report: if the profile is fine, dismiss it; if not, hide it (only its owner will see it).",
+      "vacio": "No pending reports.",
+      "verPerfil": "See profile",
+      "descartar": "It's fine, dismiss",
+      "ocultar": "Hide profile",
+      "reportado": "Reported {tiempo}",
+      "visibilidad": "Now: {visibilidad}"
+    }
+  },
+  "formulario": {
+    "tecnologias": "Technologies",
+    "tecnologiasAyuda": "{max} at most. Understands abbreviations: js, k8s, postgres…",
+    "tecnologiasBuscar": "Search: react, python, aws…",
+    "tecnologiasLleno": "There are already {max}: remove one to add another",
+    "tecnologiaNoEsta": "It's not on the list. If needed, ask the team.",
+    "tecnologiasElegidas": "Chosen technologies",
+    "enElTexto": "They appear in the text:",
+    "anadirTodas": "Add all",
+    "tipicasDelArea": "Common in this area:",
+    "anadir": "Add {nombre}",
+    "quitar": "Remove {nombre}",
+    "idiomas": "Languages",
+    "otroIdioma": "+ Other language",
+    "nivel": "Level",
+    "sinNivel": "No level",
+    "nativo": "Native",
+    "quitarCorto": "Remove"
+  },
+  "miPerfil": {
+    "titulo": "My profile",
+    "entradilla": "What people will see about you in Talent. Your email is never shown.",
+    "seccionTu": "You",
+    "alias": "Alias",
+    "aliasAyuda": "Your address: {direccion}. Lowercase letters, numbers and hyphens.",
+    "nombre": "Name",
+    "nombreAyuda": "Your name or how you want to be known.",
+    "titular": "Headline",
+    "titularAyuda": "One line saying what you do.",
+    "titularEjemplo": "Junior frontend developer",
+    "mostrarFoto": "Show my Google or GitHub photo (otherwise, a community avatar)",
+    "sinFoto": "Your account has no photo: a community avatar will be shown.",
+    "seccionSobre": "About you",
+    "sobreMi": "About me (optional)",
+    "sobreMiAyuda": "What you do, what you like, what you're looking for. We suggest the technologies you mention below. {quedan} characters left.",
+    "seccionHaces": "What you do",
+    "area": "Area",
+    "seniority": "Level",
+    "tecnologias": "Your stack",
+    "tecnologiasAyuda": "What you work with. {max} at most.",
+    "seccionDonde": "Availability and where",
+    "disponibilidad": "Looking for work?",
+    "modalidades": "How you prefer to work",
+    "modalidadesAyuda": "You can pick several.",
+    "ciudad": "City (optional)",
+    "pais": "Country",
+    "sinPais": "I'd rather not say",
+    "seccionIdiomas": "Languages you speak",
+    "idiomasAyuda": "And your level, if you like.",
+    "seccionEnlaces": "Links",
+    "enlacesAyuda": "Optional. Your email and phone are never shown.",
+    "portfolio": "Portfolio or website",
+    "seccionVisibilidad": "Who can see it",
+    "recomendado": "Recommended",
+    "visibilidadAyuda": {
+      "publico": "Anyone, including Google. Useful if you want to be found from outside.",
+      "registrados": "Only people logged in to TechToJob: companies and community.",
+      "oculto": "No one but you. Useful while you prepare it."
+    },
+    "vistaPrevia": "How it will look in the search",
+    "vistaNombre": "Your name",
+    "vistaTitular": "Your headline",
+    "faltan": "{count, plural, one {# thing missing:} other {# things missing:}}",
+    "listo": "All set.",
+    "campo": {
+      "alias": "Alias",
+      "nombre": "Name",
+      "titular": "Headline",
+      "sobreMi": "About me",
+      "area": "Area",
+      "seniority": "Level",
+      "tecnologias": "Stack",
+      "ciudad": "City",
+      "pais": "Country",
+      "modalidades": "How to work",
+      "disponibilidad": "Availability",
+      "idiomas": "Languages",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portfolio",
+      "visibilidad": "Visibility"
+    },
+    "crear": "Create my profile",
+    "guardar": "Save changes",
+    "guardando": "Saving…",
+    "creado": "Profile created! It now shows in Talent.",
+    "guardado": "Changes saved.",
+    "errorGuardar": "It couldn't be saved. Try again.",
+    "verComoQueda": "See how it looks",
+    "borrar": "Delete my profile",
+    "borrarSeguro": "Sure? It disappears from Talent. Your account stays.",
+    "borrarSi": "Yes, delete it",
+    "cancelar": "Cancel",
+    "borrado": "Profile deleted. You can create another whenever you want.",
+    "errorBorrar": "It couldn't be deleted. Try again.",
+    "errores": {
+      "alias": {
+        "falta": "Choose an alias.",
+        "corto": "At least 3 characters.",
+        "largo": "30 characters at most.",
+        "formato": "Only lowercase letters, numbers and hyphens (no hyphen at the start or end).",
+        "reservado": "That alias is reserved. Choose another.",
+        "ocupado": "Someone else already uses that alias."
+      },
+      "titular": {
+        "corto": "At least 5 characters."
+      },
+      "modalidades": {
+        "falta": "Pick at least one."
+      },
+      "idiomas": {
+        "falta": "Pick at least one language."
+      },
+      "linkedin": {
+        "url": "It must be a LinkedIn profile: linkedin.com/in/…"
+      },
+      "github": {
+        "url": "It must be a GitHub profile: github.com/…"
+      },
+      "portfolio": {
+        "url": "It must be a web address."
       }
     }
   }

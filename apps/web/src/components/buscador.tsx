@@ -77,14 +77,17 @@ function BuscadorConDireccion() {
   return <Caja texto={texto} onEscribir={alEscribir} onEnviar={alEnviar} pendiente={pendiente} refCaja={caja} />;
 }
 
-function Caja({
+/** La caja del buscador (también la usa el buscador de talento, con su propio texto de ejemplo). */
+export function Caja({
   texto,
   onEscribir,
   onEnviar,
   pendiente = false,
   refCaja,
+  ejemplo,
 }: {
   texto: string;
+  ejemplo?: string;
   onEscribir?: (valor: string) => void;
   onEnviar?: (e: FormEvent) => void;
   pendiente?: boolean;
@@ -121,7 +124,7 @@ function Caja({
         value={texto}
         readOnly={!onEscribir}
         onChange={(e) => onEscribir?.(e.target.value)}
-        placeholder={t("ejemplo")}
+        placeholder={ejemplo ?? t("ejemplo")}
         aria-busy={pendiente}
         className="h-14 w-full rounded-full border border-borde-fuerte bg-tarjeta pl-13 pr-4 text-base text-texto shadow-tarjeta placeholder:text-suave sm:pr-32"
       />

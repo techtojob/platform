@@ -67,6 +67,15 @@ async function Contenido({ searchParams }: Pick<Props, "searchParams">) {
             </Link>
           );
         })}
+        <Link
+          href="/staff/reportes"
+          className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-chip px-4 text-sm font-bold text-texto transition-colors hover:bg-hover"
+        >
+          {t("reportes.pestana")}
+          <span className={cn("rounded-full px-2 py-0.5 text-xs tabular-nums", lista.reportes ? "bg-peligro text-fondo" : "bg-fondo/60 text-suave")}>
+            {lista.reportes}
+          </span>
+        </Link>
       </nav>
 
       {lista.ofertas.length === 0 ? (

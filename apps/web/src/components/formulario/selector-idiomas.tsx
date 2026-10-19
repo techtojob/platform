@@ -2,7 +2,6 @@
 
 import { IDIOMAS, LIMITES, NIVELES_IDIOMA } from "@techtojob/shared";
 import { useLocale, useTranslations } from "next-intl";
-import type { ValoresOferta } from "@/lib/formulario-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { cn } from "@/lib/cn";
 import { TextoError } from "./piezas";
@@ -17,24 +16,29 @@ export function SelectorIdiomas({
   pide,
   onCambio,
   error,
+  maximo = LIMITES.idiomas.max,
+  etiqueta,
 }: {
-  pide: ValoresOferta["pide"];
-  onCambio: (pide: ValoresOferta["pide"]) => void;
+  pide: Array<{ idioma: string; nivel: string }>;
+  onCambio: (pide: Array<{ idioma: string; nivel: string }>) => void;
   error?: string;
+  maximo?: number;
+  /** Para lectores de pantalla: "Idiomas que pide", "Idiomas que hablas"… */
+  etiqueta?: string;
 }) {
-  const t = useTranslations("staff.form");
+  const t = useTranslations("formulario");
   const locale = useLocale();
   const nombre = (i: string) => nombreIdioma(i, locale);
   const marcado = (i: string) => pide.some((p) => p.idioma === i);
   const alternar = (i: string) =>
-    onCambio(marcado(i) ? pide.filter((p) => p.idioma !== i) : pide.length < LIMITES.idiomas.max ? [...pide, { idioma: i, nivel: "" }] : pide);
+    onCambio(marcado(i) ? pide.filter((p) => p.idioma !== i) : pide.length < maximo ? [...pide, { idioma: i, nivel: "" }] : pide);
   const otros = IDIOMAS.filter((i) => !(FRECUENTES as readonly string[]).includes(i) && !marcado(i)).sort((a, b) =>
     nombre(a).localeCompare(nombre(b), locale),
   );
 
   return (
     <div className="flex flex-col gap-4">
-      <div role="group" aria-label={t("idiomasQuePide")} className="flex flex-wrap gap-2">
+      <div role="group" aria-label={etiqueta ?? t("idiomas")} className="flex flex-wrap gap-2">
         {FRECUENTES.map((i) => (
           <button
             key={i}

@@ -1,60 +1,69 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
-import { use } from "react";
-import { Portada } from "@/components/sitio/portada";
-import { Aviso, clasesBoton, Etiqueta } from "@/components/ui";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { headers } from "next/headers";
+import { Suspense, use } from "react";
+import { Portada, Resaltado } from "@/components/sitio/portada";
+import { BuscadorTalento } from "@/components/talento/buscador-talento";
+import { ListadoTalento } from "@/components/talento/listado-talento";
+import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { sitio } from "@/lib/sitio";
+import { obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
 
-// Página provisional: no aparece en buscadores hasta que existan los perfiles.
-export const metadata: Metadata = { robots: { index: false } };
+export async function generateMetadata({ params }: PageProps<"/[locale]/talento">): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as Locale, namespace: "talento" });
+  return { title: `${t("titulo")} – TechToJob`, description: t("entradilla") };
+}
 
-/** Talento: los perfiles de la comunidad. De momento, qué serán y cómo prepararse. */
-export default function PaginaTalento({ params }: PageProps<"/[locale]/talento">) {
+/** Talento: perfiles de la comunidad, con buscador y filtros. */
+export default function PaginaTalento({ params, searchParams }: PageProps<"/[locale]/talento">) {
   const { locale } = use(params);
   setRequestLocale(locale as Locale);
   const t = useTranslations();
-  const puntos = ["stack", "disponibilidad", "proyectos", "visibilidad"] as const;
 
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       <Portada
         migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("talento.titulo") }]}
-        antesDelTitulo={<Etiqueta tono="acento">{t("talento.pronto")}</Etiqueta>}
-        titulo={t("talento.titulo")}
+        titulo={t.rich("talento.portadaTitulo", { resaltado: (texto) => <Resaltado>{texto}</Resaltado> })}
         entradilla={t("talento.entradilla")}
-      />
-      <section className="rejilla flex-1 px-[var(--margen)] py-14">
-        <div className="mx-auto grid max-w-[80rem] gap-12 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
-          <div className="rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta sm:p-10">
-            <h2 className="text-titulo-2 font-bold">{t("talento.que")}</h2>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-              {puntos.map((p) => (
-                <li key={p} className="flex items-start gap-3 border-t border-borde pt-3 font-bold">
-                  <span aria-hidden="true" className="mt-2 size-2.5 shrink-0 rounded-full bg-acento" />
-                  {t(`talento.puntos.${p}`)}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Aviso giro="rotate-[1.2deg]" className="p-7">
-            <p className="text-xl font-bold leading-tight tracking-tight">{t("talento.mientras")}</p>
-            <p className="mt-2 text-sm leading-relaxed text-ink/80">{t("talento.mientrasTexto")}</p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <a href={sitio.discord} className={clasesBoton({ variante: "sobrePostit" })}>
-                <Image src="/empleo-recursos/discord-light.svg" alt="" width={24} height={18} unoptimized className="h-4 w-auto" />
-                {t("talento.discord")}
-              </a>
-              <Link href="/" className="inline-flex min-h-11 items-center px-3 text-sm font-bold underline decoration-2 underline-offset-4">
-                {t("talento.verOfertas")}
-              </Link>
-            </div>
-          </Aviso>
+        lado={
+          <Suspense fallback={null}>
+            <PostitMiPerfil />
+          </Suspense>
+        }
+      >
+        <div className="mt-8 w-full max-w-2xl">
+          <BuscadorTalento />
+        </div>
+      </Portada>
+
+      <section className="rejilla flex-1 px-[var(--margen)] py-10 sm:py-14">
+        <div className="mx-auto max-w-[80rem]">
+          <Suspense fallback={<div aria-busy="true" className="h-[32rem] animate-pulse rounded-tarjeta bg-tarjeta/60" />}>
+            <ListadoTalento searchParams={searchParams} />
+          </Suspense>
         </div>
       </section>
     </main>
+  );
+}
+
+/** El post-it de la portada: crea tu perfil (o edítalo, si ya lo tienes). */
+async function PostitMiPerfil() {
+  const [t, cabeceras] = await Promise.all([getTranslations("talento"), headers()]);
+  const cookie = cabeceras.get("cookie");
+  const cuenta = await obtenerCuenta(cookie).catch(() => null);
+  const tengo = cuenta && cookie ? !!(await obtenerMiPerfil(cookie).catch(() => null))?.perfil : false;
+  return (
+    <Aviso giro="rotate-[2deg]" className="w-[21rem] p-7">
+      <p className="text-xl font-bold leading-tight tracking-tight">{tengo ? t("postitTienes") : t("postitTitulo")}</p>
+      <p className="mt-2 text-sm leading-relaxed text-ink/80">{tengo ? t("postitTienesTexto") : t("postitTexto")}</p>
+      <Link href={cuenta ? "/cuenta/perfil" : "/entrar"} className={clasesBoton({ variante: "sobrePostit", className: "mt-5" })}>
+        {tengo ? t("editarMiPerfil") : t("crearMiPerfil")}
+      </Link>
+    </Aviso>
   );
 }

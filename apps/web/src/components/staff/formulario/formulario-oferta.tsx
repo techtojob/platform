@@ -27,10 +27,10 @@ import { cn } from "@/lib/cn";
 import { datosParaApi, VALORES_VACIOS, type ValoresOferta } from "@/lib/formulario-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { PasoEnlace } from "./paso-enlace";
-import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "./piezas";
+import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/components/formulario/piezas";
 import { SelectorEmpresa } from "./selector-empresa";
-import { SelectorIdiomas } from "./selector-idiomas";
-import { SelectorTecnologias } from "./selector-tecnologias";
+import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
+import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
 /** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña. */
 const CLAVE_BORRADOR = "ttj-staff-borrador-oferta";
@@ -315,6 +315,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
             elegidas={v.tecnologias}
             onCambio={(tecnologias) => cambiar({ tecnologias })}
             enElTexto={enElTexto}
+            ayuda={t("form.tecnologiasAyuda", { max: LIMITES.tecnologias.max })}
             area={v.area}
             error={mensajeError("tecnologias")}
           />
@@ -417,7 +418,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
         </Seccion>
 
         <Seccion id="seccion-idiomas" numero={6} titulo={t("form.idiomasQuePide")} ayuda={t("form.idiomasQuePideAyuda")}>
-          <SelectorIdiomas pide={v.pide} onCambio={(pide) => cambiar({ pide })} error={mensajeError("idiomasRequeridos")} />
+          <SelectorIdiomas pide={v.pide} onCambio={(pide) => cambiar({ pide })} error={mensajeError("idiomasRequeridos")} etiqueta={t("form.idiomasQuePide")} />
         </Seccion>
       </div>
 

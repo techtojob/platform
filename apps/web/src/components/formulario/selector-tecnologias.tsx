@@ -19,18 +19,25 @@ export function SelectorTecnologias({
   enElTexto,
   area,
   error,
+  maximo = LIMITES.tecnologias.max,
+  etiqueta,
+  ayuda,
 }: {
   elegidas: string[];
   onCambio: (ids: string[]) => void;
-  /** Las que aparecen en el título o la descripción. */
+  /** Las que aparecen en el texto (descripción de la oferta, "sobre mí"…). */
   enElTexto: string[];
   area: string;
   error?: string;
+  /** Cuántas se pueden elegir (12 en una oferta, 15 en un perfil). */
+  maximo?: number;
+  etiqueta?: string;
+  ayuda?: string;
 }) {
-  const t = useTranslations("staff.form");
+  const t = useTranslations("formulario");
   const [texto, ponerTexto] = useState("");
-  const lleno = elegidas.length >= LIMITES.tecnologias.max;
-  const anadir = (ids: string[]) => onCambio([...new Set([...elegidas, ...ids])].slice(0, LIMITES.tecnologias.max));
+  const lleno = elegidas.length >= maximo;
+  const anadir = (ids: string[]) => onCambio([...new Set([...elegidas, ...ids])].slice(0, maximo));
   const quitar = (id: string) => onCambio(elegidas.filter((x) => x !== id));
 
   const buscado = normalizar(texto);
@@ -53,9 +60,9 @@ export function SelectorTecnologias({
   return (
     <div className="flex flex-col gap-3">
       <Buscador
-        etiqueta={t("tecnologias")}
-        ayuda={t("tecnologiasAyuda", { max: LIMITES.tecnologias.max })}
-        placeholder={lleno ? t("tecnologiasLleno") : t("tecnologiasBuscar")}
+        etiqueta={etiqueta ?? t("tecnologias")}
+        ayuda={ayuda ?? t("tecnologiasAyuda", { max: maximo })}
+        placeholder={lleno ? t("tecnologiasLleno", { max: maximo }) : t("tecnologiasBuscar")}
         texto={texto}
         onTexto={ponerTexto}
         vacio={buscado ? t("tecnologiaNoEsta") : undefined}
