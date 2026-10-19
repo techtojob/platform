@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorApi, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -15,16 +15,23 @@ export class ErrorDeApi extends Error {
     public readonly estado: number,
     public readonly codigo: string,
     mensaje: string,
+    /** Si son datos mal puestos: qué campo y por qué ({ titulo: "corto" }). */
+    public readonly campos: Record<string, string> = {},
   ) {
     super(mensaje);
   }
 }
 
-async function pedir<T>(ruta: string, init: RequestInit = {}): Promise<T> {
+export async function pedir<T>(ruta: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${ruta}`, { cache: "no-store", ...init });
   if (!res.ok) {
-    const cuerpo = (await res.json().catch(() => null)) as ErrorApi | null;
-    throw new ErrorDeApi(res.status, cuerpo?.error.codigo ?? "desconocido", cuerpo?.error.mensaje ?? res.statusText);
+    const cuerpo = (await res.json().catch(() => null)) as ErrorValidacion | null;
+    throw new ErrorDeApi(
+      res.status,
+      cuerpo?.error.codigo ?? "desconocido",
+      cuerpo?.error.mensaje ?? res.statusText,
+      cuerpo?.error.campos ?? {},
+    );
   }
   return (await res.json()) as T;
 }

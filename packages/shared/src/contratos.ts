@@ -136,4 +136,4 @@ export type Comprobacion = (typeof COMPROBACIONES)[number];
 export type EmpresaStaff = { id: string; nombre: string; slug: string; web: string | null; ofertas: number };
 
 /** Error 400 con los campos que están mal: { campos: { titulo: "corto" } }. */
-export type ErrorValidacion = ErrorApi & { campos: Record<string, string> };
+export type ErrorValidacion = { error: ErrorApi["error"] & { campos: Record<string, string> } };

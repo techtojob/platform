@@ -176,7 +176,8 @@
       "errorDesvincular": "No se ha podido desvincular. Inténtalo de nuevo.",
       "errorComprobar": "No se ha podido comprobar. Inténtalo de nuevo.",
       "errorNoResponde": "Discord no responde ahora mismo. Prueba en un rato."
-    }
+    },
+    "staff": "Staff"
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -230,5 +231,161 @@
     "mientrasTexto": "Preséntate en el Discord: cuenta tu stack y en qué estás aprendiendo. Cuando abramos los perfiles, ya tendrás contexto en la comunidad.",
     "discord": "Entrar al Discord",
     "verOfertas": "Ver ofertas"
+  },
+  "staff": {
+    "titulo": "Panel de staff",
+    "entradilla": "Revisa las ofertas antes de que salgan en la bolsa. Solo lo ve el staff.",
+    "enlace": "Staff",
+    "nueva": "Nueva oferta",
+    "nuevaEntradilla": "Queda pendiente. Luego la revisas y la publicas como las demás.",
+    "editar": "Editar oferta",
+    "crear": "Crear oferta",
+    "guardarCambios": "Guardar cambios",
+    "guardando": "Guardando…",
+    "revisaCampos": "Revisa los campos marcados en rojo.",
+    "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
+    "estados": {
+      "titulo": "Estado de las ofertas",
+      "pendiente": "Pendientes",
+      "publicada": "Publicadas",
+      "rechazada": "Rechazadas",
+      "cerrada": "Cerradas"
+    },
+    "estadoUna": {
+      "pendiente": "Pendiente",
+      "publicada": "Publicada",
+      "rechazada": "Rechazada",
+      "cerrada": "Cerrada"
+    },
+    "vacio": {
+      "pendiente": "No hay ofertas pendientes. ¡Todo revisado!",
+      "publicada": "No hay ofertas publicadas.",
+      "rechazada": "No hay ofertas rechazadas.",
+      "cerrada": "No hay ofertas cerradas."
+    },
+    "lista": {
+      "creada": "Creada {tiempo}",
+      "caduca": "Caduca {tiempo}",
+      "caducada": "Caducó {tiempo}",
+      "revisada": "Revisada {tiempo}",
+      "yaNoSale": "Ya no sale en la bolsa",
+      "motivo": "Motivo: {motivo}"
+    },
+    "detalle": {
+      "publicada": "Publicada {tiempo}",
+      "lugar": "Dónde",
+      "sinSalario": "No lo dice",
+      "sinDescripcion": "Sin resumen ni descripción.",
+      "verEnLaBolsa": "Ver en la bolsa"
+    },
+    "comprobaciones": {
+      "empresa": "La empresa existe y es quien dice ser",
+      "enlace": "El enlace funciona y lleva a esta oferta",
+      "idiomas": "Los idiomas que pide son los correctos"
+    },
+    "acciones": {
+      "revisar": "Revisar y publicar",
+      "volverAPublicar": "Volver a publicar",
+      "antesDePublicar": "Antes de publicar",
+      "abrirOriginal": "Abrir la oferta original ↗",
+      "publicar": "Publicar 45 días",
+      "marcaTodas": "Marca las tres comprobaciones para publicar.",
+      "noPublicar": "No publicar esta oferta…",
+      "motivo": "¿Por qué no se publica?",
+      "rechazar": "Rechazar",
+      "cancelar": "Cancelar",
+      "publicadaTitulo": "Está en la bolsa",
+      "alargar": "Alargar 45 días",
+      "alargarAyuda": "Si la empresa sigue buscando. Se suman a lo que le quedaba.",
+      "cerrar": "Cerrar oferta",
+      "cerrarAyuda": "Deja de salir en la bolsa (ya no buscan o el enlace no funciona)."
+    },
+    "hecho": {
+      "publicar": "Publicada. Saldrá en la bolsa 45 días.",
+      "rechazar": "Rechazada.",
+      "cerrar": "Cerrada. Ya no sale en la bolsa.",
+      "alargar": "Alargada 45 días más."
+    },
+    "form": {
+      "empresa": "Empresa",
+      "elige": "Elige…",
+      "empresaNueva": "+ Empresa nueva",
+      "empresaNombre": "Nombre de la empresa",
+      "empresaWeb": "Web de la empresa (opcional)",
+      "oferta": "La oferta",
+      "titulo": "Título",
+      "urlOriginal": "Enlace a la oferta original",
+      "urlOriginalAyuda": "Donde se aplica. Comprueba que funciona.",
+      "idioma": "Idioma en que está escrita",
+      "idiomaAyuda": "Para avisar a quien la lee en otro idioma.",
+      "resumen": "Resumen (opcional)",
+      "resumenAyuda": "Una o dos frases. Es lo primero que se lee.",
+      "descripcion": "Descripción (opcional)",
+      "descripcionAyuda": "Deja una línea en blanco entre párrafos.",
+      "puesto": "El puesto",
+      "area": "Área",
+      "seniority": "Nivel",
+      "modalidad": "Modalidad",
+      "tecnologias": "Tecnologías",
+      "tecnologiasAyuda": "Las que pide la oferta. Como mucho {max}.",
+      "donde": "Dónde",
+      "ciudad": "Ciudad",
+      "pais": "País",
+      "paisAyuda": "2 letras: ES, PT…",
+      "remotoDesde": "En remoto, desde",
+      "remotoDesdeAyuda": "Solo si es en remoto.",
+      "noRemoto": "No es en remoto",
+      "salario": "Salario bruto al año",
+      "salarioAyuda": "Opcional, pero las ofertas con salario funcionan mejor.",
+      "salarioMin": "Desde",
+      "salarioMax": "Hasta",
+      "moneda": "Moneda",
+      "idiomasQuePide": "Idiomas que pide",
+      "idiomasQuePideAyuda": "Quien no los hable no verá la oferta en su listado. Marca al menos uno.",
+      "masIdiomas": "Más idiomas",
+      "nivelDe": "Nivel de {idioma}",
+      "sinNivel": "Sin nivel",
+      "nativo": "Nativo"
+    },
+    "errores": {
+      "falta": "Falta este dato.",
+      "corto": "Es demasiado corto.",
+      "largo": "Es demasiado largo.",
+      "url": "Tiene que ser una dirección web (https://…).",
+      "desconocida": "Hay una tecnología que no conocemos.",
+      "demasiadas": "Son demasiadas.",
+      "demasiados": "Son demasiados (como mucho 5).",
+      "codigo": "Tiene que ser un código de 2 letras (ES, PT…).",
+      "numero": "Tiene que ser un número sin decimales.",
+      "menor": "Tiene que ser mayor o igual que «Desde».",
+      "idioma": "Hay un idioma que no conocemos.",
+      "nivel": "Hay un nivel de idioma que no conocemos.",
+      "empresaId": {
+        "falta": "Elige la empresa o crea una nueva."
+      },
+      "empresaNombre": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "ciudad": {
+        "falta": "Si no es en remoto, pon la ciudad o el país."
+      },
+      "remotoDesde": {
+        "falta": "Elige desde dónde se puede trabajar en remoto."
+      },
+      "moneda": {
+        "falta": "Elige la moneda del salario."
+      },
+      "idiomasRequeridos": {
+        "falta": "Marca al menos un idioma."
+      },
+      "accion": {
+        "comprobaciones": "Marca las tres comprobaciones antes de publicar.",
+        "motivo": "Escribe por qué no se publica (de 3 a 300 caracteres).",
+        "estado": "Esta oferta ya no está publicada.",
+        "no_encontrada": "Esta oferta ya no existe.",
+        "sin_permiso": "Ya no tienes acceso al panel de staff.",
+        "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+      }
+    }
   }
 }

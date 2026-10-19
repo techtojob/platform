@@ -176,7 +176,8 @@
       "errorDesvincular": "Couldn't unlink. Please try again.",
       "errorComprobar": "Couldn't check. Please try again.",
       "errorNoResponde": "Discord isn't responding right now. Try again later."
-    }
+    },
+    "staff": "Staff"
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -230,5 +231,161 @@
     "mientrasTexto": "Introduce yourself on the Discord: share your stack and what you're learning. When profiles open, you'll already have context in the community.",
     "discord": "Join the Discord",
     "verOfertas": "See job offers"
+  },
+  "staff": {
+    "titulo": "Staff panel",
+    "entradilla": "Review offers before they go live on the job board. Only staff can see this.",
+    "enlace": "Staff",
+    "nueva": "New offer",
+    "nuevaEntradilla": "It stays pending. Then you review and publish it like the others.",
+    "editar": "Edit offer",
+    "crear": "Create offer",
+    "guardarCambios": "Save changes",
+    "guardando": "Saving…",
+    "revisaCampos": "Check the fields marked in red.",
+    "errorGeneral": "It couldn't be saved. Try again in a moment.",
+    "estados": {
+      "titulo": "Offer status",
+      "pendiente": "Pending",
+      "publicada": "Published",
+      "rechazada": "Rejected",
+      "cerrada": "Closed"
+    },
+    "estadoUna": {
+      "pendiente": "Pending",
+      "publicada": "Published",
+      "rechazada": "Rejected",
+      "cerrada": "Closed"
+    },
+    "vacio": {
+      "pendiente": "No pending offers. All reviewed!",
+      "publicada": "No published offers.",
+      "rechazada": "No rejected offers.",
+      "cerrada": "No closed offers."
+    },
+    "lista": {
+      "creada": "Created {tiempo}",
+      "caduca": "Expires {tiempo}",
+      "caducada": "Expired {tiempo}",
+      "revisada": "Reviewed {tiempo}",
+      "yaNoSale": "No longer on the job board",
+      "motivo": "Reason: {motivo}"
+    },
+    "detalle": {
+      "publicada": "Published {tiempo}",
+      "lugar": "Where",
+      "sinSalario": "Not stated",
+      "sinDescripcion": "No summary or description.",
+      "verEnLaBolsa": "See it on the job board"
+    },
+    "comprobaciones": {
+      "empresa": "The company exists and is who it says it is",
+      "enlace": "The link works and leads to this offer",
+      "idiomas": "The required languages are correct"
+    },
+    "acciones": {
+      "revisar": "Review and publish",
+      "volverAPublicar": "Publish again",
+      "antesDePublicar": "Before publishing",
+      "abrirOriginal": "Open the original offer ↗",
+      "publicar": "Publish for 45 days",
+      "marcaTodas": "Tick the three checks to publish.",
+      "noPublicar": "Don't publish this offer…",
+      "motivo": "Why isn't it published?",
+      "rechazar": "Reject",
+      "cancelar": "Cancel",
+      "publicadaTitulo": "It's on the job board",
+      "alargar": "Extend 45 days",
+      "alargarAyuda": "If the company is still hiring. Added to the time it had left.",
+      "cerrar": "Close offer",
+      "cerrarAyuda": "Removes it from the job board (no longer hiring or the link is broken)."
+    },
+    "hecho": {
+      "publicar": "Published. It will be on the job board for 45 days.",
+      "rechazar": "Rejected.",
+      "cerrar": "Closed. It's no longer on the job board.",
+      "alargar": "Extended 45 more days."
+    },
+    "form": {
+      "empresa": "Company",
+      "elige": "Choose…",
+      "empresaNueva": "+ New company",
+      "empresaNombre": "Company name",
+      "empresaWeb": "Company website (optional)",
+      "oferta": "The offer",
+      "titulo": "Title",
+      "urlOriginal": "Link to the original offer",
+      "urlOriginalAyuda": "Where people apply. Check that it works.",
+      "idioma": "Language it's written in",
+      "idiomaAyuda": "To warn people reading it in another language.",
+      "resumen": "Summary (optional)",
+      "resumenAyuda": "One or two sentences. It's the first thing people read.",
+      "descripcion": "Description (optional)",
+      "descripcionAyuda": "Leave a blank line between paragraphs.",
+      "puesto": "The role",
+      "area": "Area",
+      "seniority": "Level",
+      "modalidad": "Work mode",
+      "tecnologias": "Technologies",
+      "tecnologiasAyuda": "The ones the offer asks for. {max} at most.",
+      "donde": "Where",
+      "ciudad": "City",
+      "pais": "Country",
+      "paisAyuda": "2 letters: ES, PT…",
+      "remotoDesde": "Remote, from",
+      "remotoDesdeAyuda": "Only if it's remote.",
+      "noRemoto": "Not remote",
+      "salario": "Gross yearly salary",
+      "salarioAyuda": "Optional, but offers with a salary work better.",
+      "salarioMin": "From",
+      "salarioMax": "To",
+      "moneda": "Currency",
+      "idiomasQuePide": "Required languages",
+      "idiomasQuePideAyuda": "People who don't speak them won't see the offer in their list. Tick at least one.",
+      "masIdiomas": "More languages",
+      "nivelDe": "{idioma} level",
+      "sinNivel": "No level",
+      "nativo": "Native"
+    },
+    "errores": {
+      "falta": "This is missing.",
+      "corto": "It's too short.",
+      "largo": "It's too long.",
+      "url": "It must be a web address (https://…).",
+      "desconocida": "There's a technology we don't know.",
+      "demasiadas": "Too many.",
+      "demasiados": "Too many (5 at most).",
+      "codigo": "It must be a 2-letter code (ES, PT…).",
+      "numero": "It must be a whole number.",
+      "menor": "It must be greater than or equal to “From”.",
+      "idioma": "There's a language we don't know.",
+      "nivel": "There's a language level we don't know.",
+      "empresaId": {
+        "falta": "Choose the company or create a new one."
+      },
+      "empresaNombre": {
+        "falta": "Write the company name."
+      },
+      "ciudad": {
+        "falta": "If it's not remote, add the city or the country."
+      },
+      "remotoDesde": {
+        "falta": "Choose where it can be done remotely from."
+      },
+      "moneda": {
+        "falta": "Choose the salary currency."
+      },
+      "idiomasRequeridos": {
+        "falta": "Tick at least one language."
+      },
+      "accion": {
+        "comprobaciones": "Tick the three checks before publishing.",
+        "motivo": "Write why it isn't published (3 to 300 characters).",
+        "estado": "This offer is no longer published.",
+        "no_encontrada": "This offer no longer exists.",
+        "sin_permiso": "You no longer have access to the staff panel.",
+        "desconocido": "It couldn't be done. Try again."
+      }
+    }
   }
 }

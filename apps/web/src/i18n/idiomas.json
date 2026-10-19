@@ -14,6 +14,9 @@
         "/cuenta/ajustes": "/cuenta/ajustes",
         "/creditos": "/creditos",
         "/staff": "/staff",
+        "/staff/nueva": "/staff/nueva",
+        "/staff/ofertas/[id]": "/staff/ofertas/[id]",
+        "/staff/ofertas/[id]/editar": "/staff/ofertas/[id]/editar",
         "/componentes": "/componentes"
       }
     },
@@ -30,6 +33,9 @@
         "/cuenta/ajustes": "/account/settings",
         "/creditos": "/credits",
         "/staff": "/staff",
+        "/staff/nueva": "/staff/new",
+        "/staff/ofertas/[id]": "/staff/offers/[id]",
+        "/staff/ofertas/[id]/editar": "/staff/offers/[id]/edit",
         "/componentes": "/components"
       }
     }
