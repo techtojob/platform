@@ -1,5 +1,6 @@
 import {
   COMPROBACIONES,
+  nombreEmpresaComparable,
   slugEmpresa,
   slugOferta,
   type Comprobacion,
@@ -228,13 +229,15 @@ export async function listarEmpresas(db: Db): Promise<EmpresaStaff[]> {
   return filas.map((f) => ({ ...f, ofertas: Number(f.ofertas) }));
 }
 
-/** Crea una empresa. Si ya hay una con el mismo nombre (sin contar mayúsculas), devuelve esa. */
+/** Crea una empresa. Si ya hay una con el mismo nombre (sin contar mayúsculas, acentos ni "S.L."), devuelve esa. */
 export async function crearEmpresa(db: Db, entrada: { nombre?: unknown; web?: unknown }): Promise<EmpresaStaff> {
   const nombre = typeof entrada.nombre === "string" ? entrada.nombre.trim() : "";
   if (nombre.length < 2 || nombre.length > 80) throw new ErrorStaff("nombre", "El nombre de la empresa tiene que tener entre 2 y 80 caracteres.");
   const web = typeof entrada.web === "string" && /^https?:\/\//.test(entrada.web.trim()) ? entrada.web.trim() : null;
 
-  const [existente] = await db.select(columnasEmpresa).from(empresas).where(sql`lower(${empresas.nombre}) = lower(${nombre})`).limit(1);
+  // "Teide Software, S.L." y "teide software" son la misma: se devuelve la que ya hay.
+  const comparable = nombreEmpresaComparable(nombre);
+  const existente = (await db.select(columnasEmpresa).from(empresas)).find((e) => nombreEmpresaComparable(e.nombre) === comparable);
   if (existente) return { ...existente, ofertas: 0 };
 
   const base = slugEmpresa(nombre);

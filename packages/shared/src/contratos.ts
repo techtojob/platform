@@ -137,3 +137,35 @@ export type EmpresaStaff = { id: string; nombre: string; slug: string; web: stri
 
 /** Error 400 con los campos que están mal: { campos: { titulo: "corto" } }. */
 export type ErrorValidacion = { error: ErrorApi["error"] & { campos: Record<string, string> } };
+
+/** Una oferta del panel que ya usa ese enlace (para no meterla dos veces). */
+export type OfertaRepetida = { id: string; titulo: string; estado: EstadoOferta; empresa: string };
+
+/**
+ * Respuesta de POST /staff/importar: lo que se ha podido leer de la página de la oferta.
+ * Todo son sugerencias para el formulario; lo que no se sabe, no viene.
+ * - fuente "datos": la página trae los datos de la oferta para Google (JobPosting). Lo más fiable.
+ * - fuente "pagina": solo el título y la descripción de la página.
+ * - fuente "nada": no se pudo abrir o no hay nada útil (pasa con LinkedIn).
+ */
+export type OfertaImportada = {
+  fuente: "datos" | "pagina" | "nada";
+  repetida: OfertaRepetida | null;
+  titulo?: string;
+  /** La empresa: si ya está en la bolsa, con su id. */
+  empresa?: { id: string | null; nombre: string; web: string | null };
+  resumen?: string;
+  descripcion?: string;
+  idioma?: Idioma;
+  area?: Area;
+  seniority?: Seniority;
+  modalidad?: Modalidad;
+  ciudad?: string;
+  pais?: string;
+  remotoDesde?: ZonaRemoto;
+  salarioMin?: number;
+  salarioMax?: number;
+  moneda?: Moneda;
+  tecnologias: string[];
+  idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+};

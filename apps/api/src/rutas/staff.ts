@@ -15,6 +15,7 @@ import {
   publicarOferta,
   rechazarOferta,
 } from "../servicios/ofertas-staff";
+import { buscarRepetida, importarOferta } from "../servicios/importar";
 import { conSesion, soloStaff } from "./sesion";
 
 /**
@@ -29,6 +30,8 @@ import { conSesion, soloStaff } from "./sesion";
  * POST /staff/ofertas/:id/cerrar
  * POST /staff/ofertas/:id/alargar        → 45 días más
  * GET  /staff/empresas · POST /staff/empresas { nombre, web? }
+ * POST /staff/importar { url }            → lo que se puede leer de la página de la oferta
+ * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
  */
 
 const ESTADOS_HTTP = { no_encontrada: 404, empresa: 400, comprobaciones: 400, motivo: 400, estado: 409, nombre: 400 } as const;
@@ -108,6 +111,17 @@ export const rutasStaff = new Hono<Entorno>()
     } catch (e) {
       return responderError(c, e);
     }
+  })
+  .post("/importar", async (c) => {
+    const { url } = await cuerpo(c);
+    if (typeof url !== "string" || !url.trim()) {
+      return c.json({ error: { codigo: "datos_invalidos", mensaje: "Falta el enlace.", campos: { url: "falta" } } }, 400);
+    }
+    return c.json(await importarOferta(c.var.db, url));
+  })
+  .get("/repetida", async (c) => {
+    const url = c.req.query("url") ?? "";
+    return c.json({ repetida: await buscarRepetida(c.var.db, url, c.req.query("sin")) });
   })
   .get("/empresas", async (c) => c.json(await listarEmpresas(c.var.db)))
   .post("/empresas", async (c) => {
