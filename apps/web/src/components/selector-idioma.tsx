@@ -48,7 +48,7 @@ function Selector({ onCambiar, pendiente = false }: { onCambiar?: (l: Locale) =>
         value={locale}
         disabled={pendiente || !onCambiar}
         onChange={(e) => onCambiar?.(e.target.value as Locale)}
-        className="h-11 rounded-control border border-borde-fuerte bg-superficie px-2 text-sm font-semibold text-texto sm:px-3"
+        className="h-11 cursor-pointer rounded-full bg-transparent px-2.5 text-sm font-bold text-texto transition-colors hover:bg-hover"
       >
         {locales.map((l) => (
           // Solo el código para que quepa en el móvil; el nombre, para lectores de pantalla.

@@ -7,21 +7,14 @@ import { COOKIE_TEMA } from "./script-tema";
 type Tema = "claro" | "oscuro";
 const EVENTO = "ttj-tema";
 
-/** El modo que se ve ahora: el elegido o, si no hay, el del sistema. */
+/** El modo que se ve ahora: el elegido o, si no hay, el oscuro (el de la landing). */
 function temaActual(): Tema {
-  const elegido = document.documentElement.dataset.tema;
-  if (elegido === "claro" || elegido === "oscuro") return elegido;
-  return matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+  return document.documentElement.dataset.tema === "claro" ? "claro" : "oscuro";
 }
 
 function suscribir(avisar: () => void) {
-  const sistema = matchMedia("(prefers-color-scheme: dark)");
-  sistema.addEventListener("change", avisar);
   window.addEventListener(EVENTO, avisar);
-  return () => {
-    sistema.removeEventListener("change", avisar);
-    window.removeEventListener(EVENTO, avisar);
-  };
+  return () => window.removeEventListener(EVENTO, avisar);
 }
 
 /** Botón de la cabecera: cambia entre claro y oscuro y lo recuerda un año. */
@@ -42,7 +35,7 @@ export function BotonTema() {
       type="button"
       onClick={cambiar}
       aria-label={tema === "oscuro" ? t("aClaro") : tema === "claro" ? t("aOscuro") : t("cambiar")}
-      className="grid size-11 shrink-0 place-items-center rounded-control border border-borde-fuerte text-texto hover:bg-hover"
+      className="grid size-11 shrink-0 place-items-center rounded-full text-texto transition-colors hover:bg-hover hover:text-enlace"
     >
       {tema === "oscuro" ? (
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

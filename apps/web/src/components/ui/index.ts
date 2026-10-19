@@ -4,8 +4,10 @@
  * toda la web. Se ven todos juntos en /empleo/componentes.
  */
 export { Aviso } from "./aviso";
+export { AvatarBlob } from "./avatar-blob";
 export { Boton, clasesBoton, type TamanoBoton, type VarianteBoton } from "./boton";
 export { Campo } from "./campo";
 export { Casilla } from "./casilla";
 export { ChipFiltro, ChipQuitable, Etiqueta } from "./chip";
 export { Tarjeta } from "./tarjeta";
+export { Ventana } from "./ventana";

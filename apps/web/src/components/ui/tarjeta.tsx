@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 export function Tarjeta({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
-      className={cn("rounded-tarjeta border border-borde bg-superficie p-6", className)}
+      className={cn("rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta", className)}
       {...props}
     />
   );

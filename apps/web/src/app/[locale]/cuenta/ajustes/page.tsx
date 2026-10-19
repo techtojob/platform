@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Avatar } from "@/components/cuenta/avatar";
 import { CerrarSesion } from "@/components/cuenta/cerrar-sesion";
 import { SeccionDiscord } from "@/components/cuenta/seccion-discord";
-import { Etiqueta } from "@/components/ui";
+import { Portada } from "@/components/sitio/portada";
+import { Etiqueta, Tarjeta, Ventana } from "@/components/ui";
 import { redirect } from "@/i18n/navigation";
 import { obtenerCuenta } from "@/lib/api";
 
@@ -15,11 +17,17 @@ const NOMBRES_PROVEEDOR: Record<string, string> = { google: "Google", github: "G
 
 /** Mi cuenta: quién eres, con qué entras, tu Discord y cerrar sesión. */
 export default function PaginaAjustes() {
+  const t = useTranslations();
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8 sm:py-12">
-      <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-superficie" />}>
-        <Contenido />
-      </Suspense>
+    <main id="contenido" className="flex flex-1 flex-col">
+      <Portada migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("cuenta.titulo") }]} titulo={t("cuenta.titulo")} compacta />
+      <section className="rejilla flex-1 px-[var(--margen)] py-12">
+        <div className="mx-auto max-w-3xl">
+          <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-tarjeta" />}>
+            <Contenido />
+          </Suspense>
+        </div>
+      </section>
     </main>
   );
 }
@@ -33,18 +41,16 @@ async function Contenido() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-titulo-2 font-bold">{t("titulo")}</h1>
-
-      <section className="flex items-center gap-4 rounded-tarjeta border border-borde bg-superficie p-5">
+      <Tarjeta className="flex items-center gap-4 p-5">
         <Avatar nombre={usuario.nombre} imagen={usuario.imagen} grande />
         <div className="flex min-w-0 flex-col">
-          <p className="truncate text-lg font-semibold">{usuario.nombre}</p>
+          <p className="truncate text-lg font-bold">{usuario.nombre}</p>
           <p className="truncate text-suave">{usuario.email}</p>
         </div>
-      </section>
+      </Tarjeta>
 
-      <section aria-labelledby="formas" className="flex flex-col gap-3 rounded-tarjeta border border-borde bg-superficie p-5">
-        <h2 id="formas" className="text-titulo-3 font-semibold">
+      <Tarjeta className="flex flex-col gap-3 p-5">
+        <h2 className="text-titulo-3 font-bold">
           {t("formasDeEntrar")}
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -55,14 +61,14 @@ async function Contenido() {
           ))}
         </div>
         <p className="text-sm text-suave">{t("mismoEmail")}</p>
-      </section>
+      </Tarjeta>
 
-      <section aria-labelledby="discord" className="flex flex-col gap-3 rounded-tarjeta border border-borde bg-superficie p-5">
-        <h2 id="discord" className="text-titulo-3 font-semibold">
-          Discord
-        </h2>
-        <SeccionDiscord discord={discord} />
-      </section>
+      {/* Discord, en su ventana tipo Discord */}
+      <Ventana canal="discord" aria-label="Discord">
+        <div className="rounded-xl bg-tarjeta/60 p-4 sm:p-5">
+          <SeccionDiscord discord={discord} />
+        </div>
+      </Ventana>
 
       <div>
         <CerrarSesion />

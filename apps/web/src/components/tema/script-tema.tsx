@@ -1,7 +1,7 @@
 /**
  * Pone el modo (claro u oscuro) antes de pintar la página, para que no haya un
  * destello del modo equivocado. Lee la cookie TTJ_TEMA; si no hay, no pone nada
- * y manda el sistema (prefers-color-scheme, ver globals.css).
+ * y se ve el oscuro, el de la landing (ver globals.css).
  *
  * Es un <script> en línea a propósito: tiene que ejecutarse antes que todo lo demás.
  */

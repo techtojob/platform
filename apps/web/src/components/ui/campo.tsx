@@ -2,7 +2,7 @@ import { useId, type ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
 const clasesControl =
-  "w-full rounded-control border border-borde-fuerte bg-superficie px-4 text-base text-texto placeholder:text-suave aria-invalid:border-peligro";
+  "w-full rounded-control border border-borde-fuerte bg-tarjeta px-5 text-base text-texto placeholder:text-suave aria-invalid:border-peligro";
 
 type PropsCampo = ComponentProps<"input"> & {
   etiqueta: string;
@@ -22,7 +22,7 @@ export function Campo({ etiqueta, ayuda, error, id, className, ...props }: Props
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <label htmlFor={idCampo} className="text-sm font-semibold">
+      <label htmlFor={idCampo} className="text-sm font-bold">
         {etiqueta}
       </label>
       <input

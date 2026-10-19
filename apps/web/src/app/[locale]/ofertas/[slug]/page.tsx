@@ -24,9 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /** Página de una oferta: /empleo/ofertas/<slug>-<id> o /jobs/offers/<slug>-<id>. */
 export default function PaginaOferta({ params }: Props) {
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
+    <main id="contenido" className="flex flex-1 flex-col">
       {/* La oferta se pide en cada visita: así siempre sale la versión revisada por el staff. */}
-      <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-hover" />}>
+      <Suspense fallback={<div aria-busy="true" className="fondo-portada h-[36rem] animate-pulse" />}>
         <CargarOferta params={params} />
       </Suspense>
     </main>

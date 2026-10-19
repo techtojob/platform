@@ -1,21 +1,23 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-export type VarianteBoton = "primario" | "secundario" | "fantasma" | "peligro" | "sobrePostit";
+export type VarianteBoton = "primario" | "secundario" | "fantasma" | "peligro" | "sobrePostit" | "sobreAcento";
 export type TamanoBoton = "md" | "lg";
 
 const variantes: Record<VarianteBoton, string> = {
   primario: "bg-acento text-sobre-acento hover:brightness-105",
-  secundario: "border border-borde-fuerte bg-superficie text-texto hover:bg-hover",
+  secundario: "border border-borde-fuerte text-texto hover:border-enlace hover:text-enlace",
   fantasma: "text-enlace hover:bg-hover",
   peligro: "bg-peligro text-fondo hover:brightness-105",
-  /** Dentro de un Aviso (post-it): borde y texto oscuros en los dos modos. */
-  sobrePostit: "border border-ink text-ink hover:bg-ink/10",
+  /** Dentro de un post-it (Aviso): el botón oscuro de la landing, igual en los dos modos. */
+  sobrePostit: "bg-ink text-white hover:bg-acento hover:text-ink",
+  /** Dentro de una tarjeta turquesa: borde y texto oscuros. */
+  sobreAcento: "border border-ink/35 text-ink hover:bg-ink hover:text-white",
 };
 
 const tamanos: Record<TamanoBoton, string> = {
-  md: "min-h-11 px-4 text-sm",
-  lg: "min-h-13 px-6 text-base",
+  md: "min-h-11 px-5 text-sm",
+  lg: "min-h-14 px-7 text-base",
 };
 
 /**
@@ -28,7 +30,7 @@ export function clasesBoton({
   className,
 }: { variante?: VarianteBoton; tamano?: TamanoBoton; className?: string } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-control text-center font-semibold transition",
+    "inline-flex items-center justify-center gap-2 rounded-control text-center font-bold transition-colors",
     "disabled:pointer-events-none disabled:opacity-50",
     variantes[variante],
     tamanos[tamano],

@@ -12,7 +12,7 @@ export async function MenuCuenta() {
 
   if (!cuenta) {
     return (
-      <Link href="/entrar" className={clasesBoton({ variante: "secundario" })}>
+      <Link href="/entrar" className={clasesBoton({ className: "ml-1" })}>
         {t("entrar")}
       </Link>
     );
@@ -21,7 +21,7 @@ export async function MenuCuenta() {
     <Link
       href="/cuenta/ajustes"
       aria-label={t("miCuenta")}
-      className="flex h-11 items-center gap-2 rounded-control px-1.5 text-sm font-semibold text-texto hover:bg-hover sm:pr-3"
+      className="ml-1 flex h-11 items-center gap-2 rounded-full bg-chip pl-1.5 pr-1.5 text-sm font-bold text-texto transition-colors hover:bg-acento hover:text-ink sm:pr-4"
     >
       <Avatar nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} />
       <span className="hidden max-w-32 truncate sm:inline">{cuenta.usuario.nombre.split(" ")[0]}</span>
@@ -31,5 +31,5 @@ export async function MenuCuenta() {
 
 /** Lo que se ve mientras se mira si hay sesión: un hueco del mismo tamaño, para que nada salte. */
 export function MenuCuentaCargando() {
-  return <span aria-hidden="true" className="block h-11 w-11 rounded-control bg-hover sm:w-24" />;
+  return <span aria-hidden="true" className="ml-1 block h-11 w-11 rounded-full bg-chip sm:w-24" />;
 }

@@ -102,8 +102,19 @@
     "parecidas": "Ofertas parecidas",
     "copiarEnlace": "Copiar enlace",
     "enlaceCopiado": "Enlace copiado",
-    "revisada": "Revisada por el staff de TechToJob.",
-    "aplicarAyudaCorta": "Se abre su web. TechToJob no guarda tus datos."
+    "revisada": "Revisada por el staff de TechToJob",
+    "aplicarAyudaCorta": "Se abre su web. TechToJob no guarda tus datos.",
+    "portadaTitulo": "Ofertas tech <resaltado>revisadas</resaltado> por la comunidad",
+    "portadaTexto": "Sin ofertas fantasma ni portales infinitos: el staff revisa cada una antes de publicarla. Y solo ves las que piden idiomas que hablas.",
+    "revision": {
+      "titulo": "Cada oferta pasa por el staff",
+      "empresa": "La empresa es real",
+      "enlace": "El enlace para aplicar funciona",
+      "idiomas": "Dice qué idiomas pide",
+      "salario": "Salario, si lo publican"
+    },
+    "tituloSeccion": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
+    "teEncaja": "¿Te encaja?"
   },
   "regiones": {
     "es": "España",
@@ -122,15 +133,13 @@
     "activos": "Filtros puestos",
     "quitar": "Quitar {filtro}",
     "limpiar": "Quitar todos",
-    "ver": "{count, plural, =0 {Ninguna oferta} one {Ver # oferta} other {Ver # ofertas}}"
+    "ver": "{count, plural, =0 {Ninguna oferta} one {Ver # oferta} other {Ver # ofertas}}",
+    "canal": "filtros"
   },
   "noEncontrada": {
     "titulo": "Esta página no existe",
     "texto": "Puede que la oferta ya no esté publicada o que el enlace esté mal copiado.",
     "volver": "Ver las ofertas"
-  },
-  "cabecera": {
-    "seccion": "empleo"
   },
   "tema": {
     "aClaro": "Cambiar a modo claro",
@@ -139,7 +148,8 @@
   },
   "buscador": {
     "etiqueta": "Buscar ofertas",
-    "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…"
+    "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…",
+    "buscar": "Buscar"
   },
   "cuenta": {
     "entrar": "Entrar",
@@ -180,6 +190,26 @@
       "account_not_linked": "Ya hay una cuenta con ese email. Entra con la forma que usaste la primera vez.",
       "access_denied": "Has cancelado el inicio de sesión.",
       "otro": "No se ha podido iniciar sesión. Inténtalo de nuevo."
-    }
+    },
+    "privacidadTitulo": "Solo lo justo"
+  },
+  "navegacion": {
+    "empleo": "Empleo",
+    "talento": "Talento",
+    "empresas": "Empresas",
+    "torneos": "Torneos",
+    "noticias": "Noticias",
+    "quienesSomos": "Quiénes somos",
+    "principal": "Navegación principal",
+    "abrir": "Abrir navegación",
+    "inicio": "Inicio",
+    "migas": "Ruta de navegación"
+  },
+  "pie": {
+    "explorar": "Explorar",
+    "legal": "Legal",
+    "privacidad": "Privacidad",
+    "avisoLegal": "Aviso legal",
+    "comunidad": "Comunidad"
   }
 }

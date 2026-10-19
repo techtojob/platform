@@ -1,70 +1,71 @@
 @import "tailwindcss";
+@import "blobatar/motion.css";
 
 /*
- * Estilos base de la bolsa. Todo lo visual sale de aquí: si diseño cambia un color,
- * un tamaño o un redondeo, se cambia en este archivo y se aplica en toda la web.
+ * Estilos base de la bolsa: los mismos de la landing (techtojob.com), para que la bolsa
+ * se vea como una sección más de la web. Si diseño cambia un color, un tamaño o un
+ * redondeo, se cambia aquí y se aplica en toda la bolsa.
  *
  * COLORES CON NOMBRE DE FUNCIÓN, no de color: `bg-fondo`, `text-suave`, `border-borde`…
- * Cada uno tiene un valor en modo claro y otro en modo oscuro. Los componentes solo
- * usan estos nombres, nunca `text-white` ni `#84c0bf`: así los dos modos salen solos.
+ * Cada uno tiene un valor en modo oscuro (el de la marca, por defecto) y otro en modo
+ * claro. Los componentes solo usan estos nombres, nunca `text-white` ni `#84c0bf`.
  *
- * Qué modo se ve: el atributo `data-tema` de <html> ("claro" u "oscuro"), que pone
- * src/components/tema/script-tema.tsx según la elección de la persona. Sin elección,
- * el del sistema (prefers-color-scheme).
+ * Qué modo se ve: el atributo `data-tema` de <html>, que pone src/components/tema/script-tema.tsx
+ * si la persona eligió el claro con el botón de la cabecera. Sin elección, oscuro, como la landing.
  *
- * Colores de la marca (los de la landing): ink #2f3436, slate #3b4245,
- * turquesa #84c0bf, post-it #e4d7bf.
+ * Colores de la marca: ink #2f3436, slate #3b4245, turquesa #84c0bf, post-it #e4d7bf.
  */
 
-/* Modo claro (por defecto) */
+/* Modo oscuro (por defecto, el de la landing) */
 :root {
-  color-scheme: light;
-  --fondo: #f7f5f0;        /* fondo de la página: papel cálido */
-  --superficie: #ffffff;   /* listas, paneles, tarjetas */
-  --texto: #2f3436;        /* texto principal (ink) */
-  --suave: #5c6467;        /* texto secundario: empresa, fechas, ayudas */
-  --borde: #e7e2d8;        /* separadores */
-  --borde-fuerte: #d6d0c4; /* bordes de campos y botones */
-  --enlace: #2a7371;       /* texto en color y enlaces: turquesa oscurecido para que se lea */
-  --chip: #efebe3;         /* fondo de etiquetas (tecnologías) */
-  --hover: #faf8f4;        /* fila al pasar el ratón */
-  --peligro: #b3261e;      /* errores */
+  color-scheme: dark;
+  --fondo: #2f3436;            /* fondo de la página (ink) */
+  --fondo-hondo: #292e30;      /* parte baja de las cabeceras con degradado */
+  --superficie: #3b4245;       /* secciones con cuadrícula (slate) */
+  --tarjeta: #2f3436;          /* ofertas, paneles */
+  --tarjeta-hover: #353b3d;
+  --ventana: #313338;          /* paneles "tipo Discord" (#filtros) */
+  --texto: #ffffff;
+  --suave: rgb(255 255 255 / 72%);
+  --borde: rgb(255 255 255 / 10%);
+  --borde-fuerte: rgb(255 255 255 / 22%);
+  --enlace: #84c0bf;           /* texto en color y enlaces */
+  --chip: rgb(255 255 255 / 8%);
+  --hover: rgb(255 255 255 / 8%);
+  --peligro: #f3a3a3;
+  --rejilla: rgb(132 192 191 / 10%);
+  --sombra: 0 24px 70px rgb(0 0 0 / 28%);
 }
 
-/* Modo oscuro: elegido a mano, o el del sistema si no se eligió nada */
-:root[data-tema="oscuro"] {
-  color-scheme: dark;
-  --fondo: #2f3436;
-  --superficie: #353b3d;
-  --texto: #f4f2ee;
-  --suave: #b6bdbf;
-  --borde: #454d50;
-  --borde-fuerte: #566064;
-  --enlace: #84c0bf;
-  --chip: #434b4e;
-  --hover: #3b4245;
-  --peligro: #f3a3a3;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-tema="claro"]) {
-    color-scheme: dark;
-    --fondo: #2f3436;
-    --superficie: #353b3d;
-    --texto: #f4f2ee;
-    --suave: #b6bdbf;
-    --borde: #454d50;
-    --borde-fuerte: #566064;
-    --enlace: #84c0bf;
-    --chip: #434b4e;
-    --hover: #3b4245;
-    --peligro: #f3a3a3;
-  }
+/* Modo claro: solo si se elige con el botón de la cabecera */
+:root[data-tema="claro"] {
+  color-scheme: light;
+  --fondo: #f7f5f0;
+  --fondo-hondo: #efebe3;
+  --superficie: #efebe3;
+  --tarjeta: #ffffff;
+  --tarjeta-hover: #faf8f4;
+  --ventana: #ffffff;
+  --texto: #2f3436;
+  --suave: #5c6467;
+  --borde: #e2ddd2;
+  --borde-fuerte: #cfc8ba;
+  --enlace: #2a7371;           /* turquesa oscurecido: #84c0bf sobre blanco no se lee */
+  --chip: #efebe3;
+  --hover: #f2eee6;
+  --peligro: #b3261e;
+  --rejilla: rgb(42 115 113 / 9%);
+  --sombra: 0 18px 50px rgb(47 52 54 / 12%);
 }
 
 @theme inline {
   /* Colores que cambian con el modo */
   --color-fondo: var(--fondo);
+  --color-fondo-hondo: var(--fondo-hondo);
   --color-superficie: var(--superficie);
+  --color-tarjeta: var(--tarjeta);
+  --color-tarjeta-hover: var(--tarjeta-hover);
+  --color-ventana: var(--ventana);
   --color-texto: var(--texto);
   --color-suave: var(--suave);
   --color-borde: var(--borde);
@@ -76,49 +77,94 @@
 
   /* Colores fijos de la marca, iguales en los dos modos */
   --color-acento: #84c0bf;      /* botones principales, casillas marcadas */
-  --color-sobre-acento: #1f2a2b; /* texto encima del acento */
-  --color-postit: #e4d7bf;      /* avisos importantes (el de idiomas) */
+  --color-sobre-acento: #2f3436; /* texto encima del acento */
+  --color-postit: #e4d7bf;      /* post-its: avisos importantes */
   --color-ink: #2f3436;         /* texto encima del post-it */
 
-  /* Tipografía: Sora para títulos y logo (font-titulo), Instrument Sans para el resto */
-  --font-sans: var(--font-instrument), system-ui, sans-serif;
-  --font-titulo: var(--font-sora), var(--font-instrument), sans-serif;
+  --shadow-tarjeta: var(--sombra);
 
-  /* Tamaños de título: text-titulo-1, text-titulo-2, text-titulo-3.
-     El texto normal usa los tamaños de Tailwind (text-sm, text-base, text-lg). */
-  --text-titulo-1: clamp(1.75rem, 3.5vw, 2.75rem);
-  --text-titulo-1--line-height: 1.1;
-  --text-titulo-1--letter-spacing: -0.03em;
-  --text-titulo-2: 1.625rem;
-  --text-titulo-2--line-height: 1.2;
-  --text-titulo-2--letter-spacing: -0.02em;
-  --text-titulo-3: 1.0625rem;
-  --text-titulo-3--line-height: 1.35;
-  --text-titulo-3--letter-spacing: -0.01em;
+  /* Tipografía: Sora en todo, como la landing */
+  --font-sans: var(--font-sora), system-ui, sans-serif;
+  --font-titulo: var(--font-sora), system-ui, sans-serif;
 
-  /* Redondeos: rounded-control (campos y botones), rounded-tarjeta (listas y paneles) */
-  --radius-control: 0.625rem;
-  --radius-tarjeta: 0.75rem;
+  /* Tamaños de título: text-titulo-1 (cabecera de página), -2 (secciones), -3 (tarjetas) */
+  --text-titulo-1: clamp(2.5rem, 6vw, 4.75rem);
+  --text-titulo-1--line-height: 1.03;
+  --text-titulo-1--letter-spacing: -0.04em;
+  --text-titulo-2: clamp(1.75rem, 3.4vw, 2.75rem);
+  --text-titulo-2--line-height: 1.05;
+  --text-titulo-2--letter-spacing: -0.035em;
+  --text-titulo-3: 1.1875rem;
+  --text-titulo-3--line-height: 1.25;
+  --text-titulo-3--letter-spacing: -0.02em;
+
+  /* Redondeos: rounded-control (botones y campos: píldora), rounded-tarjeta (tarjetas y paneles) */
+  --radius-control: 9999px;
+  --radius-tarjeta: 1rem;
+}
+
+:root {
+  /* Margen a los lados de la página, el mismo de la landing */
+  --margen: clamp(1.25rem, 5vw, 5.5rem);
 }
 
 body {
   background: var(--fondo);
   color: var(--texto);
-  font-family: var(--font-instrument), system-ui, sans-serif;
-}
-
-/* Los títulos, en Sora (la de la marca) */
-:where(h1, h2, h3) {
-  font-family: var(--font-sora), var(--font-instrument), sans-serif;
+  font-family: var(--font-sora), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
   background: #84c0bf;
-  color: #1f2a2b;
+  color: #2f3436;
 }
 
-/* Foco visible para quien navega con teclado. */
+/* Foco visible para quien navega con teclado, como en la landing. */
 :where(a, button, input, select, textarea, summary):focus-visible {
-  outline: 2px solid var(--enlace);
+  outline: 3px solid currentColor;
+  outline-offset: 4px;
+}
+:where(input, select, textarea):focus-visible {
+  outline-color: var(--enlace);
   outline-offset: 2px;
+}
+
+/* Cabecera de página: el degradado con brillo turquesa de la landing */
+.fondo-portada {
+  background:
+    radial-gradient(circle at 78% 24%, rgb(132 192 191 / 18%), transparent 31rem),
+    linear-gradient(180deg, var(--fondo) 0%, var(--fondo-hondo) 100%);
+}
+
+/* Sección con cuadrícula turquesa, como "Cómo funciona" en la landing */
+.rejilla {
+  background-color: var(--superficie);
+  background-image:
+    linear-gradient(to bottom, rgb(0 0 0 / 18%), transparent),
+    linear-gradient(to right, var(--rejilla) 1px, transparent 2px),
+    linear-gradient(to bottom, var(--rejilla) 1px, transparent 2px);
+  background-position: top, center, center;
+  background-repeat: no-repeat, repeat, repeat;
+  background-size: 100% clamp(4rem, 8vw, 8rem), 5rem 5rem, 5rem 5rem;
+}
+:root[data-tema="claro"] .rejilla {
+  background-image:
+    linear-gradient(to right, var(--rejilla) 1px, transparent 2px),
+    linear-gradient(to bottom, var(--rejilla) 1px, transparent 2px);
+  background-size: 5rem 5rem, 5rem 5rem;
+}
+
+/* Enlace subrayado en turquesa, como "Ver todas las noticias" en la landing */
+.enlace-subrayado {
+  background-image: linear-gradient(var(--color-acento), var(--color-acento));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 2px;
+  padding-bottom: 3px;
+  transition: background-size 0.25s ease;
+}
+.enlace-subrayado:hover {
+  background-size: 0% 2px;
+  background-position: right bottom;
 }

@@ -3,7 +3,7 @@
 import type { ResultadoOfertas } from "@techtojob/shared";
 import { useTranslations } from "next-intl";
 import { useOptimistic, useRef, useTransition } from "react";
-import { Boton, Casilla } from "@/components/ui";
+import { Boton, Casilla, Ventana } from "@/components/ui";
 import { useRouter } from "@/i18n/navigation";
 import { aParametros, alternar, cambiar, cuantosFiltros, PARAMETROS, SIN_FILTROS, type Filtros } from "@/lib/filtros";
 
@@ -51,7 +51,7 @@ export function FiltrosOfertas({ filtros: filtrosDireccion, facetas, total, modo
     <>
       {GRUPOS.map(({ grupo, faceta, titulo, textos }) => (
         <fieldset key={grupo} className="flex flex-col">
-          <legend className="mb-1.5 text-[0.8125rem] font-semibold uppercase tracking-wider text-suave">
+          <legend className="mb-1 text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-suave">
             {t(`filtros.${titulo}`)}
           </legend>
           {PARAMETROS[grupo].valores.map((valor) => (
@@ -66,7 +66,7 @@ export function FiltrosOfertas({ filtros: filtrosDireccion, facetas, total, modo
         </fieldset>
       ))}
       <Casilla
-        className="border-t border-borde pt-3"
+        className="border-t border-borde pt-2"
         etiqueta={t("filtros.conSalario")}
         checked={!!filtros.conSalario}
         onChange={() => aplicar(cambiar(filtros, { conSalario: !filtros.conSalario || undefined }))}
@@ -76,23 +76,22 @@ export function FiltrosOfertas({ filtros: filtrosDireccion, facetas, total, modo
 
   if (modo === "lateral") {
     return (
-      <section
-        aria-labelledby="titulo-filtros"
+      // Como un canal de Discord, igual que las preguntas frecuentes de la landing.
+      <Ventana
+        canal={t("filtros.canal")}
+        aria-label={t("filtros.titulo")}
         aria-busy={pendiente}
-        className="hidden flex-col gap-6 transition-opacity aria-busy:opacity-60 lg:flex"
-      >
-        <div className="flex min-h-9 items-center justify-between">
-          <h2 id="titulo-filtros" className="text-base font-semibold">
-            {t("filtros.titulo")}
-          </h2>
-          {activos > 0 && (
-            <button type="button" onClick={quitarTodos} className="text-sm font-semibold text-enlace hover:underline">
+        className="transition-opacity aria-busy:opacity-60"
+        extra={
+          activos > 0 && (
+            <button type="button" onClick={quitarTodos} className="rounded-full bg-chip px-3 py-1 text-xs font-bold text-texto hover:bg-acento hover:text-ink">
               {t("filtros.limpiar")}
             </button>
-          )}
-        </div>
-        {grupos}
-      </section>
+          )
+        }
+      >
+        <div className="flex flex-col gap-5 rounded-xl bg-tarjeta/50 p-3">{grupos}</div>
+      </Ventana>
     );
   }
 
@@ -122,14 +121,14 @@ export function FiltrosOfertas({ filtros: filtrosDireccion, facetas, total, modo
         ref={panel}
         aria-labelledby="titulo-panel-filtros"
         onClick={(e) => e.target === panel.current && panel.current.close()}
-        className="m-0 mt-auto max-h-[85dvh] w-full max-w-none flex-col rounded-t-2xl bg-superficie p-0 text-texto backdrop:bg-black/50 open:flex lg:hidden"
+        className="m-0 mt-auto max-h-[85dvh] w-full max-w-none flex-col rounded-t-3xl bg-ventana p-0 text-texto backdrop:bg-black/60 open:flex lg:hidden"
       >
         <div className="flex items-center justify-between px-4 pb-2 pt-4">
-          <h2 id="titulo-panel-filtros" className="text-lg font-semibold">
+          <h2 id="titulo-panel-filtros" className="text-lg font-bold">
             {t("filtros.titulo")}
           </h2>
           {activos > 0 && (
-            <button type="button" onClick={quitarTodos} className="min-h-11 px-1 text-sm font-semibold text-enlace">
+            <button type="button" onClick={quitarTodos} className="min-h-11 px-1 text-sm font-bold text-enlace">
               {t("filtros.limpiar")}
             </button>
           )}

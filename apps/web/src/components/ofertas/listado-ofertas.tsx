@@ -42,7 +42,7 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
 
   if (!resultado) {
     return (
-      <p role="alert" className="rounded-tarjeta border border-peligro p-6 text-peligro">
+      <p role="alert" className="rounded-tarjeta border border-peligro bg-tarjeta p-6 font-bold text-peligro">
         {t("ofertas.error")}
       </p>
     );
@@ -52,16 +52,16 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
   const conFiltros = hayFiltros(filtros);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-12">
-      <aside className="hidden lg:block">
+    <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-10">
+      <aside className="hidden lg:sticky lg:top-28 lg:block lg:self-start">
         <FiltrosOfertas modo="lateral" filtros={filtros} facetas={resultado.facetas} total={resultado.total} />
       </aside>
 
       <div className="flex min-w-0 flex-col gap-4">
         <header className="flex flex-col gap-2">
-          <h1 className="text-titulo-2 font-bold" aria-live="polite">
-            {t("ofertas.tituloConTotal", { count: resultado.total })}
-          </h1>
+          <h2 className="text-titulo-2 font-bold" aria-live="polite">
+            {t("ofertas.tituloSeccion", { count: resultado.total })}
+          </h2>
           <IdiomasQueHablo actuales={idiomas} />
         </header>
 
@@ -74,8 +74,8 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
         <FiltrosActivos filtros={filtros} />
 
         {resultado.ofertas.length === 0 ? (
-          <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-superficie p-6">
-            <p className="font-semibold">{conFiltros ? t("ofertas.vacioConFiltros") : t("ofertas.vacio")}</p>
+          <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta">
+            <p className="font-bold">{conFiltros ? t("ofertas.vacioConFiltros") : t("ofertas.vacio")}</p>
             {conFiltros && (
               <Link href="/" className={clasesBoton({ variante: "secundario" })}>
                 {t("filtros.limpiar")}
@@ -83,7 +83,7 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
             )}
           </div>
         ) : (
-          <ul className="divide-y divide-borde overflow-hidden rounded-tarjeta border border-borde bg-superficie">
+          <ul className="flex flex-col gap-3">
             {resultado.ofertas.map((oferta) => (
               <li key={oferta.id}>
                 <FilaOferta oferta={oferta} ahora={ahora} />
@@ -116,8 +116,8 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
         {ocultas.map(([idioma, total]) => {
           const nombre = nombreIdioma(idioma, locale, { enFrase: true });
           return (
-            <Aviso key={idioma} className="flex flex-wrap items-center justify-between gap-3">
-              <p className="font-semibold">{t("ofertas.ocultas", { count: total, idioma: nombre })}</p>
+            <Aviso key={idioma} className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <p className="font-bold">{t("ofertas.ocultas", { count: total, idioma: nombre })}</p>
               <AnadirIdioma actuales={idiomas} idioma={idioma} texto={t("ofertas.anadirIdioma", { idioma: nombre })} />
             </Aviso>
           );

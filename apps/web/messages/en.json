@@ -102,8 +102,19 @@
     "parecidas": "Similar job offers",
     "copiarEnlace": "Copy link",
     "enlaceCopiado": "Link copied",
-    "revisada": "Reviewed by the TechToJob staff.",
-    "aplicarAyudaCorta": "Opens their website. TechToJob doesn't store your data."
+    "revisada": "Reviewed by the TechToJob staff",
+    "aplicarAyudaCorta": "Opens their website. TechToJob doesn't store your data.",
+    "portadaTitulo": "Tech jobs <resaltado>reviewed</resaltado> by the community",
+    "portadaTexto": "No ghost jobs, no endless portals: the staff reviews every offer before it goes live. And you only see the ones that ask for languages you speak.",
+    "revision": {
+      "titulo": "Every offer is checked by the staff",
+      "empresa": "The company is real",
+      "enlace": "The apply link works",
+      "idiomas": "It says which languages it requires",
+      "salario": "Salary, if they publish it"
+    },
+    "tituloSeccion": "{count, plural, =0 {No job offers} one {# job offer} other {# job offers}}",
+    "teEncaja": "Is it a fit?"
   },
   "regiones": {
     "es": "Spain",
@@ -122,15 +133,13 @@
     "activos": "Active filters",
     "quitar": "Remove {filtro}",
     "limpiar": "Clear all",
-    "ver": "{count, plural, =0 {No job offers} one {Show # job offer} other {Show # job offers}}"
+    "ver": "{count, plural, =0 {No job offers} one {Show # job offer} other {Show # job offers}}",
+    "canal": "filters"
   },
   "noEncontrada": {
     "titulo": "This page doesn't exist",
     "texto": "The job offer may no longer be published, or the link may be incomplete.",
     "volver": "See job offers"
-  },
-  "cabecera": {
-    "seccion": "jobs"
   },
   "tema": {
     "aClaro": "Switch to light mode",
@@ -139,7 +148,8 @@
   },
   "buscador": {
     "etiqueta": "Search job offers",
-    "ejemplo": "Search by role, company or technology: data engineer, React…"
+    "ejemplo": "Search by role, company or technology: data engineer, React…",
+    "buscar": "Search"
   },
   "cuenta": {
     "entrar": "Log in",
@@ -180,6 +190,26 @@
       "account_not_linked": "There's already an account with that email. Log in the way you did the first time.",
       "access_denied": "You cancelled the login.",
       "otro": "Couldn't log in. Please try again."
-    }
+    },
+    "privacidadTitulo": "Only what's needed"
+  },
+  "navegacion": {
+    "empleo": "Jobs",
+    "talento": "Talent",
+    "empresas": "Companies",
+    "torneos": "Tournaments",
+    "noticias": "News",
+    "quienesSomos": "About us",
+    "principal": "Main navigation",
+    "abrir": "Open navigation",
+    "inicio": "Home",
+    "migas": "Breadcrumb"
+  },
+  "pie": {
+    "explorar": "Explore",
+    "legal": "Legal",
+    "privacidad": "Privacy",
+    "avisoLegal": "Legal notice",
+    "comunidad": "Community"
   }
 }

@@ -1,36 +1,76 @@
-import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
-import { Buscador } from "./buscador";
+import { LANDING_URL, SECCIONES_LANDING } from "@/lib/sitio";
 import { MenuCuenta, MenuCuentaCargando } from "./cuenta/menu-cuenta";
 import { SelectorIdioma } from "./selector-idioma";
+import { CabeceraFlotante } from "./sitio/cabecera-flotante";
+import { MenuMovil } from "./sitio/menu-movil";
 import { BotonTema } from "./tema/boton-tema";
 
-/**
- * Cabecera de todas las páginas: logo, buscador, idioma, modo claro/oscuro y cuenta.
- * En el móvil el buscador baja a su propia fila, a todo lo ancho.
- */
-export function Cabecera() {
-  const t = useTranslations("cabecera");
+type T = Awaited<ReturnType<typeof getTranslations<"navegacion">>>;
+
+/** Menú: "Empleo" (esta web) y las secciones de la landing. */
+function Navegacion({ t, movil = false }: { t: T; movil?: boolean }) {
+  const clase = movil
+    ? "block rounded-xl px-4 py-3 text-base font-bold transition-colors hover:bg-hover hover:text-enlace"
+    : "text-sm font-bold transition-colors hover:text-enlace";
   return (
-    <header className="border-b border-borde bg-superficie">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:h-16 sm:flex-nowrap sm:gap-6 sm:px-8 sm:py-0">
-        <Link href="/" className="mr-auto flex items-baseline gap-2 text-texto sm:mr-0">
-          <span className="font-titulo text-xl font-bold tracking-tight">TechToJob</span>
-          <span className="hidden text-sm text-suave md:inline">{t("seccion")}</span>
+    <ul className={movil ? "grid gap-1" : "flex items-center gap-6"}>
+      <li>
+        <Link href="/" aria-current="page" className={`${clase} text-enlace`}>
+          {t("empleo")}
         </Link>
-        <div className="order-last w-full sm:order-none sm:w-auto sm:max-w-xl sm:flex-1">
-          <Buscador />
-        </div>
-        <div className="flex items-center gap-2 sm:ml-auto">
+      </li>
+      {SECCIONES_LANDING.map(([clave, ruta]) => (
+        <li key={clave}>
+          <a href={`${LANDING_URL}${ruta}`} className={clase}>
+            {t(clave)}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * Cabecera de todas las páginas: la misma de la landing (logo y menú), y a la derecha
+ * idioma, modo claro/oscuro y cuenta.
+ */
+export async function Cabecera() {
+  const t = await getTranslations("navegacion");
+  return (
+    <header className="sticky inset-x-0 top-0 z-50 px-[var(--margen)]">
+      <CabeceraFlotante>
+        <a href={LANDING_URL} className="flex w-fit items-center" aria-label="TechToJob">
+          <Image
+            src="/images/brand-logo.svg"
+            alt=""
+            width={140}
+            height={78}
+            unoptimized
+            priority
+            className="h-11 w-auto min-[50rem]:h-14"
+          />
+        </a>
+        <nav className="hidden justify-self-center min-[64rem]:block" aria-label={t("principal")}>
+          <Navegacion t={t} />
+        </nav>
+        <div className="col-start-3 flex items-center justify-end gap-1">
           <SelectorIdioma />
           <BotonTema />
           {/* Depende de la sesión de cada persona: se carga en cada visita. */}
           <Suspense fallback={<MenuCuentaCargando />}>
             <MenuCuenta />
           </Suspense>
+          <MenuMovil etiqueta={t("abrir")}>
+            <nav aria-label={t("principal")}>
+              <Navegacion t={t} movil />
+            </nav>
+          </MenuMovil>
         </div>
-      </div>
+      </CabeceraFlotante>
     </header>
   );
 }

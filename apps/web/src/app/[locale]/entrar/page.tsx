@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
+import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { BotonesEntrar } from "@/components/cuenta/botones-entrar";
+import { Portada } from "@/components/sitio/portada";
 import { Aviso } from "@/components/ui";
 import { getPathname, redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -15,11 +17,26 @@ const ERRORES = ["discord_solo_vincular", "account_not_linked", "access_denied"]
 
 /** Entrar: solo con Google o GitHub. */
 export default function PaginaEntrar({ searchParams }: PageProps<"/[locale]/entrar">) {
+  const t = useTranslations();
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-12 sm:py-20">
-      <Suspense fallback={<div aria-busy="true" className="h-72 animate-pulse rounded-tarjeta bg-superficie" />}>
-        <Contenido searchParams={searchParams} />
-      </Suspense>
+    <main id="contenido" className="flex flex-1 flex-col">
+      <Portada
+        migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("cuenta.entrar") }]}
+        titulo={t("entrar.titulo")}
+        entradilla={t("entrar.texto")}
+        lado={
+          <Aviso giro="rotate-[1.5deg]" className="w-[20rem] p-7">
+            <p className="text-xl font-bold leading-tight tracking-tight">{t("entrar.privacidadTitulo")}</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink/80">{t("entrar.privacidad")}</p>
+          </Aviso>
+        }
+      >
+        <div className="mt-8 w-full max-w-md">
+          <Suspense fallback={<div aria-busy="true" className="h-36 animate-pulse rounded-tarjeta bg-tarjeta" />}>
+            <Contenido searchParams={searchParams} />
+          </Suspense>
+        </div>
+      </Portada>
     </main>
   );
 }
@@ -40,21 +57,17 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/entrar">, "
   const textoError = codigo ? (ERRORES.find((e) => e === codigo) ?? "otro") : null;
 
   return (
-    <div className="flex flex-col gap-6 rounded-tarjeta border border-borde bg-superficie p-6 sm:p-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-titulo-2 font-bold">{t("titulo")}</h1>
-        <p className="text-suave">{t("texto")}</p>
-      </div>
+    <div className="flex flex-col gap-5">
       {textoError && (
-        <Aviso role="alert">
-          <p className="font-semibold">{t(`errores.${textoError}`)}</p>
+        <Aviso role="alert" chincheta={false} giro="">
+          <p className="font-bold">{t(`errores.${textoError}`)}</p>
         </Aviso>
       )}
       <BotonesEntrar
         volverA={getPathname({ href: "/cuenta/ajustes", locale: locale as Locale })}
         siFalla={getPathname({ href: "/entrar", locale: locale as Locale })}
       />
-      <p className="text-sm text-suave">{t("privacidad")}</p>
+      <p className="text-sm text-suave lg:hidden">{t("privacidad")}</p>
     </div>
   );
 }

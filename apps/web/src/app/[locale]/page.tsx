@@ -1,19 +1,58 @@
+import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense, use } from "react";
+import { Buscador } from "@/components/buscador";
 import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
+import { Portada, Resaltado } from "@/components/sitio/portada";
+import { Aviso } from "@/components/ui";
 import type { Locale } from "@/i18n/routing";
 
-/** Inicio de la bolsa: el listado de ofertas. */
+/** Inicio de la bolsa: portada con el buscador y, debajo, el listado de ofertas. */
 export default function Inicio({ params, searchParams }: PageProps<"/[locale]">) {
   const { locale } = use(params);
   setRequestLocale(locale as Locale);
+  const t = useTranslations();
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
-      {/* El listado depende de los idiomas de cada persona, lo que busca y los filtros: se carga en cada visita. */}
-      <Suspense fallback={<div aria-busy="true" className="h-[32rem] animate-pulse rounded-tarjeta bg-superficie" />}>
-        <ListadoOfertas searchParams={searchParams} />
-      </Suspense>
+    <main id="contenido" className="flex flex-1 flex-col">
+      <Portada
+        migas={[{ texto: t("navegacion.empleo") }]}
+        titulo={t.rich("ofertas.portadaTitulo", { resaltado: (texto) => <Resaltado>{texto}</Resaltado> })}
+        entradilla={t("ofertas.portadaTexto")}
+        lado={<PostitRevision />}
+      >
+        <div className="mt-8 w-full max-w-2xl">
+          <Buscador />
+        </div>
+      </Portada>
+
+      <section className="rejilla flex-1 px-[var(--margen)] py-10 sm:py-14">
+        <div className="mx-auto max-w-[80rem]">
+          {/* El listado depende de los idiomas de cada persona, lo que busca y los filtros: se carga en cada visita. */}
+          <Suspense fallback={<div aria-busy="true" className="h-[32rem] animate-pulse rounded-tarjeta bg-tarjeta/60" />}>
+            <ListadoOfertas searchParams={searchParams} />
+          </Suspense>
+        </div>
+      </section>
     </main>
+  );
+}
+
+/** El post-it de la portada: qué revisa el staff antes de publicar una oferta. */
+function PostitRevision() {
+  const t = useTranslations("ofertas.revision");
+  return (
+    <Aviso giro="rotate-[2deg]" className="w-[21rem] p-7">
+      <p className="text-xl font-bold leading-tight tracking-tight">{t("titulo")}</p>
+      <ul className="mt-4 grid gap-2.5">
+        {(["empresa", "enlace", "idiomas", "salario"] as const).map((clave) => (
+          <li key={clave} className="flex items-start gap-2.5 border-t border-ink/15 pt-2.5 text-sm font-bold">
+            <Image src="/images/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto shrink-0" />
+            {t(clave)}
+          </li>
+        ))}
+      </ul>
+    </Aviso>
   );
 }
