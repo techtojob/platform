@@ -1,5 +1,5 @@
 import type { Idioma, NivelIdioma } from "./idiomas";
-import type { Area, EstadoOferta, Modalidad, Seniority } from "./listas";
+import type { Area, Disponibilidad, EstadoOferta, Modalidad, Seniority, TipoEmblema, VisibilidadPerfil } from "./listas";
 
 /**
  * Contratos del API: la forma exacta de lo que devuelve cada ruta.
@@ -168,4 +168,95 @@ export type OfertaImportada = {
   moneda?: Moneda;
   tecnologias: string[];
   idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+};
+
+/* ───────────────────────────── Talento (perfiles) ───────────────────────────── */
+
+/** Emblema de un perfil: Miembro fundador, ganador de un torneo, top del quiz… */
+export type Emblema = {
+  tipo: TipoEmblema;
+  /** Para los de torneo o quiz: "Torneo #2 · Landing". */
+  nombre: string | null;
+  /** Fecha ISO en que se ganó. */
+  fecha: string;
+};
+
+/** Un perfil en el buscador de talento. */
+export type PerfilListado = {
+  alias: string;
+  nombre: string;
+  titular: string;
+  /** Foto de Google o GitHub, solo si la persona quiere mostrarla. */
+  imagen: string | null;
+  area: Area;
+  seniority: Seniority;
+  ciudad: string | null;
+  pais: string | null;
+  /** Modalidades que prefiere (puede ser más de una). */
+  modalidades: Modalidad[];
+  disponibilidad: Disponibilidad;
+  tecnologias: string[];
+  /** Tiene su Discord vinculado y está en el servidor de TechToJob. */
+  verificado: boolean;
+  emblemas: Emblema[];
+  /** Fecha ISO de la última vez que lo tocó. */
+  actualizadoEn: string;
+};
+
+/** Un perfil entero (GET /talento/:alias). Nunca lleva email ni teléfono. */
+export type PerfilPublico = PerfilListado & {
+  sobreMi: string | null;
+  idiomas: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+  enlaces: { linkedin: string | null; github: string | null; portfolio: string | null };
+  visibilidad: VisibilidadPerfil;
+  /** Es el perfil de quien lo está mirando. */
+  esMio: boolean;
+};
+
+/** Respuesta de GET /talento. */
+export type ResultadoTalento = {
+  perfiles: PerfilListado[];
+  total: number;
+  /** Código para pedir la página siguiente, o null si no hay más. */
+  siguiente: string | null;
+  /** Sin sesión: cuántos perfiles más vería al entrar (los de "solo registrados"). */
+  ocultosSinSesion: number;
+  /** Países de los perfiles que se pueden ver, con cuántos hay (para el filtro). */
+  paises: Record<string, number>;
+};
+
+/** Lo que escribe la persona en "Mi perfil" (PUT /cuenta/perfil). */
+export type DatosPerfil = {
+  alias: string;
+  nombre: string;
+  titular: string;
+  sobreMi: string | null;
+  area: Area;
+  seniority: Seniority;
+  ciudad: string | null;
+  pais: string | null;
+  modalidades: Modalidad[];
+  disponibilidad: Disponibilidad;
+  tecnologias: string[];
+  idiomas: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+  linkedin: string | null;
+  github: string | null;
+  portfolio: string | null;
+  /** Mostrar la foto de Google o GitHub (si no, un avatar con la inicial). */
+  mostrarFoto: boolean;
+  visibilidad: VisibilidadPerfil;
+};
+
+/** Respuesta de GET /cuenta/perfil: el perfil (o null si aún no lo ha creado) y sugerencias para crearlo. */
+export type MiPerfil = {
+  perfil: (DatosPerfil & { actualizadoEn: string }) | null;
+  sugerencias: { alias: string; nombre: string; imagen: string | null };
+};
+
+/** Un reporte de perfil para el staff. */
+export type ReportePerfil = {
+  id: string;
+  perfil: { alias: string; nombre: string; titular: string; visibilidad: VisibilidadPerfil };
+  motivo: string;
+  creadoEn: string;
 };

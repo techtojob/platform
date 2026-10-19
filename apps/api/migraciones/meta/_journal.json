@@ -29,6 +29,13 @@
       "when": 1792447109403,
       "tag": "0003_caducidad-ofertas",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792452996612,
+      "tag": "0004_perfiles-de-talento",
+      "breakpoints": true
     }
   ]
 }

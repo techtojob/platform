@@ -16,6 +16,8 @@ import {
   rechazarOferta,
 } from "../servicios/ofertas-staff";
 import { buscarRepetida, importarOferta } from "../servicios/importar";
+import { listarReportes, resolverReporte } from "../servicios/talento";
+import { responderErrorTalento } from "./talento";
 import { conSesion, soloStaff } from "./sesion";
 
 /**
@@ -32,6 +34,8 @@ import { conSesion, soloStaff } from "./sesion";
  * GET  /staff/empresas · POST /staff/empresas { nombre, web? }
  * POST /staff/importar { url }            → lo que se puede leer de la página de la oferta
  * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
+ * GET  /staff/reportes                    → reportes de perfiles sin revisar
+ * POST /staff/reportes/:id/descartar · /ocultar
  */
 
 const ESTADOS_HTTP = { no_encontrada: 404, empresa: 400, comprobaciones: 400, motivo: 400, estado: 409, nombre: 400 } as const;
@@ -60,8 +64,12 @@ export const rutasStaff = new Hono<Entorno>()
   .get("/ofertas", async (c) => {
     const pedido = c.req.query("estado") ?? "pendiente";
     const estado: EstadoOferta = (ESTADOS_OFERTA as readonly string[]).includes(pedido) ? (pedido as EstadoOferta) : "pendiente";
-    const [ofertas, cuentas] = await Promise.all([listarOfertasStaff(c.var.db, estado), contarPorEstado(c.var.db)]);
-    return c.json({ estado, ofertas, cuentas });
+    const [ofertas, cuentas, reportes] = await Promise.all([
+      listarOfertasStaff(c.var.db, estado),
+      contarPorEstado(c.var.db),
+      listarReportes(c.var.db),
+    ]);
+    return c.json({ estado, ofertas, cuentas, reportes: reportes.length });
   })
   .get("/ofertas/:id", async (c) => {
     const oferta = await obtenerOfertaStaff(c.var.db, c.req.param("id"));
@@ -122,6 +130,15 @@ export const rutasStaff = new Hono<Entorno>()
   .get("/repetida", async (c) => {
     const url = c.req.query("url") ?? "";
     return c.json({ repetida: await buscarRepetida(c.var.db, url, c.req.query("sin")) });
+  })
+  .get("/reportes", async (c) => c.json(await listarReportes(c.var.db)))
+  .post("/reportes/:id/:accion{descartar|ocultar}", async (c) => {
+    try {
+      await resolverReporte(c.var.db, c.req.param("id"), c.req.param("accion") as "descartar" | "ocultar");
+      return c.json(await listarReportes(c.var.db));
+    } catch (e) {
+      return responderErrorTalento(c, e);
+    }
   })
   .get("/empresas", async (c) => c.json(await listarEmpresas(c.var.db)))
   .post("/empresas", async (c) => {

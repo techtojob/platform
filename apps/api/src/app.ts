@@ -8,6 +8,7 @@ import { rutasCuenta } from "./rutas/cuenta";
 import { rutasOfertas } from "./rutas/ofertas";
 import { rutasSalud } from "./rutas/salud";
 import { rutasStaff } from "./rutas/staff";
+import { rutasTalento } from "./rutas/talento";
 
 /**
  * El API de la bolsa. Cada grupo de rutas vive en src/rutas/ y solo hace de
@@ -67,6 +68,7 @@ export function crearApp(opciones: Opciones = {}) {
   app.use(`${RUTA_AUTH}/*`, conDb, conAuth).on(["GET", "POST"], `${RUTA_AUTH}/*`, (c) => c.var.auth.handler(c.req.raw));
   app.use("/cuenta", conDb, conAuth).use("/cuenta/*", conDb, conAuth).route("/cuenta", rutasCuenta);
   app.use("/staff/*", conDb, conAuth).route("/staff", rutasStaff);
+  app.use("/talento", conDb, conAuth).use("/talento/*", conDb, conAuth).route("/talento", rutasTalento);
 
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));

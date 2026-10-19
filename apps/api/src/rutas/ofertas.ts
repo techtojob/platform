@@ -7,7 +7,7 @@ import { listarOfertas, obtenerOferta } from "../servicios/ofertas";
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));
 
 /** "a,b,c" → ["a","b","c"], comprobando que cada valor está en la lista permitida. */
-function lista<T extends string>(valor: string | undefined, permitidos: readonly T[], nombre: string): T[] {
+export function lista<T extends string>(valor: string | undefined, permitidos: readonly T[], nombre: string): T[] {
   if (!valor) return [];
   const valores = valor.split(",").map((v) => v.trim()).filter(Boolean);
   const malos = valores.filter((v) => !(permitidos as readonly string[]).includes(v));

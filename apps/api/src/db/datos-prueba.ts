@@ -1,8 +1,9 @@
 import type { Db } from "./cliente";
-import { empresas, ofertaIdiomas, ofertas, type NuevaOferta } from "./esquema";
+import { like } from "drizzle-orm";
+import { emblemas, empresas, estadoDiscord, ofertaIdiomas, ofertas, perfiles, usuarios, type NuevaOferta } from "./esquema";
 
 /**
- * Datos de prueba: empresas inventadas y ofertas en varios idiomas.
+ * Datos de prueba: empresas inventadas, ofertas en varios idiomas y perfiles de talento.
  * Se usan en las pruebas automáticas y para rellenar la rama `dev` de Neon
  * (`pnpm --filter api db:datos-prueba`). Nunca en producción.
  */
@@ -70,12 +71,58 @@ export const OFERTAS_PRUEBA: OfertaPrueba[] = [
   },
 ];
 
+/**
+ * Personas inventadas con perfil de talento, para ver el buscador con contenido.
+ * Son usuarios de prueba (ids "usr-prueba-…", emails @example.com): no pueden iniciar sesión.
+ */
+type PerfilPrueba = Omit<typeof perfiles.$inferInsert, "userId"> & { id: string; email: string; verificado?: boolean; emblema?: string };
+const PERFILES_PRUEBA: PerfilPrueba[] = [
+  {
+    id: "usr-prueba-1", email: "nayra@example.com", alias: "nayra-dev", nombre: "Nayra Hernández",
+    titular: "Desarrolladora frontend junior", area: "desarrollo", seniority: "junior",
+    sobreMi: "Terminé el DAW este año y llevo seis meses haciendo webs con React y TypeScript. Me encanta cuidar la accesibilidad y los detalles de diseño.\n\nGané el torneo de landing de TechToJob.",
+    ciudad: "La Laguna", pais: "ES", modalidades: ["remoto", "hibrido"], disponibilidad: "buscando",
+    tecnologias: ["react", "typescript", "nextjs", "tailwind"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "b2" }],
+    github: "https://github.com/ejemplo", linkedin: "https://linkedin.com/in/ejemplo", visibilidad: "publico", verificado: true, emblema: "Torneo #2 · Landing",
+  },
+  {
+    id: "usr-prueba-2", email: "diego@example.com", alias: "diego-datos", nombre: "Diego Morales",
+    titular: "Data engineer con PySpark y Airflow", area: "datos-ia", seniority: "mid",
+    sobreMi: "Tres años construyendo pipelines de datos en una consultora. Busco un equipo de producto donde los datos importen.",
+    ciudad: "Bogotá", pais: "CO", modalidades: ["remoto"], disponibilidad: "abierto",
+    tecnologias: ["python", "spark", "airflow", "sql", "aws"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "c1" }],
+    portfolio: "https://example.com/diego", visibilidad: "publico", verificado: true,
+  },
+  {
+    id: "usr-prueba-3", email: "laura@example.com", alias: "laura-sec", nombre: "Laura Pérez",
+    titular: "Analista de ciberseguridad (SOC N1)", area: "ciberseguridad", seniority: "junior",
+    ciudad: "Madrid", pais: "ES", modalidades: ["hibrido", "presencial"], disponibilidad: "buscando",
+    tecnologias: ["siem", "linux", "python"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "b1" }],
+    visibilidad: "registrados",
+  },
+  {
+    id: "usr-prueba-4", email: "joao@example.com", alias: "joao-cloud", nombre: "João Silva",
+    titular: "Senior DevOps · Kubernetes y Terraform", area: "infra-devops", seniority: "senior",
+    ciudad: "Lisboa", pais: "PT", modalidades: ["remoto"], disponibilidad: "freelance",
+    tecnologias: ["kubernetes", "terraform", "aws", "docker", "go"], idiomas: [{ idioma: "pt", nivel: "nativo" }, { idioma: "en", nivel: "c1" }, { idioma: "es", nivel: "b2" }],
+    github: "https://github.com/ejemplo", visibilidad: "registrados", verificado: true,
+  },
+  {
+    id: "usr-prueba-5", email: "marta@example.com", alias: "marta-ux", nombre: "Marta Ruiz",
+    titular: "Diseñadora de producto UX/UI", area: "producto-diseno", seniority: "mid",
+    ciudad: "Valencia", pais: "ES", modalidades: ["hibrido"], disponibilidad: "no-busca",
+    tecnologias: ["figma"], idiomas: [{ idioma: "es", nivel: "nativo" }],
+    visibilidad: "oculto",
+  },
+];
+
 /** Borra y vuelve a crear los datos de prueba. */
 export async function cargarDatosPrueba(db: Db) {
   await db.delete(ofertaIdiomas);
   await db.delete(ofertas);
   await db.delete(empresas);
   await db.insert(empresas).values(EMPRESAS);
+  await cargarPerfilesPrueba(db);
   for (const { pide, estado, ...o } of OFERTAS_PRUEBA) {
     const publicada = (estado ?? "publicada") === "publicada";
     await db.insert(ofertas).values({
@@ -89,5 +136,16 @@ export async function cargarDatosPrueba(db: Db) {
     await db.insert(ofertaIdiomas).values(
       pide.map((p) => ({ ofertaId: o.id, idioma: p.idioma, nivel: p.nivel ?? null }) as typeof ofertaIdiomas.$inferInsert),
     );
+  }
+}
+
+async function cargarPerfilesPrueba(db: Db) {
+  // Borrar los usuarios de prueba borra también sus perfiles, emblemas y reportes (en cascada).
+  await db.delete(usuarios).where(like(usuarios.id, "usr-prueba-%"));
+  for (const [i, { id, email, verificado, emblema, ...perfil }] of PERFILES_PRUEBA.entries()) {
+    await db.insert(usuarios).values({ id, name: perfil.nombre, email, emailVerified: true, createdAt: hace(60 - i) });
+    await db.insert(perfiles).values({ userId: id, ...perfil, actualizadaEn: hace(i) });
+    if (verificado) await db.insert(estadoDiscord).values({ userId: id, discordId: `discord-${id}`, nombre: perfil.alias, enServidor: true });
+    if (emblema) await db.insert(emblemas).values({ id: `emb-${id}`, userId: id, tipo: "torneo", nombre: emblema, otorgadoEn: hace(30) });
   }
 }

@@ -1,17 +1,21 @@
 import type {
   Area,
+  Disponibilidad,
   EstadoOferta,
   Idioma,
   Modalidad,
   NivelIdioma,
   OrigenOferta,
   Seniority,
+  TipoEmblema,
+  VisibilidadPerfil,
 } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
   integer,
+  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -221,7 +225,87 @@ export const estadoDiscord = pgTable("estado_discord", {
   comprobadoEn: timestamp("comprobado_en", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/*
+ * Talento: el perfil de cada persona (uno por usuario), sus emblemas y los reportes.
+ */
+
+export const perfiles = pgTable(
+  "perfiles",
+  {
+    userId: text("usuario_id")
+      .primaryKey()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    /** Para la dirección: /empleo/talento/<alias>. Minúsculas, números y guiones. */
+    alias: text("alias").notNull().unique(),
+    nombre: text("nombre").notNull(),
+    /** Una línea: "Desarrolladora frontend junior". */
+    titular: text("titular").notNull(),
+    sobreMi: text("sobre_mi"),
+    area: text("area").$type<Area>().notNull(),
+    seniority: text("seniority").$type<Seniority>().notNull(),
+    ciudad: text("ciudad"),
+    pais: text("pais"),
+    /** Modalidades que prefiere: ["remoto", "hibrido"]. */
+    modalidades: text("modalidades").array().$type<Modalidad[]>().notNull().default(sql`'{}'::text[]`),
+    disponibilidad: text("disponibilidad").$type<Disponibilidad>().notNull(),
+    tecnologias: text("tecnologias").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
+    idiomas: jsonb("idiomas").$type<Array<{ idioma: Idioma; nivel: NivelIdioma | null }>>().notNull().default([]),
+    linkedin: text("linkedin"),
+    github: text("github"),
+    portfolio: text("portfolio"),
+    /** Si enseña la foto de Google o GitHub. Si no, un avatar con la inicial. */
+    mostrarFoto: boolean("mostrar_foto").notNull().default(false),
+    visibilidad: text("visibilidad").$type<VisibilidadPerfil>().notNull().default("registrados"),
+    ...fechas,
+  },
+  (t) => [
+    index("perfiles_visibles_idx").on(t.visibilidad, t.actualizadaEn.desc()),
+    index("perfiles_tecnologias_idx").using("gin", t.tecnologias),
+  ],
+);
+
+/**
+ * Emblemas que se ganan: torneos, quiz… (el de "Miembro fundador" no se guarda:
+ * se calcula, es de los 1.000 primeros usuarios). Los asigna el staff.
+ */
+export const emblemas = pgTable(
+  "emblemas",
+  {
+    id: text("id").primaryKey(),
+    userId: text("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    tipo: text("tipo").$type<TipoEmblema>().notNull(),
+    /** "Torneo #2 · Landing". */
+    nombre: text("nombre"),
+    otorgadoEn: timestamp("otorgado_en", { withTimezone: true }).notNull().defaultNow(),
+    /** Algunos caducan (el rol de campeón dura un año). Sin fecha, es para siempre. */
+    caducaEn: timestamp("caduca_en", { withTimezone: true }),
+  },
+  (t) => [index("emblemas_usuario_idx").on(t.userId)],
+);
+
+/** Reportes de perfiles. Hay que haber iniciado sesión y cada persona reporta un perfil una vez. */
+export const reportesPerfil = pgTable(
+  "reportes_perfil",
+  {
+    id: text("id").primaryKey(),
+    perfilUserId: text("perfil_usuario_id")
+      .notNull()
+      .references(() => perfiles.userId, { onDelete: "cascade" }),
+    reportadoPor: text("reportado_por")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    motivo: text("motivo").notNull(),
+    /** pendiente → el staff lo mira → revisado. */
+    estado: text("estado").$type<"pendiente" | "revisado">().notNull().default("pendiente"),
+    creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("reportes_perfil_unico_idx").on(t.perfilUserId, t.reportadoPor)],
+);
+
 export type Empresa = typeof empresas.$inferSelect;
 export type Oferta = typeof ofertas.$inferSelect;
 export type NuevaOferta = typeof ofertas.$inferInsert;
 export type OfertaIdioma = typeof ofertaIdiomas.$inferSelect;
+export type Perfil = typeof perfiles.$inferSelect;

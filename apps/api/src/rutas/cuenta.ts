@@ -6,6 +6,8 @@ import { cuentas } from "../db/esquema";
 import type { Db } from "../db/cliente";
 import { datosCuenta } from "../servicios/cuenta";
 import { esStaff } from "../servicios/staff";
+import { validarPerfil } from "@techtojob/shared";
+import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicios/talento";
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
 
@@ -14,9 +16,38 @@ import { actualizarEstadoDiscord } from "../servicios/discord";
  *
  * GET  /cuenta                     → quién es y el estado de su Discord.
  * POST /cuenta/discord/comprobar   → vuelve a preguntar al bot si está en el servidor.
+ * GET  /cuenta/perfil              → mi perfil de talento (o null) y sugerencias para crearlo.
+ * PUT  /cuenta/perfil              → crearlo o guardarlo.
+ * DELETE /cuenta/perfil            → borrarlo.
  */
+
+/** Mi perfil de talento (dentro de /cuenta, con sesión). */
+export const rutasPerfilPropio = new Hono<Entorno>()
+  .get("/", async (c) => c.json(await miPerfil(c.var.db, c.var.usuario)))
+  .put("/", async (c) => {
+    const r = validarPerfil(await c.req.json().catch(() => ({})));
+    if (r.errores) {
+      return c.json({ error: { codigo: "datos_invalidos", mensaje: "Revisa los campos marcados.", campos: r.errores } }, 400);
+    }
+    try {
+      await guardarPerfil(c.var.db, c.var.usuario.id, r.datos);
+    } catch (e) {
+      // El alias de otra persona se marca en su campo, como el resto de errores del formulario.
+      if (e instanceof ErrorTalento && e.codigo === "alias_ocupado") {
+        return c.json({ error: { codigo: "datos_invalidos", mensaje: e.message, campos: { alias: "ocupado" } } }, 400);
+      }
+      throw e;
+    }
+    return c.json(await miPerfil(c.var.db, c.var.usuario));
+  })
+  .delete("/", async (c) => {
+    await borrarPerfil(c.var.db, c.var.usuario.id);
+    return c.json({ ok: true });
+  });
+
 export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
+  .route("/perfil", rutasPerfilPropio)
   .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
   .post("/discord/comprobar", async (c) => {
     const config = configDiscord(c.env);
