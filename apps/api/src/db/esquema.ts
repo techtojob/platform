@@ -60,6 +60,29 @@ export const empresas = pgTable("empresas", {
   bloqueada: boolean("bloqueada").notNull().default(false),
   ultimaLectura: timestamp("ultima_lectura", { withTimezone: true }),
   ultimoError: text("ultimo_error"),
+  /** Lecturas seguidas con error. Con 3, se deja de leer (hasta que el staff la reactive). */
+  erroresSeguidos: integer("errores_seguidos").notNull().default(0),
+  /** Última vez que tuvo alguna oferta de las que nos sirven (técnica, remota, en español o inglés). */
+  ultimaOfertaUtil: timestamp("ultima_oferta_util", { withTimezone: true }),
+  /** "staff" (la añadió alguien del staff) o "descubierta" (la encontró el sistema solo). */
+  origen: text("origen").$type<"staff" | "descubierta">().notNull().default("staff"),
+  ...fechas,
+});
+
+/**
+ * Empresas candidatas para descubrir solas: se prueba si tienen página de empleo en
+ * Greenhouse, Lever o Ashby (ver servicios/descubrir.ts y datos/empresas-candidatas.json).
+ */
+export const candidatas = pgTable("candidatas", {
+  /** "grafana-labs": el nombre en minúsculas, sin acentos ni espacios. */
+  id: text("id").primaryKey(),
+  nombre: text("nombre").notNull(),
+  /** Identificadores que se prueban en cada ATS ("grafanalabs", "grafana-labs"…). */
+  identificadores: text("identificadores").array().$type<string[]>().notNull(),
+  /** pendiente → encontrada (se añadió la empresa) · sin_ofertas (se vuelve a probar en 30 días) · no_existe. */
+  estado: text("estado").$type<"pendiente" | "encontrada" | "sin_ofertas" | "no_existe">().notNull().default("pendiente"),
+  probadaEn: timestamp("probada_en", { withTimezone: true }),
+  empresaId: text("empresa_id").references(() => empresas.id, { onDelete: "set null" }),
   ...fechas,
 });
 

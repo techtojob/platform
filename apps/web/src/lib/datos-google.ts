@@ -15,6 +15,9 @@ function paisesDeZona(zona: string | null): string[] {
   if (zona === "es") return ["ES"];
   if (zona === "eu") return UE;
   if (zona === "latam") return LATAM;
+  if (zona === "eeuu") return ["US"];
+  if (zona === "canada") return ["CA"];
+  if (zona === "norteamerica") return ["US", "CA"];
   return [];
 }
 

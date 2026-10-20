@@ -3,7 +3,8 @@
 import { detectarAts, enlaceAts, type EmpresaStaff } from "@techtojob/shared";
 import { useTranslations } from "next-intl";
 import { useOptimistic, useState, useTransition, type FormEvent } from "react";
-import { anadirEmpresa, configurarEmpresa } from "@/app/[locale]/staff/empresas/acciones";
+import { anadirEmpresa, configurarEmpresa, sugerirEmpresas } from "@/app/[locale]/staff/empresas/acciones";
+import { AreaTexto } from "@/components/formulario/piezas";
 import { Boton, Campo, Casilla, Tarjeta } from "@/components/ui";
 import { useRouter } from "@/i18n/navigation";
 
@@ -168,5 +169,51 @@ export function AjustesEmpresa({ empresa }: { empresa: EmpresaStaff }) {
         </p>
       )}
     </div>
+  );
+}
+
+/** Sugerir nombres de empresas para que el sistema pruebe si tienen página de empleo. */
+export function SugerirEmpresas() {
+  const t = useTranslations("staff.empresas");
+  const router = useRouter();
+  const [texto, ponerTexto] = useState("");
+  const [aviso, ponerAviso] = useState<{ ok: boolean; texto: string } | null>(null);
+  const [ocupado, empezar] = useTransition();
+  return (
+    <form
+      className="flex flex-col gap-3"
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!texto.trim()) return;
+        empezar(async () => {
+          const r = await sugerirEmpresas(texto);
+          if ("error" in r) return ponerAviso({ ok: false, texto: t("errores.desconocido") });
+          ponerTexto("");
+          ponerAviso({ ok: true, texto: t("descubrir.anadidas", { count: r.anadidas }) });
+          router.refresh();
+        });
+      }}
+    >
+      <AreaTexto
+        etiqueta={t("descubrir.sugerir")}
+        ayuda={t("descubrir.sugerirAyuda")}
+        rows={3}
+        maxLength={8000}
+        value={texto}
+        onChange={(e) => ponerTexto(e.target.value)}
+        placeholder={"Supabase\nPostHog"}
+      />
+      <div className="flex flex-wrap items-center gap-3">
+        <Boton type="submit" variante="secundario" disabled={ocupado || !texto.trim()}>
+          {ocupado ? t("guardando") : t("descubrir.enviar")}
+        </Boton>
+        {aviso && (
+          <p role="status" className={aviso.ok ? "text-sm font-bold" : "text-sm font-semibold text-peligro"}>
+            {aviso.texto}
+          </p>
+        )}
+      </div>
+    </form>
   );
 }

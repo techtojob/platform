@@ -31,7 +31,12 @@ const MAXIMO_BYTES = 10_000_000;
 const ESPERA_MS = 20_000;
 const AGENTE = "TechToJob/1.0 (+https://techtojob.com/empleo)";
 
-export class ErrorAts extends Error {}
+export class ErrorAts extends Error {
+  /** Código HTTP, si la página respondió (404: esa página de empleo no existe). */
+  constructor(mensaje: string, public readonly estado?: number) {
+    super(mensaje);
+  }
+}
 
 type Json = Record<string, unknown>;
 const esObjeto = (v: unknown): v is Json => !!v && typeof v === "object" && !Array.isArray(v);
@@ -53,8 +58,8 @@ async function pedirJson(url: string, pedir: Pedir): Promise<unknown> {
   } catch {
     throw new ErrorAts("No se pudo conectar con la página de empleo.");
   }
-  if (respuesta.status === 404) throw new ErrorAts("La página de empleo no existe (404). ¿Ha cambiado el enlace?");
-  if (!respuesta.ok) throw new ErrorAts(`La página de empleo respondió con un error (${respuesta.status}).`);
+  if (respuesta.status === 404) throw new ErrorAts("La página de empleo no existe (404). ¿Ha cambiado el enlace?", 404);
+  if (!respuesta.ok) throw new ErrorAts(`La página de empleo respondió con un error (${respuesta.status}).`, respuesta.status);
   const texto = await respuesta.text();
   if (texto.length > MAXIMO_BYTES) throw new ErrorAts("La respuesta es demasiado grande.");
   try {
@@ -221,51 +226,34 @@ export function esTecnica(titulo: string): boolean {
 const ESPANA = ["spain", "espana", "madrid", "barcelona", "valencia", "sevilla", "seville", "malaga", "bilbao", "zaragoza", "canarias", "canary islands"];
 const EUROPA = ["europe", "europa", "emea", "eu", "european union", "union europea", "cet", "cest", "european time ?zones?"];
 const LATAM = [
-  "latam",
-  "americas",
-  "latin america",
-  "latinoamerica",
-  "america latina",
-  "south america",
-  "sudamerica",
-  "central america",
-  "mexico",
-  "argentina",
-  "colombia",
-  "chile",
-  "peru",
-  "uruguay",
-  "paraguay",
-  "bolivia",
-  "ecuador",
-  "venezuela",
-  "costa rica",
-  "panama",
-  "guatemala",
-  "honduras",
-  "el salvador",
-  "nicaragua",
-  "dominican republic",
-  "republica dominicana",
-  "puerto rico",
-  "brazil",
-  "brasil",
-  "buenos aires",
-  "bogota",
-  "medellin",
-  "ciudad de mexico",
-  "mexico city",
-  "santiago",
-  "lima",
-  "montevideo",
+  "latam", "latin america", "latinoamerica", "america latina", "south america", "sudamerica", "central america",
+  "mexico", "argentina", "colombia", "chile", "peru", "uruguay", "paraguay", "bolivia", "ecuador", "venezuela",
+  "costa rica", "panama", "guatemala", "honduras", "el salvador", "nicaragua", "dominican republic",
+  "republica dominicana", "puerto rico", "brazil", "brasil", "buenos aires", "bogota", "medellin",
+  "ciudad de mexico", "mexico city", "santiago", "lima", "montevideo",
 ];
+const EEUU = [
+  "us", "u\\.s\\.?", "usa", "united states", "estados unidos", "eeuu", "ee\\. ?uu\\.?",
+  "new york", "san francisco", "seattle", "austin", "boston", "chicago", "los angeles", "denver", "miami", "atlanta",
+  "pst", "est", "pacific time", "eastern time", "central time", "mountain time",
+];
+const CANADA = ["canada", "toronto", "vancouver", "montreal", "ottawa", "calgary"];
+const NORTEAMERICA = ["north america", "norteamerica", "america del norte", "us ?& ?canada", "us and canada"];
+/** "Americas": de Canadá a Argentina. */
+const AMERICAS = ["americas", "the americas"];
 const MUNDO = ["anywhere", "worldwide", "global", "globally", "world", "international", "any location", "cualquier lugar", "todo el mundo"];
 
-const lista = (palabras: string[]) => new RegExp(`\\b(${palabras.join("|")})\\b`);
-const RE_ESPANA = lista(ESPANA);
-const RE_EUROPA = lista(EUROPA);
-const RE_LATAM = lista(LATAM);
-const RE_MUNDO = lista(MUNDO);
+const lista = (palabras: string[]) => new RegExp(`(?<![a-z])(${palabras.join("|")})(?![a-z])`);
+const RE = {
+  es: lista(ESPANA),
+  eu: lista(EUROPA),
+  latam: lista(LATAM),
+  eeuu: lista(EEUU),
+  canada: lista(CANADA),
+  norteamerica: lista(NORTEAMERICA),
+  americas: lista(AMERICAS),
+  mundo: lista(MUNDO),
+};
 /** Lo que queda tras quitar "Remote", separadores y palabras de relleno: si queda algo, es un sitio. */
 const RELLENO = /\b(remote|remoto|remota|fully|full|time|100|only|first|work|from|home|wfh|distributed|teletrabajo|based|in|or|and|y|o|the|any|location|locations|timezone|time ?zones?|friendly|countries|country|region|team|en)\b/g;
 
@@ -273,14 +261,14 @@ const RELLENO = /\b(remote|remoto|remota|fully|full|time|100|only|first|work|fro
  * Desde dónde se puede trabajar, según las ubicaciones de la oferta.
  *
  * - "mundo": anywhere / worldwide;
- * - "eu": Europa / EMEA (incluye España);
- * - "es": solo España;
+ * - "eu" (Europa / EMEA, incluye España), "es" (solo España);
  * - "latam": Latinoamérica;
- * - null: no se sabe (solo pone "Remote"): la oferta entra y el staff lo rellena;
- * - "fuera": solo otros sitios (EE. UU., Reino Unido, Alemania…): la oferta no entra.
+ * - "eeuu", "canada" o "norteamerica" (los dos);
+ * - null: no se sabe ("Remote" sin más) o mezcla zonas (Europa y Latinoamérica…): la oferta entra y el staff lo decide;
+ * - "fuera": solo otros sitios (Reino Unido, Alemania, India…): la oferta no entra.
  */
 export function zonaRemoto(ubicaciones: string[]): ZonaRemoto | null | "fuera" {
-  const zonas = new Set<ZonaRemoto>();
+  const vistas = new Set<keyof typeof RE>();
   let otroSitio = false;
   for (const ubicacion of ubicaciones) {
     // "Remote - Spain, Portugal" se mira por trozos: "spain", "portugal".
@@ -288,26 +276,37 @@ export function zonaRemoto(ubicaciones: string[]): ZonaRemoto | null | "fuera" {
       const t = trozo.trim();
       if (!t) continue;
       let encontrado = false;
-      if (RE_MUNDO.test(t)) (zonas.add("mundo"), (encontrado = true));
-      if (RE_EUROPA.test(t)) (zonas.add("eu"), (encontrado = true));
-      if (RE_ESPANA.test(t)) (zonas.add("es"), (encontrado = true));
-      if (RE_LATAM.test(t)) (zonas.add("latam"), (encontrado = true));
+      for (const [zona, re] of Object.entries(RE) as Array<[keyof typeof RE, RegExp]>) {
+        if (re.test(t)) {
+          vistas.add(zona);
+          encontrado = true;
+        }
+      }
       if (!encontrado && t.replace(RELLENO, "").replace(/[^a-z]/g, "")) otroSitio = true;
     }
   }
-  if (zonas.has("mundo")) return "mundo";
-  const europa = zonas.has("eu") || zonas.has("es");
-  // España/Europa y Latinoamérica a la vez: lo decide el staff.
-  if (europa && zonas.has("latam")) return null;
-  if (zonas.has("eu")) return "eu";
-  if (zonas.has("es")) return "es";
-  if (zonas.has("latam")) return "latam";
+  if (vistas.has("mundo")) return "mundo";
+  if (vistas.has("americas")) return null;
+  // Grandes zonas: Europa, Latinoamérica y Norteamérica. Si sale más de una, lo decide el staff.
+  const europa = vistas.has("eu") ? "eu" : vistas.has("es") ? "es" : null;
+  const latam = vistas.has("latam") ? "latam" : null;
+  const na =
+    vistas.has("norteamerica") || (vistas.has("eeuu") && vistas.has("canada"))
+      ? "norteamerica"
+      : vistas.has("eeuu")
+        ? "eeuu"
+        : vistas.has("canada")
+          ? "canada"
+          : null;
+  const zonas = [europa, latam, na].filter((z): z is ZonaRemoto => z !== null);
+  if (zonas.length > 1) return null;
+  if (zonas.length === 1) return zonas[0]!;
   return otroSitio ? "fuera" : null;
 }
 
 export type OfertaFiltrada = OfertaAts & { remotoDesde: ZonaRemoto | null };
 
-/** Se queda con las técnicas y 100 % remotas desde España, Europa, Latinoamérica o cualquier sitio. */
+/** Se queda con las técnicas y 100 % remotas desde España, Europa, Latinoamérica, EE. UU., Canadá o cualquier sitio. */
 export function filtrar(ofertas: OfertaAts[]): OfertaFiltrada[] {
   return ofertas.flatMap((o) => {
     if (!esTecnica(o.titulo) || !esRemoto(o)) return [];

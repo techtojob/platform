@@ -1,9 +1,7 @@
-import type { OfertaListado } from "@techtojob/shared";
+import { ZONAS_REMOTO, type OfertaListado } from "@techtojob/shared";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 
 /** Trozos de una oferta que salen igual en la fila del listado y en la página de la oferta. */
-
-const ZONAS_REMOTO = ["es", "eu", "latam", "mundo"] as const;
 
 /** "Las Palmas de Gran Canaria · Híbrido" o "Remoto (Europa)", para la fila del listado. */
 export function useLugarCorto(oferta: OfertaListado): string {

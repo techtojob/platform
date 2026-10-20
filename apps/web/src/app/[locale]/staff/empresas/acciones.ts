@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { ErrorDeApi } from "@/lib/api";
-import { configurarEmpresaEnApi, crearEmpresa, type CambiosEmpresa } from "@/lib/api-staff";
+import { configurarEmpresaEnApi, crearEmpresa, sugerirCandidatasEnApi, type CambiosEmpresa } from "@/lib/api-staff";
 
 const codigo = (error: unknown) => (error instanceof ErrorDeApi ? error.codigo : "desconocido");
 
@@ -25,4 +25,15 @@ export async function configurarEmpresa(id: string, cambios: CambiosEmpresa): Pr
   }
   revalidatePath("/[locale]/staff", "layout");
   return null;
+}
+
+/** Sugerir empresas para que el sistema pruebe si tienen página de empleo. Devuelve cuántas son nuevas. */
+export async function sugerirEmpresas(nombres: string): Promise<{ anadidas: number } | { error: string }> {
+  try {
+    const { anadidas } = await sugerirCandidatasEnApi(nombres);
+    revalidatePath("/[locale]/staff", "layout");
+    return { anadidas };
+  } catch (error) {
+    return { error: codigo(error) };
+  }
 }

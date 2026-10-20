@@ -3,9 +3,9 @@ import { useTranslations } from "next-intl";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Portada } from "@/components/sitio/portada";
-import { AjustesEmpresa, NuevaEmpresa } from "@/components/staff/empresas";
+import { AjustesEmpresa, NuevaEmpresa, SugerirEmpresas } from "@/components/staff/empresas";
 import { AvatarBlob, Etiqueta, Tarjeta } from "@/components/ui";
-import { exigirStaff, listarEmpresas } from "@/lib/api-staff";
+import { exigirStaff, listarEmpresas, resumenCandidatas } from "@/lib/api-staff";
 
 /**
  * Empresas: las que tienen página de empleo en Greenhouse, Lever o Ashby se leen cada mañana
@@ -34,11 +34,26 @@ export default function PaginaEmpresas() {
 
 async function Contenido() {
   await exigirStaff();
-  const [empresas, t] = await Promise.all([listarEmpresas(), getTranslations("staff.empresas")]);
+  const [empresas, candidatas, t] = await Promise.all([listarEmpresas(), resumenCandidatas(), getTranslations("staff.empresas")]);
   const conAts = empresas.filter((e) => e.ats);
   const sinAts = empresas.filter((e) => !e.ats);
   return (
     <>
+      <Tarjeta className="flex flex-col gap-5 p-5 sm:p-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-bold tracking-tight">{t("descubrir.titulo")}</h2>
+          <p className="text-sm text-suave">{t("descubrir.ayuda")}</p>
+        </div>
+        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {(["pendiente", "encontrada", "sin_ofertas", "no_existe"] as const).map((estado) => (
+            <div key={estado} className="flex flex-col-reverse justify-end gap-1 rounded-2xl bg-chip px-4 py-3">
+              <dt className="text-xs font-bold text-suave">{t(`descubrir.${estado}`)}</dt>
+              <dd className="text-2xl font-bold tabular-nums">{candidatas[estado]}</dd>
+            </div>
+          ))}
+        </dl>
+        <SugerirEmpresas />
+      </Tarjeta>
       <NuevaEmpresa />
       {empresas.length === 0 && <p className="rounded-tarjeta border border-borde bg-tarjeta p-6 font-bold shadow-tarjeta">{t("vacio")}</p>}
       {[
@@ -85,6 +100,7 @@ async function FilaEmpresa({ empresa: e }: { empresa: EmpresaStaff }) {
             </a>
           )}
         </div>
+        {e.origen === "descubierta" && <Etiqueta tono="borde">{t("descubierta")}</Etiqueta>}
         {e.bloqueada && <Etiqueta tono="postit">{t("bloqueada")}</Etiqueta>}
       </div>
       {e.ats && !e.bloqueada && (

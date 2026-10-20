@@ -16,6 +16,7 @@ import {
   publicarOferta,
   rechazarOferta,
 } from "../servicios/ofertas-staff";
+import { resumenCandidatas, sugerirCandidatas } from "../servicios/descubrir";
 import { buscarRepetida, importarOferta } from "../servicios/importar";
 import { listarReportes, resolverReporte } from "../servicios/talento";
 import { responderErrorTalento } from "./talento";
@@ -34,6 +35,8 @@ import { conSesion, soloStaff } from "./sesion";
  * POST /staff/ofertas/:id/alargar        → 45 días más
  * GET  /staff/empresas · POST /staff/empresas { nombre, web?, paginaEmpleo? }
  * PATCH /staff/empresas/:id { paginaEmpleo?, sincronizar?, bloqueada? }
+ * GET  /staff/candidatas                  → empresas por descubrir, por estado
+ * POST /staff/candidatas { nombres }      → sugerir empresas (una por línea)
  * POST /staff/importar { url }            → lo que se puede leer de la página de la oferta
  * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
  * GET  /staff/reportes                    → reportes de perfiles sin revisar
@@ -159,6 +162,11 @@ export const rutasStaff = new Hono<Entorno>()
     } catch (e) {
       return responderError(c, e);
     }
+  })
+  .get("/candidatas", async (c) => c.json(await resumenCandidatas(c.var.db)))
+  .post("/candidatas", async (c) => {
+    const anadidas = await sugerirCandidatas(c.var.db, (await cuerpo(c)).nombres);
+    return c.json({ anadidas, resumen: await resumenCandidatas(c.var.db) });
   })
   .patch("/empresas/:id", async (c) => {
     try {

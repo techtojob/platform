@@ -119,6 +119,9 @@
     "es": "Spain",
     "eu": "Europe",
     "latam": "Latin America",
+    "eeuu": "US",
+    "canada": "Canada",
+    "norteamerica": "US & Canada",
     "mundo": "anywhere"
   },
   "filtros": {
@@ -566,8 +569,8 @@
     "empresas": {
       "pestana": "Companies",
       "titulo": "Companies",
-      "entradilla": "Paste a company's job board link (Greenhouse, Lever or Ashby) and every morning its tech, fully remote offers will come in as pending.",
-      "anadir": "Add company",
+      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever or Ashby). Tech, fully remote offers come in as pending: up to 20 in Spanish and 20 in English a day.",
+      "anadir": "Add a company manually",
       "nombre": "Name",
       "pagina": "Job board",
       "paginaAyuda": "For example: boards.greenhouse.io/company, jobs.lever.co/company or jobs.ashbyhq.com/company",
@@ -592,7 +595,20 @@
         "empresa": "That company no longer exists.",
         "desconocido": "Couldn't save. Please try again."
       },
-      "cancelar": "Cancel"
+      "cancelar": "Cancel",
+      "descubierta": "Found automatically",
+      "descubrir": {
+        "titulo": "Find companies",
+        "ayuda": "Every day, 25 names from the list are checked for a job board with offers that fit. If they have one, they're added automatically.",
+        "pendiente": "To check",
+        "encontrada": "Added",
+        "sin_ofertas": "No suitable offers (rechecked in 30 days)",
+        "no_existe": "No Greenhouse, Lever or Ashby board",
+        "sugerir": "Suggest companies",
+        "sugerirAyuda": "One per line (or comma-separated). They'll be checked over the next few days.",
+        "enviar": "Add to the list",
+        "anadidas": "{count, plural, =0 {They were all on the list already.} one {# new company on the list.} other {# new companies on the list.}}"
+      }
     }
   },
   "formulario": {

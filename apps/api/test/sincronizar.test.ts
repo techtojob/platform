@@ -26,7 +26,7 @@ const greenhouse = {
       content: `&lt;p&gt;${DESCRIPCION_EN}&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Docker&lt;/li&gt;&lt;/ul&gt;`,
     },
     { id: 4002, title: "Account Executive", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4002", location: { name: "Remote - EMEA" }, content: "" },
-    { id: 4003, title: "Frontend Developer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4003", location: { name: "Remote - US" }, content: "" },
+    { id: 4003, title: "Frontend Developer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4003", location: { name: "Remote - United Kingdom" }, content: "" },
     { id: 4004, title: "Data Engineer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4004", location: { name: "Madrid (Hybrid)" }, content: "" },
     { id: 4005, title: "Site Reliability Engineer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4005", location: { name: "Remote" }, content: "" },
   ],
@@ -180,8 +180,16 @@ describe("filtros", () => {
     expect(zonaRemoto(["Remote", "Anywhere"])).toBe("mundo");
     expect(zonaRemoto(["Remote"])).toBeNull();
     expect(zonaRemoto(["Remote - Spain", "Remote - Argentina"])).toBeNull(); // lo decide el staff
-    expect(zonaRemoto(["Remote - US"])).toBe("fuera");
+    expect(zonaRemoto(["Remote - US"])).toBe("eeuu");
+    expect(zonaRemoto(["United States (Remote)"])).toBe("eeuu");
+    expect(zonaRemoto(["Remote - Canada"])).toBe("canada");
+    expect(zonaRemoto(["Remote - US", "Remote - Canada"])).toBe("norteamerica");
+    expect(zonaRemoto(["Remote (US & Canada)"])).toBe("norteamerica");
+    expect(zonaRemoto(["Remote - North America"])).toBe("norteamerica");
+    expect(zonaRemoto(["Remote - Americas"])).toBeNull();
+    expect(zonaRemoto(["Remote - US", "Remote - Europe"])).toBeNull();
     expect(zonaRemoto(["Remote - United Kingdom"])).toBe("fuera");
+    expect(zonaRemoto(["Remote - India"])).toBe("fuera");
     expect(zonaRemoto(["Remote - Germany"])).toBe("fuera");
     expect(zonaRemoto(["Remote - Spain", "Remote - Germany"])).toBe("es"); // si incluye España, vale
   });

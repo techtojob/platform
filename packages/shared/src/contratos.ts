@@ -95,7 +95,11 @@ export type Cuenta = {
 /* ── Panel de staff ─────────────────────────────────────────────── */
 
 /** Zonas desde las que se puede trabajar en remoto. */
-export const ZONAS_REMOTO = ["es", "eu", "latam", "mundo"] as const;
+/**
+ * Desde dónde se puede trabajar en una oferta en remoto.
+ * "norteamerica" = EE. UU. y Canadá; "mundo" = cualquier sitio.
+ */
+export const ZONAS_REMOTO = ["es", "eu", "latam", "eeuu", "canada", "norteamerica", "mundo"] as const;
 export type ZonaRemoto = (typeof ZONAS_REMOTO)[number];
 
 export const MONEDAS = ["EUR", "USD", "GBP"] as const;
@@ -166,7 +170,12 @@ export type EmpresaStaff = {
   /** Última lectura de su página de empleo (ISO) y, si falló, por qué. */
   ultimaLectura: string | null;
   ultimoError: string | null;
+  /** "staff" (la añadió alguien) o "descubierta" (la encontró el sistema solo). */
+  origen: "staff" | "descubierta";
 };
+
+/** Empresas candidatas a descubrir, por estado (para el panel de staff). */
+export type ResumenCandidatas = { pendiente: number; encontrada: number; sin_ofertas: number; no_existe: number };
 
 /** Error 400 con los campos que están mal: { campos: { titulo: "corto" } }. */
 export type ErrorValidacion = { error: ErrorApi["error"] & { campos: Record<string, string> } };

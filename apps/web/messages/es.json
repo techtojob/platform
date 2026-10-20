@@ -119,6 +119,9 @@
     "es": "España",
     "eu": "Europa",
     "latam": "Latinoamérica",
+    "eeuu": "EE. UU.",
+    "canada": "Canadá",
+    "norteamerica": "EE. UU. y Canadá",
     "mundo": "cualquier lugar"
   },
   "filtros": {
@@ -566,8 +569,8 @@
     "empresas": {
       "pestana": "Empresas",
       "titulo": "Empresas",
-      "entradilla": "Pega el enlace de la página de empleo de una empresa (Greenhouse, Lever o Ashby) y cada mañana entrarán sus ofertas técnicas y 100 % remotas como pendientes.",
-      "anadir": "Añadir empresa",
+      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever o Ashby). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 20 en español y 20 en inglés al día.",
+      "anadir": "Añadir una empresa a mano",
       "nombre": "Nombre",
       "pagina": "Página de empleo",
       "paginaAyuda": "Por ejemplo: boards.greenhouse.io/empresa, jobs.lever.co/empresa o jobs.ashbyhq.com/empresa",
@@ -592,7 +595,20 @@
         "empresa": "Esa empresa ya no existe.",
         "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
       },
-      "cancelar": "Cancelar"
+      "cancelar": "Cancelar",
+      "descubierta": "Descubierta sola",
+      "descubrir": {
+        "titulo": "Descubrir empresas",
+        "ayuda": "Cada día se prueban 25 nombres de la lista para ver si tienen página de empleo con ofertas que nos sirvan. Si la tienen, se añaden solas.",
+        "pendiente": "Por probar",
+        "encontrada": "Añadidas",
+        "sin_ofertas": "Sin ofertas que nos sirvan (se reprueban en 30 días)",
+        "no_existe": "Sin página en Greenhouse, Lever ni Ashby",
+        "sugerir": "Sugerir empresas",
+        "sugerirAyuda": "Una por línea (o separadas por comas). Se probarán en los próximos días.",
+        "enviar": "Añadir a la lista",
+        "anadidas": "{count, plural, =0 {Ya estaban todas en la lista.} one {# empresa nueva en la lista.} other {# empresas nuevas en la lista.}}"
+      }
     }
   },
   "formulario": {

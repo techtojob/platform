@@ -11,7 +11,7 @@ import {
   type EstadoOferta,
   type OfertaStaff,
 } from "@techtojob/shared";
-import { asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta } from "../db/esquema";
 
@@ -155,9 +155,23 @@ async function guardarIdiomas(db: Db, ofertaId: string, d: DatosOferta) {
   await db.insert(ofertaIdiomas).values(d.idiomasRequeridos.map((i) => ({ ofertaId, idioma: i.idioma, nivel: i.nivel })));
 }
 
+/**
+ * Si el enlace de la oferta es de Greenhouse, Lever o Ashby y la empresa aún no tiene página de empleo,
+ * se le pone: así, a partir de mañana, sus demás ofertas entran solas.
+ */
+async function aprenderPaginaEmpleo(db: Db, empresaId: string, urlOriginal: string) {
+  const ats = detectarAts(urlOriginal);
+  if (!ats) return;
+  await db
+    .update(empresas)
+    .set({ ats: ats.ats, atsId: ats.id, atsRegion: ats.region ?? null, sincronizar: true })
+    .where(and(eq(empresas.id, empresaId), isNull(empresas.ats), eq(empresas.bloqueada, false)));
+}
+
 /** Crea una oferta pendiente de revisar. Devuelve su id. */
 export async function crearOferta(db: Db, d: DatosOferta): Promise<string> {
   const empresa = await empresaDe(db, d.empresaId);
+  await aprenderPaginaEmpleo(db, empresa.id, d.urlOriginal);
   const id = nuevoId();
   await db.insert(ofertas).values({
     id,
@@ -174,6 +188,7 @@ export async function editarOferta(db: Db, id: string, d: DatosOferta) {
   const actual = await obtenerOfertaStaff(db, id);
   if (!actual) throw new ErrorStaff("no_encontrada", "Esa oferta no existe.");
   const empresa = await empresaDe(db, d.empresaId);
+  await aprenderPaginaEmpleo(db, empresa.id, d.urlOriginal);
   await db
     .update(ofertas)
     .set({ ...columnasOferta(d), slug: slugOferta(d.titulo, empresa.slug) })
@@ -259,6 +274,7 @@ function aEmpresaStaff(e: FilaEmpresa, numOfertas: number): EmpresaStaff {
     bloqueada: e.bloqueada,
     ultimaLectura: e.ultimaLectura?.toISOString() ?? null,
     ultimoError: e.ultimoError,
+    origen: e.origen,
   };
 }
 
@@ -336,6 +352,11 @@ export async function configurarEmpresa(
     if (pagina.ats && entrada.sincronizar === undefined) cambios.sincronizar = true;
   }
   if (typeof entrada.sincronizar === "boolean") cambios.sincronizar = entrada.sincronizar;
+  // Al reactivarla, se empieza de cero con los errores.
+  if (cambios.sincronizar && !actual.sincronizar) {
+    cambios.erroresSeguidos = 0;
+    cambios.ultimoError = null;
+  }
   if (typeof entrada.bloqueada === "boolean") cambios.bloqueada = entrada.bloqueada;
   // Sin página de empleo no hay nada que leer.
   if ((pagina ? pagina.ats : actual.ats) === null) cambios.sincronizar = false;

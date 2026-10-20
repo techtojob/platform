@@ -1,5 +1,5 @@
 import "server-only";
-import type { Comprobacion, EmpresaStaff, ReportePerfil, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
+import type { Comprobacion, EmpresaStaff, ResumenCandidatas, ReportePerfil, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
@@ -98,4 +98,13 @@ export async function listarReportes(): Promise<ReportePerfil[]> {
 
 export async function resolverReporteEnApi(id: string, accion: "descartar" | "ocultar"): Promise<ReportePerfil[]> {
   return pedir<ReportePerfil[]>(`/staff/reportes/${encodeURIComponent(id)}/${accion}`, await conCookie({ method: "POST" }));
+}
+
+export async function resumenCandidatas(): Promise<ResumenCandidatas> {
+  return pedir<ResumenCandidatas>("/staff/candidatas", await conCookie());
+}
+
+/** Sugerir empresas para descubrir (una por línea). */
+export async function sugerirCandidatasEnApi(nombres: string): Promise<{ anadidas: number; resumen: ResumenCandidatas }> {
+  return pedir("/staff/candidatas", await conCookie({ method: "POST", body: JSON.stringify({ nombres }) }));
 }

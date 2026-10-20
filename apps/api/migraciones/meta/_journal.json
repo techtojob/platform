@@ -50,6 +50,13 @@
       "when": 1792494709125,
       "tag": "0006_ofertas-automaticas",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792496101608,
+      "tag": "0007_descubrir-empresas",
+      "breakpoints": true
     }
   ]
 }
