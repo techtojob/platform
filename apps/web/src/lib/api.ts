@@ -98,6 +98,16 @@ export function tieneCookieDeSesion(cookie: string): boolean {
   return /(^|;\s*)(__Secure-)?better-auth\.session_token=/.test(cookie);
 }
 
+/** Todo lo que guardamos de la persona (para "Descargar mis datos"). */
+export function exportarDatosEnApi(cookie: string): Promise<unknown> {
+  return pedir("/cuenta/datos", { headers: { cookie } });
+}
+
+/** Borra la cuenta. `confirmacion` tiene que ser el email de la cuenta. */
+export function borrarCuentaEnApi(cookie: string, confirmacion: string): Promise<{ ok: true }> {
+  return pedir("/cuenta", { method: "DELETE", headers: { cookie, "content-type": "application/json" }, body: JSON.stringify({ confirmacion }) });
+}
+
 /* ───────────── Talento ───────────── */
 
 /** Perfiles para el buscador. Con la cookie, también los de "solo registrados". */

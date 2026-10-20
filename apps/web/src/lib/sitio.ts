@@ -12,7 +12,6 @@ export const sitio = {
   x: "https://x.com/techtojob",
   instagram: "https://www.instagram.com/techtojob",
   tiktok: "https://www.tiktok.com/@techtojob",
-  /** Páginas legales: están en la landing, pero toda página tiene que enlazarlas. */
-  privacidad: "/privacidad",
+  /** Aviso legal: el de la landing (quién es el titular). La privacidad de la bolsa tiene su propia página (/empleo/privacidad). */
   avisoLegal: "/aviso-legal",
 } as const;

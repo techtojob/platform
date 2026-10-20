@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { BotonesEntrar } from "@/components/cuenta/botones-entrar";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso } from "@/components/ui";
-import { getPathname, redirect } from "@/i18n/navigation";
+import { getPathname, Link, redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { obtenerCuenta } from "@/lib/api";
 
@@ -68,6 +68,9 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/entrar">, "
         siFalla={getPathname({ href: "/entrar", locale: locale as Locale })}
       />
       <p className="text-sm text-suave lg:hidden">{t("privacidad")}</p>
+      <p className="max-w-md text-sm text-suave">
+        {t.rich("avisoPrivacidad", { enlace: (texto) => <Link href="/privacidad" className="font-bold text-enlace underline">{texto}</Link> })}
+      </p>
     </div>
   );
 }

@@ -88,9 +88,12 @@ export async function Pie() {
               </ul>
               <p className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-suave">
                 <span>© {ANO} TechToJob</span>
-                <a href={`${LANDING_URL}${sitio.privacidad}`} className="font-bold underline-offset-4 hover:text-enlace hover:underline">
+                <Link href="/privacidad" className="font-bold underline-offset-4 hover:text-enlace hover:underline">
                   {t("privacidad")}
-                </a>
+                </Link>
+                <Link href={{ pathname: "/privacidad", hash: "cookies" }} className="font-bold underline-offset-4 hover:text-enlace hover:underline">
+                  {t("cookies")}
+                </Link>
                 <a href={`${LANDING_URL}${sitio.avisoLegal}`} className="font-bold underline-offset-4 hover:text-enlace hover:underline">
                   {t("avisoLegal")}
                 </a>

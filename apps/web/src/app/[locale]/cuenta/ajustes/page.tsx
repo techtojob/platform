@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { Avatar } from "@/components/cuenta/avatar";
 import { CerrarSesion } from "@/components/cuenta/cerrar-sesion";
 import { SeccionDiscord } from "@/components/cuenta/seccion-discord";
+import { TusDatos } from "@/components/cuenta/tus-datos";
 import { Portada } from "@/components/sitio/portada";
 import { clasesBoton, Etiqueta, Tarjeta, Ventana } from "@/components/ui";
 import { getPathname, Link, redirect } from "@/i18n/navigation";
@@ -94,6 +95,11 @@ async function Contenido() {
           <SeccionDiscord discord={discord} />
         </div>
       </Ventana>
+
+      <Tarjeta className="flex flex-col gap-3 p-5">
+        <h2 className="text-titulo-3 font-bold">{t("datos.titulo")}</h2>
+        <TusDatos email={usuario.email} />
+      </Tarjeta>
 
       <div>
         <CerrarSesion />

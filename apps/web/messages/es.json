@@ -180,7 +180,23 @@
     "perfilVer": "Ver mi perfil",
     "miPerfil": "Mi perfil",
     "menu": "Menú de la cuenta de {nombre}",
-    "panelStaff": "Panel de staff"
+    "panelStaff": "Panel de staff",
+    "datos": {
+      "titulo": "Tus datos",
+      "texto": "Puedes descargar todo lo que guardamos de ti o borrar tu cuenta cuando quieras. Más detalles en <enlace>Privacidad</enlace>.",
+      "descargar": "Descargar mis datos",
+      "descargando": "Preparando…",
+      "borrar": "Borrar mi cuenta",
+      "borrarTitulo": "Borrar tu cuenta",
+      "borrarTexto": "Se borran tu cuenta, tu perfil de talento, tus emblemas, tu Discord vinculado y los reportes que hayas hecho. No se puede deshacer. Podrás volver a registrarte cuando quieras, pero empezarás de cero.",
+      "escribeEmail": "Para confirmar, escribe tu email: {email}",
+      "borrarSi": "Borrar mi cuenta para siempre",
+      "borrando": "Borrando…",
+      "cancelar": "Cancelar",
+      "errorDescargar": "No se han podido preparar tus datos. Inténtalo de nuevo.",
+      "errorConfirmacion": "El email no coincide con el de tu cuenta.",
+      "errorBorrar": "No se ha podido borrar la cuenta. Inténtalo de nuevo o escríbenos a contacto@techtojob.com."
+    }
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -195,7 +211,8 @@
       "access_denied": "Has cancelado el inicio de sesión.",
       "otro": "No se ha podido iniciar sesión. Inténtalo de nuevo."
     },
-    "privacidadTitulo": "Solo lo justo"
+    "privacidadTitulo": "Solo lo justo",
+    "avisoPrivacidad": "Al entrar aceptas que guardemos tu nombre, email y foto para tu cuenta. Más en <enlace>Privacidad</enlace>."
   },
   "navegacion": {
     "empleo": "Empleo",
@@ -217,7 +234,8 @@
     "redes": "Redes de TechToJob",
     "privacidad": "Privacidad",
     "avisoLegal": "Aviso legal",
-    "talento": "Talento"
+    "talento": "Talento",
+    "cookies": "Cookies"
   },
   "talento": {
     "titulo": "Talento de la comunidad",
@@ -660,5 +678,97 @@
     "texto": "No es culpa tuya. Vuelve a intentarlo en un momento; si sigue pasando, avísanos en el Discord.",
     "reintentar": "Reintentar",
     "volver": "Ir a las ofertas"
+  },
+  "privacidad": {
+    "titulo": "Privacidad",
+    "entradilla": "Qué datos guarda la bolsa de empleo de TechToJob, para qué y cómo puedes verlos o borrarlos. Sin letra pequeña.",
+    "actualizado": "Última actualización: octubre de 2026",
+    "resumenTitulo": "En corto",
+    "resumen": [
+      "Entras con Google o GitHub: nunca vemos tu contraseña.",
+      "Tu perfil de talento solo lo ve quien tú elijas, y nunca enseñamos tu email.",
+      "No vendemos datos, no hay publicidad y no usamos cookies de seguimiento.",
+      "Puedes descargar tus datos o borrar tu cuenta cuando quieras, desde Mi cuenta."
+    ],
+    "responsable": {
+      "titulo": "Quién es el responsable",
+      "texto": "TechToJob. Los datos del titular están en el <aviso>aviso legal</aviso>. Para cualquier cosa sobre tus datos, escríbenos a <correo>contacto@techtojob.com</correo>."
+    },
+    "que": {
+      "titulo": "Qué datos guardamos",
+      "items": [
+        "<b>Tu cuenta:</b> el nombre, el email y la foto que nos da Google o GitHub cuando entras. Tu contraseña la gestionan ellos: nunca la vemos.",
+        "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
+        "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
+        "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
+        "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
+        "<b>Si eres del staff:</b> qué ofertas has revisado."
+      ],
+      "nunca": "No pedimos CV, teléfono, dirección ni datos de pago."
+    },
+    "para": {
+      "titulo": "Para qué los usamos",
+      "items": [
+        "<b>Darte el servicio que pides al registrarte</b> (tu cuenta, tu perfil, ver ofertas y talento). Es la base del contrato de uso (art. 6.1.b del RGPD).",
+        "<b>Enseñar tu perfil</b> a otras personas y empresas, solo con la visibilidad que tú elijas. Es tu consentimiento, y lo puedes retirar poniéndolo en oculto o borrándolo (art. 6.1.a).",
+        "<b>Mantener la bolsa segura</b>: sesiones, reportes y comprobar que estás en el Discord. Es nuestro interés legítimo en evitar abusos (art. 6.1.f)."
+      ]
+    },
+    "quien": {
+      "titulo": "Quién más los trata",
+      "items": [
+        "<b>Neon</b>: la base de datos, en servidores de Frankfurt (Unión Europea).",
+        "<b>Cloudflare</b>: aloja la web y la protege. Su red está en todo el mundo; los datos que salen de la UE van con las garantías del RGPD (cláusulas contractuales tipo).",
+        "<b>Google, GitHub y Discord</b>: solo cuando tú entras o vinculas tu cuenta con ellos."
+      ],
+      "empresas": "Las empresas no reciben tus datos: ven tu perfil como cualquier visitante, según la visibilidad que elijas. Al aplicar a una oferta vas a la web de la empresa, y ahí manda su propia política de privacidad."
+    },
+    "cuanto": {
+      "titulo": "Cuánto tiempo",
+      "items": [
+        "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
+        "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
+        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada."
+      ]
+    },
+    "derechos": {
+      "titulo": "Tus derechos",
+      "items": [
+        "<b>Ver y llevarte tus datos:</b> «Descargar mis datos» en <cuenta>Mi cuenta</cuenta>, en un archivo que puedes usar en otro sitio.",
+        "<b>Corregirlos:</b> editando tu perfil cuando quieras.",
+        "<b>Borrarlos:</b> «Borrar mi cuenta» en <cuenta>Mi cuenta</cuenta>. Se borra todo, al momento.",
+        "<b>Oponerte o limitar su uso, y retirar tu consentimiento:</b> pon tu perfil en oculto o escríbenos."
+      ],
+      "reclamar": "Si crees que no tratamos bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos (<aepd>aepd.es</aepd>). Antes, escríbenos: lo arreglaremos."
+    },
+    "cookies": {
+      "titulo": "Cookies",
+      "texto": "Solo usamos cookies necesarias para que la web funcione. No hay analítica, publicidad ni seguimiento, así que no tienes que aceptar nada. Si algún día añadimos algo así, te pediremos permiso antes.",
+      "nombre": "Cookie",
+      "para": "Para qué",
+      "dura": "Cuánto dura",
+      "lista": [
+        [
+          "better-auth.session_token",
+          "Mantener tu sesión iniciada.",
+          "30 días"
+        ],
+        [
+          "better-auth.state",
+          "Proteger el inicio de sesión con Google o GitHub.",
+          "5 minutos, solo mientras entras"
+        ],
+        [
+          "TTJ_IDIOMA",
+          "Recordar el idioma de la web que eliges.",
+          "1 año"
+        ],
+        [
+          "TTJ_HABLO",
+          "Recordar los idiomas que hablas, para enseñarte las ofertas que puedes hacer.",
+          "1 año"
+        ]
+      ]
+    }
   }
 }

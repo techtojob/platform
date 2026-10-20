@@ -180,7 +180,23 @@
     "perfilVer": "See my profile",
     "miPerfil": "My profile",
     "menu": "Account menu for {nombre}",
-    "panelStaff": "Staff panel"
+    "panelStaff": "Staff panel",
+    "datos": {
+      "titulo": "Your data",
+      "texto": "You can download everything we store about you or delete your account at any time. More details in <enlace>Privacy</enlace>.",
+      "descargar": "Download my data",
+      "descargando": "Preparing…",
+      "borrar": "Delete my account",
+      "borrarTitulo": "Delete your account",
+      "borrarTexto": "Your account, talent profile, badges, linked Discord and the reports you've made will be deleted. It can't be undone. You can sign up again whenever you want, but you'll start from scratch.",
+      "escribeEmail": "To confirm, type your email: {email}",
+      "borrarSi": "Delete my account forever",
+      "borrando": "Deleting…",
+      "cancelar": "Cancel",
+      "errorDescargar": "We couldn't prepare your data. Try again.",
+      "errorConfirmacion": "The email doesn't match your account's.",
+      "errorBorrar": "The account couldn't be deleted. Try again or write to contacto@techtojob.com."
+    }
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -195,7 +211,8 @@
       "access_denied": "You cancelled the login.",
       "otro": "Couldn't log in. Please try again."
     },
-    "privacidadTitulo": "Only what's needed"
+    "privacidadTitulo": "Only what's needed",
+    "avisoPrivacidad": "By logging in you agree that we store your name, email and photo for your account. More in <enlace>Privacy</enlace>."
   },
   "navegacion": {
     "empleo": "Jobs",
@@ -217,7 +234,8 @@
     "redes": "TechToJob social media",
     "privacidad": "Privacy",
     "avisoLegal": "Legal notice",
-    "talento": "Talent"
+    "talento": "Talent",
+    "cookies": "Cookies"
   },
   "talento": {
     "titulo": "Community talent",
@@ -660,5 +678,97 @@
     "texto": "It's not your fault. Try again in a moment; if it keeps happening, let us know on Discord.",
     "reintentar": "Try again",
     "volver": "Go to the offers"
+  },
+  "privacidad": {
+    "titulo": "Privacy",
+    "entradilla": "What data the TechToJob job board stores, what for, and how you can see or delete it. No small print.",
+    "actualizado": "Last updated: October 2026",
+    "resumenTitulo": "In short",
+    "resumen": [
+      "You log in with Google or GitHub: we never see your password.",
+      "Your talent profile is only visible to whoever you choose, and we never show your email.",
+      "We don't sell data, there are no ads and we don't use tracking cookies.",
+      "You can download your data or delete your account whenever you want, from My account."
+    ],
+    "responsable": {
+      "titulo": "Who is responsible",
+      "texto": "TechToJob. The owner's details are in the <aviso>legal notice</aviso>. For anything about your data, write to <correo>contacto@techtojob.com</correo>."
+    },
+    "que": {
+      "titulo": "What data we store",
+      "items": [
+        "<b>Your account:</b> the name, email and photo Google or GitHub give us when you log in. They handle your password: we never see it.",
+        "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
+        "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
+        "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
+        "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
+        "<b>If you're staff:</b> which offers you've reviewed."
+      ],
+      "nunca": "We don't ask for your CV, phone, address or payment details."
+    },
+    "para": {
+      "titulo": "What we use them for",
+      "items": [
+        "<b>Providing the service you ask for when you sign up</b> (your account, your profile, browsing offers and talent). It's the basis of the terms of use (art. 6.1.b GDPR).",
+        "<b>Showing your profile</b> to other people and companies, only with the visibility you choose. It's your consent, and you can withdraw it by hiding or deleting it (art. 6.1.a).",
+        "<b>Keeping the job board safe</b>: sessions, reports and checking you're in the Discord. It's our legitimate interest in preventing abuse (art. 6.1.f)."
+      ]
+    },
+    "quien": {
+      "titulo": "Who else processes them",
+      "items": [
+        "<b>Neon</b>: the database, on servers in Frankfurt (European Union).",
+        "<b>Cloudflare</b>: hosts and protects the website. Its network is worldwide; data leaving the EU is covered by GDPR safeguards (standard contractual clauses).",
+        "<b>Google, GitHub and Discord</b>: only when you log in or link your account with them."
+      ],
+      "empresas": "Companies don't receive your data: they see your profile like any visitor, according to the visibility you choose. When you apply to an offer you go to the company's website, where their own privacy policy applies."
+    },
+    "cuanto": {
+      "titulo": "How long",
+      "items": [
+        "<b>Your account and profile:</b> until you delete them.",
+        "<b>Your sessions:</b> they expire after 30 days without use.",
+        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted."
+      ]
+    },
+    "derechos": {
+      "titulo": "Your rights",
+      "items": [
+        "<b>See and take your data:</b> “Download my data” in <cuenta>My account</cuenta>, in a file you can use elsewhere.",
+        "<b>Correct it:</b> by editing your profile whenever you want.",
+        "<b>Delete it:</b> “Delete my account” in <cuenta>My account</cuenta>. Everything is deleted, right away.",
+        "<b>Object to or restrict its use, and withdraw your consent:</b> hide your profile or write to us."
+      ],
+      "reclamar": "If you think we're not handling your data properly, you can complain to the Spanish Data Protection Agency (<aepd>aepd.es</aepd>). Write to us first: we'll fix it."
+    },
+    "cookies": {
+      "titulo": "Cookies",
+      "texto": "We only use cookies needed for the website to work. There's no analytics, advertising or tracking, so you don't have to accept anything. If we ever add something like that, we'll ask for your permission first.",
+      "nombre": "Cookie",
+      "para": "What for",
+      "dura": "How long",
+      "lista": [
+        [
+          "better-auth.session_token",
+          "Keeping you logged in.",
+          "30 days"
+        ],
+        [
+          "better-auth.state",
+          "Protecting the login with Google or GitHub.",
+          "5 minutes, only while logging in"
+        ],
+        [
+          "TTJ_IDIOMA",
+          "Remembering the website language you choose.",
+          "1 year"
+        ],
+        [
+          "TTJ_HABLO",
+          "Remembering the languages you speak, to show you the offers you can apply to.",
+          "1 year"
+        ]
+      ]
+    }
   }
 }

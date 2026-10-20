@@ -4,7 +4,7 @@ import type { Entorno } from "../app";
 import { configDiscord } from "../auth";
 import { cuentas } from "../db/esquema";
 import type { Db } from "../db/cliente";
-import { datosCuenta } from "../servicios/cuenta";
+import { borrarCuenta, datosCuenta, exportarDatos } from "../servicios/cuenta";
 import { esStaff } from "../servicios/staff";
 import { validarPerfil } from "@techtojob/shared";
 import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicios/talento";
@@ -19,6 +19,8 @@ import { actualizarEstadoDiscord } from "../servicios/discord";
  * GET  /cuenta/perfil              → mi perfil de talento (o null) y sugerencias para crearlo.
  * PUT  /cuenta/perfil              → crearlo o guardarlo.
  * DELETE /cuenta/perfil            → borrarlo.
+ * GET  /cuenta/datos               → todo lo que guardamos de la persona, en JSON.
+ * DELETE /cuenta                   { confirmacion: <su email> } → borra la cuenta y todo lo suyo.
  */
 
 /** Mi perfil de talento (dentro de /cuenta, con sesión). */
@@ -49,6 +51,20 @@ export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
   .route("/perfil", rutasPerfilPropio)
   .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
+  .get("/datos", async (c) => {
+    c.header("content-disposition", 'attachment; filename="mis-datos-techtojob.json"');
+    c.header("cache-control", "no-store");
+    return c.json(await exportarDatos(c.var.db, c.var.usuario.id));
+  })
+  .delete("/", async (c) => {
+    // Para no borrar sin querer: hay que escribir el email de la cuenta.
+    const { confirmacion } = (await c.req.json().catch(() => ({}))) as { confirmacion?: unknown };
+    if (typeof confirmacion !== "string" || confirmacion.trim().toLowerCase() !== c.var.usuario.email.toLowerCase()) {
+      return c.json({ error: { codigo: "confirmacion", mensaje: "Escribe el email de tu cuenta para confirmar." } }, 400);
+    }
+    await borrarCuenta(c.var.db, c.var.usuario.id);
+    return c.json({ ok: true });
+  })
   .post("/discord/comprobar", async (c) => {
     const config = configDiscord(c.env);
     const usuario = c.var.usuario;

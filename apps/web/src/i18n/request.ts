@@ -10,7 +10,8 @@ function mezclar(base: Mensajes, encima: Mensajes): Mensajes {
   for (const [clave, valor] of Object.entries(encima)) {
     const anterior = resultado[clave];
     resultado[clave] =
-      valor && typeof valor === "object" && anterior && typeof anterior === "object"
+      // Las listas (arrays) se toman enteras, no se mezclan.
+      valor && typeof valor === "object" && !Array.isArray(valor) && anterior && typeof anterior === "object" && !Array.isArray(anterior)
         ? mezclar(anterior as Mensajes, valor as Mensajes)
         : valor;
   }

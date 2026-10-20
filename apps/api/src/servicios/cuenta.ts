@@ -1,7 +1,7 @@
 import type { Cuenta } from "@techtojob/shared";
 import { eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { cuentas, estadoDiscord } from "../db/esquema";
+import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
 
 export type { Cuenta } from "@techtojob/shared";
@@ -38,5 +38,47 @@ export async function datosCuenta(
       comprobadoEn: vigente?.comprobadoEn.toISOString() ?? null,
       invitacion: opciones.invitacion,
     },
+  };
+}
+
+/**
+ * Borra la cuenta y todo lo suyo: sesiones, cuentas de Google/GitHub/Discord (con sus tokens),
+ * estado de Discord, perfil de talento, emblemas y los reportes que hizo o recibió (en cascada).
+ * Si era staff, las ofertas que revisó se quedan, pero sin su id.
+ */
+export async function borrarCuenta(db: Db, userId: string) {
+  await db.update(ofertas).set({ revisadaPor: null }).where(eq(ofertas.revisadaPor, userId));
+  await db.delete(usuarios).where(eq(usuarios.id, userId));
+}
+
+/**
+ * Todo lo que TechToJob guarda de una persona, para descargarlo (derecho de acceso y portabilidad).
+ * Sin tokens ni datos internos de seguridad.
+ */
+export async function exportarDatos(db: Db, userId: string) {
+  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas] = await Promise.all([
+    db.select().from(usuarios).where(eq(usuarios.id, userId)).limit(1),
+    db.select({ proveedor: cuentas.providerId, creadaEn: cuentas.createdAt }).from(cuentas).where(eq(cuentas.userId, userId)),
+    db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1),
+    db.select().from(perfiles).where(eq(perfiles.userId, userId)).limit(1),
+    db.select().from(emblemas).where(eq(emblemas.userId, userId)),
+    db
+      .select({ perfil: perfiles.alias, motivo: reportesPerfil.motivo, creadoEn: reportesPerfil.creadoEn })
+      .from(reportesPerfil)
+      .innerJoin(perfiles, eq(perfiles.userId, reportesPerfil.perfilUserId))
+      .where(eq(reportesPerfil.reportadoPor, userId)),
+    db.select({ creadaEn: sesiones.createdAt, caducaEn: sesiones.expiresAt, ip: sesiones.ipAddress, navegador: sesiones.userAgent }).from(sesiones).where(eq(sesiones.userId, userId)),
+  ]);
+  return {
+    exportadoEn: new Date().toISOString(),
+    cuenta: usuario
+      ? { nombre: usuario.name, email: usuario.email, emailVerificado: usuario.emailVerified, foto: usuario.image, creadaEn: usuario.createdAt }
+      : null,
+    formasDeEntrar: proveedores,
+    discord: discord ? { id: discord.discordId, nombre: discord.nombre, enServidor: discord.enServidor, roles: discord.roles, comprobadoEn: discord.comprobadoEn } : null,
+    perfilDeTalento: perfil ? (({ userId: _u, ...resto }) => resto)(perfil) : null,
+    emblemas: susEmblemas.map(({ tipo, nombre, otorgadoEn, caducaEn }) => ({ tipo, nombre, otorgadoEn, caducaEn })),
+    reportesQueHiciste: reportesHechos,
+    sesiones: sesionesActivas,
   };
 }
