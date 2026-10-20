@@ -11,6 +11,7 @@ import {
   crearEmpresa,
   guardarOfertaEnApi,
   importarEnApi,
+  rechazarVariasEnApi,
   type AccionStaff,
 } from "@/lib/api-staff";
 import { datosParaApi, type ValoresOferta } from "@/lib/formulario-oferta";
@@ -75,8 +76,14 @@ export async function comprobarEnlace(url: string, sin: string | null): Promise<
 
 export type EstadoAccion = { error?: string; hecho?: AccionStaff["accion"] };
 
-/** Publicar, rechazar, cerrar o alargar. Devuelve el error, si lo hay. */
-export async function hacerAccion(id: string, _previo: EstadoAccion, formulario: FormData): Promise<EstadoAccion> {
+/** A dónde ir después de publicar o rechazar, para revisar en cadena: la siguiente oferta con los mismos filtros. */
+export type Siguiente = { id: string; query: Record<string, string>; locale: string } | null;
+
+/**
+ * Publicar, rechazar, cerrar o alargar. Devuelve el error, si lo hay.
+ * Si se publica o rechaza y hay `siguiente`, se va directamente a ella (con un aviso de lo que se ha hecho).
+ */
+export async function hacerAccion(id: string, siguiente: Siguiente, _previo: EstadoAccion, formulario: FormData): Promise<EstadoAccion> {
   const accion = String(formulario.get("accion"));
   let peticion: AccionStaff;
   if (accion === "publicar") {
@@ -96,5 +103,23 @@ export async function hacerAccion(id: string, _previo: EstadoAccion, formulario:
     return { error: error instanceof ErrorDeApi ? error.codigo : "desconocido" };
   }
   revalidatePath("/[locale]/staff", "layout");
+  if (siguiente && (peticion.accion === "publicar" || peticion.accion === "rechazar")) {
+    const locale = (locales as string[]).includes(siguiente.locale) ? (siguiente.locale as Locale) : locales[0]!;
+    redirect({
+      href: { pathname: "/staff/ofertas/[id]", params: { id: siguiente.id }, query: { ...siguiente.query, hecho: peticion.accion } },
+      locale,
+    });
+  }
   return { hecho: peticion.accion };
+}
+
+/** Rechazar varias pendientes de golpe (desde la lista). Devuelve cuántas o el error. */
+export async function rechazarVarias(ids: string[], motivo: string): Promise<{ rechazadas: number } | { error: string }> {
+  try {
+    const rechazadas = await rechazarVariasEnApi(ids, motivo);
+    revalidatePath("/[locale]/staff", "layout");
+    return { rechazadas };
+  } catch (error) {
+    return { error: error instanceof ErrorDeApi ? error.codigo : "desconocido" };
+  }
 }

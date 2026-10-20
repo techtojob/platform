@@ -621,6 +621,74 @@
         "enviar": "Añadir a la lista",
         "anadidas": "{count, plural, =0 {Ya estaban todas en la lista.} one {# empresa nueva en la lista.} other {# empresas nuevas en la lista.}}"
       }
+    },
+    "filtros": {
+      "atajos": "Atajos",
+      "atajosNombres": {
+        "sin_resumen": "Sin resumen",
+        "sin_zona": "Sin zona",
+        "hoy": "Entraron hoy",
+        "caducan": "Caducan esta semana",
+        "desaparecidas": "Ya no están en la web de la empresa"
+      },
+      "buscar": "Buscar por título o empresa",
+      "buscarBoton": "Buscar",
+      "idioma": "Idioma de la oferta",
+      "idiomas": {
+        "es": "Español",
+        "en": "Inglés",
+        "otros": "Otros"
+      },
+      "origen": "Origen",
+      "manual": "Manual",
+      "automatica": "Automática (todas)",
+      "automaticaDe": "Automática · {fuente}",
+      "desde": "Se puede hacer desde",
+      "cualquierSitio": "Cualquier sitio",
+      "fecha": "Fecha",
+      "siempre": "Cualquier fecha",
+      "fechas": {
+        "hoy": "Hoy",
+        "7": "Últimos 7 días",
+        "30": "Últimos 30 días"
+      },
+      "orden": "Ordenar",
+      "ordenes": {
+        "antiguas": "Más antiguas primero",
+        "nuevas": "Más nuevas primero",
+        "caducan": "Caducan antes"
+      },
+      "todos": "Todos",
+      "todas": "Todas",
+      "total": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
+      "limpiar": "Quitar filtros",
+      "vacio": "No hay ofertas con estos filtros.",
+      "paginas": "Páginas",
+      "anterior": "← Anteriores",
+      "siguiente": "Más →",
+      "pagina": "Página {pagina} de {total}"
+    },
+    "varias": {
+      "todas": "Seleccionar todas las de esta página",
+      "marcar": "Seleccionar «{titulo}»",
+      "marcadas": "{count, plural, one {# seleccionada} other {# seleccionadas}}",
+      "motivo": "¿Por qué no se publican?",
+      "rechazar": "{count, plural, one {Rechazar #} other {Rechazar #}}",
+      "rechazando": "Rechazando…",
+      "cancelar": "Cancelar",
+      "faltaMotivo": "Escribe el motivo (al menos 3 caracteres).",
+      "error": "No se han podido rechazar. Inténtalo de nuevo.",
+      "hecho": "{count, plural, one {# oferta rechazada.} other {# ofertas rechazadas.}}"
+    },
+    "cadena": {
+      "volver": "← Volver a la lista",
+      "saltar": "Saltar →",
+      "quedan": "{count, plural, =0 {No quedan más con estos filtros} one {Queda # más con estos filtros} other {Quedan # más con estos filtros}}",
+      "hecho": {
+        "publicar": "Publicada. Esta es la siguiente.",
+        "rechazar": "Rechazada. Esta es la siguiente."
+      },
+      "fin": "¡Listo! No quedan más con estos filtros."
     }
   },
   "formulario": {

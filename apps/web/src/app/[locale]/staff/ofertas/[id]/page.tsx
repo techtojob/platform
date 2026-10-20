@@ -1,5 +1,5 @@
-import { NOMBRES_ATS, TECNOLOGIAS, type OfertaStaff } from "@techtojob/shared";
-import { getFormatter, getNow, getTranslations } from "next-intl/server";
+import { leerFiltrosStaff, NOMBRES_ATS, parametrosStaff, TECNOLOGIAS, type OfertaStaff } from "@techtojob/shared";
+import { getFormatter, getLocale, getNow, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -8,7 +8,7 @@ import { AccionesOferta } from "@/components/staff/acciones-oferta";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarBlob, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { exigirStaff, obtenerOfertaStaff } from "@/lib/api-staff";
+import { exigirStaff, obtenerOfertaStaff, siguienteStaff } from "@/lib/api-staff";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { slugDeOferta } from "@/lib/ofertas";
 import { hacerAccion } from "../../acciones";
@@ -18,21 +18,34 @@ type Props = PageProps<"/[locale]/staff/ofertas/[id]">;
 const nombresTecnologias = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
 
 /** Una oferta en el panel: cómo se verá y qué hacer con ella (publicar, rechazar, alargar, cerrar, editar). */
-export default function PaginaOfertaStaff({ params }: Props) {
+export default function PaginaOfertaStaff({ params, searchParams }: Props) {
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       <Suspense fallback={<div aria-busy="true" className="fondo-portada h-[36rem] animate-pulse" />}>
-        <Contenido params={params} />
+        <Contenido params={params} searchParams={searchParams} />
       </Suspense>
     </main>
   );
 }
 
-async function Contenido({ params }: Pick<Props, "params">) {
+async function Contenido({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
   await exigirStaff();
-  const { id } = await params;
-  const [oferta, t, format, ahora] = await Promise.all([obtenerOfertaStaff(id), getTranslations(), getFormatter(), getNow()]);
+  const [{ id }, parametros] = await Promise.all([params, searchParams]);
+  // Los filtros de la lista de la que se viene: para "Volver a la lista" y para revisar en cadena.
+  const filtros = leerFiltrosStaff(parametros);
+  const lista = parametrosStaff({ ...filtros, pagina: 1 });
+  const saltadas = String(parametros.saltadas ?? "").split(",").filter((x) => /^[a-z0-9-]{1,40}$/i.test(x)).slice(-100);
+  const hecho = parametros.hecho === "publicar" || parametros.hecho === "rechazar" ? parametros.hecho : null;
+  const [oferta, siguiente, t, format, ahora, locale] = await Promise.all([
+    obtenerOfertaStaff(id),
+    siguienteStaff(filtros, id, saltadas).catch(() => ({ id: null, quedan: 0 })),
+    getTranslations(),
+    getFormatter(),
+    getNow(),
+    getLocale(),
+  ]);
   if (!oferta) notFound();
+  const conSaltadas = (ids: string[]) => ({ ...lista, ...(ids.length && { saltadas: ids.join(",") }) });
   const hace = (iso: string) => format.relativeTime(new Date(iso), ahora);
   const caducada = !!oferta.caducaEn && Date.parse(oferta.caducaEn) < ahora.getTime();
 
@@ -71,7 +84,29 @@ async function Contenido({ params }: Pick<Props, "params">) {
       <section className="rejilla flex-1 px-[var(--margen)] pb-20 pt-12">
         <div className="mx-auto grid max-w-[80rem] gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="flex min-w-0 flex-col gap-6">
-            {oferta.estado === "rechazada" && oferta.motivoRechazo && (
+            {/* Revisar en cadena: volver a la lista, cuántas quedan y saltar a la siguiente. */}
+            <nav aria-label={t("staff.titulo")} className="flex flex-wrap items-center justify-between gap-3">
+              <Link href={{ pathname: "/staff", query: lista }} className="font-bold text-enlace underline">
+                {t("staff.cadena.volver")}
+              </Link>
+              <span className="flex flex-wrap items-center gap-3">
+                <span className="text-sm text-suave">{t("staff.cadena.quedan", { count: siguiente.quedan })}</span>
+                {siguiente.id && (
+                  <Link
+                    href={{ pathname: "/staff/ofertas/[id]", params: { id: siguiente.id }, query: conSaltadas([...saltadas, oferta.id]) }}
+                    className={clasesBoton({ variante: "secundario" })}
+                  >
+                    {t("staff.cadena.saltar")}
+                  </Link>
+                )}
+              </span>
+            </nav>
+            {hecho && (
+              <p role="status" className="rounded-tarjeta bg-acento px-5 py-3 font-bold text-ink">
+                {t(`staff.cadena.hecho.${hecho}`)}
+              </p>
+            )}
+            {(oferta.estado === "rechazada" || oferta.estado === "cerrada") && oferta.motivoRechazo && (
               <p className="rounded-tarjeta border border-peligro bg-tarjeta p-5 font-bold">
                 {t("staff.lista.motivo", { motivo: oferta.motivoRechazo })}
               </p>
@@ -81,7 +116,10 @@ async function Contenido({ params }: Pick<Props, "params">) {
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
-            <AccionesOferta oferta={oferta} accion={hacerAccion.bind(null, oferta.id)} />
+            <AccionesOferta
+              oferta={oferta}
+              accion={hacerAccion.bind(null, oferta.id, siguiente.id ? { id: siguiente.id, query: conSaltadas(saltadas), locale } : null)}
+            />
             <Link
               href={{ pathname: "/staff/ofertas/[id]/editar", params: { id: oferta.id } }}
               className={clasesBoton({ variante: "secundario", className: "w-full" })}

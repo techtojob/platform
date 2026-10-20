@@ -621,6 +621,74 @@
         "enviar": "Add to the list",
         "anadidas": "{count, plural, =0 {They were all on the list already.} one {# new company on the list.} other {# new companies on the list.}}"
       }
+    },
+    "filtros": {
+      "atajos": "Shortcuts",
+      "atajosNombres": {
+        "sin_resumen": "No summary",
+        "sin_zona": "No location",
+        "hoy": "Came in today",
+        "caducan": "Expire this week",
+        "desaparecidas": "Gone from the company's site"
+      },
+      "buscar": "Search by title or company",
+      "buscarBoton": "Search",
+      "idioma": "Offer language",
+      "idiomas": {
+        "es": "Spanish",
+        "en": "English",
+        "otros": "Others"
+      },
+      "origen": "Source",
+      "manual": "Manual",
+      "automatica": "Automatic (all)",
+      "automaticaDe": "Automatic · {fuente}",
+      "desde": "Can be done from",
+      "cualquierSitio": "Anywhere",
+      "fecha": "Date",
+      "siempre": "Any date",
+      "fechas": {
+        "hoy": "Today",
+        "7": "Last 7 days",
+        "30": "Last 30 days"
+      },
+      "orden": "Sort",
+      "ordenes": {
+        "antiguas": "Oldest first",
+        "nuevas": "Newest first",
+        "caducan": "Expiring soonest"
+      },
+      "todos": "All",
+      "todas": "All",
+      "total": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+      "limpiar": "Clear filters",
+      "vacio": "No offers match these filters.",
+      "paginas": "Pages",
+      "anterior": "← Previous",
+      "siguiente": "More →",
+      "pagina": "Page {pagina} of {total}"
+    },
+    "varias": {
+      "todas": "Select all on this page",
+      "marcar": "Select “{titulo}”",
+      "marcadas": "{count} selected",
+      "motivo": "Why aren't they being published?",
+      "rechazar": "Reject {count}",
+      "rechazando": "Rejecting…",
+      "cancelar": "Cancel",
+      "faltaMotivo": "Write the reason (at least 3 characters).",
+      "error": "Couldn't reject them. Please try again.",
+      "hecho": "{count, plural, one {# offer rejected.} other {# offers rejected.}}"
+    },
+    "cadena": {
+      "volver": "← Back to the list",
+      "saltar": "Skip →",
+      "quedan": "{count, plural, =0 {No more with these filters} one {# more with these filters} other {# more with these filters}}",
+      "hecho": {
+        "publicar": "Published. Here's the next one.",
+        "rechazar": "Rejected. Here's the next one."
+      },
+      "fin": "Done! No more with these filters."
     }
   },
   "formulario": {

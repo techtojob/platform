@@ -11,7 +11,7 @@ import {
   type EstadoOferta,
   type OfertaStaff,
 } from "@techtojob/shared";
-import { and, asc, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, count, eq, isNull, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta } from "../db/esquema";
 
@@ -49,7 +49,7 @@ export function nuevoId(): string {
   return Array.from(bytes, (b) => letras[b % letras.length]).join("");
 }
 
-function aStaff(
+export function aStaff(
   o: Oferta,
   empresa: OfertaStaff["empresa"],
   idiomas: Array<{ ofertaId: string; idioma: OfertaStaff["idioma"]; nivel: OfertaStaff["idiomasRequeridos"][number]["nivel"] }>,
@@ -89,27 +89,7 @@ function aStaff(
   };
 }
 
-const columnasEmpresa = { id: empresas.id, nombre: empresas.nombre, slug: empresas.slug, web: empresas.web };
-
-/** Ofertas de un estado. Las pendientes, de la más antigua a la más nueva (primero lo que más lleva esperando). */
-export async function listarOfertasStaff(db: Db, estado: EstadoOferta): Promise<OfertaStaff[]> {
-  const filas = await db
-    .select({ oferta: ofertas, empresa: columnasEmpresa })
-    .from(ofertas)
-    .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
-    .where(eq(ofertas.estado, estado))
-    .orderBy(estado === "pendiente" ? asc(ofertas.creadaEn) : desc(ofertas.actualizadaEn))
-    .limit(200);
-  const ids = filas.map((f) => f.oferta.id);
-  const idiomas = ids.length ? await db.select().from(ofertaIdiomas).where(inArray(ofertaIdiomas.ofertaId, ids)) : [];
-  return filas.map((f) => aStaff(f.oferta, f.empresa, idiomas));
-}
-
-/** Cuántas ofertas hay en cada estado (para las pestañas del panel). */
-export async function contarPorEstado(db: Db): Promise<Partial<Record<EstadoOferta, number>>> {
-  const filas = await db.select({ estado: ofertas.estado, total: count() }).from(ofertas).groupBy(ofertas.estado);
-  return Object.fromEntries(filas.map((f) => [f.estado, Number(f.total)]));
-}
+export const columnasEmpresa = { id: empresas.id, nombre: empresas.nombre, slug: empresas.slug, web: empresas.web };
 
 export async function obtenerOfertaStaff(db: Db, id: string): Promise<OfertaStaff | null> {
   const [fila] = await db

@@ -1,5 +1,17 @@
 import "server-only";
-import type { Comprobacion, EmpresaStaff, ResumenCandidatas, ReportePerfil, EstadoOferta, OfertaImportada, OfertaRepetida, OfertaStaff } from "@techtojob/shared";
+import {
+  parametrosStaff,
+  type Comprobacion,
+  type EmpresaStaff,
+  type FiltrosStaff,
+  type ListaStaff,
+  type OfertaImportada,
+  type OfertaRepetida,
+  type OfertaStaff,
+  type ReportePerfil,
+  type ResumenCandidatas,
+  type SiguienteStaff,
+} from "@techtojob/shared";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
@@ -8,14 +20,6 @@ import { ErrorDeApi, obtenerCuenta, pedir } from "./api";
  * Llamadas del panel de staff. Todas llevan la cookie de quien visita:
  * el API decide si es staff (rol de moderador en Discord o STAFF_EMAILS).
  */
-
-export type ListaStaff = {
-  estado: EstadoOferta;
-  ofertas: OfertaStaff[];
-  cuentas: Partial<Record<EstadoOferta, number>>;
-  /** Reportes de perfiles sin revisar. */
-  reportes: number;
-};
 
 async function cookie(): Promise<string> {
   return (await headers()).get("cookie") ?? "";
@@ -32,8 +36,23 @@ const conCookie = async (init: RequestInit = {}): Promise<RequestInit> => ({
   headers: { cookie: await cookie(), ...(init.body ? { "content-type": "application/json" } : {}) },
 });
 
-export async function listarOfertasStaff(estado: EstadoOferta): Promise<ListaStaff> {
-  return pedir<ListaStaff>(`/staff/ofertas?estado=${estado}`, await conCookie());
+/** La lista del panel con sus filtros (ver packages/shared/src/filtros-staff.ts). */
+export async function listarOfertasStaff(filtros: FiltrosStaff): Promise<ListaStaff> {
+  const q = new URLSearchParams({ ...parametrosStaff(filtros), estado: filtros.estado });
+  return pedir<ListaStaff>(`/staff/ofertas?${q}`, await conCookie());
+}
+
+/** La siguiente por revisar con los mismos filtros, sin la actual ni las saltadas. */
+export async function siguienteStaff(filtros: FiltrosStaff, actual: string | null, saltadas: string[]): Promise<SiguienteStaff> {
+  const q = new URLSearchParams({ ...parametrosStaff({ ...filtros, pagina: 1 }), estado: filtros.estado });
+  if (actual) q.set("actual", actual);
+  if (saltadas.length) q.set("saltadas", saltadas.join(","));
+  return pedir<SiguienteStaff>(`/staff/ofertas/siguiente?${q}`, await conCookie());
+}
+
+export async function rechazarVariasEnApi(ids: string[], motivo: string): Promise<number> {
+  const r = await pedir<{ rechazadas: number }>("/staff/ofertas/rechazar-varias", await conCookie({ method: "POST", body: JSON.stringify({ ids, motivo }) }));
+  return r.rechazadas;
 }
 
 export async function obtenerOfertaStaff(id: string): Promise<OfertaStaff | null> {

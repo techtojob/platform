@@ -4,6 +4,7 @@ import {
   detectarIdiomaTexto,
   detectarTecnologias,
   LIMITES,
+  MOTIVO_DESAPARECIDA,
   slugOferta,
 } from "@techtojob/shared";
 import { and, eq, gte, inArray, isNotNull, sql } from "drizzle-orm";
@@ -137,7 +138,7 @@ async function leerEmpresa(db: Db, empresa: Empresa, pedir: Pedir, ahora: Date) 
   if (desaparecidas.length) {
     await db
       .update(ofertas)
-      .set({ estado: "cerrada" })
+      .set({ estado: "cerrada", motivoRechazo: MOTIVO_DESAPARECIDA })
       .where(inArray(ofertas.id, desaparecidas.map((o) => o.id)));
   }
   resultado.cerradas = desaparecidas.length;

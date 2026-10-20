@@ -1,23 +1,22 @@
-import { ESTADOS_OFERTA, validarOferta, type EstadoOferta } from "@techtojob/shared";
+import { leerFiltrosStaff, validarOferta, type ListaStaff } from "@techtojob/shared";
 import { Hono, type Context } from "hono";
 import type { Entorno } from "../app";
 import {
   alargarOferta,
   cerrarOferta,
-  contarPorEstado,
   crearEmpresa,
   configurarEmpresa,
   crearOferta,
   editarOferta,
   ErrorStaff,
   listarEmpresas,
-  listarOfertasStaff,
   obtenerOfertaStaff,
   publicarOferta,
   rechazarOferta,
 } from "../servicios/ofertas-staff";
 import { resumenCandidatas, sugerirCandidatas } from "../servicios/descubrir";
 import { buscarRepetida, importarOferta } from "../servicios/importar";
+import { listarStaff, rechazarVarias, siguienteStaff } from "../servicios/lista-staff";
 import { listarReportes, resolverReporte } from "../servicios/talento";
 import { responderErrorTalento } from "./talento";
 import { conSesion, soloStaff } from "./sesion";
@@ -25,7 +24,11 @@ import { conSesion, soloStaff } from "./sesion";
 /**
  * Panel de staff. Solo moderadores (ver servicios/staff.ts).
  *
- * GET  /staff/ofertas?estado=pendiente   → ofertas de ese estado + cuántas hay en cada uno
+ * GET  /staff/ofertas?estado=pendiente&atajo=sin_resumen&idioma=es…  → ofertas (50 por página) + recuentos
+ *      filtros: estado, q, idioma (es|en|otros), origen, fuente, desde, area, nivel, fecha (hoy|7|30),
+ *      atajo (sin_resumen|sin_zona|hoy|caducan|desaparecidas), orden (antiguas|nuevas|caducan), pagina
+ * GET  /staff/ofertas/siguiente?<filtros>&actual=id&saltadas=a,b → la siguiente por revisar
+ * POST /staff/ofertas/rechazar-varias { ids, motivo }
  * GET  /staff/ofertas/:id                → una oferta (en cualquier estado)
  * POST /staff/ofertas                    → crear (queda pendiente)
  * PUT  /staff/ofertas/:id                → editar
@@ -77,14 +80,21 @@ const invalida = (c: Context<Entorno>, errores: Record<string, string>) =>
 export const rutasStaff = new Hono<Entorno>()
   .use(conSesion, soloStaff)
   .get("/ofertas", async (c) => {
-    const pedido = c.req.query("estado") ?? "pendiente";
-    const estado: EstadoOferta = (ESTADOS_OFERTA as readonly string[]).includes(pedido) ? (pedido as EstadoOferta) : "pendiente";
-    const [ofertas, cuentas, reportes] = await Promise.all([
-      listarOfertasStaff(c.var.db, estado),
-      contarPorEstado(c.var.db),
-      listarReportes(c.var.db),
-    ]);
-    return c.json({ estado, ofertas, cuentas, reportes: reportes.length });
+    const [lista, reportes] = await Promise.all([listarStaff(c.var.db, leerFiltrosStaff(c.req.query())), listarReportes(c.var.db)]);
+    return c.json({ ...lista, reportes: reportes.length } satisfies ListaStaff);
+  })
+  .get("/ofertas/siguiente", async (c) => {
+    const q = c.req.query();
+    const saltadas = (q.saltadas ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+    return c.json(await siguienteStaff(c.var.db, leerFiltrosStaff(q), q.actual || null, saltadas));
+  })
+  .post("/ofertas/rechazar-varias", async (c) => {
+    const datos = await cuerpo(c);
+    try {
+      return c.json({ rechazadas: await rechazarVarias(c.var.db, datos.ids, datos.motivo, c.var.usuario.id) });
+    } catch (e) {
+      return responderError(c, e);
+    }
   })
   .get("/ofertas/:id", async (c) => {
     const oferta = await obtenerOfertaStaff(c.var.db, c.req.param("id"));

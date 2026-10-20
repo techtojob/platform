@@ -4,7 +4,7 @@ import { AvatarBlob, Etiqueta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 
 /** Una oferta en la lista del panel: título, empresa y lo que importa según su estado. */
-export async function FilaStaff({ oferta, ahora }: { oferta: OfertaStaff; ahora: number }) {
+export async function FilaStaff({ oferta, ahora, query = {} }: { oferta: OfertaStaff; ahora: number; query?: Record<string, string> }) {
   const [t, format] = await Promise.all([getTranslations(), getFormatter()]);
   const hace = (iso: string) => format.relativeTime(new Date(iso), ahora);
   const caducada = oferta.caducaEn && Date.parse(oferta.caducaEn) < ahora;
@@ -22,7 +22,8 @@ export async function FilaStaff({ oferta, ahora }: { oferta: OfertaStaff; ahora:
 
   return (
     <Link
-      href={{ pathname: "/staff/ofertas/[id]", params: { id: oferta.id } }}
+      // Con los filtros de la lista: así, desde la oferta se puede seguir con la siguiente.
+      href={{ pathname: "/staff/ofertas/[id]", params: { id: oferta.id }, query }}
       className="group flex items-center gap-4 rounded-tarjeta border border-borde bg-tarjeta p-4 shadow-tarjeta transition-colors hover:border-acento sm:p-5"
     >
       <AvatarBlob nombre={oferta.empresa.nombre} tamano={44} />
@@ -34,9 +35,10 @@ export async function FilaStaff({ oferta, ahora }: { oferta: OfertaStaff; ahora:
           <Etiqueta>{t(`seniority.${oferta.seniority}`)}</Etiqueta>
           <Etiqueta>{t(`modalidades.${oferta.modalidad}`)}</Etiqueta>
           {oferta.origen === "automatica" && <Etiqueta tono="borde">{t("staff.lista.automatica")}</Etiqueta>}
+          {oferta.idioma !== "es" && <Etiqueta tono="borde">{oferta.idioma.toUpperCase()}</Etiqueta>}
           {caducada && <Etiqueta tono="postit">{t("staff.lista.yaNoSale")}</Etiqueta>}
         </p>
-        {oferta.estado === "rechazada" && oferta.motivoRechazo && (
+        {(oferta.estado === "rechazada" || oferta.estado === "cerrada") && oferta.motivoRechazo && (
           <p className="text-sm text-suave">{t("staff.lista.motivo", { motivo: oferta.motivoRechazo })}</p>
         )}
       </div>
