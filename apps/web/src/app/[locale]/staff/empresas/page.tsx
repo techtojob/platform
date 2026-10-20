@@ -8,7 +8,7 @@ import { AvatarBlob, Etiqueta, Tarjeta } from "@/components/ui";
 import { exigirStaff, listarEmpresas, resumenCandidatas } from "@/lib/api-staff";
 
 /**
- * Empresas: las que tienen página de empleo en Greenhouse, Lever o Ashby se leen cada mañana
+ * Empresas: las que tienen página de empleo en Greenhouse, Lever, Ashby, Teamtailor o Personio se leen cada mañana
  * (ver .github/workflows/ofertas.yml) y sus ofertas nuevas entran pendientes.
  */
 export default function PaginaEmpresas() {

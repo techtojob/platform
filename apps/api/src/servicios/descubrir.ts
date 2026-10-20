@@ -10,7 +10,7 @@ import { idiomaDe } from "./sincronizar";
 /**
  * Descubrir empresas solas.
  *
- * Greenhouse, Lever y Ashby no publican la lista de sus empresas, así que partimos de una lista
+ * Los ATS (Greenhouse, Lever, Ashby, Teamtailor, Personio) no publican la lista de sus empresas, así que partimos de una lista
  * de nombres (datos/empresas-candidatas.json, más las que añada el staff desde el panel) y, para
  * cada una, se prueba si tiene página de empleo: boards-api.greenhouse.io/…/{id}, api.lever.co/…/{id}…
  *
@@ -19,7 +19,7 @@ import { idiomaDe } from "./sincronizar";
  * a probar en 30 días. Si no la tiene en ningún sitio, no se vuelve a probar.
  */
 
-/** Candidatas que se prueban en cada pasada (cada una son hasta 8 peticiones). */
+/** Candidatas que se prueban en cada pasada (cada una son hasta 14 peticiones). */
 export const CANDIDATAS_POR_DIA = 25;
 const REPROBAR_MS = 30 * 86_400_000;
 
@@ -52,11 +52,24 @@ export async function sembrarCandidatas(db: Db, lista: EntradaCandidata[]): Prom
   return nuevas.length;
 }
 
-type Hallazgo = { ats: Ats; id: string; region?: "eu"; utiles: number };
+type Region = "eu" | "com";
+type Hallazgo = { ats: Ats; id: string; region?: Region; utiles: number };
 
-/** Prueba una candidata en los tres ATS. null: no está en ninguno. "error": no se pudo saber (se reintenta otro día). */
+const INTENTOS: Array<{ ats: Ats; region?: Region }> = [
+  { ats: "greenhouse" },
+  { ats: "lever" },
+  { ats: "lever", region: "eu" },
+  { ats: "ashby" },
+  { ats: "teamtailor" },
+  { ats: "personio" },
+  { ats: "personio", region: "com" },
+];
+/** En estos, cada empresa tiene su propio subdominio: si no se puede conectar, es que no existe. */
+const POR_SUBDOMINIO = new Set<Ats>(["teamtailor", "personio"]);
+
+/** Prueba una candidata en todos los ATS. null: no está en ninguno. "error": no se pudo saber (se reintenta otro día). */
 export async function probar(ids: string[], pedir: Pedir): Promise<Hallazgo | null | "error"> {
-  const intentos: Array<{ ats: Ats; region?: "eu" }> = [{ ats: "greenhouse" }, { ats: "lever" }, { ats: "lever", region: "eu" }, { ats: "ashby" }];
+  const intentos = INTENTOS;
   let mejor: Hallazgo | null = null;
   let fallo = false;
   for (const id of ids) {
@@ -70,7 +83,7 @@ export async function probar(ids: string[], pedir: Pedir): Promise<Hallazgo | nu
       } catch (e) {
         // 404 o una respuesta que no es de una página de empleo: aquí no está. Lo demás (500, red), se reintenta.
         if (!(e instanceof ErrorAts) || (e.estado !== undefined && e.estado !== 404)) fallo = true;
-        if (e instanceof ErrorAts && e.estado === undefined && /conectar/.test(e.message)) fallo = true;
+        if (e instanceof ErrorAts && e.estado === undefined && /conectar/.test(e.message) && !POR_SUBDOMINIO.has(ats)) fallo = true;
       }
     }
   }

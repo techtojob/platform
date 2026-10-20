@@ -2,10 +2,16 @@
  * Programas de selección (ATS) de los que la bolsa lee ofertas automáticamente.
  * Cada empresa tiene su página de empleo pública en uno de ellos.
  */
-export const ATS = ["greenhouse", "lever", "ashby"] as const;
+export const ATS = ["greenhouse", "lever", "ashby", "teamtailor", "personio"] as const;
 export type Ats = (typeof ATS)[number];
 
-export const NOMBRES_ATS: Record<Ats, string> = { greenhouse: "Greenhouse", lever: "Lever", ashby: "Ashby" };
+export const NOMBRES_ATS: Record<Ats, string> = {
+  greenhouse: "Greenhouse",
+  lever: "Lever",
+  ashby: "Ashby",
+  teamtailor: "Teamtailor",
+  personio: "Personio",
+};
 
 /**
  * La página de empleo de una empresa → qué ATS usa y su identificador.
@@ -13,8 +19,10 @@ export const NOMBRES_ATS: Record<Ats, string> = { greenhouse: "Greenhouse", leve
  * @example detectarAts("https://boards.greenhouse.io/cabify") // { ats: "greenhouse", id: "cabify" }
  * @example detectarAts("https://jobs.eu.lever.co/empresa/123") // { ats: "lever", id: "empresa", region: "eu" }
  * @example detectarAts("https://jobs.ashbyhq.com/empresa") // { ats: "ashby", id: "empresa" }
+ * @example detectarAts("https://empresa.teamtailor.com/jobs") // { ats: "teamtailor", id: "empresa" }
+ * @example detectarAts("https://empresa.jobs.personio.de") // { ats: "personio", id: "empresa" }
  */
-export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "eu" } | null {
+export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "eu" | "com" } | null {
   let url: URL;
   try {
     url = new URL(/^https?:\/\//i.test(enlace.trim()) ? enlace.trim() : `https://${enlace.trim()}`);
@@ -41,6 +49,12 @@ export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "e
     const id = valido(partes[0]);
     return id ? { ats: "ashby", id } : null;
   }
+  // empresa.teamtailor.com (o empresa.na.teamtailor.com, las de Norteamérica)
+  const tt = host.match(/^([a-z0-9-]+(?:\.na)?)\.teamtailor\.com$/);
+  if (tt && !["www", "app", "career", "api"].includes(tt[1]!)) return { ats: "teamtailor", id: tt[1]! };
+  // empresa.jobs.personio.de o empresa.jobs.personio.com
+  const pe = host.match(/^([a-z0-9-]+)\.jobs\.personio\.(de|com)$/);
+  if (pe) return { ats: "personio", id: pe[1]!, ...(pe[2] === "com" && { region: "com" as const }) };
   return null;
 }
 
@@ -48,5 +62,7 @@ export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "e
 export function enlaceAts(ats: Ats, id: string, region?: string | null): string {
   if (ats === "greenhouse") return `https://job-boards.greenhouse.io/${id}`;
   if (ats === "lever") return `https://jobs.${region === "eu" ? "eu." : ""}lever.co/${id}`;
+  if (ats === "teamtailor") return `https://${id}.teamtailor.com/jobs`;
+  if (ats === "personio") return `https://${id}.jobs.personio.${region === "com" ? "com" : "de"}`;
   return `https://jobs.ashbyhq.com/${id}`;
 }

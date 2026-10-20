@@ -2,11 +2,12 @@ import { adivinarPuesto, type Ats, type ZonaRemoto } from "@techtojob/shared";
 import { htmlATexto, type Pedir } from "./importar";
 
 /**
- * Lectores de las páginas de empleo públicas de Greenhouse, Lever y Ashby.
+ * Lectores de las páginas de empleo públicas de Greenhouse, Lever, Ashby, Teamtailor y Personio.
  *
- * Los tres tienen una API pública (sin claves) pensada justo para esto: que otras webs
- * muestren las ofertas de la empresa. Cada lector devuelve las ofertas en el mismo formato,
- * y luego `filtrar` se queda con las que nos interesan (técnicas y 100 % remotas).
+ * Todos tienen una API o un feed público (sin claves) pensado justo para esto: que otras webs
+ * muestren las ofertas de la empresa (Teamtailor y Personio se usan mucho en España).
+ * Cada lector devuelve las ofertas en el mismo formato, y luego `filtrar` se queda con las
+ * que nos interesan (técnicas y 100 % remotas).
  */
 
 export type OfertaAts = {
@@ -47,26 +48,52 @@ const fecha = (v: unknown): Date | null => {
   return Number.isNaN(d.getTime()) ? null : d;
 };
 
-async function pedirJson(url: string, pedir: Pedir): Promise<unknown> {
+async function pedirTexto(url: string, pedir: Pedir, tipo: string): Promise<string> {
   let respuesta: Response;
   try {
     respuesta = await pedir(url, {
-      headers: { accept: "application/json", "user-agent": AGENTE },
-      redirect: "error",
+      headers: { accept: tipo, "user-agent": AGENTE },
+      // Sin seguir redirecciones: cuando una página de empleo no existe, algunos ATS mandan a su web.
+      redirect: "manual",
       signal: AbortSignal.timeout(ESPERA_MS),
     });
   } catch {
     throw new ErrorAts("No se pudo conectar con la página de empleo.");
   }
-  if (respuesta.status === 404) throw new ErrorAts("La página de empleo no existe (404). ¿Ha cambiado el enlace?", 404);
+  if (respuesta.status === 404 || (respuesta.status >= 300 && respuesta.status < 400)) {
+    throw new ErrorAts("La página de empleo no existe (404). ¿Ha cambiado el enlace?", 404);
+  }
   if (!respuesta.ok) throw new ErrorAts(`La página de empleo respondió con un error (${respuesta.status}).`, respuesta.status);
   const texto = await respuesta.text();
   if (texto.length > MAXIMO_BYTES) throw new ErrorAts("La respuesta es demasiado grande.");
+  return texto;
+}
+
+async function pedirJson(url: string, pedir: Pedir): Promise<unknown> {
+  const texto = await pedirTexto(url, pedir, "application/json");
   try {
     return JSON.parse(texto);
   } catch {
     throw new ErrorAts("La respuesta no es válida.");
   }
+}
+
+/* XML sencillo (RSS de Teamtailor, feed de Personio): sin librerías, solo lo que hace falta. */
+
+const sinCdata = (s: string) => s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1");
+/** Bloques <etiqueta>…</etiqueta> (con o sin prefijo, "tt:location"). */
+function bloques(xml: string, etiqueta: string): string[] {
+  const re = new RegExp(`<(?:[\\w-]+:)?${etiqueta}(?:\\s[^>]*)?>([\\s\\S]*?)</(?:[\\w-]+:)?${etiqueta}>`, "gi");
+  return [...xml.matchAll(re)].map((m) => m[1]!);
+}
+/** El texto de la primera <etiqueta> (sin CDATA, entidades decodificadas y sin HTML). */
+function campo(xml: string, etiqueta: string): string {
+  const b = bloques(xml, etiqueta)[0];
+  return b === undefined ? "" : htmlATexto(sinCdata(b));
+}
+/** Para leer un XML hay que saber que lo es: si no, la "página" es otra cosa. */
+function comprobarXml(texto: string, raiz: string, nombre: string) {
+  if (!new RegExp(`<(?:[\\w-]+:)?${raiz}[\\s>]`, "i").test(texto)) throw new ErrorAts(`${nombre} devolvió algo inesperado.`);
 }
 
 const seguro = encodeURIComponent;
@@ -160,10 +187,77 @@ async function leerAshby(id: string, pedir: Pedir): Promise<OfertaAts[]> {
   });
 }
 
+/**
+ * Teamtailor: el RSS público de su página de empleo, https://{id}.teamtailor.com/jobs.rss
+ * Cada <item> trae título, descripción (HTML), enlace, fecha, <remoteStatus> (fully, hybrid, temporary, none)
+ * y las ubicaciones en <tt:locations>.
+ */
+async function leerTeamtailor(id: string, pedir: Pedir): Promise<OfertaAts[]> {
+  const xml = await pedirTexto(`https://${id}.teamtailor.com/jobs.rss?per_page=200`, pedir, "application/rss+xml, application/xml");
+  comprobarXml(xml, "rss", "Teamtailor");
+  return bloques(xml, "item").flatMap((item) => {
+    const titulo = campo(item, "title");
+    const url = campo(item, "link");
+    const idExterno = campo(item, "guid") || url;
+    if (!titulo || !/^https:\/\//.test(url) || !idExterno) return [];
+    const remoto = campo(item, "remoteStatus").toLowerCase();
+    const ubicaciones = bloques(item, "location")
+      .map((l) => [campo(l, "name"), campo(l, "city"), campo(l, "country")].filter(Boolean).join(", "))
+      .filter(Boolean);
+    return [
+      {
+        idExterno,
+        titulo,
+        url,
+        descripcion: htmlATexto(sinCdata(bloques(item, "description")[0] ?? "")),
+        ubicaciones: [...new Set(ubicaciones)],
+        modalidad: remoto === "fully" ? "remoto" : remoto === "hybrid" || remoto === "temporary" ? "hibrido" : remoto === "none" ? "presencial" : null,
+        publicadaEn: fecha(campo(item, "pubDate")),
+      } satisfies OfertaAts,
+    ];
+  });
+}
+
+/**
+ * Personio: el feed XML público, https://{id}.jobs.personio.de/xml (o .com).
+ * Cada <position> trae id, nombre, <office> y <additionalOffices>, y la descripción por trozos
+ * en <jobDescriptions>. No dice si es remota: se deduce de las oficinas ("Remote", "Remoto"…).
+ */
+async function leerPersonio(id: string, region: string | null | undefined, pedir: Pedir): Promise<OfertaAts[]> {
+  const dominio = region === "com" ? "com" : "de";
+  const xml = await pedirTexto(`https://${id}.jobs.personio.${dominio}/xml`, pedir, "application/xml");
+  comprobarXml(xml, "workzag-jobs", "Personio");
+  return bloques(xml, "position").flatMap((p) => {
+    const idExterno = campo(p, "id");
+    const titulo = campo(p, "name");
+    if (!idExterno || !titulo) return [];
+    const extra = bloques(p, "additionalOffices")[0] ?? "";
+    // La primera <office> es la principal; las de <additionalOffices>, las demás.
+    const principal = campo(p.replace(/<additionalOffices>[\s\S]*?<\/additionalOffices>/i, ""), "office");
+    const ubicaciones = [principal, ...bloques(extra, "office").map((o) => htmlATexto(sinCdata(o)))].filter(Boolean);
+    const descripcion = bloques(p, "jobDescription")
+      .map((d) => [campo(d, "name"), htmlATexto(sinCdata(bloques(d, "value")[0] ?? ""))].filter(Boolean).join("\n"))
+      .join("\n\n");
+    return [
+      {
+        idExterno,
+        titulo,
+        url: `https://${id}.jobs.personio.${dominio}/job/${encodeURIComponent(idExterno)}`,
+        descripcion,
+        ubicaciones,
+        modalidad: null,
+        publicadaEn: fecha(campo(p, "createdAt")),
+      } satisfies OfertaAts,
+    ];
+  });
+}
+
 /** Todas las ofertas publicadas en la página de empleo de una empresa. Lanza ErrorAts si no se puede leer. */
 export async function leerAts(empresa: EmpresaAts, pedir: Pedir = fetch): Promise<OfertaAts[]> {
   if (empresa.ats === "greenhouse") return leerGreenhouse(empresa.atsId, pedir);
   if (empresa.ats === "lever") return leerLever(empresa.atsId, empresa.atsRegion, pedir);
+  if (empresa.ats === "teamtailor") return leerTeamtailor(empresa.atsId, pedir);
+  if (empresa.ats === "personio") return leerPersonio(empresa.atsId, empresa.atsRegion, pedir);
   return leerAshby(empresa.atsId, pedir);
 }
 

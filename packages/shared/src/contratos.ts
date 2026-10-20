@@ -159,7 +159,7 @@ export type EmpresaStaff = {
   slug: string;
   web: string | null;
   ofertas: number;
-  /** Su página de empleo, si la tiene en un ATS conocido (Greenhouse, Lever, Ashby). */
+  /** Su página de empleo, si la tiene en un ATS conocido (Greenhouse, Lever, Ashby, Teamtailor, Personio). */
   ats: Ats | null;
   atsId: string | null;
   atsRegion: string | null;

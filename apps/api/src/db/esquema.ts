@@ -49,10 +49,10 @@ export const empresas = pgTable("empresas", {
   slug: text("slug").notNull().unique(),
   web: text("web"),
   logoUrl: text("logo_url"),
-  /** Su página de empleo en un ATS (greenhouse, lever, ashby) y su identificador allí. */
+  /** Su página de empleo en un ATS (greenhouse, lever, ashby, teamtailor, personio) y su identificador allí. */
   ats: text("ats").$type<Ats>(),
   atsId: text("ats_id"),
-  /** Lever tiene servidores en EE. UU. y en Europa ("eu"). */
+  /** Lever tiene servidores en EE. UU. y en Europa ("eu"); Personio, en .de y .com ("com"). */
   atsRegion: text("ats_region"),
   /** Se leen sus ofertas cada día (ver servicios/sincronizar.ts). */
   sincronizar: boolean("sincronizar").notNull().default(false),
@@ -71,7 +71,7 @@ export const empresas = pgTable("empresas", {
 
 /**
  * Empresas candidatas para descubrir solas: se prueba si tienen página de empleo en
- * Greenhouse, Lever o Ashby (ver servicios/descubrir.ts y datos/empresas-candidatas.json).
+ * Greenhouse, Lever, Ashby, Teamtailor o Personio (ver servicios/descubrir.ts y datos/empresas-candidatas.json).
  */
 export const candidatas = pgTable("candidatas", {
   /** "grafana-labs": el nombre en minúsculas, sin acentos ni espacios. */

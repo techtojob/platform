@@ -48,11 +48,22 @@ describe("cupo diario", () => {
   it("elegir: por turnos entre empresas, las más nuevas primero, y respeta cada idioma", () => {
     const c = (empresa: string, idioma: "es" | "en", dia: number) => ({ empresa: { id: empresa }, idioma, oferta: { publicadaEn: new Date(2026, 8, dia) } });
     const lista = [c("a", "en", 1), c("a", "en", 5), c("a", "en", 3), c("b", "en", 2), c("a", "es", 1)];
-    const elegidas = elegir(lista, { en: 3, es: 0 });
+    const elegidas = elegir(lista, { total: 3, reservas: { en: 3, es: 0 } });
     expect(elegidas.map((x) => `${x.empresa.id}${x.oferta.publicadaEn.getDate()}`)).toEqual(["a5", "b2", "a3"]);
   });
 
-  it("como mucho 20 en español y 20 en inglés al día; las de otros idiomas no entran; el resto espera", async () => {
+  it("elegir: lo que un idioma no usa, lo usa el otro (hasta el total)", () => {
+    const c = (idioma: "es" | "en", n: number) => ({ empresa: { id: `e${n}` }, idioma, oferta: { publicadaEn: null } });
+    const solo = (idioma: "es" | "en", n: number) => Array.from({ length: n }, (_, i) => c(idioma, i));
+    const cupos = { total: 40, reservas: { es: 20, en: 20 } };
+    expect(elegir([...solo("en", 50), ...solo("es", 1)], cupos).filter((x) => x.idioma === "en")).toHaveLength(39);
+    expect(elegir(solo("es", 60), cupos)).toHaveLength(40);
+    // Si los dos tienen de sobra, mitad y mitad.
+    const ambos = elegir([...solo("en", 50), ...solo("es", 50)], cupos);
+    expect([ambos.filter((x) => x.idioma === "es").length, ambos.filter((x) => x.idioma === "en").length]).toEqual([20, 20]);
+  });
+
+  it("como mucho 40 al día (20 en español y 20 en inglés si hay de los dos); otros idiomas no entran; el resto espera", async () => {
     await crearEmpresa(db, { nombre: "Grande", paginaEmpleo: "https://jobs.ashbyhq.com/grande" });
     await crearEmpresa(db, { nombre: "Pequeña", paginaEmpleo: "https://jobs.ashbyhq.com/pequena" });
     const pedir = falso({ [URL_ASHBY("grande")]: ashby("grande", { en: 30, es: 25, de: 5 }), [URL_ASHBY("pequena")]: ashby("pequena", { en: 2 }) });

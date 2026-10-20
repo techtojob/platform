@@ -569,11 +569,11 @@
     "empresas": {
       "pestana": "Companies",
       "titulo": "Companies",
-      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever or Ashby). Tech, fully remote offers come in as pending: up to 20 in Spanish and 20 in English a day.",
+      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor or Personio). Tech, fully remote offers come in as pending: up to 40 a day, 20 reserved for offers written in Spanish and 20 for offers in English (whatever one language doesn't use, the other can).",
       "anadir": "Add a company manually",
       "nombre": "Name",
       "pagina": "Job board",
-      "paginaAyuda": "For example: boards.greenhouse.io/company, jobs.lever.co/company or jobs.ashbyhq.com/company",
+      "paginaAyuda": "For example: boards.greenhouse.io/company, jobs.lever.co/company, jobs.ashbyhq.com/company, company.teamtailor.com or company.jobs.personio.de",
       "guardar": "Add",
       "guardando": "Saving…",
       "cambiarPagina": "Change job board",
@@ -591,7 +591,7 @@
       "vacio": "No companies yet.",
       "errores": {
         "nombre": "The name must be between 2 and 80 characters.",
-        "ats": "That link isn't a Greenhouse, Lever or Ashby job board.",
+        "ats": "That link isn't a Greenhouse, Lever, Ashby, Teamtailor or Personio job board.",
         "empresa": "That company no longer exists.",
         "desconocido": "Couldn't save. Please try again."
       },
@@ -603,7 +603,7 @@
         "pendiente": "To check",
         "encontrada": "Added",
         "sin_ofertas": "No suitable offers (rechecked in 30 days)",
-        "no_existe": "No Greenhouse, Lever or Ashby board",
+        "no_existe": "No known job board",
         "sugerir": "Suggest companies",
         "sugerirAyuda": "One per line (or comma-separated). They'll be checked over the next few days.",
         "enviar": "Add to the list",

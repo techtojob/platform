@@ -19,7 +19,8 @@ import { nuevoId } from "./ofertas-staff";
  *
  * - Una oferta nueva (técnica, 100 % remota, en español o inglés) entra PENDIENTE: el staff la revisa,
  *   escribe un resumen con sus palabras y la publica. El texto original se guarda solo para el staff.
- * - Como mucho entran CUPO_DIARIO ofertas nuevas al día por idioma, repartidas entre empresas.
+ * - Como mucho entran 40 ofertas nuevas al día (CUPO_DIARIO): 20 reservadas para cada idioma y,
+ *   lo que uno no use, para el otro. Repartidas entre empresas.
  *   Las que no caben se quedan para el día siguiente (siguen en la página de la empresa).
  * - Una que ya teníamos: se apunta que sigue ahí (`vistaEn`).
  * - Una que ya no está (dos lecturas seguidas): se cierra.
@@ -27,9 +28,12 @@ import { nuevoId } from "./ofertas-staff";
  * - Una empresa que lleva 60 días sin ninguna oferta que nos sirva se lee solo los lunes.
  */
 
-/** Ofertas nuevas al día, por idioma en que están escritas. Las de otros idiomas no entran. */
-export const CUPO_DIARIO = { es: 20, en: 20 } as const;
-export type IdiomaCupo = keyof typeof CUPO_DIARIO;
+/**
+ * Ofertas nuevas al día: 40, con 20 reservadas para las escritas en español y 20 para las escritas
+ * en inglés. Lo que un idioma no use, lo usa el otro. Las de otros idiomas no entran.
+ */
+export const CUPO_DIARIO = { total: 40, reservas: { es: 20, en: 20 } } as const;
+export type IdiomaCupo = keyof typeof CUPO_DIARIO.reservas;
 
 export type ResultadoEmpresa = {
   empresa: string;
@@ -150,31 +154,53 @@ async function leerEmpresa(db: Db, empresa: Empresa, pedir: Pedir, ahora: Date) 
   return { resultado, candidatas };
 }
 
+export type Cupos = { total: number; reservas: Record<IdiomaCupo, number> };
+
 /**
- * Elige las que entran hoy: por idioma, una de cada empresa por turnos (para que una empresa
- * grande no se coma el cupo) y, dentro de cada empresa, las más nuevas primero.
+ * Elige las que entran hoy.
+ *
+ * 1. Cada idioma tiene su reserva (20 en español, 20 en inglés).
+ * 2. Lo que un idioma no use, lo puede usar el otro, hasta el total (40).
+ *
+ * Dentro de cada idioma, una de cada empresa por turnos (para que una empresa grande
+ * no se coma el cupo) y, dentro de cada empresa, las más nuevas primero.
  */
 export function elegir<T extends { empresa: { id: string }; oferta: { publicadaEn: Date | null }; idioma: IdiomaCupo }>(
   candidatas: T[],
-  cupos: Record<IdiomaCupo, number>,
+  cupos: Cupos,
 ): T[] {
-  const elegidas: T[] = [];
-  for (const idioma of Object.keys(cupos) as IdiomaCupo[]) {
+  const idiomas = Object.keys(cupos.reservas) as IdiomaCupo[];
+  // Una cola por idioma, ya en el orden en que entrarían: por turnos entre empresas, las más nuevas primero.
+  const colas = new Map<IdiomaCupo, T[]>();
+  for (const idioma of idiomas) {
     const porEmpresa = new Map<string, T[]>();
     for (const c of candidatas.filter((c) => c.idioma === idioma)) {
       porEmpresa.set(c.empresa.id, [...(porEmpresa.get(c.empresa.id) ?? []), c]);
     }
-    const colas = [...porEmpresa.values()].map((l) =>
+    const listas = [...porEmpresa.values()].map((l) =>
       l.sort((a, b) => (b.oferta.publicadaEn?.getTime() ?? 0) - (a.oferta.publicadaEn?.getTime() ?? 0)),
     );
-    let quedan = Math.max(0, cupos[idioma]);
-    while (quedan > 0 && colas.some((c) => c.length)) {
-      for (const cola of colas) {
-        const siguiente = cola.shift();
-        if (!siguiente) continue;
-        elegidas.push(siguiente);
-        if (--quedan === 0) break;
-      }
+    const cola: T[] = [];
+    while (listas.some((l) => l.length)) for (const l of listas) if (l.length) cola.push(l.shift()!);
+    colas.set(idioma, cola);
+  }
+
+  const elegidas: T[] = [];
+  let total = Math.max(0, cupos.total);
+  // 1. Las reservas de cada idioma.
+  for (const idioma of idiomas) {
+    const n = Math.min(Math.max(0, cupos.reservas[idioma]), total);
+    const tomadas = colas.get(idioma)!.splice(0, n);
+    elegidas.push(...tomadas);
+    total -= tomadas.length;
+  }
+  // 2. Lo que sobre, para quien tenga más: un idioma y otro por turnos.
+  while (total > 0 && idiomas.some((i) => colas.get(i)!.length)) {
+    for (const idioma of idiomas) {
+      const siguiente = colas.get(idioma)!.shift();
+      if (!siguiente) continue;
+      elegidas.push(siguiente);
+      if (--total === 0) break;
     }
   }
   return elegidas;
@@ -217,14 +243,16 @@ async function crearOfertaAutomatica(db: Db, { empresa, oferta: o, idioma }: Can
  * Cuánto queda del cupo: se descuentan las automáticas creadas hoy (día UTC). Así, si un día
  * GitHub lanza la tarea un poco más tarde, al siguiente no se queda sin cupo.
  */
-async function cuposRestantes(db: Db, ahora: Date, cupos: Record<IdiomaCupo, number>): Promise<Record<IdiomaCupo, number>> {
+async function cuposRestantes(db: Db, ahora: Date, cupos: Cupos): Promise<Cupos> {
   const filas = await db
     .select({ idioma: ofertas.idioma, n: sql<number>`count(*)` })
     .from(ofertas)
     .where(and(eq(ofertas.origen, "automatica"), gte(ofertas.creadaEn, new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate())))))
     .groupBy(ofertas.idioma);
   const hechas = new Map(filas.map((f) => [f.idioma, Number(f.n)]));
-  return { es: cupos.es - (hechas.get("es") ?? 0), en: cupos.en - (hechas.get("en") ?? 0) };
+  const es = hechas.get("es") ?? 0;
+  const en = hechas.get("en") ?? 0;
+  return { total: cupos.total - es - en, reservas: { es: cupos.reservas.es - es, en: cupos.reservas.en - en } };
 }
 
 /** Lee estas empresas (una detrás de otra, para no cargar a nadie) y crea las nuevas que quepan en el cupo. */
@@ -233,7 +261,7 @@ export async function sincronizarLista(
   lista: Empresa[],
   pedir: Pedir = fetch,
   ahora = new Date(),
-  cupos: Record<IdiomaCupo, number> = CUPO_DIARIO,
+  cupos: Cupos = CUPO_DIARIO,
 ): Promise<ResultadoEmpresa[]> {
   const resultados: ResultadoEmpresa[] = [];
   const candidatas: Candidata[] = [];
@@ -255,12 +283,12 @@ export async function sincronizarLista(
 }
 
 /** Una sola empresa (por ejemplo, al añadirla). */
-export async function sincronizarEmpresa(db: Db, empresa: Empresa, pedir: Pedir = fetch, ahora = new Date(), cupos = CUPO_DIARIO) {
+export async function sincronizarEmpresa(db: Db, empresa: Empresa, pedir: Pedir = fetch, ahora = new Date(), cupos: Cupos = CUPO_DIARIO) {
   return (await sincronizarLista(db, [empresa], pedir, ahora, cupos))[0]!;
 }
 
 /** Todas las empresas con "sincronizar" activado a las que les toca hoy. */
-export async function sincronizarTodas(db: Db, pedir: Pedir = fetch, ahora = new Date(), cupos = CUPO_DIARIO) {
+export async function sincronizarTodas(db: Db, pedir: Pedir = fetch, ahora = new Date(), cupos: Cupos = CUPO_DIARIO) {
   const lista = await db
     .select()
     .from(empresas)

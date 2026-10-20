@@ -2,9 +2,10 @@ name: Ofertas automáticas
 
 # Cada día:
 #   1. Descubre empresas: prueba 25 nombres de la lista para ver si tienen página de empleo
-#      en Greenhouse, Lever o Ashby con ofertas que nos sirvan, y las añade.
+#      en Greenhouse, Lever, Ashby, Teamtailor o Personio con ofertas que nos sirvan, y las añade.
 #   2. Lee las páginas de empleo de las empresas con "Leer sus ofertas cada día" activado.
-#      Las ofertas nuevas (como mucho 20 en español y 20 en inglés) quedan pendientes para
+#      Las ofertas nuevas (como mucho 40: 20 reservadas para las escritas en español y 20 para
+#      las escritas en inglés; lo que un idioma no use, lo usa el otro) quedan pendientes para
 #      que el staff las revise; las que desaparecen se cierran.
 # También se puede lanzar a mano: Actions → Ofertas automáticas → Run workflow.
 #

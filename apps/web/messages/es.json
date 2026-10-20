@@ -569,11 +569,11 @@
     "empresas": {
       "pestana": "Empresas",
       "titulo": "Empresas",
-      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever o Ashby). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 20 en español y 20 en inglés al día.",
+      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor o Personio). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 40 al día, 20 reservadas para las escritas en español y 20 para las escritas en inglés (lo que un idioma no use, lo usa el otro).",
       "anadir": "Añadir una empresa a mano",
       "nombre": "Nombre",
       "pagina": "Página de empleo",
-      "paginaAyuda": "Por ejemplo: boards.greenhouse.io/empresa, jobs.lever.co/empresa o jobs.ashbyhq.com/empresa",
+      "paginaAyuda": "Por ejemplo: boards.greenhouse.io/empresa, jobs.lever.co/empresa, jobs.ashbyhq.com/empresa, empresa.teamtailor.com o empresa.jobs.personio.de",
       "guardar": "Añadir",
       "guardando": "Guardando…",
       "cambiarPagina": "Cambiar página de empleo",
@@ -591,7 +591,7 @@
       "vacio": "Aún no hay empresas.",
       "errores": {
         "nombre": "El nombre tiene que tener entre 2 y 80 caracteres.",
-        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever o Ashby.",
+        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor o Personio.",
         "empresa": "Esa empresa ya no existe.",
         "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
       },
@@ -603,7 +603,7 @@
         "pendiente": "Por probar",
         "encontrada": "Añadidas",
         "sin_ofertas": "Sin ofertas que nos sirvan (se reprueban en 30 días)",
-        "no_existe": "Sin página en Greenhouse, Lever ni Ashby",
+        "no_existe": "Sin página de empleo conocida",
         "sugerir": "Sugerir empresas",
         "sugerirAyuda": "Una por línea (o separadas por comas). Se probarán en los próximos días.",
         "enviar": "Añadir a la lista",

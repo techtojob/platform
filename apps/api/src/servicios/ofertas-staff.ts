@@ -156,7 +156,7 @@ async function guardarIdiomas(db: Db, ofertaId: string, d: DatosOferta) {
 }
 
 /**
- * Si el enlace de la oferta es de Greenhouse, Lever o Ashby y la empresa aún no tiene página de empleo,
+ * Si el enlace de la oferta es de un ATS conocido (Greenhouse, Lever, Ashby, Teamtailor, Personio) y la empresa aún no tiene página de empleo,
  * se le pone: así, a partir de mañana, sus demás ofertas entran solas.
  */
 async function aprenderPaginaEmpleo(db: Db, empresaId: string, urlOriginal: string) {
@@ -293,13 +293,13 @@ function leerPaginaEmpleo(valor: unknown) {
   if (valor === undefined) return undefined;
   if (valor === null || (typeof valor === "string" && !valor.trim())) return { ats: null, atsId: null, atsRegion: null };
   const ats = typeof valor === "string" ? detectarAts(valor) : null;
-  if (!ats) throw new ErrorStaff("ats", "Ese enlace no es de una página de empleo de Greenhouse, Lever o Ashby.");
+  if (!ats) throw new ErrorStaff("ats", "Ese enlace no es de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor o Personio.");
   return { ats: ats.ats, atsId: ats.id, atsRegion: ats.region ?? null };
 }
 
 /**
  * Crea una empresa. Si ya hay una con el mismo nombre (sin contar mayúsculas, acentos ni "S.L."), devuelve esa.
- * `paginaEmpleo` (opcional): el enlace a su página de empleo en Greenhouse, Lever o Ashby; si viene, se leen sus ofertas cada día.
+ * `paginaEmpleo` (opcional): el enlace a su página de empleo en Greenhouse, Lever, Ashby, Teamtailor o Personio; si viene, se leen sus ofertas cada día.
  */
 export async function crearEmpresa(
   db: Db,

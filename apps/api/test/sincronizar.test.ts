@@ -332,7 +332,7 @@ describe("empresas y publicar", () => {
     db = await crearDbPrueba();
   });
 
-  it("solo acepta páginas de Greenhouse, Lever o Ashby", async () => {
+  it("solo acepta páginas de empleo de ATS conocidos", async () => {
     await expect(crearEmpresa(db, { nombre: "Nada", paginaEmpleo: "https://example.com/jobs" })).rejects.toThrow(ErrorStaff);
     const e = await crearEmpresa(db, { nombre: "Delta" });
     expect(e).toMatchObject({ ats: null, sincronizar: false });

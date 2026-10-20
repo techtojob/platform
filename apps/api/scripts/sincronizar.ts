@@ -1,8 +1,10 @@
 // Ofertas automáticas, lo que se hace cada mañana:
 //   1. Descubrir empresas: se prueban unas cuantas candidatas (datos/empresas-candidatas.json y las que
-//      sugiera el staff) para ver si tienen página de empleo en Greenhouse, Lever o Ashby.
+//      sugiera el staff) para ver si tienen página de empleo en Greenhouse, Lever, Ashby,
+//      Teamtailor o Personio.
 //   2. Leer las páginas de empleo de las empresas con "leer cada día" activado y crear las ofertas
-//      nuevas (pendientes para el staff), como mucho 20 en español y 20 en inglés.
+//      nuevas (pendientes para el staff), como mucho 40 al día (20 reservadas para
+//      cada idioma, español e inglés; lo que uno no use, lo usa el otro).
 //
 // Uso: pnpm --filter api ofertas:sincronizar   → rama dev (DATABASE_URL de .dev.vars)
 // En producción lo lanza cada día .github/workflows/ofertas.yml (DATABASE_URL de los secretos de GitHub).
