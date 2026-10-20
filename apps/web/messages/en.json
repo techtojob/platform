@@ -14,7 +14,8 @@
   },
   "areas": {
     "desarrollo": "Development",
-    "datos-ia": "Data & AI",
+    "datos": "Data",
+    "ia": "AI",
     "ciberseguridad": "Cybersecurity",
     "producto-diseno": "Product & design",
     "infra-devops": "Infra & DevOps",

@@ -3,8 +3,8 @@ import { aParametros, alternar, cambiar, cuantosFiltros, hayFiltros, leerFiltros
 
 describe("leer filtros de la dirección", () => {
   it("lee varios valores separados por comas", () => {
-    expect(leerFiltros({ area: "desarrollo,datos-ia", nivel: "junior", tec: "react" })).toEqual({
-      areas: ["desarrollo", "datos-ia"],
+    expect(leerFiltros({ area: "desarrollo,datos", nivel: "junior", tec: "react" })).toEqual({
+      areas: ["desarrollo", "datos"],
       seniority: ["junior"],
       modalidades: [],
       tecnologias: ["react"],
@@ -17,7 +17,7 @@ describe("leer filtros de la dirección", () => {
   });
 
   it("acepta el parámetro repetido (?area=a&area=b)", () => {
-    expect(leerFiltros({ area: ["desarrollo", "datos-ia"] }).areas).toEqual(["desarrollo", "datos-ia"]);
+    expect(leerFiltros({ area: ["desarrollo", "datos"] }).areas).toEqual(["desarrollo", "datos"]);
   });
 
   it("lee el texto buscado (sin espacios de más, 100 letras como mucho) y el salario", () => {

@@ -11,7 +11,8 @@
 
 export const AREAS = [
   "desarrollo",
-  "datos-ia",
+  "datos",
+  "ia",
   "ciberseguridad",
   "producto-diseno",
   "infra-devops",

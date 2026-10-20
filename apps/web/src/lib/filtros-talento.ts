@@ -1,7 +1,7 @@
 import { AREAS, DISPONIBILIDAD, MODALIDADES, SENIORITY, TECNOLOGIAS, type Area, type Disponibilidad, type Modalidad, type Seniority } from "@techtojob/shared";
 
 /**
- * Filtros del buscador de talento, en la dirección: /empleo/talento?disp=buscando&area=datos-ia&tec=python
+ * Filtros del buscador de talento, en la dirección: /empleo/talento?disp=buscando&area=datos&tec=python
  * Mismos nombres que el API (GET /talento).
  */
 

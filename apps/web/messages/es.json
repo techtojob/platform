@@ -14,7 +14,8 @@
   },
   "areas": {
     "desarrollo": "Desarrollo",
-    "datos-ia": "Datos e IA",
+    "datos": "Datos",
+    "ia": "IA",
     "ciberseguridad": "Ciberseguridad",
     "producto-diseno": "Producto y diseño",
     "infra-devops": "Infra y DevOps",

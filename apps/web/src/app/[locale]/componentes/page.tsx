@@ -95,7 +95,7 @@ export default function Componentes({
                 cuenta={12}
                 defaultChecked
               />
-              <Casilla etiqueta={t("areas.datos-ia")} cuenta={5} />
+              <Casilla etiqueta={t("areas.datos")} cuenta={5} />
               <Casilla etiqueta={t("filtros.conSalario")} />
             </div>
           </Seccion>

@@ -111,7 +111,7 @@ describe("aprender de las ofertas del staff", () => {
     const e = await crearEmpresa(db, { nombre: "Delta" });
     await crearOferta(db, {
       empresaId: e.id, titulo: "Data Engineer", resumen: null, descripcion: null, idioma: "es",
-      urlOriginal: "https://jobs.lever.co/delta/123-abc", area: "datos-ia", seniority: "mid", modalidad: "remoto",
+      urlOriginal: "https://jobs.lever.co/delta/123-abc", area: "datos", seniority: "mid", modalidad: "remoto",
       tecnologias: [], pais: null, ciudad: null, remotoMundo: false, remotoPaises: ["ES"], salarioMin: null, salarioMax: null, moneda: null,
       idiomasRequeridos: [{ idioma: "es", nivel: null }], autorizada: false,
     });

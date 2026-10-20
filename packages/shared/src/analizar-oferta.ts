@@ -131,7 +131,10 @@ export function detectarIdiomasPedidos(texto: string): Array<{ idioma: Idioma; n
 
 const REGLAS_AREA: Array<[RegExp, Area]> = [
   [/\b(soc|ciberseguridad|cybersecurity|security|seguridad|pentest\w*|red team|blue team)\b/i, "ciberseguridad"],
-  [/\b(data|datos|machine learning|ml|ia|ai|analyst|analista|bi|scientist|cient[ií]fic[oa])\b/i, "datos-ia"],
+  // Data scientist va con Datos (como analytics y data engineering), aunque pida algo de machine learning.
+  [/\b(data scien\w*|cient[ií]fic[oa] de datos)\b/i, "datos"],
+  [/\b(machine learning|ml|mlops|ia|ai|llms?|genai|generative|deep learning|nlp|computer vision|visi[oó]n (artificial|por computador)|inteligencia artificial|artificial intelligence)\b/i, "ia"],
+  [/\b(data|datos|analyst|analista|analytics|bi|business intelligence|dba|etl)\b/i, "datos"],
   [/\b(devops|sre|cloud|infraestructura|infrastructure|platform|plataforma|sysadmin|sistemas|systems)\b/i, "infra-devops"],
   [/\b(soporte|support|helpdesk|help desk|service desk|t[eé]cnic[oa] it|it technician)\b/i, "soporte-it"],
   [/\b(dise[ñn]ador[a]?|designer|ux|ui|product manager|product owner|producto)\b/i, "producto-diseno"],
@@ -146,7 +149,7 @@ const REGLAS_NIVEL: Array<[RegExp, Seniority]> = [
   [/\b(mid|middle|semi[- ]?senior|ssr)\b/i, "mid"],
 ];
 
-/** Área y nivel a partir del título ("Junior Data Engineer" → datos-ia, junior). */
+/** Área y nivel a partir del título ("Junior Data Engineer" → datos, junior; "ML Engineer" → ia). */
 export function adivinarPuesto(titulo: string): { area: Area | null; seniority: Seniority | null } {
   const t = quitarAcentos(titulo);
   return {

@@ -316,7 +316,7 @@ describe("sincronizar", () => {
       ["Gamma", 1],
     ]);
     const [ml] = await db.select().from(ofertas).where(eq(ofertas.idExterno, "a1b2c3"));
-    expect(ml).toMatchObject({ remotoPaises: ordenarPaises(REGIONES.latam), area: "datos-ia", idioma: "es" });
+    expect(ml).toMatchObject({ remotoPaises: ordenarPaises(REGIONES.latam), area: "ia", idioma: "es" });
     const [disenio] = await db.select().from(ofertas).where(eq(ofertas.idExterno, "uuid-1"));
     expect(disenio).toMatchObject({ remotoMundo: true, remotoPaises: [], area: "producto-diseno" });
 

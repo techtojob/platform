@@ -38,7 +38,7 @@ describe("importar una oferta desde su enlace", () => {
       salarioMax: 30000,
       moneda: "EUR",
       idioma: "es",
-      area: "datos-ia",
+      area: "datos",
       seniority: "junior",
       resumen: "Únete a nuestro equipo de datos en Tenerife.",
     });

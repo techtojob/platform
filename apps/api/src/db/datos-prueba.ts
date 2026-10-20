@@ -39,7 +39,7 @@ export const OFERTAS_PRUEBA: OfertaPrueba[] = [
     titulo: "Junior Data Engineer", idioma: "en", urlOriginal: "https://example.com/ofertas/2",
     descripcion: "Volcán Data builds the data platform behind a renewable energy marketplace.\n\nWhat you will do: write and maintain Python pipelines that load meter readings into our warehouse, model tables in SQL and help keep data quality checks green.\n\nWhat we ask: solid Python and SQL basics, curiosity about how data moves, and English good enough for daily written communication (B2).\n\nWhat we offer: fully remote within Spain, a senior mentor for your first six months and a yearly training budget.",
     resumen: "Build data pipelines for an energy platform. Python and SQL; mentoring during the first months.",
-    area: "datos-ia", seniority: "junior", modalidad: "remoto", tecnologias: ["python", "sql"],
+    area: "datos", seniority: "junior", modalidad: "remoto", tecnologias: ["python", "sql"],
     pais: "ES", remotoPaises: ["ES"], publicadaEn: hace(1), pide: [{ idioma: "en", nivel: "b2" }],
   },
   {
@@ -88,7 +88,7 @@ const PERFILES_PRUEBA: PerfilPrueba[] = [
   },
   {
     id: "usr-prueba-2", email: "diego@example.com", alias: "diego-datos", nombre: "Diego Morales",
-    titular: "Data engineer con PySpark y Airflow", area: "datos-ia", seniority: "mid",
+    titular: "Data engineer con PySpark y Airflow", area: "datos", seniority: "mid",
     sobreMi: "Tres años construyendo pipelines de datos en una consultora. Busco un equipo de producto donde los datos importen.",
     ciudad: "Bogotá", pais: "CO", modalidades: ["remoto"], disponibilidad: "abierto",
     tecnologias: ["python", "spark", "airflow", "sql", "aws"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "c1" }],

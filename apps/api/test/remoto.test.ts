@@ -64,3 +64,18 @@ describe("validarOferta: desde dónde", () => {
     expect(ordenarPaises(["US", "es", "MX", "ES"])).toEqual(["ES", "MX", "US"]);
   });
 });
+
+describe("áreas: Datos e IA por separado", () => {
+  it("el detector distingue datos, data scientist e IA", async () => {
+    const { adivinarPuesto } = await import("@techtojob/shared");
+    expect(adivinarPuesto("Junior Data Engineer").area).toBe("datos");
+    expect(adivinarPuesto("Data Analyst").area).toBe("datos");
+    expect(adivinarPuesto("Senior Data Scientist").area).toBe("datos");
+    expect(adivinarPuesto("Data Scientist, Machine Learning").area).toBe("datos");
+    expect(adivinarPuesto("Machine Learning Engineer").area).toBe("ia");
+    expect(adivinarPuesto("AI Engineer (LLMs)").area).toBe("ia");
+    expect(adivinarPuesto("Ingeniero/a de IA").area).toBe("ia");
+    expect(adivinarPuesto("MLOps Engineer").area).toBe("ia");
+    expect(adivinarPuesto("Backend Developer").area).toBe("desarrollo");
+  });
+});

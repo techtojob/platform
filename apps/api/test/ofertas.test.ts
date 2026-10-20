@@ -66,7 +66,7 @@ describe("otros filtros", () => {
   });
 
   it("el aviso de idiomas respeta los demás filtros", async () => {
-    const r = await listarOfertas(db, { idiomas: ["es"], areas: ["datos-ia"] });
+    const r = await listarOfertas(db, { idiomas: ["es"], areas: ["datos"] });
     expect(r.ofertas).toHaveLength(0);
     expect(r.ocultasPorIdioma).toEqual({ en: 1 });
   });
@@ -136,7 +136,7 @@ describe("buscador", () => {
 describe("recuentos de cada filtro (facetas)", () => {
   it("cuentan solo lo que la persona puede ver", async () => {
     const r = await listarOfertas(db, { idiomas: ["es", "en"] });
-    expect(r.facetas.area).toEqual({ desarrollo: 2, "datos-ia": 1, "soporte-it": 1 });
+    expect(r.facetas.area).toEqual({ desarrollo: 2, "datos": 1, "soporte-it": 1 });
     expect(r.facetas.modalidad).toEqual({ hibrido: 1, remoto: 2, presencial: 1 });
   });
 
