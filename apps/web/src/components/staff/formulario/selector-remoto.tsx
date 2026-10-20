@@ -107,7 +107,15 @@ export function SelectorRemoto({
       {partes.length > 0 && (
         <div className="flex flex-wrap gap-2" aria-label={t("staff.form.paisesElegidos")} role="group">
           {partes.map((p) => {
-            const nombre = p.tipo === "region" ? t(`regiones.${p.region}`) : nombrePais(p.pais);
+            const nombre =
+              p.tipo === "pais"
+                ? nombrePais(p.pais)
+                : p.salvo.length
+                  ? t("remoto.salvo", {
+                      region: t(`regiones.${p.region}`),
+                      paises: new Intl.ListFormat(locale, { type: "conjunction" }).format(p.salvo.map(nombrePais)),
+                    })
+                  : t(`regiones.${p.region}`);
             return (
               <ChipElegido
                 key={p.tipo === "region" ? p.region : p.pais}

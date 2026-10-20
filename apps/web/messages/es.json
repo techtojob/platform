@@ -855,6 +855,7 @@
   "remoto": {
     "mundo": "Desde cualquier país",
     "solo": "Solo {lugar}",
-    "mas": "{count} más"
+    "mas": "{count} más",
+    "salvo": "{region} salvo {paises}"
   }
 }

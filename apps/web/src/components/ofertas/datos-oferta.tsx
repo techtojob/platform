@@ -8,7 +8,8 @@ const MAXIMO_SITIOS = 3;
 
 /**
  * Desde dónde se puede trabajar, en corto:
- * "Desde cualquier país", "Solo España", "España y Latinoamérica", "México, Colombia, Chile y 2 más".
+ * "Desde cualquier país", "Solo España", "España y Latinoamérica", "Europa salvo Reino Unido",
+ * "México, Colombia, Chile y 2 más".
  * Devuelve una función para poder usarla con varias ofertas (y en el formulario del staff, mientras se edita).
  */
 export function useDondeRemoto(): (r: Remoto) => string | null {
@@ -19,13 +20,18 @@ export function useDondeRemoto(): (r: Remoto) => string | null {
     if (d.mundo) return t("remoto.mundo");
     if (!d.partes.length) return null;
     const pais = new Intl.DisplayNames([locale], { type: "region" });
-    const nombres = d.partes.map((p) => (p.tipo === "region" ? t(`regiones.${p.region}`) : (pais.of(p.pais) ?? p.pais)));
+    const lista = new Intl.ListFormat(locale, { type: "conjunction" });
+    const nombres = d.partes.map((p) => {
+      if (p.tipo === "pais") return pais.of(p.pais) ?? p.pais;
+      const region = t(`regiones.${p.region}`);
+      return p.salvo.length ? t("remoto.salvo", { region, paises: lista.format(p.salvo.map((c) => pais.of(c) ?? c)) }) : region;
+    });
     if (nombres.length === 1) return d.partes[0]!.tipo === "pais" ? t("remoto.solo", { lugar: nombres[0]! }) : nombres[0]!;
-    const lista =
+    return lista.format(
       nombres.length > MAXIMO_SITIOS + 1
         ? [...nombres.slice(0, MAXIMO_SITIOS), t("remoto.mas", { count: nombres.length - MAXIMO_SITIOS })]
-        : nombres;
-    return new Intl.ListFormat(locale, { type: "conjunction" }).format(lista);
+        : nombres,
+    );
   };
 }
 

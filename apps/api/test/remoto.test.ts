@@ -11,20 +11,24 @@ describe("describirRemoto", () => {
     expect(describirRemoto(r("MX"))).toEqual({ mundo: false, partes: [{ tipo: "pais", pais: "MX" }] });
   });
   it("si están todos los de una región, la región", () => {
-    expect(describirRemoto(r(...REGIONES.latam))).toEqual({ mundo: false, partes: [{ tipo: "region", region: "latam" }] });
+    expect(describirRemoto(r(...REGIONES.latam))).toEqual({ mundo: false, partes: [{ tipo: "region", region: "latam", salvo: [] }] });
+  });
+  it("si faltan pocos, la región con sus excepciones", () => {
+    const sinReinoUnido = REGIONES.eu.filter((p) => p !== "GB");
+    expect(describirRemoto(r(...sinReinoUnido))).toEqual({ mundo: false, partes: [{ tipo: "region", region: "eu", salvo: ["GB"] }] });
   });
   it("España primero, luego regiones, luego el resto", () => {
     expect(describirRemoto(r("US", ...REGIONES.latam, "ES"))).toEqual({
       mundo: false,
-      partes: [{ tipo: "pais", pais: "ES" }, { tipo: "region", region: "latam" }, { tipo: "pais", pais: "US" }],
+      partes: [{ tipo: "pais", pais: "ES" }, { tipo: "region", region: "latam", salvo: [] }, { tipo: "pais", pais: "US" }],
     });
   });
   it("Europa ya incluye España", () => {
-    expect(describirRemoto(r(...REGIONES.eu))).toEqual({ mundo: false, partes: [{ tipo: "region", region: "eu" }] });
+    expect(describirRemoto(r(...REGIONES.eu))).toEqual({ mundo: false, partes: [{ tipo: "region", region: "eu", salvo: [] }] });
   });
-  it("si falta un país de la región, van sueltos", () => {
-    const casi = REGIONES.latam.filter((p) => p !== "BR");
-    expect((describirRemoto(r(...casi)) as { partes: unknown[] }).partes).toHaveLength(19);
+  it("si faltan muchos, van sueltos", () => {
+    const pocos = REGIONES.latam.slice(0, 5);
+    expect((describirRemoto(r(...pocos)) as { partes: unknown[] }).partes).toHaveLength(5);
   });
 });
 

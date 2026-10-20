@@ -43,12 +43,18 @@ const ORDEN = new Map<string, number>(
   [...REGIONES.latam, "US", "CA", ...REGIONES.eu].map((p, i) => [p, i] as [string, number]),
 );
 
-export type ParteRemoto = { tipo: "region"; region: Region } | { tipo: "pais"; pais: string };
+export type ParteRemoto =
+  | { tipo: "region"; region: Region; /** Países de la región que no están ("Europa salvo Reino Unido"). */ salvo: string[] }
+  | { tipo: "pais"; pais: string };
+
+/** Como mucho, cuántos países pueden faltar para seguir diciendo la región ("Europa salvo Reino Unido y Suiza"). */
+export const MAXIMO_SALVO = 3;
 
 /**
  * Cómo enseñar "desde dónde" en corto:
  * - { mundo: true } → cualquier país;
  * - si están todos los países de una región, la región ("Latinoamérica");
+ * - si faltan pocos (hasta 3), la región con sus excepciones ("Europa salvo Reino Unido");
  * - si no, los países sueltos.
  * España va primero, luego las regiones y luego el resto de países.
  */
@@ -58,8 +64,10 @@ export function describirRemoto(r: Remoto): { mundo: true } | { mundo: false; pa
   const regiones: ParteRemoto[] = [];
   for (const region of Object.keys(REGIONES) as Region[]) {
     const suyos = REGIONES[region] as readonly string[];
-    if (suyos.every((p) => quedan.has(p))) {
-      regiones.push({ tipo: "region", region });
+    const faltan = suyos.filter((p) => !quedan.has(p));
+    // Hace falta que estén la mayoría: con 3 países de 30 no se dice "Europa salvo 27".
+    if (faltan.length <= MAXIMO_SALVO && faltan.length < suyos.length / 2) {
+      regiones.push({ tipo: "region", region, salvo: ordenarPaises(faltan) });
       for (const p of suyos) quedan.delete(p);
     }
   }
