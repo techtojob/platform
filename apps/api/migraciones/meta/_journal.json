@@ -57,6 +57,20 @@
       "when": 1792496101608,
       "tag": "0007_descubrir-empresas",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792499341573,
+      "tag": "0008_remoto-por-paises",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792499349423,
+      "tag": "0009_quitar-remoto-desde",
+      "breakpoints": true
     }
   ]
 }

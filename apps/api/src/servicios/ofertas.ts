@@ -1,5 +1,5 @@
 import { buscarTecnologia, type Area, type EntradaMapa, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
-import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, gt, ilike, inArray, isNotNull, isNull, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
+import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, gt, ilike, inArray, isNotNull, isNull, ne, not, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
 
@@ -15,6 +15,11 @@ export type FiltrosOfertas = {
   q?: string;
   /** Solo ofertas con salario publicado. */
   conSalario?: boolean;
+  /**
+   * País desde el que trabaja quien busca (ISO, "MX"): solo ofertas que puede hacer desde allí
+   * (en remoto desde ese país o desde cualquiera, o híbridas y presenciales en ese país).
+   */
+  desde?: string;
   limite?: number;
   /** Código de la página siguiente (lo devuelve la llamada anterior). */
   despues?: string | null;
@@ -56,7 +61,7 @@ function buscarTexto(db: Db, q: string): SQL {
   )!;
 }
 
-type Grupo = "area" | "seniority" | "modalidad";
+type Grupo = "area" | "seniority" | "modalidad" | "desde";
 
 /** Que no haya caducado (sin fecha de caducidad, no caduca). */
 function vigente(): SQL {
@@ -75,7 +80,16 @@ function condicionesBase(db: Db, f: FiltrosOfertas, sin?: Grupo): SQL[] {
   if (f.tecnologias?.length) c.push(arrayOverlaps(ofertas.tecnologias, f.tecnologias));
   if (f.q?.trim()) c.push(buscarTexto(db, f.q.trim()));
   if (f.conSalario) c.push(or(isNotNull(ofertas.salarioMin), isNotNull(ofertas.salarioMax))!);
+  if (sin !== "desde" && f.desde) c.push(sePuedeDesde(f.desde));
   return c;
+}
+
+/** La oferta se puede hacer desde ese país: en remoto (desde ahí o desde cualquier sitio) o, si no es remota, está en ese país. */
+function sePuedeDesde(pais: string): SQL {
+  return or(
+    and(eq(ofertas.modalidad, "remoto"), or(eq(ofertas.remotoMundo, true), arrayContains(ofertas.remotoPaises, [pais]))),
+    and(ne(ofertas.modalidad, "remoto"), eq(ofertas.pais, pais)),
+  )!;
 }
 
 /** La oferta no pide ningún idioma fuera de los que habla la persona. */
@@ -107,7 +121,8 @@ function aListado(
     tecnologias: o.tecnologias,
     pais: o.pais,
     ciudad: o.ciudad,
-    remotoDesde: o.remotoDesde,
+    remotoMundo: o.remotoMundo,
+    remotoPaises: o.remotoPaises,
     salario:
       o.salarioMin != null || o.salarioMax != null ? { min: o.salarioMin, max: o.salarioMax, moneda: o.moneda } : null,
     idiomasRequeridos: idiomas
@@ -158,7 +173,7 @@ export async function listarOfertas(db: Db, filtros: FiltrosOfertas): Promise<Re
     total: Number(total),
     siguiente: hayMas && ultima?.publicadaEn ? codificarCursor(ultima.publicadaEn, ultima.id) : null,
     ...(filtros.despues
-      ? { ocultasPorIdioma: {}, facetas: { area: {}, seniority: {}, modalidad: {} } }
+      ? { ocultasPorIdioma: {}, ocultasPorPais: 0, facetas: { area: {}, seniority: {}, modalidad: {} } }
       : await contarExtras(db, filtros)),
   };
 }
@@ -203,14 +218,16 @@ export async function mapaOfertas(db: Db): Promise<EntradaMapa[]> {
 
 /** Lo que solo hace falta en la primera página: avisos de idiomas y recuentos de cada filtro. */
 async function contarExtras(db: Db, filtros: FiltrosOfertas) {
-  const [ocultasPorIdioma, area, seniority, modalidad] = await Promise.all([
+  const [ocultasPorIdioma, ocultasPorPais, area, seniority, modalidad] = await Promise.all([
     contarOcultasPorIdioma(db, filtros),
+    contarOcultasPorPais(db, filtros),
     contarPor(db, filtros, "area"),
     contarPor(db, filtros, "seniority"),
     contarPor(db, filtros, "modalidad"),
   ]);
   return {
     ocultasPorIdioma,
+    ocultasPorPais,
     facetas: {
       area: area as Partial<Record<Area, number>>,
       seniority: seniority as Partial<Record<Seniority, number>>,
@@ -220,7 +237,7 @@ async function contarExtras(db: Db, filtros: FiltrosOfertas) {
 }
 
 /** Cuántas ofertas hay con cada valor de un grupo, con los demás filtros puestos. */
-async function contarPor(db: Db, filtros: FiltrosOfertas, grupo: Grupo): Promise<Record<string, number>> {
+async function contarPor(db: Db, filtros: FiltrosOfertas, grupo: Exclude<Grupo, "desde">): Promise<Record<string, number>> {
   const columna = ofertas[grupo];
   const filas = await db
     .select({ valor: columna, total: count() })
@@ -228,6 +245,16 @@ async function contarPor(db: Db, filtros: FiltrosOfertas, grupo: Grupo): Promise
     .where(and(...condicionesBase(db, filtros, grupo), pideSoloIdiomas(db, filtros.idiomas)))
     .groupBy(columna);
   return Object.fromEntries(filas.map((f) => [f.valor, Number(f.total)]));
+}
+
+/** Cuántas ofertas quedan fuera porque no se pueden hacer desde el país de quien busca. */
+async function contarOcultasPorPais(db: Db, filtros: FiltrosOfertas): Promise<number> {
+  if (!filtros.desde) return 0;
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(ofertas)
+    .where(and(...condicionesBase(db, filtros, "desde"), pideSoloIdiomas(db, filtros.idiomas), not(sePuedeDesde(filtros.desde))));
+  return Number(total);
 }
 
 /** Cuántas ofertas quedan fuera por cada idioma que la persona no ha marcado. */

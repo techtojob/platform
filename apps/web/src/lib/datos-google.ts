@@ -7,20 +7,6 @@ import type { OfertaDetalle } from "@techtojob/shared";
  * Guía: https://developers.google.com/search/docs/data-types/job-posting
  */
 
-const UE = ["ES", "PT", "FR", "DE", "IT", "IE", "NL", "BE", "LU", "AT", "DK", "SE", "FI", "PL", "CZ", "RO", "GR", "EE", "LT", "LV", "MT", "CY", "HU", "SK", "SI", "HR", "BG"];
-const LATAM = ["MX", "AR", "CO", "CL", "PE", "UY", "EC", "VE", "BO", "PY", "CR", "PA", "DO", "GT", "HN", "SV", "NI", "CU", "PR"];
-
-/** Países desde los que se puede trabajar en remoto, según la zona. "mundo": sin requisito. */
-function paisesDeZona(zona: string | null): string[] {
-  if (zona === "es") return ["ES"];
-  if (zona === "eu") return UE;
-  if (zona === "latam") return LATAM;
-  if (zona === "eeuu") return ["US"];
-  if (zona === "canada") return ["CA"];
-  if (zona === "norteamerica") return ["US", "CA"];
-  return [];
-}
-
 const escaparHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /** La descripción en HTML sencillo: un <p> por párrafo (Google pide HTML). */
@@ -33,7 +19,8 @@ function descripcionHtml(o: OfertaDetalle): string {
 export function jobPosting(o: OfertaDetalle, url: string): Record<string, unknown> | null {
   if (!o.autorizada || !o.descripcion?.trim()) return null;
   const remoto = o.modalidad === "remoto";
-  const paises = paisesDeZona(o.remotoDesde);
+  // Países desde los que se puede trabajar en remoto; desde cualquier país, sin requisito.
+  const paises = o.remotoMundo ? [] : o.remotoPaises;
   return {
     "@context": "https://schema.org/",
     "@type": "JobPosting",

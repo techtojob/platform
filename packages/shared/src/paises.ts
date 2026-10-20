@@ -7,6 +7,7 @@ export const PAISES = [
   "ES", "PT", "FR", "DE", "IT", "GB", "IE", "NL", "BE", "LU", "CH", "AT", "DK", "SE", "NO", "FI",
   "PL", "CZ", "RO", "GR", "EE", "LT", "LV", "MT", "CY", "HU", "SK", "SI", "HR", "BG",
   "US", "CA", "MX", "AR", "CO", "CL", "PE", "UY", "EC", "VE", "BO", "PY", "CR", "PA", "DO", "GT", "BR",
+  "HN", "SV", "NI", "CU", "PR",
   "MA", "AE", "IL", "IN", "JP", "SG", "AU",
 ] as const;
 

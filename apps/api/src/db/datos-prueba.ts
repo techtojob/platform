@@ -1,3 +1,4 @@
+import { REGIONES } from "@techtojob/shared";
 import type { Db } from "./cliente";
 import { like } from "drizzle-orm";
 import { emblemas, empresas, estadoDiscord, ofertaIdiomas, ofertas, perfiles, usuarios, type NuevaOferta } from "./esquema";
@@ -39,7 +40,7 @@ export const OFERTAS_PRUEBA: OfertaPrueba[] = [
     descripcion: "Volcán Data builds the data platform behind a renewable energy marketplace.\n\nWhat you will do: write and maintain Python pipelines that load meter readings into our warehouse, model tables in SQL and help keep data quality checks green.\n\nWhat we ask: solid Python and SQL basics, curiosity about how data moves, and English good enough for daily written communication (B2).\n\nWhat we offer: fully remote within Spain, a senior mentor for your first six months and a yearly training budget.",
     resumen: "Build data pipelines for an energy platform. Python and SQL; mentoring during the first months.",
     area: "datos-ia", seniority: "junior", modalidad: "remoto", tecnologias: ["python", "sql"],
-    pais: "ES", remotoDesde: "es", publicadaEn: hace(1), pide: [{ idioma: "en", nivel: "b2" }],
+    pais: "ES", remotoPaises: ["ES"], publicadaEn: hace(1), pide: [{ idioma: "en", nivel: "b2" }],
   },
   {
     id: "w9n4c6rt", slug: "soporte-it-n1-teide-software", empresaId: "emp-teide",
@@ -53,7 +54,7 @@ export const OFERTAS_PRUEBA: OfertaPrueba[] = [
     titulo: "Backend Developer (Node.js)", idioma: "en", urlOriginal: "https://example.com/ofertas/4",
     descripcion: "Marea Cloud runs managed hosting for online shops across Europe.\n\nWhat you will do: design and build Node.js services in TypeScript, review code and take part in the on-call rota once a month.\n\nWhat we ask: at least three years building backends with Node.js, fluent English (C1) and Spanish, since half of our customers are in Spain.",
     area: "desarrollo", seniority: "mid", modalidad: "remoto", tecnologias: ["javascript", "typescript"],
-    remotoDesde: "eu", salarioMin: 38000, salarioMax: 46000, moneda: "EUR", publicadaEn: hace(3),
+    remotoPaises: [...REGIONES.eu], salarioMin: 38000, salarioMax: 46000, moneda: "EUR", publicadaEn: hace(3),
     pide: [{ idioma: "en", nivel: "c1" }, { idioma: "es" }],
   },
   {

@@ -113,10 +113,12 @@ export const ofertas = pgTable(
     /** Identificadores de TECNOLOGIAS: ["python", "sql"]. */
     tecnologias: text("tecnologias").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
 
-    /** Dónde: país (ISO, "ES"), ciudad y, si es remoto, desde qué zona. */
+    /** Dónde: país (ISO, "ES") y ciudad, si es híbrido o presencial. */
     pais: text("pais"),
     ciudad: text("ciudad"),
-    remotoDesde: text("remoto_desde"),
+    /** Si es remoto: desde cualquier país, o desde estos (ISO: ["ES", "MX"]). Ver packages/shared/src/remoto.ts. */
+    remotoMundo: boolean("remoto_mundo").notNull().default(false),
+    remotoPaises: text("remoto_paises").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
 
     /** Salario solo si la oferta lo indica. Anual y bruto. */
     salarioMin: integer("salario_min"),
@@ -146,6 +148,7 @@ export const ofertas = pgTable(
   (t) => [
     index("ofertas_estado_publicada_idx").on(t.estado, t.publicadaEn.desc()),
     index("ofertas_tecnologias_idx").using("gin", t.tecnologias),
+    index("ofertas_remoto_paises_idx").using("gin", t.remotoPaises),
     uniqueIndex("ofertas_externas_idx").on(t.empresaId, t.fuenteAts, t.idExterno),
   ],
 );

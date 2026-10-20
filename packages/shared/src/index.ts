@@ -7,3 +7,4 @@ export * from "./analizar-oferta";
 export * from "./paises";
 export * from "./validar-perfil";
 export * from "./ats";
+export * from "./remoto";

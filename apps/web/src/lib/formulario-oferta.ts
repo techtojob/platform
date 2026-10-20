@@ -15,7 +15,9 @@ export type ValoresOferta = {
   area: string;
   seniority: string;
   modalidad: string;
-  remotoDesde: string;
+  /** Remoto: desde cualquier país, o desde estos (ISO). */
+  remotoMundo: boolean;
+  remotoPaises: string[];
   ciudad: string;
   pais: string;
   tecnologias: string[];
@@ -41,7 +43,8 @@ export const VALORES_VACIOS: ValoresOferta = {
   area: "",
   seniority: "",
   modalidad: "",
-  remotoDesde: "",
+  remotoMundo: false,
+  remotoPaises: [],
   ciudad: "",
   pais: "ES",
   tecnologias: [],
@@ -64,7 +67,8 @@ export function valoresDeOferta(o: OfertaStaff): ValoresOferta {
     area: o.area,
     seniority: o.seniority,
     modalidad: o.modalidad,
-    remotoDesde: o.remotoDesde ?? "",
+    remotoMundo: o.remotoMundo,
+    remotoPaises: o.remotoPaises,
     ciudad: o.ciudad ?? "",
     pais: o.pais ?? "",
     tecnologias: o.tecnologias,
@@ -97,7 +101,11 @@ export function aplicarImportada(v: ValoresOferta, d: OfertaImportada): { valore
   poner("area", d.area);
   poner("seniority", d.seniority);
   poner("modalidad", d.modalidad);
-  poner("remotoDesde", d.remotoDesde);
+  if (d.remoto) {
+    n.remotoMundo = d.remoto.mundo;
+    n.remotoPaises = d.remoto.paises;
+    rellenados.push("remotoDesde");
+  }
   if (d.ciudad || d.pais) {
     poner("ciudad", d.ciudad, "lugar");
     if (d.pais) n.pais = d.pais;
@@ -136,7 +144,8 @@ export function datosParaApi(v: ValoresOferta, empresaId: string) {
     tecnologias: v.tecnologias,
     pais: v.modalidad === "remoto" ? null : siHay(v.pais),
     ciudad: v.modalidad === "remoto" ? null : siHay(v.ciudad),
-    remotoDesde: v.modalidad === "remoto" ? siHay(v.remotoDesde) : null,
+    remotoMundo: v.modalidad === "remoto" && v.remotoMundo,
+    remotoPaises: v.modalidad === "remoto" && !v.remotoMundo ? v.remotoPaises : [],
     salarioMin: conSalario ? cantidad(v.salarioMin) : null,
     salarioMax: conSalario ? cantidad(v.salarioMax) : null,
     moneda: conSalario ? v.moneda : null,

@@ -1,4 +1,4 @@
-import { AREAS, esIdioma, MODALIDADES, SENIORITY, TECNOLOGIAS, type Idioma } from "@techtojob/shared";
+import { AREAS, esIdioma, MODALIDADES, PAISES, SENIORITY, TECNOLOGIAS, type Idioma } from "@techtojob/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Entorno } from "../app";
@@ -16,7 +16,7 @@ export function lista<T extends string>(valor: string | undefined, permitidos: r
 }
 
 /**
- * GET /ofertas?idiomas=es,en&q=data&area=desarrollo&nivel=junior&modalidad=remoto&tec=python,react&salario=1&limite=20&despues=…
+ * GET /ofertas?idiomas=es,en&q=data&area=desarrollo&nivel=junior&modalidad=remoto&tec=python,react&salario=1&desde=MX&limite=20&despues=…
  *
  * `idiomas` es obligatorio: los idiomas que habla quien busca (los manda la web,
  * sacados del navegador o del perfil).
@@ -35,6 +35,11 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
     throw new HTTPException(400, { message: '"limite" tiene que ser un número entero.' });
   }
 
+  const desde = q.desde?.trim().toUpperCase();
+  if (desde && !(PAISES as readonly string[]).includes(desde)) {
+    throw new HTTPException(400, { message: '"desde" tiene que ser un código de país (ES, MX…).' });
+  }
+
   const texto = q.q?.trim();
   if (texto && texto.length > 100) throw new HTTPException(400, { message: '"q" no puede tener más de 100 caracteres.' });
 
@@ -46,6 +51,7 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
     tecnologias,
     q: texto || undefined,
     conSalario: q.salario === "1",
+    desde: desde || undefined,
     limite,
     despues: q.despues ?? null,
   });

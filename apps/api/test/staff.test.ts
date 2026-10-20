@@ -62,7 +62,7 @@ const nueva = {
   area: "desarrollo",
   seniority: "junior",
   modalidad: "remoto",
-  remotoDesde: "es",
+  remotoPaises: ["ES"],
   tecnologias: ["typescript"],
   idiomasRequeridos: [{ idioma: "es", nivel: "nativo" }],
   autorizada: true,

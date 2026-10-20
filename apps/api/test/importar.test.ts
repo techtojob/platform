@@ -68,7 +68,7 @@ describe("importar una oferta desde su enlace", () => {
     expect(r).toMatchObject({
       fuente: "datos",
       modalidad: "remoto",
-      remotoDesde: "es",
+      remoto: { mundo: false, paises: ["ES"] },
       empresa: { id: null, nombre: "Nueva Empresa Inc" },
       idioma: "en",
       seniority: "senior",

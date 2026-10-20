@@ -44,6 +44,8 @@ export type FiltrosListado = {
   tecnologias?: string[];
   q?: string;
   conSalario?: boolean;
+  /** País desde el que trabaja quien busca: solo las ofertas que puede hacer desde allí. */
+  desde?: string | null;
   limite?: number;
   despues?: string;
 };
@@ -56,6 +58,7 @@ export function obtenerOfertas(f: FiltrosListado): Promise<ResultadoOfertas> {
   if (f.tecnologias?.length) q.set("tec", f.tecnologias.join(","));
   if (f.q) q.set("q", f.q);
   if (f.conSalario) q.set("salario", "1");
+  if (f.desde) q.set("desde", f.desde);
   if (f.limite) q.set("limite", String(f.limite));
   if (f.despues) q.set("despues", f.despues);
   return pedir<ResultadoOfertas>(`/ofertas?${q}`);

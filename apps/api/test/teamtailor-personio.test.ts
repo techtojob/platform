@@ -106,7 +106,7 @@ describe("Teamtailor", () => {
     expect(leidas[0]!.descripcion).toContain("• 3 años");
     expect(leidas[0]!.publicadaEn?.toISOString()).toBe("2026-10-12T07:00:00.000Z");
     expect(leidas[1]).toMatchObject({ modalidad: "hibrido", descripcion: "Hybrid role in our Barcelona office." });
-    expect(filtrar(leidas).map((o) => [o.titulo, o.remotoDesde])).toEqual([["Desarrollador/a Backend (Ruby)", "es"]]);
+    expect(filtrar(leidas).map((o) => [o.titulo, o.remoto?.paises])).toEqual([["Desarrollador/a Backend (Ruby)", ["ES"]]]);
   });
 
   it("una página que no es un RSS no cuenta", async () => {
@@ -134,7 +134,7 @@ describe("Personio", () => {
     expect(leidas[0]!.descripcion).toContain("Sobre el puesto\nConstruirás");
     expect(leidas[0]!.descripcion).toContain("• Inglés B2");
     // Es remota porque una de sus oficinas es "Remote"; la zona, por Madrid y Valencia: España.
-    expect(filtrar(leidas).map((o) => [o.idExterno, o.remotoDesde])).toEqual([["1500123", "es"]]);
+    expect(filtrar(leidas).map((o) => [o.idExterno, o.remoto?.paises])).toEqual([["1500123", ["ES"]]]);
   });
 
   it("usa personio.com si la empresa está allí", async () => {

@@ -1,4 +1,4 @@
-import { adivinarPuesto, type Ats, type ZonaRemoto } from "@techtojob/shared";
+import { adivinarPuesto, codigoPais, ordenarPaises, PAISES, PAISES_PUBLICO, REGIONES, type Ats, type Remoto } from "@techtojob/shared";
 import { htmlATexto, type Pedir } from "./importar";
 
 /**
@@ -315,54 +315,42 @@ export function esTecnica(titulo: string): boolean {
   return adivinarPuesto(titulo).area !== null;
 }
 
-/* Zonas: desde dónde se puede trabajar. */
-
-const ESPANA = ["spain", "espana", "madrid", "barcelona", "valencia", "sevilla", "seville", "malaga", "bilbao", "zaragoza", "canarias", "canary islands"];
-const EUROPA = ["europe", "europa", "emea", "eu", "european union", "union europea", "cet", "cest", "european time ?zones?"];
-const LATAM = [
-  "latam", "latin america", "latinoamerica", "america latina", "south america", "sudamerica", "central america",
-  "mexico", "argentina", "colombia", "chile", "peru", "uruguay", "paraguay", "bolivia", "ecuador", "venezuela",
-  "costa rica", "panama", "guatemala", "honduras", "el salvador", "nicaragua", "dominican republic",
-  "republica dominicana", "puerto rico", "brazil", "brasil", "buenos aires", "bogota", "medellin",
-  "ciudad de mexico", "mexico city", "santiago", "lima", "montevideo",
-];
-const EEUU = [
-  "us", "u\\.s\\.?", "usa", "united states", "estados unidos", "eeuu", "ee\\. ?uu\\.?",
-  "new york", "san francisco", "seattle", "austin", "boston", "chicago", "los angeles", "denver", "miami", "atlanta",
-  "pst", "est", "pacific time", "eastern time", "central time", "mountain time",
-];
-const CANADA = ["canada", "toronto", "vancouver", "montreal", "ottawa", "calgary"];
-const NORTEAMERICA = ["north america", "norteamerica", "america del norte", "us ?& ?canada", "us and canada"];
-/** "Americas": de Canadá a Argentina. */
-const AMERICAS = ["americas", "the americas"];
-const MUNDO = ["anywhere", "worldwide", "global", "globally", "world", "international", "any location", "cualquier lugar", "todo el mundo"];
+/* Desde dónde se puede trabajar: países (ver packages/shared/src/remoto.ts). */
 
 const lista = (palabras: string[]) => new RegExp(`(?<![a-z])(${palabras.join("|")})(?![a-z])`);
-const RE = {
-  es: lista(ESPANA),
-  eu: lista(EUROPA),
-  latam: lista(LATAM),
-  eeuu: lista(EEUU),
-  canada: lista(CANADA),
-  norteamerica: lista(NORTEAMERICA),
-  americas: lista(AMERICAS),
-  mundo: lista(MUNDO),
-};
-/** Lo que queda tras quitar "Remote", separadores y palabras de relleno: si queda algo, es un sitio. */
-const RELLENO = /\b(remote|remoto|remota|fully|full|time|100|only|first|work|from|home|wfh|distributed|teletrabajo|based|in|or|and|y|o|the|any|location|locations|timezone|time ?zones?|friendly|countries|country|region|team|en)\b/g;
+const RE_MUNDO = lista(["anywhere", "worldwide", "global", "globally", "world", "international", "any location", "any country", "cualquier lugar", "cualquier pais", "todo el mundo"]);
+const RE_EUROPA = lista(["europe", "europa", "emea", "eu", "european union", "union europea", "cet", "cest", "european time ?zones?"]);
+const RE_LATAM = lista(["latam", "latin america", "latinoamerica", "america latina", "south america", "sudamerica", "central america", "centroamerica"]);
+const RE_AMERICAS = lista(["americas", "the americas"]);
+const RE_NORTEAMERICA = lista(["north america", "norteamerica", "america del norte", "us ?& ?canada", "us and canada"]);
+
+/** Ciudades, abreviaturas y husos horarios que no son nombres de país. */
+const ALIAS: Array<[RegExp, string]> = [
+  [lista(["madrid", "barcelona", "valencia", "sevilla", "seville", "malaga", "bilbao", "zaragoza", "canarias", "canary islands", "tenerife", "las palmas"]), "ES"],
+  [lista(["us", "u\\.s\\.?", "usa", "united states", "estados unidos", "eeuu", "ee\\. ?uu\\.?", "new york", "san francisco", "seattle", "austin", "boston", "chicago", "los angeles", "denver", "miami", "atlanta", "pst", "est", "pacific time", "eastern time", "central time", "mountain time"]), "US"],
+  [lista(["toronto", "vancouver", "montreal", "ottawa", "calgary"]), "CA"],
+  [lista(["uk", "united kingdom", "reino unido", "england", "london", "londres"]), "GB"],
+  [lista(["cdmx", "ciudad de mexico", "mexico city", "guadalajara", "monterrey"]), "MX"],
+  [lista(["buenos aires", "cordoba"]), "AR"],
+  [lista(["bogota", "medellin", "cali"]), "CO"],
+  [lista(["santiago"]), "CL"],
+  [lista(["lima"]), "PE"],
+  [lista(["montevideo"]), "UY"],
+  [lista(["sao paulo", "rio de janeiro"]), "BR"],
+];
+/** Palabras de relleno: lo que quede después de quitarlas es un sitio. */
+const RELLENO = /\b(remote|remoto|remota|fully|full|time|100|only|first|work|from|home|wfh|distributed|teletrabajo|based|in|or|and|y|o|the|any|location|locations|timezone|time ?zones?|friendly|countries|country|region|team|en|desde|solo|position|role)\b/g;
 
 /**
- * Desde dónde se puede trabajar, según las ubicaciones de la oferta.
- *
- * - "mundo": anywhere / worldwide;
- * - "eu" (Europa / EMEA, incluye España), "es" (solo España);
- * - "latam": Latinoamérica;
- * - "eeuu", "canada" o "norteamerica" (los dos);
- * - null: no se sabe ("Remote" sin más) o mezcla zonas (Europa y Latinoamérica…): la oferta entra y el staff lo decide;
- * - "fuera": solo otros sitios (Reino Unido, Alemania, India…): la oferta no entra.
+ * Desde dónde se puede trabajar, según las ubicaciones de la oferta:
+ * - { mundo: true }: anywhere / worldwide;
+ * - { paises: [...] }: los países que dice (las regiones se convierten en sus países);
+ * - null: no se sabe ("Remote" sin más): la oferta entra y el staff lo rellena;
+ * - "fuera": ninguno de los países es de nuestro público (solo Alemania, solo India…): no entra.
  */
-export function zonaRemoto(ubicaciones: string[]): ZonaRemoto | null | "fuera" {
-  const vistas = new Set<keyof typeof RE>();
+export function dondeRemoto(ubicaciones: string[]): Remoto | null | "fuera" {
+  const paises = new Set<string>();
+  let mundo = false;
   let otroSitio = false;
   for (const ubicacion of ubicaciones) {
     // "Remote - Spain, Portugal" se mira por trozos: "spain", "portugal".
@@ -370,41 +358,37 @@ export function zonaRemoto(ubicaciones: string[]): ZonaRemoto | null | "fuera" {
       const t = trozo.trim();
       if (!t) continue;
       let encontrado = false;
-      for (const [zona, re] of Object.entries(RE) as Array<[keyof typeof RE, RegExp]>) {
-        if (re.test(t)) {
-          vistas.add(zona);
-          encontrado = true;
-        }
-      }
-      if (!encontrado && t.replace(RELLENO, "").replace(/[^a-z]/g, "")) otroSitio = true;
+      const anadir = (lista: readonly string[]) => {
+        for (const p of lista) paises.add(p);
+        encontrado = true;
+      };
+      if (RE_MUNDO.test(t)) (mundo = true), (encontrado = true);
+      if (RE_EUROPA.test(t)) anadir(REGIONES.eu);
+      if (RE_LATAM.test(t)) anadir(REGIONES.latam);
+      if (RE_AMERICAS.test(t)) anadir([...REGIONES.latam, "US", "CA"]);
+      if (RE_NORTEAMERICA.test(t)) anadir(["US", "CA"]);
+      for (const [re, pais] of ALIAS) if (re.test(t)) anadir([pais]);
+      if (encontrado) continue;
+      const resto = t.replace(RELLENO, " ").replace(/\s+/g, " ").trim();
+      if (!resto) continue;
+      const pais = codigoPais(resto);
+      if (pais && (PAISES as readonly string[]).includes(pais)) paises.add(pais);
+      else otroSitio = true;
     }
   }
-  if (vistas.has("mundo")) return "mundo";
-  if (vistas.has("americas")) return null;
-  // Grandes zonas: Europa, Latinoamérica y Norteamérica. Si sale más de una, lo decide el staff.
-  const europa = vistas.has("eu") ? "eu" : vistas.has("es") ? "es" : null;
-  const latam = vistas.has("latam") ? "latam" : null;
-  const na =
-    vistas.has("norteamerica") || (vistas.has("eeuu") && vistas.has("canada"))
-      ? "norteamerica"
-      : vistas.has("eeuu")
-        ? "eeuu"
-        : vistas.has("canada")
-          ? "canada"
-          : null;
-  const zonas = [europa, latam, na].filter((z): z is ZonaRemoto => z !== null);
-  if (zonas.length > 1) return null;
-  if (zonas.length === 1) return zonas[0]!;
-  return otroSitio ? "fuera" : null;
+  if (mundo) return { mundo: true, paises: [] };
+  if (!paises.size) return otroSitio ? "fuera" : null;
+  if (![...paises].some((p) => PAISES_PUBLICO.includes(p))) return "fuera";
+  return { mundo: false, paises: ordenarPaises(paises) };
 }
 
-export type OfertaFiltrada = OfertaAts & { remotoDesde: ZonaRemoto | null };
+export type OfertaFiltrada = OfertaAts & { remoto: Remoto | null };
 
-/** Se queda con las técnicas y 100 % remotas desde España, Europa, Latinoamérica, EE. UU., Canadá o cualquier sitio. */
+/** Se queda con las técnicas, 100 % remotas y que se puedan hacer desde España, Latinoamérica, EE. UU., Canadá o Reino Unido. */
 export function filtrar(ofertas: OfertaAts[]): OfertaFiltrada[] {
   return ofertas.flatMap((o) => {
     if (!esTecnica(o.titulo) || !esRemoto(o)) return [];
-    const zona = zonaRemoto(o.ubicaciones);
-    return zona === "fuera" ? [] : [{ ...o, remotoDesde: zona }];
+    const remoto = dondeRemoto(o.ubicaciones);
+    return remoto === "fuera" ? [] : [{ ...o, remoto }];
   });
 }

@@ -3,7 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Db } from "../src/db/cliente";
 import { empresas, ofertaIdiomas, ofertas } from "../src/db/esquema";
-import { esRemoto, esTecnica, filtrar, leerAts, zonaRemoto, type OfertaAts } from "../src/servicios/ats";
+import { ordenarPaises, REGIONES } from "@techtojob/shared";
+import { dondeRemoto, esRemoto, esTecnica, filtrar, leerAts, type OfertaAts } from "../src/servicios/ats";
 import type { Pedir } from "../src/servicios/importar";
 import { configurarEmpresa, crearEmpresa, ErrorStaff, publicarOferta } from "../src/servicios/ofertas-staff";
 import { obtenerOferta } from "../src/servicios/ofertas";
@@ -26,7 +27,7 @@ const greenhouse = {
       content: `&lt;p&gt;${DESCRIPCION_EN}&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Docker&lt;/li&gt;&lt;/ul&gt;`,
     },
     { id: 4002, title: "Account Executive", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4002", location: { name: "Remote - EMEA" }, content: "" },
-    { id: 4003, title: "Frontend Developer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4003", location: { name: "Remote - United Kingdom" }, content: "" },
+    { id: 4003, title: "Frontend Developer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4003", location: { name: "Remote - India" }, content: "" },
     { id: 4004, title: "Data Engineer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4004", location: { name: "Madrid (Hybrid)" }, content: "" },
     { id: 4005, title: "Site Reliability Engineer", absolute_url: "https://job-boards.greenhouse.io/acme/jobs/4005", location: { name: "Remote" }, content: "" },
   ],
@@ -171,33 +172,35 @@ describe("filtros", () => {
   });
 
   it("zona desde la que se puede trabajar", () => {
-    expect(zonaRemoto(["Remote - Spain"])).toBe("es");
-    expect(zonaRemoto(["Remoto (España)"])).toBe("es");
-    expect(zonaRemoto(["Remote - EMEA"])).toBe("eu");
-    expect(zonaRemoto(["Remote, Europe", "Remote - Spain"])).toBe("eu");
-    expect(zonaRemoto(["Remote, LATAM"])).toBe("latam");
-    expect(zonaRemoto(["Remote - Mexico", "Remote - Colombia"])).toBe("latam");
-    expect(zonaRemoto(["Remote", "Anywhere"])).toBe("mundo");
-    expect(zonaRemoto(["Remote"])).toBeNull();
-    expect(zonaRemoto(["Remote - Spain", "Remote - Argentina"])).toBeNull(); // lo decide el staff
-    expect(zonaRemoto(["Remote - US"])).toBe("eeuu");
-    expect(zonaRemoto(["United States (Remote)"])).toBe("eeuu");
-    expect(zonaRemoto(["Remote - Canada"])).toBe("canada");
-    expect(zonaRemoto(["Remote - US", "Remote - Canada"])).toBe("norteamerica");
-    expect(zonaRemoto(["Remote (US & Canada)"])).toBe("norteamerica");
-    expect(zonaRemoto(["Remote - North America"])).toBe("norteamerica");
-    expect(zonaRemoto(["Remote - Americas"])).toBeNull();
-    expect(zonaRemoto(["Remote - US", "Remote - Europe"])).toBeNull();
-    expect(zonaRemoto(["Remote - United Kingdom"])).toBe("fuera");
-    expect(zonaRemoto(["Remote - India"])).toBe("fuera");
-    expect(zonaRemoto(["Remote - Germany"])).toBe("fuera");
-    expect(zonaRemoto(["Remote - Spain", "Remote - Germany"])).toBe("es"); // si incluye España, vale
+    const paises = (...p: string[]) => ({ mundo: false, paises: p });
+    expect(dondeRemoto(["Remote - Spain"])).toEqual(paises("ES"));
+    expect(dondeRemoto(["Remoto (España)"])).toEqual(paises("ES"));
+    expect(dondeRemoto(["Remote - Mexico"])).toEqual(paises("MX"));
+    expect(dondeRemoto(["Remote - Mexico", "Remote - Colombia"])).toEqual(paises("MX", "CO"));
+    expect(dondeRemoto(["Remote - EMEA"])).toEqual(paises(...ordenarPaises(REGIONES.eu)));
+    expect(dondeRemoto(["Remote, LATAM"])).toEqual(paises(...ordenarPaises(REGIONES.latam)));
+    // España y Latinoamérica: se guarda tal cual (antes lo tenía que decidir el staff).
+    expect(dondeRemoto(["Remote - Spain", "Remote - LATAM"])).toEqual(paises(...ordenarPaises(["ES", ...REGIONES.latam])));
+    expect(dondeRemoto(["Remote", "Anywhere"])).toEqual({ mundo: true, paises: [] });
+    expect(dondeRemoto(["Remote"])).toBeNull();
+    expect(dondeRemoto(["Remote - US"])).toEqual(paises("US"));
+    expect(dondeRemoto(["United States (Remote)"])).toEqual(paises("US"));
+    expect(dondeRemoto(["Remote - Canada"])).toEqual(paises("CA"));
+    expect(dondeRemoto(["Remote (US & Canada)"])).toEqual(paises("US", "CA"));
+    expect(dondeRemoto(["Remote - North America"])).toEqual(paises("US", "CA"));
+    expect(dondeRemoto(["Remote - Americas"])).toEqual(paises(...ordenarPaises([...REGIONES.latam, "US", "CA"])));
+    expect(dondeRemoto(["Remote - Buenos Aires"])).toEqual(paises("AR"));
+    // Reino Unido entra (está en inglés y hay mucha gente de aquí allí); otros países solos, no.
+    expect(dondeRemoto(["Remote - United Kingdom"])).toEqual(paises("GB"));
+    expect(dondeRemoto(["Remote - India"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - Germany"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - Spain", "Remote - Germany"])).toEqual(paises("ES", "DE"));
   });
 
   it("filtrar se queda con las técnicas, remotas y de nuestras zonas", async () => {
     const leidas = await leerAts({ ats: "greenhouse", atsId: "acme" }, falso({ [URL_GH]: greenhouse }));
-    expect(filtrar(leidas).map((o) => [o.idExterno, o.remotoDesde])).toEqual([
-      ["4001", "es"],
+    expect(filtrar(leidas).map((o) => [o.idExterno, o.remoto])).toEqual([
+      ["4001", { mundo: false, paises: ["ES"] }],
       ["4005", null],
     ]);
   });
@@ -230,7 +233,8 @@ describe("sincronizar", () => {
       resumen: null,
       descripcion: null,
       modalidad: "remoto",
-      remotoDesde: "es",
+      remotoMundo: false,
+      remotoPaises: ["ES"],
       area: "desarrollo",
       seniority: "senior",
       idioma: "en",
@@ -293,7 +297,7 @@ describe("sincronizar", () => {
       area: "desarrollo",
       seniority: "senior",
       modalidad: "remoto",
-      remotoDesde: "es",
+      remotoPaises: ["ES"],
       origen: "manual",
     });
     const r = await sincronizarEmpresa(db, await empresa(acme.id), falso(respuestas()));
@@ -312,9 +316,9 @@ describe("sincronizar", () => {
       ["Gamma", 1],
     ]);
     const [ml] = await db.select().from(ofertas).where(eq(ofertas.idExterno, "a1b2c3"));
-    expect(ml).toMatchObject({ remotoDesde: "latam", area: "datos-ia", idioma: "es" });
+    expect(ml).toMatchObject({ remotoPaises: ordenarPaises(REGIONES.latam), area: "datos-ia", idioma: "es" });
     const [disenio] = await db.select().from(ofertas).where(eq(ofertas.idExterno, "uuid-1"));
-    expect(disenio).toMatchObject({ remotoDesde: "mundo", area: "producto-diseno" });
+    expect(disenio).toMatchObject({ remotoMundo: true, remotoPaises: [], area: "producto-diseno" });
 
     // Gamma pide que no publiquemos: sus pendientes automáticas se descartan y no se vuelve a leer.
     const bloqueada = await configurarEmpresa(db, gamma.id, { bloqueada: true });
@@ -368,7 +372,7 @@ describe("empresas y publicar", () => {
     expect(JSON.stringify(publica)).not.toContain("payments platform");
 
     // Con autorización de la empresa, no hace falta resumen.
-    await db.update(ofertas).set({ remotoDesde: "eu", autorizada: true }).where(eq(ofertas.id, sre.id));
+    await db.update(ofertas).set({ remotoPaises: ["ES", "PT"], autorizada: true }).where(eq(ofertas.id, sre.id));
     await publicarOferta(db, sre.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, sre.id)))[0]!.estado).toBe("publicada");
   });

@@ -9,6 +9,7 @@ import { jobPosting, jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL } from "@/lib/sitio";
 import { obtenerOferta, obtenerOfertas } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
+import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
 
 type Props = PageProps<"/[locale]/ofertas/[slug]">;
@@ -53,8 +54,11 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
     idiomaWeb: locale,
   });
 
+  // Desde qué país trabaja: para decirle si puede hacer esta oferta.
+  const desde = paisDelUsuario({ cookie: almacen.get(COOKIE_DESDE)?.value, paisConexion: cabeceras.get("cf-ipcountry") });
+
   // Ofertas parecidas: misma área, que la persona pueda hacer. Si fallan, la página sale igual.
-  const parecidas = await obtenerOfertas({ idiomas: hablo, areas: [oferta.area], limite: 4 })
+  const parecidas = await obtenerOfertas({ idiomas: hablo, desde, areas: [oferta.area], limite: 4 })
     .then((r) => r.ofertas.filter((o) => o.id !== oferta.id).slice(0, 3))
     .catch(() => []);
 
@@ -64,7 +68,7 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
   return (
     <>
       {google && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(google) }} />}
-      <FichaOferta oferta={oferta} hablo={hablo} parecidas={parecidas} ahora={(await getNow()).getTime()} />
+      <FichaOferta oferta={oferta} hablo={hablo} desde={desde} parecidas={parecidas} ahora={(await getNow()).getTime()} />
     </>
   );
 }

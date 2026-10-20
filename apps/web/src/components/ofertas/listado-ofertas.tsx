@@ -6,10 +6,12 @@ import { Link } from "@/i18n/navigation";
 import { obtenerOfertas } from "@/lib/api";
 import { aParametros, hayFiltros, leerFiltros } from "@/lib/filtros";
 import { COOKIE_HABLO, idiomasDelUsuario, nombreIdioma } from "@/lib/idiomas-usuario";
+import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
 import { FilaOferta } from "./fila-oferta";
 import { FiltrosActivos } from "./filtros-activos";
 import { FiltrosOfertas } from "./filtros-ofertas";
 import { AnadirIdioma, IdiomasQueHablo } from "./idiomas-que-hablo";
+import { TrabajoDesde, VerTodosLosPaises } from "./trabajo-desde";
 
 /**
  * Listado de ofertas según los idiomas de quien visita, lo que busca y los filtros de la dirección.
@@ -30,10 +32,11 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
     acceptLanguage: cabeceras.get("accept-language"),
     idiomaWeb: locale,
   });
+  const desde = paisDelUsuario({ cookie: almacen.get(COOKIE_DESDE)?.value, paisConexion: cabeceras.get("cf-ipcountry") });
 
   let resultado;
   try {
-    resultado = await obtenerOfertas({ idiomas, ...filtros });
+    resultado = await obtenerOfertas({ idiomas, desde, ...filtros });
   } catch (error) {
     console.error("No se pudieron cargar las ofertas:", error);
   }
@@ -63,6 +66,7 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
             {t("ofertas.tituloSeccion", { count: resultado.total })}
           </h2>
           <IdiomasQueHablo actuales={idiomas} />
+          <TrabajoDesde actual={desde} />
         </header>
 
         <div className="flex flex-col gap-3 lg:hidden">
@@ -111,6 +115,18 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
               </Link>
             )}
           </nav>
+        )}
+
+        {desde && resultado.ocultasPorPais > 0 && (
+          <Aviso className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <p className="font-bold">
+              {t("ofertas.ocultasPorPais", {
+                count: resultado.ocultasPorPais,
+                pais: new Intl.DisplayNames([locale], { type: "region" }).of(desde) ?? desde,
+              })}
+            </p>
+            <VerTodosLosPaises texto={t("ofertas.verTodasPaises")} />
+          </Aviso>
         )}
 
         {ocultas.map(([idioma, total]) => {

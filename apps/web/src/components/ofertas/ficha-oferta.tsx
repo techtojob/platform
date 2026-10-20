@@ -1,11 +1,11 @@
-import { TECNOLOGIAS, type Idioma, type OfertaDetalle, type OfertaListado } from "@techtojob/shared";
+import { puedeTrabajarDesde, TECNOLOGIAS, type Idioma, type OfertaDetalle, type OfertaListado } from "@techtojob/shared";
 import Image from "next/image";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso, AvatarBlob, clasesBoton, Etiqueta } from "@/components/ui";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { CopiarEnlace } from "./copiar-enlace";
-import { useLugarCorto, useSalario } from "./datos-oferta";
+import { useDondeRemoto, useLugarCorto, useSalario } from "./datos-oferta";
 import { FilaOferta } from "./fila-oferta";
 
 const nombresTecnologias = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
@@ -14,6 +14,8 @@ type Props = {
   oferta: OfertaDetalle;
   /** Idiomas que habla quien la mira: para marcar "lo hablas" o avisar. */
   hablo: Idioma[];
+  /** País desde el que trabaja quien la mira (si lo sabemos): para decirle si la puede hacer. */
+  desde: string | null;
   parecidas: OfertaListado[];
   ahora: number;
 };
@@ -24,12 +26,19 @@ type Props = {
  * la descripción y ofertas parecidas. A la derecha, la tarjeta turquesa para aplicar
  * (en el móvil, una barra fija abajo).
  */
-export function FichaOferta({ oferta, hablo, parecidas, ahora }: Props) {
+export function FichaOferta({ oferta, hablo, desde, parecidas, ahora }: Props) {
   const t = useTranslations();
   const locale = useLocale();
   const format = useFormatter();
   const lugar = useLugarCorto(oferta);
   const salario = useSalario(oferta);
+  const dondeRemoto = useDondeRemoto();
+
+  // Remota: desde dónde se puede trabajar y si quien la mira puede (si sabemos su país).
+  const remoto = { mundo: oferta.remotoMundo, paises: oferta.remotoPaises };
+  const donde = oferta.modalidad === "remoto" ? dondeRemoto(remoto) : null;
+  const puede = desde && oferta.modalidad === "remoto" ? puedeTrabajarDesde(remoto, desde) : null;
+  const nombreDesde = desde ? (new Intl.DisplayNames([locale], { type: "region" }).of(desde) ?? desde) : "";
 
   const faltan = oferta.idiomasRequeridos.map((r) => r.idioma).filter((i) => !hablo.includes(i));
   const listaFaltan = new Intl.ListFormat(locale, { type: "conjunction" }).format(
@@ -105,6 +114,16 @@ export function FichaOferta({ oferta, hablo, parecidas, ahora }: Props) {
                     </dd>
                   ))}
                 </div>
+                {donde && (
+                  <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
+                    <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("ofertas.desdeDonde")}</dt>
+                    <dd className="flex items-center gap-1.5 font-bold">
+                      {puede && <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />}
+                      {donde}
+                      {puede && <span className="sr-only"> · {t("ofertas.puedesDesde", { pais: nombreDesde })}</span>}
+                    </dd>
+                  </div>
+                )}
                 <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
                   <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("filtros.nivel")}</dt>
                   <dd className="font-bold">{t(`seniority.${oferta.seniority}`)}</dd>
@@ -122,6 +141,11 @@ export function FichaOferta({ oferta, hablo, parecidas, ahora }: Props) {
                   </div>
                 )}
               </dl>
+              {puede === false && (
+                <p role="note" className="mt-6 rounded-xl bg-ink px-4 py-3 text-sm font-bold text-white">
+                  {t("ofertas.noDesde", { pais: nombreDesde })}
+                </p>
+              )}
               {faltan.length > 0 && (
                 <p role="note" className="mt-6 rounded-xl bg-ink px-4 py-3 text-sm font-bold text-white">
                   {t("ofertas.faltanIdiomas", { idiomas: listaFaltan, count: faltan.length })}

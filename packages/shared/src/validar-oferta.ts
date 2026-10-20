@@ -1,5 +1,7 @@
 import type { DatosOferta } from "./contratos";
-import { MONEDAS, ZONAS_REMOTO } from "./contratos";
+import { MONEDAS } from "./contratos";
+import { PAISES } from "./paises";
+import { ordenarPaises } from "./remoto";
 import { esIdioma, NIVELES_IDIOMA } from "./idiomas";
 import { AREAS, MODALIDADES, SENIORITY } from "./listas";
 import { TECNOLOGIAS } from "./tecnologias";
@@ -95,9 +97,12 @@ export function validarOferta(entrada: unknown): Resultado {
   const ciudad = texto(e.ciudad);
   if (ciudad && ciudad.length > LIMITES.ciudad.max) errores.ciudad = "largo";
 
-  const remotoDesde = texto(e.remotoDesde) ? de(ZONAS_REMOTO, e.remotoDesde) : null;
-  if (texto(e.remotoDesde) && !remotoDesde) errores.remotoDesde = "falta";
-  if (modalidad === "remoto" && !remotoDesde) errores.remotoDesde = "falta";
+  // Desde dónde se puede trabajar en remoto: cualquier país, o una lista de países (al menos uno).
+  const remotoMundo = e.remotoMundo === true;
+  const listaPaises = Array.isArray(e.remotoPaises) ? e.remotoPaises.filter((p): p is string => typeof p === "string") : [];
+  const remotoPaises = remotoMundo ? [] : ordenarPaises(listaPaises);
+  if (remotoPaises.some((p) => !(PAISES as readonly string[]).includes(p))) errores.remotoPaises = "codigo";
+  else if (modalidad === "remoto" && !remotoMundo && !remotoPaises.length) errores.remotoPaises = "falta";
   if (modalidad && modalidad !== "remoto" && !ciudad && !pais) errores.ciudad = "falta";
 
   const salarioMin = entero(e.salarioMin);
@@ -143,7 +148,8 @@ export function validarOferta(entrada: unknown): Resultado {
       tecnologias,
       pais,
       ciudad,
-      remotoDesde: modalidad === "remoto" ? remotoDesde : null,
+      remotoMundo: modalidad === "remoto" && remotoMundo,
+      remotoPaises: modalidad === "remoto" ? remotoPaises : [],
       salarioMin: hayMin ? salarioMin : null,
       salarioMax: hayMax ? salarioMax : null,
       moneda: hayMin || hayMax ? moneda : null,

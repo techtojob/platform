@@ -72,6 +72,38 @@ describe("otros filtros", () => {
   });
 });
 
+describe("desde dónde trabajo", () => {
+  const idiomas: Array<"es" | "en"> = ["es", "en"];
+  it("desde España: las remotas desde España o Europa, y las híbridas y presenciales en España", async () => {
+    const r = await listarOfertas(db, { idiomas, desde: "ES" });
+    expect(r.total).toBe(4);
+    expect(r.ocultasPorPais).toBe(0);
+  });
+
+  it("desde Portugal: solo la remota desde Europa; se avisa de las que quedan fuera", async () => {
+    const r = await listarOfertas(db, { idiomas, desde: "PT" });
+    expect(titulos(r)).toEqual(["Backend Developer (Node.js)"]);
+    expect(r.ocultasPorPais).toBe(3);
+  });
+
+  it("desde México: ninguna de las de prueba", async () => {
+    const r = await listarOfertas(db, { idiomas, desde: "MX" });
+    expect(r.total).toBe(0);
+    expect(r.ocultasPorPais).toBe(4);
+  });
+
+  it("sin país, todas (y no hay aviso)", async () => {
+    const r = await listarOfertas(db, { idiomas });
+    expect(r.total).toBe(4);
+    expect(r.ocultasPorPais).toBe(0);
+  });
+
+  it("la oferta trae la lista de países", async () => {
+    const r = await listarOfertas(db, { idiomas, desde: "ES" });
+    expect(r.ofertas.find((o) => o.titulo === "Junior Data Engineer")).toMatchObject({ remotoMundo: false, remotoPaises: ["ES"] });
+  });
+});
+
 describe("buscador", () => {
   const todos = ["es", "en", "de"] as const;
 
@@ -170,6 +202,11 @@ describe("GET /ofertas", () => {
       "Junior Data Engineer",
     ]);
     expect(cuerpo.ofertas[0].empresa.nombre).toBe("Atlántica Labs");
+  });
+
+  it("desde=XX (país que no existe) responde 400", async () => {
+    expect((await pedir("?idiomas=es&desde=XX")).status).toBe(400);
+    expect((await pedir("?idiomas=es&desde=mx")).status).toBe(200);
   });
 
   it("sin idiomas responde 400", async () => {

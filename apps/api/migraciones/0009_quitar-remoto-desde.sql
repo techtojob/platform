@@ -1,0 +1,1 @@
+ALTER TABLE "ofertas" DROP COLUMN "remoto_desde";

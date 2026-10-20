@@ -6,6 +6,8 @@ import {
   detectarTecnologias,
   enlaceComparable,
   MONEDAS,
+  ordenarPaises,
+  PAISES,
   nombreEmpresaComparable,
   type Moneda,
   type OfertaImportada,
@@ -188,9 +190,13 @@ function desdeJobPosting(job: Json): Partial<OfertaImportada> & { empresaNombre?
   }
   if (remoto) {
     r.modalidad = "remoto";
-    const requisito = primero(job.applicantLocationRequirements);
-    const zona = codigoPais(texto(esObjeto(requisito) ? requisito.name : requisito));
-    r.remotoDesde = zona === "ES" ? "es" : r.pais === "ES" && !requisito ? "es" : undefined;
+    // Desde dónde se puede trabajar: los países que diga (applicantLocationRequirements).
+    const requisitos = [job.applicantLocationRequirements].flat().filter(Boolean);
+    const paises = requisitos
+      .map((q) => codigoPais(texto(esObjeto(q) ? q.name : q)))
+      .filter((p): p is string => !!p && (PAISES as readonly string[]).includes(p));
+    if (paises.length) r.remoto = { mundo: false, paises: ordenarPaises(paises) };
+    else if (!requisitos.length && r.pais) r.remoto = { mundo: false, paises: [r.pais] };
   } else if (direccion) {
     r.modalidad = /h[ií]brid|hybrid/i.test(`${r.titulo} ${r.descripcion ?? ""}`) ? "hibrido" : "presencial";
   }

@@ -91,7 +91,6 @@
     "abreOtraWeb": "opens in a new tab",
     "aplicarAyuda": "You apply to {empresa} on their own website. TechToJob doesn't store your data.",
     "nueva": "New",
-    "remotoZona": "Remote ({zona})",
     "loQuePide": "Requirements",
     "idiomas": "Languages",
     "tecnologias": "Technologies",
@@ -113,16 +112,23 @@
       "salario": "Salary, if they publish it"
     },
     "tituloSeccion": "{count, plural, =0 {No job offers} one {# job offer} other {# job offers}}",
-    "teEncaja": "Is it a fit?"
+    "teEncaja": "Is it a fit?",
+    "remotoDonde": "Remote · {donde}",
+    "trabajoDesde": "I work from:",
+    "cualquierPais": "any country (all offers)",
+    "cambiarPais": "Change",
+    "elegirPais": "Which country do you work from?",
+    "ayudaPais": "We only show offers you can do from there: remote from your country (or from anywhere), or at an office in your country.",
+    "todosLosPaises": "All offers, no country filter",
+    "ocultasPorPais": "{count, plural, one {There's # more offer you can't do from {pais}.} other {There are # more offers you can't do from {pais}.}}",
+    "verTodasPaises": "Show them anyway",
+    "desdeDonde": "Where from",
+    "puedesDesde": "You can work from {pais}",
+    "noDesde": "Heads up: this offer can't be done from {pais}."
   },
   "regiones": {
-    "es": "Spain",
     "eu": "Europe",
-    "latam": "Latin America",
-    "eeuu": "US",
-    "canada": "Canada",
-    "norteamerica": "US & Canada",
-    "mundo": "anywhere"
+    "latam": "Latin America"
   },
   "filtros": {
     "titulo": "Filters",
@@ -401,7 +407,7 @@
         "area": "area",
         "seniority": "level",
         "modalidad": "work mode",
-        "remotoDesde": "remote zone",
+        "remotoDesde": "where from (remote)",
         "lugar": "location",
         "tecnologias": "technologies",
         "salario": "salary",
@@ -488,7 +494,7 @@
         "seniority": "Level",
         "tecnologias": "Technologies",
         "modalidad": "Work mode",
-        "remotoDesde": "Remote zone",
+        "remotoPaises": "Where from (remote)",
         "ciudad": "City or country",
         "pais": "Country",
         "salario": "Salary",
@@ -505,7 +511,12 @@
       "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us).",
       "resumenObligatorio": "Summary (required)",
       "resumenAyudaAutomatica": "In your own words, without copying the company's text: this is what gets published. {quedan} characters left.",
-      "descripcionAutomatica": "Description (only if the company authorises it)"
+      "descripcionAutomatica": "Description (only if the company authorises it)",
+      "cualquierPais": "Any country",
+      "otroPais": "+ Another country…",
+      "paisesElegidos": "Where people can work from",
+      "quitarSitio": "Remove {nombre}",
+      "seVeraAsi": "It will look like this:"
     },
     "errores": {
       "falta": "This is missing.",
@@ -529,9 +540,6 @@
       "ciudad": {
         "falta": "If it's not remote, add the city or the country."
       },
-      "remotoDesde": {
-        "falta": "Choose where it can be done remotely from."
-      },
       "moneda": {
         "falta": "Choose the salary currency."
       },
@@ -553,6 +561,10 @@
       },
       "resumen": {
         "propio": "Write a summary in your own words before publishing it."
+      },
+      "remotoPaises": {
+        "falta": "Choose where people can work from: any country or at least one.",
+        "codigo": "There's a country we don't recognise."
       }
     },
     "reportes": {
@@ -765,6 +777,7 @@
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
         "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
+        "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
         "<b>If you're staff:</b> which offers you've reviewed."
       ],
       "nunca": "We don't ask for your CV, phone, address or payment details."
@@ -830,8 +843,18 @@
           "TTJ_HABLO",
           "Remembering the languages you speak, to show you the offers you can apply to.",
           "1 year"
+        ],
+        [
+          "TTJ_DESDE",
+          "Remember which country you work from (if you choose it), to show you the offers you can do from there.",
+          "1 year"
         ]
       ]
     }
+  },
+  "remoto": {
+    "mundo": "From any country",
+    "solo": "{lugar} only",
+    "mas": "{count} more"
   }
 }

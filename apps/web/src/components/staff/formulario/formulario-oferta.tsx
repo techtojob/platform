@@ -13,7 +13,6 @@ import {
   PAISES,
   SENIORITY,
   validarOferta,
-  ZONAS_REMOTO,
   type Comprobacion,
   type EmpresaStaff,
   type OfertaListado,
@@ -30,6 +29,7 @@ import { PasoEnlace } from "./paso-enlace";
 import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/components/formulario/piezas";
 import { SelectorEmpresa } from "./selector-empresa";
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
+import { SelectorRemoto } from "./selector-remoto";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
 /** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña. */
@@ -63,7 +63,7 @@ const SECCION_DE: Record<string, string> = {
   seniority: "seccion-puesto",
   tecnologias: "seccion-puesto",
   modalidad: "seccion-donde",
-  remotoDesde: "seccion-donde",
+  remotoPaises: "seccion-donde",
   ciudad: "seccion-donde",
   pais: "seccion-donde",
   salarioMin: "seccion-salario",
@@ -189,7 +189,8 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     tecnologias: v.tecnologias,
     pais: v.modalidad === "remoto" ? null : v.pais || null,
     ciudad: v.modalidad === "remoto" ? null : v.ciudad || null,
-    remotoDesde: v.modalidad === "remoto" ? v.remotoDesde || null : null,
+    remotoMundo: v.modalidad === "remoto" && v.remotoMundo,
+    remotoPaises: v.modalidad === "remoto" ? v.remotoPaises : [],
     salario: salarioMin || salarioMax ? { min: salarioMin, max: salarioMax, moneda: v.moneda } : null,
     idiomasRequeridos: v.pide.map((p) => ({ idioma: p.idioma as never, nivel: (p.nivel || null) as never })),
     publicadaEn: new Date(ahora).toISOString(),
@@ -365,13 +366,10 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             error={mensajeError("modalidad")}
           />
           {v.modalidad === "remoto" && (
-            <BotonesOpcion
-              nombre="remotoDesde"
-              etiqueta={t("form.remotoDesde")}
-              opciones={ZONAS_REMOTO.map((z) => ({ valor: z, texto: tr(`regiones.${z}`) }))}
-              valor={v.remotoDesde}
-              onCambio={(remotoDesde) => cambiar({ remotoDesde })}
-              error={mensajeError("remotoDesde")}
+            <SelectorRemoto
+              valor={{ mundo: v.remotoMundo, paises: v.remotoPaises }}
+              onCambio={(r) => cambiar({ remotoMundo: r.mundo, remotoPaises: r.paises })}
+              error={mensajeError("remotoPaises")}
             />
           )}
           {(v.modalidad === "hibrido" || v.modalidad === "presencial") && (

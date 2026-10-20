@@ -112,7 +112,7 @@ describe("aprender de las ofertas del staff", () => {
     await crearOferta(db, {
       empresaId: e.id, titulo: "Data Engineer", resumen: null, descripcion: null, idioma: "es",
       urlOriginal: "https://jobs.lever.co/delta/123-abc", area: "datos-ia", seniority: "mid", modalidad: "remoto",
-      tecnologias: [], pais: null, ciudad: null, remotoDesde: "es", salarioMin: null, salarioMax: null, moneda: null,
+      tecnologias: [], pais: null, ciudad: null, remotoMundo: false, remotoPaises: ["ES"], salarioMin: null, salarioMax: null, moneda: null,
       idiomasRequeridos: [{ idioma: "es", nivel: null }], autorizada: false,
     });
     const [delta] = await db.select().from(empresas).where(eq(empresas.id, e.id));

@@ -21,8 +21,9 @@ export type OfertaListado = {
   tecnologias: string[];
   pais: string | null;
   ciudad: string | null;
-  /** Si es remoto, desde qué zona: "es", "eu", "latam", "mundo". */
-  remotoDesde: string | null;
+  /** Si es remoto: se puede trabajar desde cualquier país (`remotoMundo`) o desde estos (ISO, ["ES", "MX"]). */
+  remotoMundo: boolean;
+  remotoPaises: string[];
   salario: { min: number | null; max: number | null; moneda: string | null } | null;
   idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
   /** Fecha ISO. */
@@ -53,6 +54,8 @@ export type ResultadoOfertas = {
   siguiente: string | null;
   /** Ofertas que quedan fuera por cada idioma que la persona no habla: { en: 12 }. */
   ocultasPorIdioma: Partial<Record<Idioma, number>>;
+  /** Si se busca "desde" un país: cuántas ofertas quedan fuera porque no se pueden hacer desde allí. */
+  ocultasPorPais: number;
   /**
    * Cuántas ofertas hay con cada valor de cada filtro, contando el resto de filtros
    * puestos: el "Desarrollo 12" junto a cada casilla. Solo en la primera página.
@@ -94,14 +97,6 @@ export type Cuenta = {
 
 /* ── Panel de staff ─────────────────────────────────────────────── */
 
-/** Zonas desde las que se puede trabajar en remoto. */
-/**
- * Desde dónde se puede trabajar en una oferta en remoto.
- * "norteamerica" = EE. UU. y Canadá; "mundo" = cualquier sitio.
- */
-export const ZONAS_REMOTO = ["es", "eu", "latam", "eeuu", "canada", "norteamerica", "mundo"] as const;
-export type ZonaRemoto = (typeof ZONAS_REMOTO)[number];
-
 export const MONEDAS = ["EUR", "USD", "GBP"] as const;
 export type Moneda = (typeof MONEDAS)[number];
 
@@ -120,7 +115,9 @@ export type DatosOferta = {
   tecnologias: string[];
   pais: string | null;
   ciudad: string | null;
-  remotoDesde: ZonaRemoto | null;
+  /** Si es remoto: desde cualquier país, o desde estos (al menos uno). Ver remoto.ts. */
+  remotoMundo: boolean;
+  remotoPaises: string[];
   salarioMin: number | null;
   salarioMax: number | null;
   moneda: Moneda | null;
@@ -204,7 +201,7 @@ export type OfertaImportada = {
   modalidad?: Modalidad;
   ciudad?: string;
   pais?: string;
-  remotoDesde?: ZonaRemoto;
+  remoto?: { mundo: boolean; paises: string[] };
   salarioMin?: number;
   salarioMax?: number;
   moneda?: Moneda;
