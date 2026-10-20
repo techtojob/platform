@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
+import { secureHeaders } from "hono/secure-headers";
 import { crearAuth, RUTA_AUTH, type Auth, type EnvAuth } from "./auth";
 import { conectar, type Db } from "./db/cliente";
 import { rutasCuenta } from "./rutas/cuenta";
@@ -29,7 +30,7 @@ export type Entorno = {
   Variables: {
     db: Db;
     auth: Auth;
-    usuario: { id: string; name: string; email: string; image?: string | null };
+    usuario: { id: string; name: string; email: string; emailVerified: boolean; image?: string | null };
   };
 };
 
@@ -40,6 +41,9 @@ type Opciones = {
 
 export function crearApp(opciones: Opciones = {}) {
   const app = new Hono<Entorno>();
+
+  // Cabeceras de seguridad básicas (nosniff, no se puede meter en un iframe, sin Referer completo…).
+  app.use("*", secureHeaders({ crossOriginResourcePolicy: "same-site", referrerPolicy: "strict-origin-when-cross-origin" }));
 
   // Solo las webs de TechToJob pueden llamar al API desde el navegador.
   app.use("*", (c, next) => {

@@ -3,9 +3,9 @@ import { headers } from "next/headers";
 import { clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { obtenerCuenta } from "@/lib/api";
-import { Avatar } from "./avatar";
+import { DesplegableCuenta } from "./desplegable-cuenta";
 
-/** Cabecera: "Entrar" o, con sesión, la foto y el nombre con enlace a "Mi cuenta". */
+/** Cabecera: "Entrar" o, con sesión, el menú de la cuenta (Mi perfil, Mi cuenta, Panel de staff, Cerrar sesión). */
 export async function MenuCuenta() {
   const [t, cabeceras] = await Promise.all([
     getTranslations("cuenta"),
@@ -23,29 +23,7 @@ export async function MenuCuenta() {
       </Link>
     );
   }
-  return (
-    <>
-      {/* Solo el staff ve el acceso a su panel */}
-      {cuenta.esStaff && (
-        <Link
-          href="/staff"
-          className="ml-1 hidden h-11 items-center rounded-full border border-acento px-4 text-sm font-bold text-enlace transition-colors hover:bg-acento hover:text-ink min-[50rem]:inline-flex"
-        >
-          {t("staff")}
-        </Link>
-      )}
-      <Link
-        href="/cuenta/ajustes"
-        aria-label={t("miCuenta")}
-        className="ml-1 flex h-11 items-center gap-2 rounded-full bg-chip pl-1.5 pr-1.5 text-sm font-bold text-texto transition-colors hover:bg-acento hover:text-ink sm:pr-4"
-      >
-        <Avatar nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} />
-        <span className="hidden max-w-32 truncate sm:inline">
-          {cuenta.usuario.nombre.split(" ")[0]}
-        </span>
-      </Link>
-    </>
-  );
+  return <DesplegableCuenta nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} esStaff={cuenta.esStaff} />;
 }
 
 /** Lo que se ve mientras se mira si hay sesión: un hueco del mismo tamaño, para que nada salte. */

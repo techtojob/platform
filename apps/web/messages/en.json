@@ -90,7 +90,6 @@
     "aplicar": "Apply on their website",
     "abreOtraWeb": "opens in a new tab",
     "aplicarAyuda": "You apply to {empresa} on their own website. TechToJob doesn't store your data.",
-    "tituloConTotal": "{count, plural, =0 {No tech job offers} one {# tech job offer} other {# tech job offers}}",
     "nueva": "New",
     "remotoZona": "Remote ({zona})",
     "loQuePide": "Requirements",
@@ -142,11 +141,6 @@
     "texto": "The job offer may no longer be published, or the link may be incomplete.",
     "volver": "See job offers"
   },
-  "tema": {
-    "aClaro": "Switch to light mode",
-    "aOscuro": "Switch to dark mode",
-    "cambiar": "Switch between light and dark mode"
-  },
   "buscador": {
     "etiqueta": "Search job offers",
     "ejemplo": "Search by role, company or technology: data engineer, React…",
@@ -178,14 +172,15 @@
       "errorComprobar": "Couldn't check. Please try again.",
       "errorNoResponde": "Discord isn't responding right now. Try again later."
     },
-    "staff": "Staff",
     "perfilTitulo": "Your talent profile",
     "perfilNoTienes": "You don't have a profile yet. Create it so community companies can find you.",
     "perfilTienes": "Your profile is at {direccion}.",
     "perfilCrear": "Create my profile",
     "perfilEditar": "Edit my profile",
     "perfilVer": "See my profile",
-    "miPerfil": "My profile"
+    "miPerfil": "My profile",
+    "menu": "Account menu for {nombre}",
+    "panelStaff": "Staff panel"
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -291,7 +286,6 @@
     "editar": "Edit offer",
     "guardarCambios": "Save changes",
     "guardando": "Saving…",
-    "revisaCampos": "Check the fields marked in red.",
     "errorGeneral": "It couldn't be saved. Try again in a moment.",
     "estados": {
       "titulo": "Offer status",
@@ -659,5 +653,12 @@
         "url": "It must be a web address."
       }
     }
+  },
+  "errorPagina": {
+    "etiqueta": "Error",
+    "titulo": "Something went wrong",
+    "texto": "It's not your fault. Try again in a moment; if it keeps happening, let us know on Discord.",
+    "reintentar": "Try again",
+    "volver": "Go to the offers"
   }
 }

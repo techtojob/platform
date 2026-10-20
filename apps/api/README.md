@@ -79,7 +79,12 @@ En producción, lo mismo con `https://techtojob.com` y los secretos con `wrangle
 | `GET/POST /api/auth/*` | Inicio de sesión (Better Auth). Se usa a través de la web. |
 | `GET /cuenta` | Quién ha iniciado sesión y el estado de su Discord. 401 sin sesión. |
 | `POST /cuenta/discord/comprobar` | Vuelve a preguntar al bot si está en el servidor. |
-| `GET /ofertas/:id` | Una oferta publicada entera: descripción, enlace para aplicar (`urlOriginal`) y web de la empresa. No filtra por idiomas. 404 si no existe o no está publicada. |
+| `GET /ofertas/:id` | Una oferta publicada entera: descripción, enlace para aplicar (`urlOriginal`) y web de la empresa. No filtra por idiomas. 404 si no existe, no está publicada o ha caducado. |
+| `GET /talento` | Perfiles de la comunidad. Sin sesión, solo los públicos (y `ocultosSinSesion`: cuántos más verías entrando); con sesión, también los de "solo registrados". Filtros: `q`, `disp`, `area`, `nivel`, `modalidad`, `tec`, `pais`, `verificados=1`, `despues`. |
+| `GET /talento/:alias` | Un perfil. 401 (`solo_registrados`) si hay que entrar para verlo; 404 si no existe o está oculto. Nunca lleva email. |
+| `POST /talento/:alias/reportar` | Reportar un perfil (con sesión, una vez por persona, no el propio). |
+| `GET/PUT/DELETE /cuenta/perfil` | Mi perfil de talento: verlo (o sugerencias para crearlo), crearlo o guardarlo, y borrarlo. |
+| `/staff/*` | Panel de staff (solo staff: rol de moderador en Discord o email verificado en `STAFF_EMAILS`): ofertas por estado, crear, editar, publicar, rechazar, cerrar y alargar; empresas; importar desde un enlace; enlaces repetidos; reportes de perfiles. |
 
 ## Normas
 

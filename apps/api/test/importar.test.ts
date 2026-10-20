@@ -101,6 +101,40 @@ describe("importar una oferta desde su enlace", () => {
   });
 });
 
+describe("redirecciones", () => {
+  it("sigue las de webs públicas, pero no deja que lleven a una dirección interna", async () => {
+    const llamadas: string[] = [];
+    const pedir: Pedir = async (url) => {
+      llamadas.push(url);
+      if (url === "https://corto.example.com/a") return new Response(null, { status: 301, headers: { location: "https://empleo.example.com/oferta" } });
+      if (url === "https://empleo.example.com/oferta") return new Response(null, { status: 302, headers: { location: "http://127.0.0.1:8787/staff" } });
+      return new Response("<title>Interna</title>", { headers: { "content-type": "text/html" } });
+    };
+    expect((await importarOferta(db, "https://corto.example.com/a", pedir)).fuente).toBe("nada");
+    expect(llamadas).toEqual(["https://corto.example.com/a", "https://empleo.example.com/oferta"]);
+  });
+
+  it("una redirección normal sí se sigue", async () => {
+    const pedir: Pedir = async (url) =>
+      url.endsWith("/a")
+        ? new Response(null, { status: 301, headers: { location: "/b" } })
+        : new Response("<title>QA Tester</title>", { headers: { "content-type": "text/html" } });
+    expect(await importarOferta(db, "https://corto.example.com/a", pedir)).toMatchObject({ fuente: "pagina", titulo: "QA Tester" });
+  });
+
+  it("tampoco usuarios en la dirección, puertos raros ni IPs escritas como número", async () => {
+    let llamada = false;
+    const espia: Pedir = async () => {
+      llamada = true;
+      return new Response("");
+    };
+    for (const url of ["https://user:pass@example.com/", "https://example.com:8443/", "http://2130706433/", "http://100.64.0.1/"]) {
+      expect((await importarOferta(db, url, espia)).fuente).toBe("nada");
+    }
+    expect(llamada).toBe(false);
+  });
+});
+
 describe("enlaces repetidos", () => {
   it("encuentra la oferta aunque el enlace lleve rastreo o www", async () => {
     const [una] = await db.query.ofertas.findMany({ limit: 1 });

@@ -90,7 +90,6 @@
     "aplicar": "Aplicar en su web",
     "abreOtraWeb": "se abre en otra pestaña",
     "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos.",
-    "tituloConTotal": "{count, plural, =0 {Ninguna oferta de empleo tech} one {# oferta de empleo tech} other {# ofertas de empleo tech}}",
     "nueva": "Nueva",
     "remotoZona": "Remoto ({zona})",
     "loQuePide": "Lo que pide",
@@ -142,11 +141,6 @@
     "texto": "Puede que la oferta ya no esté publicada o que el enlace esté mal copiado.",
     "volver": "Ver las ofertas"
   },
-  "tema": {
-    "aClaro": "Cambiar a modo claro",
-    "aOscuro": "Cambiar a modo oscuro",
-    "cambiar": "Cambiar entre modo claro y oscuro"
-  },
   "buscador": {
     "etiqueta": "Buscar ofertas",
     "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…",
@@ -178,14 +172,15 @@
       "errorComprobar": "No se ha podido comprobar. Inténtalo de nuevo.",
       "errorNoResponde": "Discord no responde ahora mismo. Prueba en un rato."
     },
-    "staff": "Staff",
     "perfilTitulo": "Tu perfil de talento",
     "perfilNoTienes": "Aún no tienes perfil. Créalo para que las empresas de la comunidad te encuentren.",
     "perfilTienes": "Tu perfil está en {direccion}.",
     "perfilCrear": "Crear mi perfil",
     "perfilEditar": "Editar mi perfil",
     "perfilVer": "Ver mi perfil",
-    "miPerfil": "Mi perfil"
+    "miPerfil": "Mi perfil",
+    "menu": "Menú de la cuenta de {nombre}",
+    "panelStaff": "Panel de staff"
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -291,7 +286,6 @@
     "editar": "Editar oferta",
     "guardarCambios": "Guardar cambios",
     "guardando": "Guardando…",
-    "revisaCampos": "Revisa los campos marcados en rojo.",
     "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
     "estados": {
       "titulo": "Estado de las ofertas",
@@ -659,5 +653,12 @@
         "url": "Tiene que ser una dirección web."
       }
     }
+  },
+  "errorPagina": {
+    "etiqueta": "Error",
+    "titulo": "Algo ha fallado",
+    "texto": "No es culpa tuya. Vuelve a intentarlo en un momento; si sigue pasando, avísanos en el Discord.",
+    "reintentar": "Reintentar",
+    "volver": "Ir a las ofertas"
   }
 }

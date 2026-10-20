@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useOptimistic, useRef, useTransition } from "react";
-import { Boton, Casilla, Ventana } from "@/components/ui";
+import { useOptimistic, useTransition } from "react";
+import { PanelFiltros } from "@/components/filtros/panel-filtros";
+import { Casilla } from "@/components/ui";
 import { useRouter } from "@/i18n/navigation";
 import {
   aParametrosTalento,
@@ -30,7 +31,7 @@ type Props = {
 };
 
 /**
- * Filtros del buscador de talento. Como los de ofertas: cambian la dirección
+ * Filtros del buscador de talento. Como los de ofertas (mismo PanelFiltros): cambian la dirección
  * (?disp=buscando&area=…) y el servidor vuelve a pedir los perfiles.
  */
 export function FiltrosTalento({ filtros: filtrosDireccion, paises, total, modo }: Props) {
@@ -39,7 +40,6 @@ export function FiltrosTalento({ filtros: filtrosDireccion, paises, total, modo 
   const router = useRouter();
   const [pendiente, startTransition] = useTransition();
   const [filtros, ponerFiltros] = useOptimistic(filtrosDireccion);
-  const panel = useRef<HTMLDialogElement>(null);
   const activos = cuantosFiltrosTalento(filtros);
   const nombresPais = new Intl.DisplayNames([locale], { type: "region" });
   const listaPaises = Object.entries(paises).sort((a, b) => b[1] - a[1]);
@@ -95,59 +95,9 @@ export function FiltrosTalento({ filtros: filtrosDireccion, paises, total, modo 
     </>
   );
 
-  if (modo === "lateral") {
-    return (
-      <Ventana
-        canal={t("filtros.canal")}
-        aria-label={t("filtros.titulo")}
-        aria-busy={pendiente}
-        className="transition-opacity aria-busy:opacity-60"
-        extra={
-          activos > 0 && (
-            <button type="button" onClick={quitarTodos} className="rounded-full bg-chip px-3 py-1 text-xs font-bold text-texto hover:bg-acento hover:text-ink">
-              {t("filtros.limpiar")}
-            </button>
-          )
-        }
-      >
-        <div className="flex flex-col gap-5 rounded-xl bg-tarjeta/50 p-3">{grupos}</div>
-      </Ventana>
-    );
-  }
-
   return (
-    <>
-      <Boton variante="secundario" className="lg:hidden" onClick={() => panel.current?.showModal()} aria-haspopup="dialog">
-        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <path d="M4 6h16M7 12h10M10 18h4" />
-        </svg>
-        {activos ? t("filtros.tituloConActivos", { count: activos }) : t("filtros.titulo")}
-      </Boton>
-      <dialog
-        ref={panel}
-        aria-labelledby="titulo-filtros-talento"
-        onClick={(e) => e.target === panel.current && panel.current.close()}
-        className="m-0 mt-auto max-h-[85dvh] w-full max-w-none flex-col rounded-t-3xl bg-ventana p-0 text-texto backdrop:bg-black/60 open:flex lg:hidden"
-      >
-        <div className="flex items-center justify-between px-4 pb-2 pt-4">
-          <h2 id="titulo-filtros-talento" className="text-lg font-bold">
-            {t("filtros.titulo")}
-          </h2>
-          {activos > 0 && (
-            <button type="button" onClick={quitarTodos} className="min-h-11 px-1 text-sm font-bold text-enlace">
-              {t("filtros.limpiar")}
-            </button>
-          )}
-        </div>
-        <div aria-busy={pendiente} className="flex flex-col gap-5 overflow-y-auto px-4 pb-4">
-          {grupos}
-        </div>
-        <div className="border-t border-borde px-4 pb-6 pt-3">
-          <Boton tamano="lg" className="w-full" onClick={() => panel.current?.close()} disabled={pendiente}>
-            {t("talento.verPerfiles", { count: total })}
-          </Boton>
-        </div>
-      </dialog>
-    </>
+    <PanelFiltros modo={modo} activos={activos} pendiente={pendiente} onQuitarTodos={quitarTodos} textoVer={t("talento.verPerfiles", { count: total })}>
+      {grupos}
+    </PanelFiltros>
   );
 }

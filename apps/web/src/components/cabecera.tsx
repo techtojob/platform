@@ -8,7 +8,6 @@ import { SelectorIdioma } from "./selector-idioma";
 import { CabeceraFlotante } from "./sitio/cabecera-flotante";
 import { MenuMovil } from "./sitio/menu-movil";
 import { NavBolsa } from "./sitio/nav-bolsa";
-import { BotonTema } from "./tema/boton-tema";
 
 /**
  * Cabecera de la bolsa, con la píldora flotante de la landing.
@@ -16,7 +15,7 @@ import { BotonTema } from "./tema/boton-tema";
  * - El logo lleva a la landing (techtojob.com); "Empleo", al inicio de la bolsa.
  * - En el centro, el menú de la bolsa (Ofertas, Talento), no el de la landing: la bolsa es
  *   una herramienta de TechToJob, no una copia de la landing. En el móvil, en la hamburguesa.
- * - A la derecha, idioma, modo claro/oscuro y cuenta (en el móvil, idioma y tema van en la hamburguesa).
+ * - A la derecha, idioma y cuenta (en el móvil, el idioma va en la hamburguesa).
  */
 export async function Cabecera() {
   const t = await getTranslations("navegacion");
@@ -44,10 +43,9 @@ export async function Cabecera() {
           <NavBolsa />
         </nav>
         <div className="col-start-3 flex items-center justify-end gap-1">
-          {/* En el móvil, idioma y tema van dentro de la hamburguesa para que quepa todo. */}
+          {/* En el móvil, el idioma va dentro de la hamburguesa para que quepa todo. */}
           <div className="hidden items-center gap-1 min-[64rem]:flex">
             <SelectorIdioma />
-            <BotonTema />
           </div>
           {/* Depende de la sesión de cada persona: se carga en cada visita. */}
           <Suspense fallback={<MenuCuentaCargando />}>
@@ -57,9 +55,8 @@ export async function Cabecera() {
             <nav aria-label={t("principal")}>
               <NavBolsa movil />
             </nav>
-            <div className="mt-2 flex items-center justify-between gap-2 border-t border-borde px-2 pt-2">
+            <div className="mt-2 flex items-center gap-2 border-t border-borde px-2 pt-2">
               <SelectorIdioma />
-              <BotonTema />
             </div>
           </MenuMovil>
         </div>

@@ -7,16 +7,15 @@
  * redondeo, se cambia aquí y se aplica en toda la bolsa.
  *
  * COLORES CON NOMBRE DE FUNCIÓN, no de color: `bg-fondo`, `text-suave`, `border-borde`…
- * Cada uno tiene un valor en modo oscuro (el de la marca, por defecto) y otro en modo
- * claro. Los componentes solo usan estos nombres, nunca `text-white` ni `#84c0bf`.
+ * Los componentes solo usan estos nombres, nunca `text-white` ni `#84c0bf`: así, si un día
+ * cambia la paleta, se cambia aquí y nada más.
  *
- * Qué modo se ve: el atributo `data-tema` de <html>, que pone src/components/tema/script-tema.tsx
- * si la persona eligió el claro con el botón de la cabecera. Sin elección, oscuro, como la landing.
+ * Solo hay un modo, el oscuro de la landing.
  *
  * Colores de la marca: ink #2f3436, slate #3b4245, turquesa #84c0bf, post-it #e4d7bf.
  */
 
-/* Modo oscuro (por defecto, el de la landing) */
+/* Colores (el modo oscuro de la landing) */
 :root {
   color-scheme: dark;
   --fondo: #2f3436;            /* fondo de la página (ink) */
@@ -37,29 +36,8 @@
   --sombra: 0 24px 70px rgb(0 0 0 / 28%);
 }
 
-/* Modo claro: solo si se elige con el botón de la cabecera */
-:root[data-tema="claro"] {
-  color-scheme: light;
-  --fondo: #f7f5f0;
-  --fondo-hondo: #efebe3;
-  --superficie: #efebe3;
-  --tarjeta: #ffffff;
-  --tarjeta-hover: #faf8f4;
-  --ventana: #ffffff;
-  --texto: #2f3436;
-  --suave: #5c6467;
-  --borde: #e2ddd2;
-  --borde-fuerte: #cfc8ba;
-  --enlace: #2a7371;           /* turquesa oscurecido: #84c0bf sobre blanco no se lee */
-  --chip: #efebe3;
-  --hover: #f2eee6;
-  --peligro: #b3261e;
-  --rejilla: rgb(42 115 113 / 9%);
-  --sombra: 0 18px 50px rgb(47 52 54 / 12%);
-}
-
 @theme inline {
-  /* Colores que cambian con el modo */
+  /* Colores con nombre de función */
   --color-fondo: var(--fondo);
   --color-fondo-hondo: var(--fondo-hondo);
   --color-superficie: var(--superficie);
@@ -75,7 +53,7 @@
   --color-hover: var(--hover);
   --color-peligro: var(--peligro);
 
-  /* Colores fijos de la marca, iguales en los dos modos */
+  /* Colores de la marca */
   --color-acento: #84c0bf;      /* botones principales, casillas marcadas */
   --color-sobre-acento: #2f3436; /* texto encima del acento */
   --color-postit: #e4d7bf;      /* post-its: avisos importantes */
@@ -147,12 +125,6 @@ body {
   background-position: top, center, center;
   background-repeat: no-repeat, repeat, repeat;
   background-size: 100% clamp(4rem, 8vw, 8rem), 5rem 5rem, 5rem 5rem;
-}
-:root[data-tema="claro"] .rejilla {
-  background-image:
-    linear-gradient(to right, var(--rejilla) 1px, transparent 2px),
-    linear-gradient(to bottom, var(--rejilla) 1px, transparent 2px);
-  background-size: 5rem 5rem, 5rem 5rem;
 }
 
 /* Enlace subrayado en turquesa, como "Ver todas las noticias" en la landing */

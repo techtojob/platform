@@ -1,40 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useDesplegable } from "@/lib/use-desplegable";
 
 const ORDENADOR = "(min-width: 64rem)";
 
 /** Menú de hamburguesa del móvil, como el de la landing (components/mobile-menu.tsx). */
 export function MenuMovil({ etiqueta, children }: { etiqueta: string; children: ReactNode }) {
-  const [abierto, setAbierto] = useState(false);
-  const raiz = useRef<HTMLDivElement>(null);
-  const boton = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const medio = window.matchMedia(ORDENADOR);
-    const cerrar = () => setAbierto(false);
-    medio.addEventListener("change", cerrar);
-    return () => medio.removeEventListener("change", cerrar);
-  }, []);
-
-  useEffect(() => {
-    if (!abierto) return;
-    const fuera = (e: PointerEvent) => {
-      if (!raiz.current?.contains(e.target as Node)) setAbierto(false);
-    };
-    const escape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setAbierto(false);
-        boton.current?.focus();
-      }
-    };
-    document.addEventListener("pointerdown", fuera);
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("pointerdown", fuera);
-      document.removeEventListener("keydown", escape);
-    };
-  }, [abierto]);
+  const { abierto, setAbierto, raiz, boton } = useDesplegable(ORDENADOR);
 
   return (
     <div ref={raiz} className="relative flex items-center min-[64rem]:hidden">

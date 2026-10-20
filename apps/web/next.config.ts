@@ -23,6 +23,24 @@ const nextConfig: NextConfig = {
   assetPrefix: PREFIJO_RECURSOS,
   // El inicio de sesión (Better Auth) vive en el API, pero se sirve desde la web:
   // así la cookie de sesión es de techtojob.com y no hay líos entre dominios.
+  // Cabeceras de seguridad en todas las páginas de la bolsa.
+  async headers() {
+    return [
+      {
+        source: "/:ruta*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Nadie puede meter la bolsa en un iframe (evita que engañen a alguien para pulsar algo).
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+          // Solo HTTPS durante un año (en local, con http, el navegador la ignora).
+          { key: "Strict-Transport-Security", value: "max-age=31536000" },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     return [{ source: "/api/auth/:ruta*", destination: `${API_URL}/api/auth/:ruta*` }];
   },

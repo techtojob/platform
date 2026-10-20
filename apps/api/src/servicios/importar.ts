@@ -48,26 +48,47 @@ export async function buscarRepetida(db: Db, url: string, sinContar?: string): P
 function esDireccionPublica(url: URL): boolean {
   if (url.protocol !== "https:" && url.protocol !== "http:") return false;
   const host = url.hostname.toLowerCase();
+  if (url.username || url.password) return false;
+  if (url.port && url.port !== "80" && url.port !== "443") return false;
   if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".internal") || host.endsWith(".local")) return false;
-  if (/^(127\.|10\.|192\.168\.|169\.254\.|0\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) return false;
-  if (host.startsWith("[")) return false;
+  // Direcciones IP privadas, de bucle local, de enlace local o de "esta red" (también el 100.64/10 de los operadores).
+  if (/^(127\.|10\.|192\.168\.|169\.254\.|0\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.)/.test(host)) return false;
+  // IP sin puntos (http://2130706433 = 127.0.0.1) o IPv6: no son webs de empleo.
+  if (/^\d+$/.test(host) || host.startsWith("[")) return false;
   return true;
 }
 
-async function leerPagina(url: string, pedir: Pedir): Promise<string | null> {
+/** Como mucho, 5 redirecciones (las webs de empleo a veces pasan por varias). */
+const MAXIMO_SALTOS = 5;
+
+/**
+ * Lee la página. Las redirecciones se siguen a mano para comprobar cada dirección:
+ * si no, una web pública podría mandar a una interna.
+ */
+async function leerPagina(url: URL, pedir: Pedir): Promise<string | null> {
+  let actual = url;
   try {
-    const res = await pedir(url, {
-      headers: {
-        "user-agent": "Mozilla/5.0 (compatible; TechToJobBot/1.0; +https://techtojob.com)",
-        accept: "text/html,application/xhtml+xml",
-        "accept-language": "es,en;q=0.8",
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(ESPERA_MS),
-    });
-    if (!res.ok || !(res.headers.get("content-type") ?? "text/html").includes("html")) return null;
-    const texto = await res.text();
-    return texto.slice(0, MAXIMO_BYTES);
+    for (let salto = 0; salto <= MAXIMO_SALTOS; salto++) {
+      if (!esDireccionPublica(actual)) return null;
+      const res = await pedir(actual.toString(), {
+        headers: {
+          "user-agent": "Mozilla/5.0 (compatible; TechToJobBot/1.0; +https://techtojob.com)",
+          accept: "text/html,application/xhtml+xml",
+          "accept-language": "es,en;q=0.8",
+        },
+        redirect: "manual",
+        signal: AbortSignal.timeout(ESPERA_MS),
+      });
+      if (res.status >= 300 && res.status < 400) {
+        const destino = res.headers.get("location");
+        if (!destino) return null;
+        actual = new URL(destino, actual);
+        continue;
+      }
+      if (!res.ok || !(res.headers.get("content-type") ?? "text/html").includes("html")) return null;
+      return (await res.text()).slice(0, MAXIMO_BYTES);
+    }
+    return null;
   } catch {
     return null;
   }
@@ -201,9 +222,7 @@ export async function importarOferta(db: Db, url: string, pedir: Pedir = fetch):
   } catch {
     return vacia;
   }
-  if (!esDireccionPublica(direccion)) return vacia;
-
-  const html = await leerPagina(direccion.toString(), pedir);
+  const html = await leerPagina(direccion, pedir);
   if (!html) return vacia;
 
   const job = buscarJobPosting(html);

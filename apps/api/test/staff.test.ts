@@ -16,13 +16,14 @@ const env = {
   WEB_URL: "http://localhost:3000",
   DISCORD_SERVIDOR_ID: "servidor-ttj",
   DISCORD_ROL_STAFF: "rol-moderador",
-  STAFF_EMAILS: "Pablo@Example.com",
+  STAFF_EMAILS: "Pablo@Example.com, jefa@example.com",
 } as never;
 
 let db: Db;
 let pablo: Headers; // staff por email
 let mod: Headers; // staff por el rol de Discord
 let lucia: Headers; // usuaria normal
+let impostor: Headers; // email de staff, pero sin verificar
 
 beforeAll(async () => {
   db = await crearDbPrueba();
@@ -37,6 +38,9 @@ beforeAll(async () => {
   mod = m.headers;
   await db.insert(estadoDiscord).values({ userId: m.id, discordId: "999", nombre: "mod", enServidor: true, roles: ["rol-moderador"] });
   lucia = (await crear("lucia@example.com", "Lucía")).headers;
+  // Alguien que ha puesto en su cuenta un email de staff que no ha verificado.
+  const falso = await t.saveUser(t.createUser({ email: "jefa@example.com", name: "Impostor", emailVerified: false }));
+  impostor = (await t.login({ userId: falso.id })).headers;
 });
 
 const pedir = (ruta: string, headers: Headers, init: { method?: string; body?: unknown } = {}) => {
@@ -66,6 +70,9 @@ const nueva = {
 describe("quién entra al panel", () => {
   it("sin sesión, 401", async () => {
     expect((await pedir("/staff/ofertas", new Headers())).status).toBe(401);
+  });
+  it("con un email de staff sin verificar, 403", async () => {
+    expect((await pedir("/staff/ofertas", impostor)).status).toBe(403);
   });
   it("una usuaria normal, 403", async () => {
     expect((await pedir("/staff/ofertas", lucia)).status).toBe(403);

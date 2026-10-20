@@ -114,3 +114,10 @@ describe("Discord", () => {
     expect(guardiaDiscord({ action: "sign-in", oauth: { providerId: "github" } })).toBeUndefined();
   });
 });
+
+describe("unir cuentas", () => {
+  it("no se fía de ningún proveedor a ciegas: solo une cuentas con el email verificado", () => {
+    const opciones = opcionesAuth(db, env);
+    expect(opciones.account.accountLinking).not.toHaveProperty("trustedProviders");
+  });
+});

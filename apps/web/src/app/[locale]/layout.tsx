@@ -5,7 +5,6 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { Cabecera } from "@/components/cabecera";
 import { Pie } from "@/components/sitio/pie";
-import { ScriptTema } from "@/components/tema/script-tema";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -37,11 +36,7 @@ export default async function LayoutIdioma({ children, params }: LayoutProps<"/[
   setRequestLocale(locale);
 
   return (
-    // suppressHydrationWarning: ScriptTema añade data-tema a <html> antes de que cargue React.
-    <html lang={locale} className={`${sora.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
-        <ScriptTema />
-      </head>
+    <html lang={locale} className={`${sora.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
           <Cabecera />

@@ -2,15 +2,29 @@ import { MODALIDADES, SENIORITY } from "@techtojob/shared";
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { use, type ReactNode } from "react";
+import { Suspense, use, type ReactNode } from "react";
 import { ChipsDemo } from "@/components/catalogo/chips-demo";
-import { Aviso, Boton, Campo, Casilla, Etiqueta, Tarjeta } from "@/components/ui";
+import {
+  Aviso,
+  Boton,
+  Campo,
+  Casilla,
+  Etiqueta,
+  Tarjeta,
+} from "@/components/ui";
 import type { Locale } from "@/i18n/routing";
+import { exigirStaff } from "@/lib/api-staff";
 
-// Catálogo interno: no aparece en buscadores.
+// Catálogo interno: no aparece en buscadores y, en producción, solo lo ve el staff.
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-function Seccion({ titulo, children }: { titulo: string; children: ReactNode }) {
+function Seccion({
+  titulo,
+  children,
+}: {
+  titulo: string;
+  children: ReactNode;
+}) {
   return (
     <section className="flex flex-col gap-4 border-t border-borde pt-8">
       <h2 className="text-titulo-3 font-bold">{titulo}</h2>
@@ -19,74 +33,112 @@ function Seccion({ titulo, children }: { titulo: string; children: ReactNode }) 
   );
 }
 
-export default function Componentes({ params }: PageProps<"/[locale]/componentes">) {
+export default function Componentes({
+  params,
+}: PageProps<"/[locale]/componentes">) {
   const { locale } = use(params);
   setRequestLocale(locale as Locale);
   const t = useTranslations();
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-6 py-16">
-      <header className="flex flex-col gap-3">
-        <h1 className="text-titulo-1 font-bold">{t("componentes.titulo")}</h1>
-        <p className="max-w-[60ch] text-lg text-suave">{t("componentes.descripcion")}</p>
-      </header>
+    <Suspense fallback={null}>
+      <SoloEquipo>
+        <main className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-6 py-16">
+          <header className="flex flex-col gap-3">
+            <h1 className="text-titulo-1 font-bold">
+              {t("componentes.titulo")}
+            </h1>
+            <p className="max-w-[60ch] text-lg text-suave">
+              {t("componentes.descripcion")}
+            </p>
+          </header>
 
-      <Seccion titulo={t("componentes.botones")}>
-        <div className="flex flex-wrap items-center gap-3">
-          <Boton>{t("componentes.primario")}</Boton>
-          <Boton variante="secundario">{t("componentes.secundario")}</Boton>
-          <Boton variante="fantasma">{t("componentes.fantasma")}</Boton>
-          <Boton variante="peligro">{t("componentes.peligro")}</Boton>
-          <Boton disabled>{t("componentes.desactivado")}</Boton>
-          <Boton tamano="lg">{t("componentes.grande")}</Boton>
-        </div>
-      </Seccion>
+          <Seccion titulo={t("componentes.botones")}>
+            <div className="flex flex-wrap items-center gap-3">
+              <Boton>{t("componentes.primario")}</Boton>
+              <Boton variante="secundario">{t("componentes.secundario")}</Boton>
+              <Boton variante="fantasma">{t("componentes.fantasma")}</Boton>
+              <Boton variante="peligro">{t("componentes.peligro")}</Boton>
+              <Boton disabled>{t("componentes.desactivado")}</Boton>
+              <Boton tamano="lg">{t("componentes.grande")}</Boton>
+            </div>
+          </Seccion>
 
-      <Seccion titulo={t("componentes.etiquetas")}>
-        <div className="flex flex-wrap gap-2">
-          <Etiqueta tono="postit">{t("seniority.junior")}</Etiqueta>
-          <Etiqueta>{t("modalidades.remoto")}</Etiqueta>
-          <Etiqueta tono="borde">Python</Etiqueta>
-          <Etiqueta tono="borde">React</Etiqueta>
-        </div>
-      </Seccion>
+          <Seccion titulo={t("componentes.etiquetas")}>
+            <div className="flex flex-wrap gap-2">
+              <Etiqueta tono="postit">{t("seniority.junior")}</Etiqueta>
+              <Etiqueta>{t("modalidades.remoto")}</Etiqueta>
+              <Etiqueta tono="borde">Python</Etiqueta>
+              <Etiqueta tono="borde">React</Etiqueta>
+            </div>
+          </Seccion>
 
-      <Seccion titulo={t("componentes.chips")}>
-        <ChipsDemo
-          opciones={[
-            ...SENIORITY.map((id) => ({ id, nombre: t(`seniority.${id}`) })),
-            ...MODALIDADES.map((id) => ({ id, nombre: t(`modalidades.${id}`) })),
-          ]}
-        />
-      </Seccion>
+          <Seccion titulo={t("componentes.chips")}>
+            <ChipsDemo
+              opciones={[
+                ...SENIORITY.map((id) => ({
+                  id,
+                  nombre: t(`seniority.${id}`),
+                })),
+                ...MODALIDADES.map((id) => ({
+                  id,
+                  nombre: t(`modalidades.${id}`),
+                })),
+              ]}
+            />
+          </Seccion>
 
-      <Seccion titulo={t("componentes.casillas")}>
-        <div className="flex max-w-xs flex-col">
-          <Casilla etiqueta={t("areas.desarrollo")} cuenta={12} defaultChecked />
-          <Casilla etiqueta={t("areas.datos-ia")} cuenta={5} />
-          <Casilla etiqueta={t("filtros.conSalario")} />
-        </div>
-      </Seccion>
+          <Seccion titulo={t("componentes.casillas")}>
+            <div className="flex max-w-xs flex-col">
+              <Casilla
+                etiqueta={t("areas.desarrollo")}
+                cuenta={12}
+                defaultChecked
+              />
+              <Casilla etiqueta={t("areas.datos-ia")} cuenta={5} />
+              <Casilla etiqueta={t("filtros.conSalario")} />
+            </div>
+          </Seccion>
 
-      <Seccion titulo={t("componentes.aviso")}>
-        <Aviso className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-semibold">{t("ofertas.ocultas", { count: 3, idioma: "inglés" })}</p>
-          <Boton variante="sobrePostit">{t("ofertas.anadirIdioma", { idioma: "inglés" })}</Boton>
-        </Aviso>
-      </Seccion>
+          <Seccion titulo={t("componentes.aviso")}>
+            <Aviso className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-semibold">
+                {t("ofertas.ocultas", { count: 3, idioma: "inglés" })}
+              </p>
+              <Boton variante="sobrePostit">
+                {t("ofertas.anadirIdioma", { idioma: "inglés" })}
+              </Boton>
+            </Aviso>
+          </Seccion>
 
-      <Seccion titulo={t("componentes.campos")}>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <Campo etiqueta={t("componentes.campoNombre")} ayuda={t("componentes.campoNombreAyuda")} defaultValue="Lucía M." />
-          <Campo etiqueta={t("componentes.campoGithub")} error={t("componentes.campoGithubError")} defaultValue="gitlab.com/lucia" />
-        </div>
-      </Seccion>
+          <Seccion titulo={t("componentes.campos")}>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Campo
+                etiqueta={t("componentes.campoNombre")}
+                ayuda={t("componentes.campoNombreAyuda")}
+                defaultValue="Lucía M."
+              />
+              <Campo
+                etiqueta={t("componentes.campoGithub")}
+                error={t("componentes.campoGithubError")}
+                defaultValue="gitlab.com/lucia"
+              />
+            </div>
+          </Seccion>
 
-      <Seccion titulo={t("componentes.tarjeta")}>
-        <Tarjeta>
-          <p className="text-texto">{t("componentes.tarjetaTexto")}</p>
-        </Tarjeta>
-      </Seccion>
-    </main>
+          <Seccion titulo={t("componentes.tarjeta")}>
+            <Tarjeta>
+              <p className="text-texto">{t("componentes.tarjetaTexto")}</p>
+            </Tarjeta>
+          </Seccion>
+        </main>
+      </SoloEquipo>
+    </Suspense>
   );
+}
+
+/** En local se ve siempre; en producción, solo el staff (para el resto, "esta página no existe"). */
+async function SoloEquipo({ children }: { children: ReactNode }) {
+  if (process.env.NODE_ENV === "production") await exigirStaff();
+  return <>{children}</>;
 }

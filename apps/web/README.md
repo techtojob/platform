@@ -9,9 +9,9 @@ pnpm dev        # en otra: la web → http://localhost:3000 (te lleva a /empleo 
 
 La web pide los datos al API de `API_URL` (por defecto `http://localhost:8787`). Las llamadas están en `src/lib/api.ts`; las páginas nunca usan `fetch` directamente.
 
-- Colores y tipografía: `src/app/globals.css`. Los colores tienen **nombre de función**, no de color (`bg-fondo`, `bg-superficie`, `text-texto`, `text-suave`, `border-borde`, `text-enlace`, `bg-acento`, `bg-postit`…). Cada uno tiene su valor en modo claro y en modo oscuro, así los dos modos salen solos.
+- Colores y tipografía: `src/app/globals.css`. Los colores tienen **nombre de función**, no de color (`bg-fondo`, `bg-superficie`, `text-texto`, `text-suave`, `border-borde`, `text-enlace`, `bg-acento`, `bg-postit`…). Si cambia la paleta, se cambia ahí y nada más.
 - **Mismo estilo que la landing** (repo techtojob-landing): cabecera flotante, pie, Sora en todo, fondo con cuadrícula (`rejilla`) y cabecera de página con brillo turquesa (`fondo-portada`). Los dibujos (logo, chincheta, círculo, check, iconos de Discord) son los de la landing, en `public/images/`.
-- Modo oscuro por defecto, como la landing. El botón de la cabecera cambia al claro y lo guarda en la cookie `TTJ_TEMA`; `src/components/tema/script-tema.tsx` lo aplica antes de pintar para que no haya destellos.
+- Solo hay un modo, el oscuro de la landing.
 - Piezas de página en `src/components/sitio/`: `Portada` (migas, título enorme y entradilla), `Resaltado` (el círculo dibujado a mano), `Pie`. Los enlaces a la landing usan `NEXT_PUBLIC_LANDING_URL` (por defecto https://techtojob.com).
 - Listas fijas (áreas, tecnologías…): se importan de `@techtojob/shared`, nunca se copian aquí.
 - Antes de escribir código, lee `AGENTS.md`: esta versión de Next.js tiene cambios respecto a lo que conoces.
