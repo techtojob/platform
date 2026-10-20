@@ -116,8 +116,8 @@ describe("Discord", () => {
 });
 
 describe("unir cuentas", () => {
-  it("no se fía de ningún proveedor a ciegas: solo une cuentas con el email verificado", () => {
+  it("Google y GitHub solo unen cuentas con el email verificado; Discord (solo para vincular) va sin email", () => {
     const opciones = opcionesAuth(db, env);
-    expect(opciones.account.accountLinking).not.toHaveProperty("trustedProviders");
+    expect(opciones.account.accountLinking.trustedProviders).toEqual(["discord"]);
   });
 });

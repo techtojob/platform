@@ -110,10 +110,15 @@ export function opcionesAuth(db: Db, env: EnvAuth) {
       accountLinking: {
         enabled: true,
         // Mismo email en Google y GitHub → misma cuenta de TechToJob, pero solo si el
-        // proveedor dice que ese email está verificado. Sin `trustedProviders` a propósito:
-        // con ellos se unirían cuentas aunque el email no estuviera verificado, y alguien
-        // podría entrar en la cuenta de otra persona poniendo su email en GitHub.
-        // Discord puede tener otro email (o ninguno): se vincula igualmente (desde Mi cuenta, con sesión).
+        // proveedor dice que ese email está verificado. Google y GitHub NO van en
+        // `trustedProviders` a propósito: si no, se unirían cuentas aunque el email no
+        // estuviera verificado, y alguien podría entrar en la cuenta de otra persona
+        // poniendo su email en GitHub.
+        // Discord sí: solo pedimos "identify" (sin email), así que nunca trae un email
+        // verificado. Es seguro porque con Discord no se puede entrar ni crear cuentas
+        // (ver guardiaDiscord y el hook de abajo): solo se vincula desde Mi cuenta, con sesión.
+        trustedProviders: ["discord"],
+        // Discord no tiene el mismo email (no tiene ninguno): se vincula igualmente.
         allowDifferentEmails: true,
       },
     },
