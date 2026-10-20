@@ -1,0 +1,52 @@
+name: Ofertas automáticas
+
+# Cada día lee las páginas de empleo (Greenhouse, Lever, Ashby) de las empresas que tienen
+# "Leer sus ofertas cada día" activado en el panel de staff. Las ofertas nuevas quedan
+# pendientes para que el staff las revise; las que desaparecen se cierran.
+# También se puede lanzar a mano: Actions → Ofertas automáticas → Run workflow.
+#
+# Necesita el secreto DATABASE_URL_PRODUCCION en GitHub (Settings → Secrets and variables → Actions):
+# la connection string de la rama production de Neon. Mientras no exista, no hace nada.
+on:
+  schedule:
+    - cron: "15 5 * * *" # 05:15 UTC (07:15 en España en verano, 06:15 en invierno)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ofertas-automaticas
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    name: Leer páginas de empleo
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCCION }}
+    steps:
+      - name: ¿Hay base de datos?
+        id: base
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Falta el secreto DATABASE_URL_PRODUCCION: no se hace nada."
+            echo "lista=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "lista=si" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.base.outputs.lista == 'si'
+        uses: actions/checkout@v4
+      - if: steps.base.outputs.lista == 'si'
+        uses: pnpm/action-setup@v4
+      - if: steps.base.outputs.lista == 'si'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - if: steps.base.outputs.lista == 'si'
+        run: pnpm install --frozen-lockfile
+      - if: steps.base.outputs.lista == 'si'
+        name: Sincronizar
+        run: pnpm --filter api run ofertas:sincronizar:ci

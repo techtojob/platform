@@ -1,5 +1,6 @@
 import type { Idioma, NivelIdioma } from "./idiomas";
-import type { Area, Disponibilidad, EstadoOferta, Modalidad, Seniority, TipoEmblema, VisibilidadPerfil } from "./listas";
+import type { Ats } from "./ats";
+import type { Area, Disponibilidad, EstadoOferta, Modalidad, OrigenOferta, Seniority, TipoEmblema, VisibilidadPerfil } from "./listas";
 
 /**
  * Contratos del API: la forma exacta de lo que devuelve cada ruta.
@@ -126,6 +127,12 @@ export type DatosOferta = {
 
 /** Una oferta vista por el staff: todo, en cualquier estado. */
 export type OfertaStaff = DatosOferta & {
+  /** "manual" (la metió el staff) o "automatica" (leída de la página de empleo de la empresa). */
+  origen: OrigenOferta;
+  /** Si es automática, de qué ATS viene. */
+  fuenteAts: Ats | null;
+  /** Si es automática, el texto original de la empresa. SOLO para el staff: no se publica. */
+  descripcionOriginal: string | null;
   id: string;
   slug: string;
   empresa: { id: string; nombre: string; slug: string; web: string | null };
@@ -142,7 +149,24 @@ export type OfertaStaff = DatosOferta & {
 export const COMPROBACIONES = ["empresa", "enlace", "idiomas"] as const;
 export type Comprobacion = (typeof COMPROBACIONES)[number];
 
-export type EmpresaStaff = { id: string; nombre: string; slug: string; web: string | null; ofertas: number };
+export type EmpresaStaff = {
+  id: string;
+  nombre: string;
+  slug: string;
+  web: string | null;
+  ofertas: number;
+  /** Su página de empleo, si la tiene en un ATS conocido (Greenhouse, Lever, Ashby). */
+  ats: Ats | null;
+  atsId: string | null;
+  atsRegion: string | null;
+  /** Se leen sus ofertas cada día. */
+  sincronizar: boolean;
+  /** "No publicar": la empresa nos ha pedido que no salgan sus ofertas. */
+  bloqueada: boolean;
+  /** Última lectura de su página de empleo (ISO) y, si falló, por qué. */
+  ultimaLectura: string | null;
+  ultimoError: string | null;
+};
 
 /** Error 400 con los campos que están mal: { campos: { titulo: "corto" } }. */
 export type ErrorValidacion = { error: ErrorApi["error"] & { campos: Record<string, string> } };

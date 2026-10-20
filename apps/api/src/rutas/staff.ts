@@ -6,6 +6,7 @@ import {
   cerrarOferta,
   contarPorEstado,
   crearEmpresa,
+  configurarEmpresa,
   crearOferta,
   editarOferta,
   ErrorStaff,
@@ -31,14 +32,25 @@ import { conSesion, soloStaff } from "./sesion";
  * POST /staff/ofertas/:id/rechazar       { motivo }
  * POST /staff/ofertas/:id/cerrar
  * POST /staff/ofertas/:id/alargar        → 45 días más
- * GET  /staff/empresas · POST /staff/empresas { nombre, web? }
+ * GET  /staff/empresas · POST /staff/empresas { nombre, web?, paginaEmpleo? }
+ * PATCH /staff/empresas/:id { paginaEmpleo?, sincronizar?, bloqueada? }
  * POST /staff/importar { url }            → lo que se puede leer de la página de la oferta
  * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
  * GET  /staff/reportes                    → reportes de perfiles sin revisar
  * POST /staff/reportes/:id/descartar · /ocultar
  */
 
-const ESTADOS_HTTP = { no_encontrada: 404, empresa: 400, comprobaciones: 400, motivo: 400, estado: 409, nombre: 400 } as const;
+const ESTADOS_HTTP = {
+  no_encontrada: 404,
+  empresa: 400,
+  comprobaciones: 400,
+  motivo: 400,
+  estado: 409,
+  nombre: 400,
+  incompleta: 400,
+  resumen: 400,
+  ats: 400,
+} as const;
 
 function responderError(c: Context<Entorno>, error: unknown) {
   if (error instanceof ErrorStaff) {
@@ -144,6 +156,13 @@ export const rutasStaff = new Hono<Entorno>()
   .post("/empresas", async (c) => {
     try {
       return c.json(await crearEmpresa(c.var.db, await cuerpo(c)), 201);
+    } catch (e) {
+      return responderError(c, e);
+    }
+  })
+  .patch("/empresas/:id", async (c) => {
+    try {
+      return c.json(await configurarEmpresa(c.var.db, c.req.param("id"), await cuerpo(c)));
     } catch (e) {
       return responderError(c, e);
     }

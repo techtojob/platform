@@ -3,6 +3,8 @@ import {
   nombreEmpresaComparable,
   slugEmpresa,
   slugOferta,
+  validarOferta,
+  detectarAts,
   type Comprobacion,
   type DatosOferta,
   type EmpresaStaff,
@@ -24,7 +26,16 @@ const UN_DIA = 86_400_000;
 
 export class ErrorStaff extends Error {
   constructor(
-    public readonly codigo: "no_encontrada" | "empresa" | "comprobaciones" | "motivo" | "estado" | "nombre",
+    public readonly codigo:
+      | "no_encontrada"
+      | "empresa"
+      | "comprobaciones"
+      | "motivo"
+      | "estado"
+      | "nombre"
+      | "incompleta"
+      | "resumen"
+      | "ats",
     mensaje: string,
   ) {
     super(mensaje);
@@ -32,7 +43,7 @@ export class ErrorStaff extends Error {
 }
 
 /** Código corto para la dirección de la oferta: 8 letras y números. */
-function nuevoId(): string {
+export function nuevoId(): string {
   const letras = "abcdefghijklmnopqrstuvwxyz0123456789";
   const bytes = crypto.getRandomValues(new Uint8Array(8));
   return Array.from(bytes, (b) => letras[b % letras.length]).join("");
@@ -64,6 +75,9 @@ function aStaff(
     salarioMax: o.salarioMax,
     moneda: o.moneda as OfertaStaff["moneda"],
     autorizada: o.autorizada,
+    origen: o.origen,
+    fuenteAts: o.fuenteAts,
+    descripcionOriginal: o.descripcionOriginal,
     idiomasRequeridos: idiomas.filter((i) => i.ofertaId === o.id).map(({ idioma, nivel }) => ({ idioma, nivel })),
     estado: o.estado,
     motivoRechazo: o.motivoRechazo,
@@ -173,6 +187,14 @@ export async function publicarOferta(db: Db, id: string, staffId: string, marcad
   if (!ok) throw new ErrorStaff("comprobaciones", "Marca todas las comprobaciones antes de publicar.");
   const actual = await obtenerOfertaStaff(db, id);
   if (!actual) throw new ErrorStaff("no_encontrada", "Esa oferta no existe.");
+  // Las automáticas llegan con huecos (p. ej. desde dónde se puede trabajar): hay que rellenarlos antes.
+  if (validarOferta(actual).errores) {
+    throw new ErrorStaff("incompleta", "Faltan datos de la oferta: edítala y rellena los campos marcados.");
+  }
+  // El texto original de la empresa no es nuestro: si no nos autoriza, se publica con un resumen propio.
+  if (actual.origen === "automatica" && !actual.autorizada && !actual.resumen?.trim()) {
+    throw new ErrorStaff("resumen", "Escribe un resumen con tus palabras antes de publicarla.");
+  }
   const ahora = new Date();
   await db
     .update(ofertas)
@@ -221,26 +243,65 @@ export async function alargarOferta(db: Db, id: string) {
     .where(eq(ofertas.id, id));
 }
 
+type FilaEmpresa = typeof empresas.$inferSelect;
+
+function aEmpresaStaff(e: FilaEmpresa, numOfertas: number): EmpresaStaff {
+  return {
+    id: e.id,
+    nombre: e.nombre,
+    slug: e.slug,
+    web: e.web,
+    ofertas: numOfertas,
+    ats: e.ats,
+    atsId: e.atsId,
+    atsRegion: e.atsRegion,
+    sincronizar: e.sincronizar,
+    bloqueada: e.bloqueada,
+    ultimaLectura: e.ultimaLectura?.toISOString() ?? null,
+    ultimoError: e.ultimoError,
+  };
+}
+
 export async function listarEmpresas(db: Db): Promise<EmpresaStaff[]> {
   const filas = await db
-    .select({ ...columnasEmpresa, ofertas: sql<number>`count(${ofertas.id})` })
+    .select({ empresa: empresas, ofertas: sql<number>`count(${ofertas.id})` })
     .from(empresas)
     .leftJoin(ofertas, eq(ofertas.empresaId, empresas.id))
     .groupBy(empresas.id)
     .orderBy(asc(empresas.nombre));
-  return filas.map((f) => ({ ...f, ofertas: Number(f.ofertas) }));
+  return filas.map((f) => aEmpresaStaff(f.empresa, Number(f.ofertas)));
 }
 
-/** Crea una empresa. Si ya hay una con el mismo nombre (sin contar mayúsculas, acentos ni "S.L."), devuelve esa. */
-export async function crearEmpresa(db: Db, entrada: { nombre?: unknown; web?: unknown }): Promise<EmpresaStaff> {
+/** Lee el enlace a la página de empleo: "" o null la quita; si no es de un ATS conocido, error. */
+function leerPaginaEmpleo(valor: unknown) {
+  if (valor === undefined) return undefined;
+  if (valor === null || (typeof valor === "string" && !valor.trim())) return { ats: null, atsId: null, atsRegion: null };
+  const ats = typeof valor === "string" ? detectarAts(valor) : null;
+  if (!ats) throw new ErrorStaff("ats", "Ese enlace no es de una página de empleo de Greenhouse, Lever o Ashby.");
+  return { ats: ats.ats, atsId: ats.id, atsRegion: ats.region ?? null };
+}
+
+/**
+ * Crea una empresa. Si ya hay una con el mismo nombre (sin contar mayúsculas, acentos ni "S.L."), devuelve esa.
+ * `paginaEmpleo` (opcional): el enlace a su página de empleo en Greenhouse, Lever o Ashby; si viene, se leen sus ofertas cada día.
+ */
+export async function crearEmpresa(
+  db: Db,
+  entrada: { nombre?: unknown; web?: unknown; paginaEmpleo?: unknown },
+): Promise<EmpresaStaff> {
   const nombre = typeof entrada.nombre === "string" ? entrada.nombre.trim() : "";
   if (nombre.length < 2 || nombre.length > 80) throw new ErrorStaff("nombre", "El nombre de la empresa tiene que tener entre 2 y 80 caracteres.");
   const web = typeof entrada.web === "string" && /^https?:\/\//.test(entrada.web.trim()) ? entrada.web.trim() : null;
+  const pagina = leerPaginaEmpleo(entrada.paginaEmpleo);
 
   // "Teide Software, S.L." y "teide software" son la misma: se devuelve la que ya hay.
   const comparable = nombreEmpresaComparable(nombre);
-  const existente = (await db.select(columnasEmpresa).from(empresas)).find((e) => nombreEmpresaComparable(e.nombre) === comparable);
-  if (existente) return { ...existente, ofertas: 0 };
+  const existente = (await db.select().from(empresas)).find((e) => nombreEmpresaComparable(e.nombre) === comparable);
+  if (existente) {
+    // Si no tenía página de empleo y ahora llega una, se le pone.
+    if (pagina?.ats && !existente.ats) return configurarEmpresa(db, existente.id, { paginaEmpleo: entrada.paginaEmpleo });
+    return aEmpresaStaff(existente, 0);
+  }
 
   const base = slugEmpresa(nombre);
   const usados = new Set(
@@ -249,8 +310,47 @@ export async function crearEmpresa(db: Db, entrada: { nombre?: unknown; web?: un
   let slug = base;
   for (let n = 2; usados.has(slug); n++) slug = `${base}-${n}`;
 
-  const nueva = { id: `emp-${nuevoId()}`, nombre, slug, web };
-  await db.insert(empresas).values(nueva);
-  return { ...nueva, ofertas: 0 };
+  const [nueva] = await db
+    .insert(empresas)
+    .values({ id: `emp-${nuevoId()}`, nombre, slug, web, ...pagina, sincronizar: Boolean(pagina?.ats) })
+    .returning();
+  return aEmpresaStaff(nueva!, 0);
+}
+
+/**
+ * Cambia la página de empleo de una empresa, si se leen sus ofertas cada día (`sincronizar`)
+ * y si está en la lista de "no publicar" (`bloqueada`).
+ */
+export async function configurarEmpresa(
+  db: Db,
+  id: string,
+  entrada: { paginaEmpleo?: unknown; sincronizar?: unknown; bloqueada?: unknown },
+): Promise<EmpresaStaff> {
+  const [actual] = await db.select().from(empresas).where(eq(empresas.id, id)).limit(1);
+  if (!actual) throw new ErrorStaff("empresa", "Esa empresa no existe.");
+  const pagina = leerPaginaEmpleo(entrada.paginaEmpleo);
+  const cambios: Partial<FilaEmpresa> = { ...pagina, actualizadaEn: new Date() };
+  if (pagina) {
+    cambios.ultimaLectura = null;
+    cambios.ultimoError = null;
+    if (pagina.ats && entrada.sincronizar === undefined) cambios.sincronizar = true;
+  }
+  if (typeof entrada.sincronizar === "boolean") cambios.sincronizar = entrada.sincronizar;
+  if (typeof entrada.bloqueada === "boolean") cambios.bloqueada = entrada.bloqueada;
+  // Sin página de empleo no hay nada que leer.
+  if ((pagina ? pagina.ats : actual.ats) === null) cambios.sincronizar = false;
+  // Una empresa bloqueada no se lee.
+  if (cambios.bloqueada ?? actual.bloqueada) cambios.sincronizar = false;
+
+  const [fila] = await db.update(empresas).set(cambios).where(eq(empresas.id, id)).returning();
+  // Si la bloqueamos, sus ofertas automáticas pendientes se descartan.
+  if (cambios.bloqueada && !actual.bloqueada) {
+    await db
+      .update(ofertas)
+      .set({ estado: "rechazada", motivoRechazo: "La empresa no quiere que publiquemos sus ofertas." })
+      .where(sql`${ofertas.empresaId} = ${id} and ${ofertas.estado} = 'pendiente' and ${ofertas.origen} = 'automatica'`);
+  }
+  const [{ n }] = await db.select({ n: count() }).from(ofertas).where(eq(ofertas.empresaId, id));
+  return aEmpresaStaff(fila!, Number(n));
 }
 

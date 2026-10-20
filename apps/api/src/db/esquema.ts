@@ -1,4 +1,5 @@
 import type {
+  Ats,
   Area,
   Disponibilidad,
   EstadoOferta,
@@ -48,6 +49,17 @@ export const empresas = pgTable("empresas", {
   slug: text("slug").notNull().unique(),
   web: text("web"),
   logoUrl: text("logo_url"),
+  /** Su página de empleo en un ATS (greenhouse, lever, ashby) y su identificador allí. */
+  ats: text("ats").$type<Ats>(),
+  atsId: text("ats_id"),
+  /** Lever tiene servidores en EE. UU. y en Europa ("eu"). */
+  atsRegion: text("ats_region"),
+  /** Se leen sus ofertas cada día (ver servicios/sincronizar.ts). */
+  sincronizar: boolean("sincronizar").notNull().default(false),
+  /** La empresa nos ha pedido que no publiquemos sus ofertas. */
+  bloqueada: boolean("bloqueada").notNull().default(false),
+  ultimaLectura: timestamp("ultima_lectura", { withTimezone: true }),
+  ultimoError: text("ultimo_error"),
   ...fechas,
 });
 
@@ -89,6 +101,13 @@ export const ofertas = pgTable(
     moneda: text("moneda"),
 
     origen: text("origen").$type<OrigenOferta>().notNull(),
+    /** Ofertas automáticas: de qué ATS vienen y su id allí (para no duplicarlas y saber cuándo desaparecen). */
+    fuenteAts: text("fuente_ats").$type<Ats>(),
+    idExterno: text("id_externo"),
+    /** El texto original de la empresa. Solo lo ve el staff: no se publica (no es nuestro). */
+    descripcionOriginal: text("descripcion_original"),
+    /** Última vez que la oferta seguía en la página de empleo de la empresa. */
+    vistaEn: timestamp("vista_en", { withTimezone: true }),
     /** La empresa nos autoriza a publicarla. Solo esas llevan los datos para Google for Jobs. */
     autorizada: boolean("autorizada").notNull().default(false),
     estado: text("estado").$type<EstadoOferta>().notNull().default("pendiente"),
@@ -104,6 +123,7 @@ export const ofertas = pgTable(
   (t) => [
     index("ofertas_estado_publicada_idx").on(t.estado, t.publicadaEn.desc()),
     index("ofertas_tecnologias_idx").using("gin", t.tecnologias),
+    uniqueIndex("ofertas_externas_idx").on(t.empresaId, t.fuenteAts, t.idExterno),
   ],
 );
 

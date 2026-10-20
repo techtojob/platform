@@ -43,6 +43,13 @@
       "when": 1792487276430,
       "tag": "0005_ofertas-autorizadas",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792494709125,
+      "tag": "0006_ofertas-automaticas",
+      "breakpoints": true
     }
   ]
 }
