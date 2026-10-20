@@ -156,7 +156,7 @@ describe("filtros", () => {
     for (const t of ["Senior Backend Engineer", "Data Scientist", "SRE", "Product Designer", "Growth Engineer", "IT Support Specialist"]) {
       expect(esTecnica(t), t).toBe(true);
     }
-    for (const t of ["Account Executive", "Sales Engineer", "Technical Recruiter", "Marketing Manager", "Legal Counsel", "Finance Analyst", "Office Manager"]) {
+    for (const t of ["Account Executive", "Sales Engineer", "Technical Recruiter", "Marketing Manager", "Legal Counsel", "Finance Analyst", "Office Manager", "CEO, AI Services - US-Based", "Chief Operating Officer", "VP of Sales, AI", "General Manager, Data Platform", "Head of Marketing (AI)"]) {
       expect(esTecnica(t), t).toBe(false);
     }
   });
@@ -195,6 +195,13 @@ describe("filtros", () => {
     expect(dondeRemoto(["Remote - India"])).toBe("fuera");
     expect(dondeRemoto(["Remote - Germany"])).toBe("fuera");
     expect(dondeRemoto(["Remote - Spain", "Remote - Germany"])).toEqual(paises("ES", "DE"));
+    // El título también cuenta, pero lo que no se entiende de él no deja la oferta fuera.
+    expect(dondeRemoto(["Remote"], "CEO, AI Services - US-Based")).toEqual(paises("US"));
+    expect(dondeRemoto(["Remote"], "Backend Engineer - LATAM")).toEqual(paises(...ordenarPaises(REGIONES.latam)));
+    expect(dondeRemoto(["Remote"], "Data Engineer (Remote, Spain)")).toEqual(paises("ES"));
+    expect(dondeRemoto(["Remote"], "Senior Backend Engineer (Node.js)")).toBeNull();
+    expect(dondeRemoto(["Anywhere"], "Frontend Developer - US-Based")).toEqual(paises("US"));
+    expect(dondeRemoto(["Remote - India"], "Platform Engineer - Spain")).toEqual(paises("ES", "IN"));
   });
 
   it("filtrar se queda con las técnicas, remotas y de nuestras zonas", async () => {

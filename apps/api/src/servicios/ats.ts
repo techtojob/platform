@@ -300,6 +300,20 @@ const NO_TECNICO = new RegExp(
       "customer success",
       "executive assistant",
       "office manager",
+      // Dirección general: no son puestos técnicos aunque el título diga "AI" o "Data".
+      "ceo",
+      "coo",
+      "cfo",
+      "cmo",
+      "cro",
+      "chief (executive|operating|financial|marketing|revenue|people|commercial|business|customer|growth) officer",
+      "president",
+      "vice president of (sales|marketing|operations|finance|people)",
+      "vp,? (of )?(sales|marketing|operations|finance|people|revenue)",
+      "general manager",
+      "managing director",
+      "country manager",
+      "head of (sales|marketing|people|finance|operations|growth|revenue|partnerships)",
     ].join("|") +
     ")\\b",
   "i",
@@ -341,41 +355,68 @@ const ALIAS: Array<[RegExp, string]> = [
 /** Palabras de relleno: lo que quede después de quitarlas es un sitio. */
 const RELLENO = /\b(remote|remoto|remota|fully|full|time|100|only|first|work|from|home|wfh|distributed|teletrabajo|based|in|or|and|y|o|the|any|location|locations|timezone|time ?zones?|friendly|countries|country|region|team|en|desde|solo|position|role)\b/g;
 
+/** Lo que dice un trozo de ubicación: "spain" → ES; "latam" → los de Latinoamérica; "anywhere" → cualquier país. */
+function leerTrozo(t: string): { mundo: boolean; paises: string[]; conocido: boolean } {
+  const paises: string[] = [];
+  let mundo = false;
+  if (RE_MUNDO.test(t)) mundo = true;
+  if (RE_EUROPA.test(t)) paises.push(...REGIONES.eu);
+  if (RE_LATAM.test(t)) paises.push(...REGIONES.latam);
+  if (RE_AMERICAS.test(t)) paises.push(...REGIONES.latam, "US", "CA");
+  if (RE_NORTEAMERICA.test(t)) paises.push("US", "CA");
+  for (const [re, pais] of ALIAS) if (re.test(t)) paises.push(pais);
+  if (mundo || paises.length) return { mundo, paises, conocido: true };
+  const resto = t.replace(RELLENO, " ").replace(/\s+/g, " ").trim();
+  if (!resto) return { mundo: false, paises: [], conocido: true };
+  const pais = codigoPais(resto);
+  return pais && (PAISES as readonly string[]).includes(pais) ? { mundo: false, paises: [pais], conocido: true } : { mundo: false, paises: [], conocido: false };
+}
+
+const trozos = (texto: string) => sinAcentos(texto).split(/[,;/|()\-–—·]+|\bor\b|\bo\b/).map((t) => t.trim()).filter(Boolean);
+
 /**
- * Desde dónde se puede trabajar, según las ubicaciones de la oferta:
+ * Pistas del título: "Backend Engineer - LATAM", "CEO - US-Based", "Data Engineer (Remote, Spain)".
+ * Solo se mira lo que va después del puesto (tras " - ", "(", "|" o ","), y solo cuenta lo que se reconoce
+ * como sitio: el resto del título no hace que la oferta quede fuera.
+ */
+function pistasDelTitulo(titulo: string): { mundo: boolean; paises: string[] } {
+  const partes = titulo.split(/\s[-–—|]\s|[(),|]/).slice(1);
+  const r = { mundo: false, paises: [] as string[] };
+  for (const parte of partes) {
+    for (const t of trozos(parte.replace(/-based\b/i, " based"))) {
+      const leido = leerTrozo(t);
+      if (!leido.conocido) continue;
+      r.mundo ||= leido.mundo;
+      r.paises.push(...leido.paises);
+    }
+  }
+  return r;
+}
+
+/**
+ * Desde dónde se puede trabajar, según las ubicaciones de la oferta (y lo que diga el título):
  * - { mundo: true }: anywhere / worldwide;
  * - { paises: [...] }: los países que dice (las regiones se convierten en sus países);
  * - null: no se sabe ("Remote" sin más): la oferta entra y el staff lo rellena;
  * - "fuera": ninguno de los países es de nuestro público (solo Alemania, solo India…): no entra.
  */
-export function dondeRemoto(ubicaciones: string[]): Remoto | null | "fuera" {
+export function dondeRemoto(ubicaciones: string[], titulo = ""): Remoto | null | "fuera" {
   const paises = new Set<string>();
   let mundo = false;
   let otroSitio = false;
-  for (const ubicacion of ubicaciones) {
-    // "Remote - Spain, Portugal" se mira por trozos: "spain", "portugal".
-    for (const trozo of sinAcentos(ubicacion).split(/[,;/|()\-–—·]+|\bor\b|\bo\b/)) {
-      const t = trozo.trim();
-      if (!t) continue;
-      let encontrado = false;
-      const anadir = (lista: readonly string[]) => {
-        for (const p of lista) paises.add(p);
-        encontrado = true;
-      };
-      if (RE_MUNDO.test(t)) (mundo = true), (encontrado = true);
-      if (RE_EUROPA.test(t)) anadir(REGIONES.eu);
-      if (RE_LATAM.test(t)) anadir(REGIONES.latam);
-      if (RE_AMERICAS.test(t)) anadir([...REGIONES.latam, "US", "CA"]);
-      if (RE_NORTEAMERICA.test(t)) anadir(["US", "CA"]);
-      for (const [re, pais] of ALIAS) if (re.test(t)) anadir([pais]);
-      if (encontrado) continue;
-      const resto = t.replace(RELLENO, " ").replace(/\s+/g, " ").trim();
-      if (!resto) continue;
-      const pais = codigoPais(resto);
-      if (pais && (PAISES as readonly string[]).includes(pais)) paises.add(pais);
-      else otroSitio = true;
-    }
+  // "Remote - Spain, Portugal" se mira por trozos: "spain", "portugal".
+  for (const t of ubicaciones.flatMap(trozos)) {
+    const leido = leerTrozo(t);
+    mundo ||= leido.mundo;
+    for (const p of leido.paises) paises.add(p);
+    if (!leido.conocido) otroSitio = true;
   }
+  // El título manda sobre un "Remote" genérico: "CEO - US-Based" es solo para EE. UU.
+  const pistas = titulo ? pistasDelTitulo(titulo) : { mundo: false, paises: [] };
+  if (pistas.paises.length) {
+    for (const p of pistas.paises) paises.add(p);
+    if (!pistas.mundo) mundo = false;
+  } else if (pistas.mundo) mundo = true;
   if (mundo) return { mundo: true, paises: [] };
   if (!paises.size) return otroSitio ? "fuera" : null;
   if (![...paises].some((p) => PAISES_PUBLICO.includes(p))) return "fuera";
@@ -388,7 +429,7 @@ export type OfertaFiltrada = OfertaAts & { remoto: Remoto | null };
 export function filtrar(ofertas: OfertaAts[]): OfertaFiltrada[] {
   return ofertas.flatMap((o) => {
     if (!esTecnica(o.titulo) || !esRemoto(o)) return [];
-    const remoto = dondeRemoto(o.ubicaciones);
+    const remoto = dondeRemoto(o.ubicaciones, o.titulo);
     return remoto === "fuera" ? [] : [{ ...o, remoto }];
   });
 }

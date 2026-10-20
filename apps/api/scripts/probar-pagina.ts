@@ -30,7 +30,7 @@ console.log(`Ofertas en su página: ${todas.length} · entrarían en la bolsa: $
 
 console.log("── Las primeras 15 que hay en su página ──");
 for (const o of todas.slice(0, 15)) {
-  const motivo = !esTecnica(o.titulo) ? "no es técnica" : !esRemoto(o) ? `no es 100 % remota (${o.modalidad ?? "?"})` : dondeRemoto(o.ubicaciones) === "fuera" ? "zona fuera" : !idiomaDe({ ...o, remoto: null }) ? "idioma" : "ENTRA";
+  const motivo = !esTecnica(o.titulo) ? "no es técnica" : !esRemoto(o) ? `no es 100 % remota (${o.modalidad ?? "?"})` : dondeRemoto(o.ubicaciones, o.titulo) === "fuera" ? "zona fuera" : !idiomaDe({ ...o, remoto: null }) ? "idioma" : "ENTRA";
   console.log(`${motivo === "ENTRA" ? "✓" : "·"} ${corto(o.titulo, 50).padEnd(50)} ${corto(o.ubicaciones.join(" | ") || "(sin ubicación)", 40).padEnd(40)} ${motivo}`);
 }
 
