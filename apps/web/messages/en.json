@@ -582,7 +582,7 @@
     "empresas": {
       "pestana": "Companies",
       "titulo": "Companies",
-      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor or Personio). Tech, fully remote offers come in as pending: up to 40 a day, 20 reserved for offers written in Spanish and 20 for offers in English (whatever one language doesn't use, the other can).",
+      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters). Tech, fully remote offers come in as pending: up to 40 a day, 20 reserved for offers written in Spanish and 20 for offers in English (whatever one language doesn't use, the other can).",
       "anadir": "Add a company manually",
       "nombre": "Name",
       "pagina": "Job board",
@@ -604,7 +604,7 @@
       "vacio": "No companies yet.",
       "errores": {
         "nombre": "The name must be between 2 and 80 characters.",
-        "ats": "That link isn't a Greenhouse, Lever, Ashby, Teamtailor or Personio job board.",
+        "ats": "That link isn't a Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters job board.",
         "empresa": "That company no longer exists.",
         "desconocido": "Couldn't save. Please try again."
       },
@@ -612,7 +612,7 @@
       "descubierta": "Found automatically",
       "descubrir": {
         "titulo": "Find companies",
-        "ayuda": "Every day, 25 names from the list are checked for a job board with offers that fit. If they have one, they're added automatically.",
+        "ayuda": "Once a month, thousands of job boards are found through Common Crawl (a public web archive), and every day 300 of them plus 25 names from the list are checked. Those with suitable offers are added automatically.",
         "pendiente": "To check",
         "encontrada": "Added",
         "sin_ofertas": "No suitable offers (rechecked in 30 days)",

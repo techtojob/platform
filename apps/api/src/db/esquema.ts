@@ -71,7 +71,7 @@ export const empresas = pgTable("empresas", {
 
 /**
  * Empresas candidatas para descubrir solas: se prueba si tienen página de empleo en
- * Greenhouse, Lever, Ashby, Teamtailor o Personio (ver servicios/descubrir.ts y datos/empresas-candidatas.json).
+ * Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters (ver servicios/descubrir.ts y datos/empresas-candidatas.json).
  */
 export const candidatas = pgTable("candidatas", {
   /** "grafana-labs": el nombre en minúsculas, sin acentos ni espacios. */
@@ -79,6 +79,10 @@ export const candidatas = pgTable("candidatas", {
   nombre: text("nombre").notNull(),
   /** Identificadores que se prueban en cada ATS ("grafanalabs", "grafana-labs"…). */
   identificadores: text("identificadores").array().$type<string[]>().notNull(),
+  /** Si ya se sabe dónde está su página de empleo (Common Crawl), solo se prueba esa. */
+  ats: text("ats").$type<Ats>(),
+  atsId: text("ats_id"),
+  atsRegion: text("ats_region"),
   /** pendiente → encontrada (se añadió la empresa) · sin_ofertas (se vuelve a probar en 30 días) · no_existe. */
   estado: text("estado").$type<"pendiente" | "encontrada" | "sin_ofertas" | "no_existe">().notNull().default("pendiente"),
   probadaEn: timestamp("probada_en", { withTimezone: true }),

@@ -78,6 +78,13 @@
       "when": 1792536021952,
       "tag": "0010_areas-datos-ia",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792540295497,
+      "tag": "0011_candidatas-con-ats",
+      "breakpoints": true
     }
   ]
 }

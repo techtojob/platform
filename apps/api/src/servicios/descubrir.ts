@@ -1,5 +1,5 @@
 import { enlaceAts, nombreEmpresaComparable, type Ats } from "@techtojob/shared";
-import { and, asc, eq, lt, or, sql } from "drizzle-orm";
+import { and, asc, eq, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { candidatas, empresas } from "../db/esquema";
 import { ErrorAts, filtrar, leerAts } from "./ats";
@@ -19,8 +19,10 @@ import { idiomaDe } from "./sincronizar";
  * a probar en 30 días. Si no la tiene en ningún sitio, no se vuelve a probar.
  */
 
-/** Candidatas que se prueban en cada pasada (cada una son hasta 14 peticiones). */
+/** Candidatas por nombre que se prueban en cada pasada (cada una son hasta 2 × 10 peticiones). */
 export const CANDIDATAS_POR_DIA = 25;
+/** Candidatas de las que ya sabemos su página de empleo (Common Crawl): una petición cada una. */
+export const CONOCIDAS_POR_DIA = 300;
 const REPROBAR_MS = 30 * 86_400_000;
 
 /** "Grafana Labs" → "grafana-labs". */
@@ -63,19 +65,32 @@ const INTENTOS: Array<{ ats: Ats; region?: Region }> = [
   { ats: "teamtailor" },
   { ats: "personio" },
   { ats: "personio", region: "com" },
+  { ats: "workable" },
+  { ats: "recruitee" },
+  { ats: "smartrecruiters" },
 ];
 /** En estos, cada empresa tiene su propio subdominio: si no se puede conectar, es que no existe. */
-const POR_SUBDOMINIO = new Set<Ats>(["teamtailor", "personio"]);
+const POR_SUBDOMINIO = new Set<Ats>(["teamtailor", "personio", "recruitee"]);
 
-/** Prueba una candidata en todos los ATS. null: no está en ninguno. "error": no se pudo saber (se reintenta otro día). */
-export async function probar(ids: string[], pedir: Pedir): Promise<Hallazgo | null | "error"> {
-  const intentos = INTENTOS;
+/**
+ * Prueba una candidata. Si ya se sabe dónde está su página de empleo (`conocida`, de Common Crawl), solo esa;
+ * si no, sus identificadores en todos los ATS. null: no está. "error": no se pudo saber (se reintenta otro día).
+ */
+export async function probar(
+  ids: string[],
+  pedir: Pedir,
+  conocida?: { ats: Ats; id: string; region?: string | null },
+): Promise<Hallazgo | null | "error"> {
+  const intentos: Array<{ ats: Ats; region?: Region }> = conocida
+    ? [{ ats: conocida.ats, ...(conocida.region && { region: conocida.region as Region }) }]
+    : INTENTOS;
+  if (conocida) ids = [conocida.id];
   let mejor: Hallazgo | null = null;
   let fallo = false;
   for (const id of ids) {
     for (const { ats, region } of intentos) {
       try {
-        const leidas = filtrar(await leerAts({ ats, atsId: id, atsRegion: region }, pedir));
+        const leidas = filtrar(await leerAts({ ats, atsId: id, atsRegion: region }, pedir, { conTexto: false }));
         const utiles = leidas.filter((o) => idiomaDe(o)).length;
         // Tiene página: nos quedamos con la que más ofertas útiles tenga.
         if (!mejor || utiles > mejor.utiles) mejor = { ats, id, ...(region && { region }), utiles };
@@ -92,21 +107,29 @@ export async function probar(ids: string[], pedir: Pedir): Promise<Hallazgo | nu
 
 export type ResultadoDescubrir = { probadas: number; encontradas: string[]; sinOfertas: number; noExisten: number; errores: number };
 
-/** Prueba las siguientes candidatas y añade las empresas que tengan ofertas útiles. */
-export async function descubrir(db: Db, pedir: Pedir = fetch, ahora = new Date(), maximo = CANDIDATAS_POR_DIA): Promise<ResultadoDescubrir> {
+/**
+ * Prueba las siguientes candidatas y añade las empresas que tengan ofertas útiles.
+ * Las que ya sabemos dónde tienen la página (Common Crawl) son una sola petición: se prueban muchas más al día.
+ */
+export async function descubrir(
+  db: Db,
+  pedir: Pedir = fetch,
+  ahora = new Date(),
+  maximo = CANDIDATAS_POR_DIA,
+  maximoConocidas = CONOCIDAS_POR_DIA,
+): Promise<ResultadoDescubrir> {
   const resultado: ResultadoDescubrir = { probadas: 0, encontradas: [], sinOfertas: 0, noExisten: 0, errores: 0 };
-  const lista = await db
-    .select()
-    .from(candidatas)
-    .where(
-      or(
-        eq(candidatas.estado, "pendiente"),
-        and(eq(candidatas.estado, "sin_ofertas"), lt(candidatas.probadaEn, new Date(ahora.getTime() - REPROBAR_MS))),
-      ),
-    )
-    // Primero las que nunca se han probado; luego las que llevan más tiempo.
-    .orderBy(sql`${candidatas.probadaEn} asc nulls first`, asc(candidatas.creadaEn))
-    .limit(maximo);
+  const tocaProbar = or(
+    eq(candidatas.estado, "pendiente"),
+    and(eq(candidatas.estado, "sin_ofertas"), lt(candidatas.probadaEn, new Date(ahora.getTime() - REPROBAR_MS))),
+  );
+  // Primero las que nunca se han probado; luego las que llevan más tiempo.
+  const orden = [sql`${candidatas.probadaEn} asc nulls first`, asc(candidatas.creadaEn)] as const;
+  const [porNombreLista, conocidas] = await Promise.all([
+    db.select().from(candidatas).where(and(tocaProbar, isNull(candidatas.ats))).orderBy(...orden).limit(maximo),
+    db.select().from(candidatas).where(and(tocaProbar, isNotNull(candidatas.ats))).orderBy(...orden).limit(maximoConocidas),
+  ]);
+  const lista = [...porNombreLista, ...conocidas];
   if (!lista.length) return resultado;
 
   const todas = await db.select().from(empresas);
@@ -121,7 +144,12 @@ export async function descubrir(db: Db, pedir: Pedir = fetch, ahora = new Date()
       await db.update(candidatas).set({ estado: "encontrada", probadaEn: ahora, empresaId: existente.id }).where(eq(candidatas.id, c.id));
       continue;
     }
-    const hallazgo = await probar(c.identificadores, pedir);
+    // Esa misma página de empleo ya la leemos (con otro nombre).
+    if (c.ats && porAts.has(`${c.ats}:${c.atsId}`)) {
+      await db.update(candidatas).set({ estado: "encontrada", probadaEn: ahora }).where(eq(candidatas.id, c.id));
+      continue;
+    }
+    const hallazgo = await probar(c.identificadores, pedir, c.ats && c.atsId ? { ats: c.ats, id: c.atsId, region: c.atsRegion } : undefined);
     if (hallazgo === "error") {
       resultado.errores++;
       await db.update(candidatas).set({ probadaEn: ahora }).where(eq(candidatas.id, c.id));
@@ -168,3 +196,32 @@ export async function sugerirCandidatas(db: Db, texto: unknown): Promise<number>
   return sembrarCandidatas(db, nombres);
 }
 
+
+/** "grafana-labs" → "Grafana Labs"; "acme.na" → "Acme". Para las empresas que llegan de Common Crawl sin nombre. */
+export function nombreDesdeId(id: string): string {
+  const limpio = id.replace(/\.na$/i, "").replace(/[-_.]+/g, " ").trim();
+  return limpio.replace(/\b\p{L}/gu, (l) => l.toUpperCase()).slice(0, 80) || id;
+}
+
+/**
+ * Añade candidatas de las que ya sabemos su página de empleo (las que encuentra Common Crawl).
+ * Las que ya estaban no se repiten. Devuelve cuántas son nuevas.
+ */
+export async function sembrarPaginasConocidas(db: Db, paginas: Array<{ ats: Ats; id: string; region?: string | null }>): Promise<number> {
+  let nuevas = 0;
+  const filas = [...new Map(paginas.map((p) => [`${p.ats}:${p.id.toLowerCase()}${p.region ? `@${p.region}` : ""}`, p])).entries()].map(
+    ([clave, p]) => ({
+      id: clave,
+      nombre: nombreDesdeId(p.id),
+      identificadores: [p.id],
+      ats: p.ats,
+      atsId: p.id,
+      atsRegion: p.region ?? null,
+    }),
+  );
+  // De 500 en 500, para no mandar consultas enormes.
+  for (let i = 0; i < filas.length; i += 500) {
+    nuevas += (await db.insert(candidatas).values(filas.slice(i, i + 500)).onConflictDoNothing().returning({ id: candidatas.id })).length;
+  }
+  return nuevas;
+}

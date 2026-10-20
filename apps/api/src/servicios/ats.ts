@@ -2,7 +2,8 @@ import { adivinarPuesto, codigoPais, ordenarPaises, PAISES, PAISES_PUBLICO, REGI
 import { htmlATexto, type Pedir } from "./importar";
 
 /**
- * Lectores de las páginas de empleo públicas de Greenhouse, Lever, Ashby, Teamtailor y Personio.
+ * Lectores de las páginas de empleo públicas de Greenhouse, Lever, Ashby, Teamtailor, Personio,
+ * Workable, Recruitee y SmartRecruiters.
  *
  * Todos tienen una API o un feed público (sin claves) pensado justo para esto: que otras webs
  * muestren las ofertas de la empresa (Teamtailor y Personio se usan mucho en España).
@@ -252,12 +253,130 @@ async function leerPersonio(id: string, region: string | null | undefined, pedir
   });
 }
 
-/** Todas las ofertas publicadas en la página de empleo de una empresa. Lanza ErrorAts si no se puede leer. */
-export async function leerAts(empresa: EmpresaAts, pedir: Pedir = fetch): Promise<OfertaAts[]> {
+/**
+ * Workable: https://apply.workable.com/api/v1/widget/accounts/{id}?details=true
+ * Cada oferta trae título, shortcode, url, telecommuting (remota), ubicaciones y la descripción en HTML.
+ */
+async function leerWorkable(id: string, pedir: Pedir): Promise<OfertaAts[]> {
+  const datos = await pedirJson(`https://apply.workable.com/api/v1/widget/accounts/${seguro(id)}?details=true`, pedir);
+  if (!esObjeto(datos) || !Array.isArray(datos.jobs)) throw new ErrorAts("Workable devolvió algo inesperado.");
+  return datos.jobs.filter(esObjeto).flatMap((j) => {
+    const titulo = cadena(j.title);
+    const codigo = cadena(j.shortcode) || cadena(j.code);
+    const url = cadena(j.url) || cadena(j.shortlink) || (codigo ? `https://apply.workable.com/${id}/j/${codigo}/` : "");
+    if (!titulo || !codigo || !url) return [];
+    const lugar = esObjeto(j.location) ? j.location : {};
+    const sitios = [j, lugar, ...(Array.isArray(j.locations) ? j.locations.filter(esObjeto) : [])].map((l) =>
+      [cadena(l.city), cadena(l.region) || cadena(l.state), cadena(l.country) || cadena(l.country_name)].filter(Boolean).join(", "),
+    );
+    const tipo = cadena(j.workplace_type) || cadena(lugar.workplace_type);
+    const remota = j.telecommuting === true || lugar.telecommuting === true || /remote/i.test(tipo);
+    return [
+      {
+        idExterno: codigo,
+        titulo,
+        url,
+        descripcion: htmlATexto([cadena(j.description), cadena(j.requirements), cadena(j.benefits)].filter(Boolean).join("\n")),
+        ubicaciones: [...new Set([cadena(lugar.location_str), ...sitios])].filter(Boolean),
+        modalidad: remota ? "remoto" : modalidadDe(tipo.replace(/_/g, "")),
+        publicadaEn: fecha(j.published_on ?? j.created_at),
+      } satisfies OfertaAts,
+    ];
+  });
+}
+
+/**
+ * Recruitee: https://{id}.recruitee.com/api/offers/
+ * Cada oferta dice si es remote, hybrid u on_site, y trae la descripción en HTML.
+ */
+async function leerRecruitee(id: string, pedir: Pedir): Promise<OfertaAts[]> {
+  const datos = await pedirJson(`https://${id}.recruitee.com/api/offers/`, pedir);
+  if (!esObjeto(datos) || !Array.isArray(datos.offers)) throw new ErrorAts("Recruitee devolvió algo inesperado.");
+  return datos.offers.filter(esObjeto).flatMap((j) => {
+    const titulo = cadena(j.title);
+    const url = cadena(j.careers_url) || (cadena(j.slug) ? `https://${id}.recruitee.com/o/${cadena(j.slug)}` : "");
+    if (!titulo || !url || (typeof j.id !== "number" && typeof j.id !== "string")) return [];
+    const sitios = [j, ...(Array.isArray(j.locations) ? j.locations.filter(esObjeto) : [])].map((l) =>
+      [cadena(l.city), cadena(l.country) || cadena(l.country_code)].filter(Boolean).join(", "),
+    );
+    return [
+      {
+        idExterno: String(j.id),
+        titulo,
+        url,
+        descripcion: htmlATexto([cadena(j.description), cadena(j.requirements)].filter(Boolean).join("\n")),
+        ubicaciones: [...new Set([cadena(j.location), ...sitios])].filter(Boolean),
+        modalidad: j.remote === true ? "remoto" : j.hybrid === true ? "hibrido" : j.on_site === true ? "presencial" : null,
+        publicadaEn: fecha(cadena(j.published_at).replace(" UTC", "Z").replace(" ", "T") || j.created_at),
+      } satisfies OfertaAts,
+    ];
+  });
+}
+
+/** Como mucho, cuántas ofertas de SmartRecruiters se abren para leer su texto (cada una es una petición). */
+const MAXIMO_DETALLES_SMARTRECRUITERS = 40;
+
+/**
+ * SmartRecruiters: https://api.smartrecruiters.com/v1/companies/{id}/postings (de 100 en 100).
+ * La lista no trae el texto: solo se abre (una petición cada una) el de las técnicas y remotas.
+ */
+async function leerSmartRecruiters(id: string, pedir: Pedir, conTexto: boolean): Promise<OfertaAts[]> {
+  const base = `https://api.smartrecruiters.com/v1/companies/${seguro(id)}/postings`;
+  const todas: OfertaAts[] = [];
+  for (let offset = 0; offset < 1000; offset += 100) {
+    const datos = await pedirJson(`${base}?limit=100&offset=${offset}`, pedir);
+    if (!esObjeto(datos) || !Array.isArray(datos.content)) throw new ErrorAts("SmartRecruiters devolvió algo inesperado.");
+    for (const j of datos.content.filter(esObjeto)) {
+      const titulo = cadena(j.name);
+      const idOferta = cadena(j.id) || cadena(j.uuid);
+      if (!titulo || !idOferta) continue;
+      const lugar = esObjeto(j.location) ? j.location : {};
+      const pais = cadena(lugar.country).toUpperCase();
+      todas.push({
+        idExterno: idOferta,
+        titulo,
+        url: `https://jobs.smartrecruiters.com/${encodeURIComponent(id)}/${encodeURIComponent(idOferta)}`,
+        descripcion: "",
+        ubicaciones: [cadena(lugar.fullLocation) || [cadena(lugar.city), cadena(lugar.region), pais].filter(Boolean).join(", ")].filter(Boolean),
+        modalidad: lugar.remote === true ? "remoto" : lugar.hybrid === true ? "hibrido" : "presencial",
+        publicadaEn: fecha(j.releasedDate),
+      });
+    }
+    const total = typeof datos.totalFound === "number" ? datos.totalFound : 0;
+    if (offset + 100 >= total) break;
+  }
+  if (!conTexto) return todas;
+  // El texto, solo de las que pueden entrar.
+  for (const o of todas.filter((x) => esTecnica(x.titulo) && esRemoto(x)).slice(0, MAXIMO_DETALLES_SMARTRECRUITERS)) {
+    try {
+      const d = await pedirJson(`${base}/${seguro(o.idExterno)}`, pedir);
+      const secciones = esObjeto(d) && esObjeto(d.jobAd) && esObjeto(d.jobAd.sections) ? d.jobAd.sections : {};
+      o.descripcion = htmlATexto(
+        Object.values(secciones)
+          .filter(esObjeto)
+          .map((x) => `${cadena(x.title)}\n${cadena(x.text)}`)
+          .join("\n\n"),
+      );
+      if (esObjeto(d) && cadena(d.postingUrl)) o.url = cadena(d.postingUrl);
+    } catch {
+      // Sin texto: la oferta sigue valiendo (el staff abre el enlace).
+    }
+  }
+  return todas;
+}
+
+/**
+ * Todas las ofertas publicadas en la página de empleo de una empresa. Lanza ErrorAts si no se puede leer.
+ * `conTexto: false` (para descubrir empresas): no abre oferta por oferta donde hace falta (SmartRecruiters).
+ */
+export async function leerAts(empresa: EmpresaAts, pedir: Pedir = fetch, { conTexto = true } = {}): Promise<OfertaAts[]> {
   if (empresa.ats === "greenhouse") return leerGreenhouse(empresa.atsId, pedir);
   if (empresa.ats === "lever") return leerLever(empresa.atsId, empresa.atsRegion, pedir);
   if (empresa.ats === "teamtailor") return leerTeamtailor(empresa.atsId, pedir);
   if (empresa.ats === "personio") return leerPersonio(empresa.atsId, empresa.atsRegion, pedir);
+  if (empresa.ats === "workable") return leerWorkable(empresa.atsId, pedir);
+  if (empresa.ats === "recruitee") return leerRecruitee(empresa.atsId, pedir);
+  if (empresa.ats === "smartrecruiters") return leerSmartRecruiters(empresa.atsId, pedir, conTexto);
   return leerAshby(empresa.atsId, pedir);
 }
 

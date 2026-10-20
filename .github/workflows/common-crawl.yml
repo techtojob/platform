@@ -1,0 +1,51 @@
+name: Common Crawl
+
+# Una vez al mes busca en Common Crawl (archivo público y gratuito de la web) todas las páginas de empleo
+# de Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee y SmartRecruiters, y las añade
+# como empresas candidatas. La tarea diaria (ofertas.yml) las va probando y añade las que tengan
+# ofertas que nos sirvan. También se puede lanzar a mano: Actions → Common Crawl → Run workflow.
+#
+# Necesita el secreto DATABASE_URL_PRODUCCION. Mientras no exista, no hace nada.
+on:
+  schedule:
+    - cron: "40 3 3 * *" # el día 3 de cada mes a las 03:40 UTC (el índice nuevo suele salir a principios de mes)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: common-crawl
+  cancel-in-progress: false
+
+jobs:
+  buscar:
+    name: Buscar páginas de empleo
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCCION }}
+    steps:
+      - name: ¿Hay base de datos?
+        id: base
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Falta el secreto DATABASE_URL_PRODUCCION: no se hace nada."
+            echo "lista=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "lista=si" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.base.outputs.lista == 'si'
+        uses: actions/checkout@v4
+      - if: steps.base.outputs.lista == 'si'
+        uses: pnpm/action-setup@v4
+      - if: steps.base.outputs.lista == 'si'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - if: steps.base.outputs.lista == 'si'
+        run: pnpm install --frozen-lockfile
+      - if: steps.base.outputs.lista == 'si'
+        name: Buscar
+        run: pnpm --filter api run ofertas:common-crawl:ci

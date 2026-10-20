@@ -20,7 +20,7 @@ export function NuevaEmpresa() {
   const [pagina, ponerPagina] = useState("");
   const [error, ponerError] = useState<Errores | null>(null);
   const [ocupado, empezar] = useTransition();
-  // Se comprueba al momento si el enlace es de Greenhouse, Lever, Ashby, Teamtailor o Personio.
+  // Se comprueba al momento si el enlace es de Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters.
   const malEnlace = pagina.trim().length > 8 && !detectarAts(pagina);
 
   const enviar = (e: FormEvent) => {

@@ -582,7 +582,7 @@
     "empresas": {
       "pestana": "Empresas",
       "titulo": "Empresas",
-      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor o Personio). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 40 al día, 20 reservadas para las escritas en español y 20 para las escritas en inglés (lo que un idioma no use, lo usa el otro).",
+      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 40 al día, 20 reservadas para las escritas en español y 20 para las escritas en inglés (lo que un idioma no use, lo usa el otro).",
       "anadir": "Añadir una empresa a mano",
       "nombre": "Nombre",
       "pagina": "Página de empleo",
@@ -604,7 +604,7 @@
       "vacio": "Aún no hay empresas.",
       "errores": {
         "nombre": "El nombre tiene que tener entre 2 y 80 caracteres.",
-        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor o Personio.",
+        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters.",
         "empresa": "Esa empresa ya no existe.",
         "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
       },
@@ -612,7 +612,7 @@
       "descubierta": "Descubierta sola",
       "descubrir": {
         "titulo": "Descubrir empresas",
-        "ayuda": "Cada día se prueban 25 nombres de la lista para ver si tienen página de empleo con ofertas que nos sirvan. Si la tienen, se añaden solas.",
+        "ayuda": "Una vez al mes se buscan en Common Crawl (un archivo público de la web) miles de páginas de empleo, y cada día se prueban 300 de ellas más 25 nombres de la lista. Las que tienen ofertas que nos sirven se añaden solas.",
         "pendiente": "Por probar",
         "encontrada": "Añadidas",
         "sin_ofertas": "Sin ofertas que nos sirvan (se reprueban en 30 días)",

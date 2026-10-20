@@ -1,8 +1,8 @@
 name: Ofertas automáticas
 
 # Cada día:
-#   1. Descubre empresas: prueba 25 nombres de la lista para ver si tienen página de empleo
-#      en Greenhouse, Lever, Ashby, Teamtailor o Personio con ofertas que nos sirvan, y las añade.
+#   1. Descubre empresas: prueba 25 nombres de la lista y 300 páginas de empleo encontradas con
+#      Common Crawl (ver common-crawl.yml) para ver si tienen ofertas que nos sirvan, y las añade.
 #   2. Lee las páginas de empleo de las empresas con "Leer sus ofertas cada día" activado.
 #      Las ofertas nuevas (como mucho 40: 20 reservadas para las escritas en español y 20 para
 #      las escritas en inglés; lo que un idioma no use, lo usa el otro) quedan pendientes para
@@ -27,7 +27,7 @@ jobs:
   sincronizar:
     name: Descubrir empresas y leer páginas de empleo
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL_PRODUCCION }}
     steps:

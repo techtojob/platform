@@ -2,7 +2,7 @@
  * Programas de selección (ATS) de los que la bolsa lee ofertas automáticamente.
  * Cada empresa tiene su página de empleo pública en uno de ellos.
  */
-export const ATS = ["greenhouse", "lever", "ashby", "teamtailor", "personio"] as const;
+export const ATS = ["greenhouse", "lever", "ashby", "teamtailor", "personio", "workable", "recruitee", "smartrecruiters"] as const;
 export type Ats = (typeof ATS)[number];
 
 export const NOMBRES_ATS: Record<Ats, string> = {
@@ -11,6 +11,9 @@ export const NOMBRES_ATS: Record<Ats, string> = {
   ashby: "Ashby",
   teamtailor: "Teamtailor",
   personio: "Personio",
+  workable: "Workable",
+  recruitee: "Recruitee",
+  smartrecruiters: "SmartRecruiters",
 };
 
 /**
@@ -21,6 +24,9 @@ export const NOMBRES_ATS: Record<Ats, string> = {
  * @example detectarAts("https://jobs.ashbyhq.com/empresa") // { ats: "ashby", id: "empresa" }
  * @example detectarAts("https://empresa.teamtailor.com/jobs") // { ats: "teamtailor", id: "empresa" }
  * @example detectarAts("https://empresa.jobs.personio.de") // { ats: "personio", id: "empresa" }
+ * @example detectarAts("https://apply.workable.com/empresa/j/ABC123") // { ats: "workable", id: "empresa" }
+ * @example detectarAts("https://empresa.recruitee.com/o/backend") // { ats: "recruitee", id: "empresa" }
+ * @example detectarAts("https://jobs.smartrecruiters.com/Empresa/7440001") // { ats: "smartrecruiters", id: "Empresa" }
  */
 export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "eu" | "com" } | null {
   let url: URL;
@@ -55,6 +61,21 @@ export function detectarAts(enlace: string): { ats: Ats; id: string; region?: "e
   // empresa.jobs.personio.de o empresa.jobs.personio.com
   const pe = host.match(/^([a-z0-9-]+)\.jobs\.personio\.(de|com)$/);
   if (pe) return { ats: "personio", id: pe[1]!, ...(pe[2] === "com" && { region: "com" as const }) };
+  // apply.workable.com/empresa (no apply.workable.com/j/CODIGO: ese enlace no dice la empresa) o empresa.workable.com
+  if (host === "apply.workable.com") {
+    const id = valido(partes[0]?.toLowerCase());
+    return id && !["j", "api", "careers"].includes(id) ? { ats: "workable", id } : null;
+  }
+  const wk = host.match(/^([a-z0-9-]+)\.workable\.com$/);
+  if (wk && !["www", "apply", "jobs", "help", "resources", "api"].includes(wk[1]!)) return { ats: "workable", id: wk[1]! };
+  // empresa.recruitee.com
+  const rc = host.match(/^([a-z0-9-]+)\.recruitee\.com$/);
+  if (rc && !["www", "app", "api", "support", "blog", "careers", "status"].includes(rc[1]!)) return { ats: "recruitee", id: rc[1]! };
+  // jobs.smartrecruiters.com/Empresa/... o careers.smartrecruiters.com/Empresa (el identificador distingue mayúsculas)
+  if (host === "jobs.smartrecruiters.com" || host === "careers.smartrecruiters.com") {
+    const id = valido(partes[0]);
+    return id && !["oneclick-ui", "sr-jobs", "api", "ni", "public", "embed"].includes(id.toLowerCase()) ? { ats: "smartrecruiters", id } : null;
+  }
   return null;
 }
 
@@ -64,5 +85,8 @@ export function enlaceAts(ats: Ats, id: string, region?: string | null): string 
   if (ats === "lever") return `https://jobs.${region === "eu" ? "eu." : ""}lever.co/${id}`;
   if (ats === "teamtailor") return `https://${id}.teamtailor.com/jobs`;
   if (ats === "personio") return `https://${id}.jobs.personio.${region === "com" ? "com" : "de"}`;
+  if (ats === "workable") return `https://apply.workable.com/${id}/`;
+  if (ats === "recruitee") return `https://${id}.recruitee.com/`;
+  if (ats === "smartrecruiters") return `https://jobs.smartrecruiters.com/${id}`;
   return `https://jobs.ashbyhq.com/${id}`;
 }

@@ -10,7 +10,7 @@ import { idiomaDe } from "../src/servicios/sincronizar";
 const enlace = process.argv[2];
 const ats = enlace ? detectarAts(enlace) : null;
 if (!ats) {
-  console.error("Pásame el enlace de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor o Personio.");
+  console.error("Pásame el enlace de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters.");
   console.error("Ejemplo: pnpm --filter api ofertas:probar https://empresa.teamtailor.com/jobs");
   process.exit(1);
 }
