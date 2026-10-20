@@ -63,6 +63,7 @@ function aStaff(
     salarioMin: o.salarioMin,
     salarioMax: o.salarioMax,
     moneda: o.moneda as OfertaStaff["moneda"],
+    autorizada: o.autorizada,
     idiomasRequeridos: idiomas.filter((i) => i.ofertaId === o.id).map(({ idioma, nivel }) => ({ idioma, nivel })),
     estado: o.estado,
     motivoRechazo: o.motivoRechazo,
@@ -131,6 +132,7 @@ function columnasOferta(d: DatosOferta) {
     salarioMin: d.salarioMin,
     salarioMax: d.salarioMax,
     moneda: d.moneda,
+    autorizada: d.autorizada,
   };
 }
 

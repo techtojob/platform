@@ -5,6 +5,7 @@ import {
   type DatosPerfil,
   type Disponibilidad,
   type Emblema,
+  type EntradaMapa,
   type MiPerfil,
   type Modalidad,
   type PerfilListado,
@@ -185,6 +186,17 @@ export async function listarPerfiles(db: Db, f: FiltrosTalento, visitante: Visit
     ocultosSinSesion: Number(ocultos[0]?.total ?? 0),
     paises: Object.fromEntries(paises.map((p) => [p.pais!, Number(p.total)])),
   };
+}
+
+/** Perfiles públicos, para el mapa del sitio (los demás no se enseñan a Google). */
+export async function mapaPerfiles(db: Db): Promise<EntradaMapa[]> {
+  const filas = await db
+    .select({ alias: perfiles.alias, actualizadaEn: perfiles.actualizadaEn })
+    .from(perfiles)
+    .where(eq(perfiles.visibilidad, "publico"))
+    .orderBy(desc(perfiles.actualizadaEn))
+    .limit(5000);
+  return filas.map((f) => ({ ruta: f.alias, actualizadaEn: f.actualizadaEn.toISOString() }));
 }
 
 /** Un perfil por su alias, si quien mira puede verlo. */

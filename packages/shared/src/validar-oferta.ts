@@ -148,6 +148,7 @@ export function validarOferta(entrada: unknown): Resultado {
       salarioMax: hayMax ? salarioMax : null,
       moneda: hayMin || hayMax ? moneda : null,
       idiomasRequeridos,
+      autorizada: e.autorizada === true,
     },
   };
 }

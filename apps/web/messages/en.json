@@ -337,7 +337,8 @@
       "lugar": "Where",
       "sinSalario": "Not stated",
       "sinDescripcion": "No summary or description.",
-      "verEnLaBolsa": "See it on the job board"
+      "verEnLaBolsa": "See it on the job board",
+      "autorizada": "Authorized · Google for Jobs"
     },
     "comprobaciones": {
       "empresa": "The company exists and is who it says it is",
@@ -491,7 +492,9 @@
       "guardarPendienteAyuda": "So someone else on the staff reviews it.",
       "hayBorrador": "You have an unfinished offer from last time.",
       "seguirBorrador": "Continue it",
-      "descartarBorrador": "Discard"
+      "descartarBorrador": "Discard",
+      "autorizada": "The company authorizes us to publish it",
+      "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us)."
     },
     "errores": {
       "falta": "This is missing.",

@@ -240,6 +240,10 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
 
         <Seccion id="seccion-oferta" numero={2} titulo={t("form.seccionOferta")}>
           <SelectorEmpresa empresas={empresas} valor={v.empresa} onCambio={(empresa) => cambiar({ empresa })} error={mensajeError("empresaId")} />
+          <div className="flex flex-col gap-1 rounded-2xl border border-borde p-3">
+            <Casilla etiqueta={t("form.autorizada")} checked={v.autorizada} onChange={(e) => cambiar({ autorizada: e.target.checked })} />
+            <p className="pl-8 text-sm text-suave">{t("form.autorizadaAyuda")}</p>
+          </div>
           <Campo
             etiqueta={t("form.titulo")}
             value={v.titulo}

@@ -65,6 +65,7 @@ const nueva = {
   remotoDesde: "es",
   tecnologias: ["typescript"],
   idiomasRequeridos: [{ idioma: "es", nivel: "nativo" }],
+  autorizada: true,
 };
 
 describe("quién entra al panel", () => {
@@ -119,6 +120,7 @@ describe("ofertas desde el panel", () => {
     expect(creada).toMatchObject({ estado: "pendiente", slug: "qa-tester-junior-teide-software" });
     expect(creada.id).toMatch(/^[a-z0-9]{8}$/);
     expect(creada.idiomasRequeridos).toEqual([{ idioma: "es", nivel: "nativo" }]);
+    expect(creada).toMatchObject({ autorizada: true });
     expect(await obtenerOferta(db, creada.id)).toBeNull();
 
     // Sin todas las comprobaciones, no se publica.

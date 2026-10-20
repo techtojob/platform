@@ -27,6 +27,8 @@ export type ValoresOferta = {
   sinSalario: boolean;
   /** Idiomas que pide y su nivel ("" si no lo dice). */
   pide: Array<{ idioma: string; nivel: string }>;
+  /** La empresa nos autoriza a publicarla (sale en Google for Jobs). */
+  autorizada: boolean;
 };
 
 export const VALORES_VACIOS: ValoresOferta = {
@@ -48,6 +50,7 @@ export const VALORES_VACIOS: ValoresOferta = {
   moneda: "EUR",
   sinSalario: false,
   pide: [{ idioma: "es", nivel: "" }],
+  autorizada: false,
 };
 
 export function valoresDeOferta(o: OfertaStaff): ValoresOferta {
@@ -70,6 +73,7 @@ export function valoresDeOferta(o: OfertaStaff): ValoresOferta {
     moneda: o.moneda ?? "EUR",
     sinSalario: o.salarioMin == null && o.salarioMax == null,
     pide: o.idiomasRequeridos.map((i) => ({ idioma: i.idioma, nivel: i.nivel ?? "" })),
+    autorizada: o.autorizada,
   };
 }
 
@@ -137,5 +141,6 @@ export function datosParaApi(v: ValoresOferta, empresaId: string) {
     salarioMax: conSalario ? cantidad(v.salarioMax) : null,
     moneda: conSalario ? v.moneda : null,
     idiomasRequeridos: v.pide.map((p) => ({ idioma: p.idioma, nivel: siHay(p.nivel) })),
+    autorizada: v.autorizada,
   };
 }

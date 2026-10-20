@@ -337,7 +337,8 @@
       "lugar": "Dónde",
       "sinSalario": "No lo dice",
       "sinDescripcion": "Sin resumen ni descripción.",
-      "verEnLaBolsa": "Ver en la bolsa"
+      "verEnLaBolsa": "Ver en la bolsa",
+      "autorizada": "Autorizada · Google for Jobs"
     },
     "comprobaciones": {
       "empresa": "La empresa existe y es quien dice ser",
@@ -491,7 +492,9 @@
       "guardarPendienteAyuda": "Para que la revise otra persona del staff.",
       "hayBorrador": "Tienes una oferta a medias de la última vez.",
       "seguirBorrador": "Seguir con ella",
-      "descartarBorrador": "Descartar"
+      "descartarBorrador": "Descartar",
+      "autorizada": "La empresa nos autoriza a publicarla",
+      "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella)."
     },
     "errores": {
       "falta": "Falta este dato.",

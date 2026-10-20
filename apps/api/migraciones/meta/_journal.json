@@ -36,6 +36,13 @@
       "when": 1792452996612,
       "tag": "0004_perfiles-de-talento",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792487276430,
+      "tag": "0005_ofertas-autorizadas",
+      "breakpoints": true
     }
   ]
 }

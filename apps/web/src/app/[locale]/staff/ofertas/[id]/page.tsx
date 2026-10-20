@@ -55,6 +55,7 @@ async function Contenido({ params }: Pick<Props, "params">) {
             {oferta.empresa.nombre}
             <Etiqueta tono={oferta.estado === "publicada" ? "acento" : "postit"}>{t(`staff.estadoUna.${oferta.estado}`)}</Etiqueta>
             {caducada && <Etiqueta tono="borde">{t("staff.lista.yaNoSale")}</Etiqueta>}
+            {oferta.autorizada && <Etiqueta tono="borde">{t("staff.detalle.autorizada")}</Etiqueta>}
           </span>
         }
         compacta

@@ -3,7 +3,7 @@ import { Hono, type Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Entorno } from "../app";
 import { esStaff } from "../servicios/staff";
-import { ErrorTalento, listarPerfiles, obtenerPerfil, reportarPerfil, type Visitante } from "../servicios/talento";
+import { ErrorTalento, listarPerfiles, mapaPerfiles, obtenerPerfil, reportarPerfil, type Visitante } from "../servicios/talento";
 import { lista } from "./ofertas";
 import { conSesion } from "./sesion";
 
@@ -26,6 +26,7 @@ export function responderErrorTalento(c: Context<Entorno>, e: unknown) {
  * Talento.
  *
  * GET  /talento?q=&disp=&area=&nivel=&modalidad=&tec=&pais=&verificados=1&despues=
+ * GET  /talento/mapa                → perfiles públicos, para el mapa del sitio
  * GET  /talento/:alias              → 404 si no existe o está oculto; 401 si es solo para registrados
  * POST /talento/:alias/reportar     { motivo }   (con sesión)
  */
@@ -54,6 +55,7 @@ export const rutasTalento = new Hono<Entorno>()
       ),
     );
   })
+  .get("/mapa", async (c) => c.json(await mapaPerfiles(c.var.db)))
   .get("/:alias", async (c) => {
     try {
       return c.json(await obtenerPerfil(c.var.db, c.req.param("alias"), await visitante(c)));

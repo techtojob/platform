@@ -22,7 +22,7 @@ export const LIMITES_PERFIL = {
 const ALIAS_RESERVADOS = new Set([
   "admin", "administrador", "staff", "moderador", "moderator", "techtojob", "soporte", "support",
   "ayuda", "help", "api", "cuenta", "account", "perfil", "profile", "talento", "talent", "empleo",
-  "jobs", "ofertas", "offers", "nueva", "nuevo", "new", "editar", "edit", "entrar", "login",
+  "jobs", "ofertas", "offers", "nueva", "nuevo", "new", "editar", "edit", "entrar", "login", "mapa",
 ]);
 
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));

@@ -4,7 +4,9 @@ import { getLocale, getNow } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { Suspense } from "react";
 import { FichaOferta } from "@/components/ofertas/ficha-oferta";
-import { redirect } from "@/i18n/navigation";
+import { getPathname, redirect } from "@/i18n/navigation";
+import { jobPosting, jsonSeguro } from "@/lib/datos-google";
+import { LANDING_URL } from "@/lib/sitio";
 import { obtenerOferta, obtenerOfertas } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
@@ -56,5 +58,13 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
     .then((r) => r.ofertas.filter((o) => o.id !== oferta.id).slice(0, 3))
     .catch(() => []);
 
-  return <FichaOferta oferta={oferta} hablo={hablo} parecidas={parecidas} ahora={(await getNow()).getTime()} />;
+  // Datos para Google for Jobs (solo si la empresa nos ha autorizado; ver lib/datos-google.ts).
+  const google = jobPosting(oferta, `${LANDING_URL}${getPathname({ href: { pathname: "/ofertas/[slug]", params: { slug: correcto } }, locale })}`);
+
+  return (
+    <>
+      {google && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(google) }} />}
+      <FichaOferta oferta={oferta} hablo={hablo} parecidas={parecidas} ahora={(await getNow()).getTime()} />
+    </>
+  );
 }

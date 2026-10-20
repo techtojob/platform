@@ -71,6 +71,13 @@ describe("buscador de talento", () => {
   });
 });
 
+describe("mapa del sitio de talento", () => {
+  it("solo los perfiles públicos", async () => {
+    const r = await pedir("/talento/mapa", anonimo);
+    expect(r.json.map((m: { ruta: string }) => m.ruta).sort()).toEqual(["diego-datos", "nayra-dev"]);
+  });
+});
+
 describe("perfil público", () => {
   it("se ve entero, con enlaces e idiomas", async () => {
     const r = await pedir("/talento/nayra-dev", anonimo);

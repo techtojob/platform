@@ -1,0 +1,1 @@
+ALTER TABLE "ofertas" ADD COLUMN "autorizada" boolean DEFAULT false NOT NULL;

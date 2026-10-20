@@ -200,3 +200,18 @@ describe("GET /ofertas", () => {
     expect(((await no.json()) as { error: { codigo: string } }).error.codigo).toBe("no_encontrado");
   });
 });
+
+describe("mapa del sitio y Google for Jobs", () => {
+  it("GET /ofertas/mapa da las ofertas visibles con su ruta", async () => {
+    const res = await crearApp({ db }).request("/ofertas/mapa", {}, { ORIGENES_PERMITIDOS: "http://localhost:3000", DATABASE_URL: "" } as never);
+    const mapa = (await res.json()) as Array<{ ruta: string; actualizadaEn: string }>;
+    expect(mapa.length).toBe(5); // las 5 publicadas; la pendiente no
+    expect(mapa.map((m) => m.ruta)).toContain("frontend-junior-atlantica-labs-k7x2m9qa");
+  });
+
+  it("la oferta dice si está autorizada (por defecto no) y cuándo caduca", async () => {
+    const oferta = await obtenerOferta(db, "k7x2m9qa");
+    expect(oferta).toMatchObject({ autorizada: false });
+    expect(oferta?.caducaEn).toBeTruthy();
+  });
+});

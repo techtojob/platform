@@ -1,4 +1,4 @@
-import { buscarTecnologia, type Area, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
+import { buscarTecnologia, type Area, type EntradaMapa, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
 import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, gt, ilike, inArray, isNotNull, isNull, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
@@ -185,7 +185,20 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
     empresa: fila.empresa,
     descripcion: fila.oferta.descripcion,
     urlOriginal: fila.oferta.urlOriginal,
+    autorizada: fila.oferta.autorizada,
+    caducaEn: fila.oferta.caducaEn?.toISOString() ?? null,
   };
+}
+
+/** Todas las ofertas que se ven en la bolsa, para el mapa del sitio: "<slug>-<id>" y última fecha. */
+export async function mapaOfertas(db: Db): Promise<EntradaMapa[]> {
+  const filas = await db
+    .select({ id: ofertas.id, slug: ofertas.slug, actualizadaEn: ofertas.actualizadaEn })
+    .from(ofertas)
+    .where(and(eq(ofertas.estado, "publicada"), vigente()))
+    .orderBy(desc(ofertas.publicadaEn))
+    .limit(5000);
+  return filas.map((f) => ({ ruta: `${f.slug}-${f.id}`, actualizadaEn: f.actualizadaEn.toISOString() }));
 }
 
 /** Lo que solo hace falta en la primera página: avisos de idiomas y recuentos de cada filtro. */

@@ -34,7 +34,14 @@ export type OfertaDetalle = OfertaListado & {
   /** A donde se manda a la gente para aplicar: la oferta en la web de la empresa. */
   urlOriginal: string;
   empresa: OfertaListado["empresa"] & { web: string | null };
+  /** La empresa nos autoriza a publicarla: solo entonces sale en Google for Jobs. */
+  autorizada: boolean;
+  /** Fecha ISO en que deja de salir (para Google: validThrough). */
+  caducaEn: string | null;
 };
+
+/** Respuesta de GET /ofertas/mapa y GET /talento/mapa: lo justo para el mapa del sitio. */
+export type EntradaMapa = { ruta: string; actualizadaEn: string };
 
 /** Respuesta de GET /ofertas. */
 export type ResultadoOfertas = {
@@ -113,6 +120,8 @@ export type DatosOferta = {
   salarioMax: number | null;
   moneda: Moneda | null;
   idiomasRequeridos: Array<{ idioma: Idioma; nivel: NivelIdioma | null }>;
+  /** La empresa nos ha autorizado a publicarla (sale en Google for Jobs). */
+  autorizada: boolean;
 };
 
 /** Una oferta vista por el staff: todo, en cualquier estado. */

@@ -2,7 +2,7 @@ import { AREAS, esIdioma, MODALIDADES, SENIORITY, TECNOLOGIAS, type Idioma } fro
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Entorno } from "../app";
-import { listarOfertas, obtenerOferta } from "../servicios/ofertas";
+import { listarOfertas, mapaOfertas, obtenerOferta } from "../servicios/ofertas";
 
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));
 
@@ -52,6 +52,8 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
 
   return c.json(resultado);
 })
+  /** GET /ofertas/mapa → las ofertas visibles, para el mapa del sitio. */
+  .get("/mapa", async (c) => c.json(await mapaOfertas(c.var.db)))
   /** GET /ofertas/:id → la oferta entera, o 404 si no existe o aún no está publicada. */
   .get("/:id", async (c) => {
     const oferta = await obtenerOferta(c.var.db, c.req.param("id"));

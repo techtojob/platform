@@ -89,6 +89,8 @@ export const ofertas = pgTable(
     moneda: text("moneda"),
 
     origen: text("origen").$type<OrigenOferta>().notNull(),
+    /** La empresa nos autoriza a publicarla. Solo esas llevan los datos para Google for Jobs. */
+    autorizada: boolean("autorizada").notNull().default(false),
     estado: text("estado").$type<EstadoOferta>().notNull().default("pendiente"),
     motivoRechazo: text("motivo_rechazo"),
     /** Quién del staff la revisó y cuándo. */
