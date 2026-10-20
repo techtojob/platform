@@ -7,7 +7,7 @@ import { FichaOferta } from "@/components/ofertas/ficha-oferta";
 import { getPathname, redirect } from "@/i18n/navigation";
 import { jobPosting, jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL } from "@/lib/sitio";
-import { obtenerOferta, obtenerOfertas } from "@/lib/api";
+import { obtenerCuenta, obtenerOferta, obtenerOfertas } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
 import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
@@ -55,7 +55,11 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
   });
 
   // Desde qué país trabaja: para decirle si puede hacer esta oferta.
-  const desde = paisDelUsuario({ cookie: almacen.get(COOKIE_DESDE)?.value, paisConexion: cabeceras.get("cf-ipcountry") });
+  const desde = paisDelUsuario({
+    cookie: almacen.get(COOKIE_DESDE)?.value,
+    paisPerfil: almacen.get(COOKIE_DESDE)?.value ? null : (await obtenerCuenta(cabeceras.get("cookie")).catch(() => null))?.pais,
+    paisConexion: cabeceras.get("cf-ipcountry"),
+  });
 
   // Ofertas parecidas: misma área, que la persona pueda hacer. Si fallan, la página sale igual.
   const parecidas = await obtenerOfertas({ idiomas: hablo, desde, areas: [oferta.area], limite: 4 })

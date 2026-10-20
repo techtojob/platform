@@ -1,5 +1,6 @@
-// Borra y carga los datos de prueba (empresas y ofertas inventadas).
+// Borra TODAS las ofertas y empresas (también las reales) y carga los datos de prueba (inventados).
 // Solo para la rama `dev` de Neon: nunca contra producción.
+// Para quitar solo lo inventado y quedarte con lo real: pnpm --filter api db:quitar-datos-prueba
 // Uso: pnpm --filter api db:datos-prueba
 import type { Db } from "../src/db/cliente";
 import { conectar } from "../src/db/cliente";

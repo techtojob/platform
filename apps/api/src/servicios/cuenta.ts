@@ -14,9 +14,10 @@ export async function datosCuenta(
   usuario: Usuario,
   opciones: { discordDisponible: boolean; invitacion: string | null; esStaff: boolean },
 ): Promise<Cuenta> {
-  const [vinculadas, [estado]] = await Promise.all([
+  const [vinculadas, [estado], [perfil]] = await Promise.all([
     db.select({ id: cuentas.id, proveedor: cuentas.providerId, idExterno: cuentas.accountId }).from(cuentas).where(eq(cuentas.userId, usuario.id)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, usuario.id)).limit(1),
+    db.select({ pais: perfiles.pais }).from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
   ]);
   const discord = vinculadas.find((c) => c.proveedor === "discord");
 
@@ -28,6 +29,7 @@ export async function datosCuenta(
     usuario: { id: usuario.id, nombre: usuario.name, email: usuario.email, imagen: usuario.image ?? null },
     esStaff: opciones.esStaff,
     proveedores: vinculadas.map((c) => c.proveedor),
+    pais: perfil?.pais ?? null,
     discord: {
       disponible: opciones.discordDisponible,
       vinculado: !!discord,

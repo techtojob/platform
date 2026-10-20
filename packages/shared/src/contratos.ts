@@ -77,6 +77,8 @@ export type Cuenta = {
   esStaff: boolean;
   /** Con qué puede entrar o qué tiene vinculado: "google", "github", "discord". */
   proveedores: string[];
+  /** País de su perfil de talento (ISO), si tiene: para enseñarle las ofertas que puede hacer desde allí. */
+  pais: string | null;
   discord: {
     /** Si en este entorno se puede vincular Discord (está configurado). */
     disponible: boolean;

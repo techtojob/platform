@@ -12,6 +12,8 @@
     "db:generar": "drizzle-kit generate",
     "db:migrar": "tsx --env-file=.dev.vars scripts/migrar.ts",
     "db:datos-prueba": "tsx --env-file=.dev.vars scripts/datos-prueba.ts",
+    "db:quitar-datos-prueba": "tsx --env-file=.dev.vars scripts/quitar-datos-prueba.ts",
+    "ofertas:probar": "tsx scripts/probar-pagina.ts",
     "db:migrar:produccion": "tsx --env-file=.produccion.vars scripts/migrar.ts",
     "ofertas:sincronizar": "tsx --env-file=.dev.vars scripts/sincronizar.ts",
     "ofertas:sincronizar:ci": "tsx scripts/sincronizar.ts"

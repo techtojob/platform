@@ -1,6 +1,6 @@
 import { REGIONES } from "@techtojob/shared";
 import type { Db } from "./cliente";
-import { like } from "drizzle-orm";
+import { inArray, like, or } from "drizzle-orm";
 import { emblemas, empresas, estadoDiscord, ofertaIdiomas, ofertas, perfiles, usuarios, type NuevaOferta } from "./esquema";
 
 /**
@@ -117,7 +117,25 @@ const PERFILES_PRUEBA: PerfilPrueba[] = [
   },
 ];
 
-/** Borra y vuelve a crear los datos de prueba. */
+/**
+ * Quita los datos inventados (las empresas de prueba con todas sus ofertas y los usuarios de prueba)
+ * y deja lo demás: las empresas y ofertas reales que hayan entrado solas o metido el staff.
+ * Devuelve cuántas ofertas y empresas se han quitado.
+ */
+export async function quitarDatosPrueba(db: Db): Promise<{ ofertas: number; empresas: number; perfiles: number }> {
+  const idsEmpresas = EMPRESAS.map((e) => e.id);
+  const idsOfertas = OFERTAS_PRUEBA.map((o) => o.id);
+  const borradas = await db
+    .delete(ofertas)
+    .where(or(inArray(ofertas.empresaId, idsEmpresas), inArray(ofertas.id, idsOfertas)))
+    .returning({ id: ofertas.id });
+  const sinEmpresas = await db.delete(empresas).where(inArray(empresas.id, idsEmpresas)).returning({ id: empresas.id });
+  // Borrar los usuarios de prueba borra también sus perfiles, emblemas y reportes (en cascada).
+  const sinUsuarios = await db.delete(usuarios).where(like(usuarios.id, "usr-prueba-%")).returning({ id: usuarios.id });
+  return { ofertas: borradas.length, empresas: sinEmpresas.length, perfiles: sinUsuarios.length };
+}
+
+/** Borra TODAS las ofertas y empresas y vuelve a crear los datos de prueba (para las pruebas automáticas). */
 export async function cargarDatosPrueba(db: Db) {
   await db.delete(ofertaIdiomas);
   await db.delete(ofertas);

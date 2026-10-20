@@ -3,7 +3,7 @@ import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { obtenerOfertas } from "@/lib/api";
+import { obtenerCuenta, obtenerOfertas } from "@/lib/api";
 import { aParametros, hayFiltros, leerFiltros } from "@/lib/filtros";
 import { COOKIE_HABLO, idiomasDelUsuario, nombreIdioma } from "@/lib/idiomas-usuario";
 import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
@@ -32,7 +32,11 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
     acceptLanguage: cabeceras.get("accept-language"),
     idiomaWeb: locale,
   });
-  const desde = paisDelUsuario({ cookie: almacen.get(COOKIE_DESDE)?.value, paisConexion: cabeceras.get("cf-ipcountry") });
+  const desde = paisDelUsuario({
+    cookie: almacen.get(COOKIE_DESDE)?.value,
+    paisPerfil: almacen.get(COOKIE_DESDE)?.value ? null : (await obtenerCuenta(cabeceras.get("cookie")).catch(() => null))?.pais,
+    paisConexion: cabeceras.get("cf-ipcountry"),
+  });
 
   let resultado;
   try {
