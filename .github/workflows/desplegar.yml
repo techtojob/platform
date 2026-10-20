@@ -1,12 +1,14 @@
 name: Desplegar
 
-# Publica el API y la web en Cloudflare al subir a main, o a mano desde Actions → Desplegar.
+# Publica el API y la web en Cloudflare. De momento SOLO A MANO (Actions → Desplegar → Run workflow):
+# la bolsa aún no se publica. El día del lanzamiento, cuando esté hecha la lista de "antes de publicar",
+# se vuelve a activar el despliegue al subir a main quitando el # de las tres líneas de "push".
 # Necesita dos secretos en GitHub (Settings → Secrets and variables → Actions):
 #   CLOUDFLARE_API_TOKEN  (plantilla "Edit Cloudflare Workers")
 #   CLOUDFLARE_ACCOUNT_ID
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   workflow_dispatch:
 
 permissions:
