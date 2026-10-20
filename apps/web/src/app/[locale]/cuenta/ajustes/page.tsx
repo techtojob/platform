@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { useTranslations } from "next-intl";
 import { Suspense } from "react";
@@ -92,7 +92,7 @@ async function Contenido() {
       {/* Discord, en su ventana tipo Discord */}
       <Ventana canal="discord" aria-label="Discord">
         <div className="rounded-xl bg-tarjeta/60 p-4 sm:p-5">
-          <SeccionDiscord discord={discord} />
+          <SeccionDiscord discord={discord} ahora={(await getNow()).getTime()} />
         </div>
       </Ventana>
 

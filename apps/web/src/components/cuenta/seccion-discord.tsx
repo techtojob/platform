@@ -12,7 +12,8 @@ import { authCliente } from "@/lib/auth-cliente";
  * Discord en "Mi cuenta": vincular, ver si está en el servidor y volver a comprobarlo.
  * Discord no sirve para entrar; solo para saber si la persona es de la comunidad.
  */
-export function SeccionDiscord({ discord }: { discord: Cuenta["discord"] }) {
+/** `ahora`: la hora del servidor, para "Comprobado hace 5 min" (así sale igual en el servidor y en el navegador). */
+export function SeccionDiscord({ discord, ahora }: { discord: Cuenta["discord"]; ahora: number }) {
   const t = useTranslations("cuenta.discord");
   const format = useFormatter();
   const router = useRouter();
@@ -89,7 +90,7 @@ export function SeccionDiscord({ discord }: { discord: Cuenta["discord"] }) {
       {error && <p role="alert" className="text-sm font-semibold text-peligro">{error}</p>}
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-suave">
-        {discord.comprobadoEn && <span>{t("comprobado", { tiempo: format.relativeTime(new Date(discord.comprobadoEn)) })}</span>}
+        {discord.comprobadoEn && <span>{t("comprobado", { tiempo: format.relativeTime(new Date(discord.comprobadoEn), ahora) })}</span>}
         <button type="button" onClick={desvincular} disabled={pendiente} className="font-semibold text-enlace hover:underline">
           {t("desvincular")}
         </button>
