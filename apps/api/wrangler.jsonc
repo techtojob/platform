@@ -12,7 +12,7 @@
     // Dirección de la web: el inicio de sesión vuelve aquí. En producción, https://techtojob.com.
     "WEB_URL": "http://localhost:3000",
     // Servidor de Discord de TechToJob (no es secreto) y su invitación.
-    "DISCORD_SERVIDOR_ID": "",
+    "DISCORD_SERVIDOR_ID": "1500449244019036219",
     "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
     // Rol de moderador del servidor: quien lo tiene (con su Discord vinculado) entra al panel de staff.
     "DISCORD_ROL_STAFF": "1500449244102787149"
@@ -32,7 +32,7 @@
       "vars": {
         "ORIGENES_PERMITIDOS": "https://techtojob.com",
         "WEB_URL": "https://techtojob.com",
-        "DISCORD_SERVIDOR_ID": "",
+        "DISCORD_SERVIDOR_ID": "1500449244019036219",
         "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
         "DISCORD_ROL_STAFF": "1500449244102787149"
       }
