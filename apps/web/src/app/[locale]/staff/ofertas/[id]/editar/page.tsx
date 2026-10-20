@@ -35,5 +35,13 @@ async function Formulario({ params }: Pick<Props, "params">) {
   const { id } = await params;
   const [oferta, empresas, ahora] = await Promise.all([obtenerOfertaStaff(id), listarEmpresas(), getNow()]);
   if (!oferta) notFound();
-  return <FormularioOferta empresas={empresas} inicial={valoresDeOferta(oferta)} ofertaId={oferta.id} ahora={ahora.getTime()} />;
+  return (
+    <FormularioOferta
+      empresas={empresas}
+      inicial={valoresDeOferta(oferta)}
+      ofertaId={oferta.id}
+      ahora={ahora.getTime()}
+      original={oferta.origen === "automatica" ? { texto: oferta.descripcionOriginal } : null}
+    />
+  );
 }

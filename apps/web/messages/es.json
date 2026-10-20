@@ -86,7 +86,7 @@
     "volver": "Volver a las ofertas",
     "escritaEn": "Escrita en {idioma}",
     "faltanIdiomas": "{count, plural, one {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.} other {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.}}",
-    "sinDescripcion": "La empresa no ha publicado más detalles. Los tienes en su web.",
+    "sinDescripcion": "Toda la información está en la web de la empresa.",
     "aplicar": "Aplicar en su web",
     "abreOtraWeb": "se abre en otra pestaña",
     "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos.",
@@ -330,7 +330,8 @@
       "caducada": "Caducó {tiempo}",
       "revisada": "Revisada {tiempo}",
       "yaNoSale": "Ya no sale en la bolsa",
-      "motivo": "Motivo: {motivo}"
+      "motivo": "Motivo: {motivo}",
+      "automatica": "Automática"
     },
     "detalle": {
       "publicada": "Publicada {tiempo}",
@@ -338,7 +339,11 @@
       "sinSalario": "No lo dice",
       "sinDescripcion": "Sin resumen ni descripción.",
       "verEnLaBolsa": "Ver en la bolsa",
-      "autorizada": "Autorizada · Google for Jobs"
+      "autorizada": "Autorizada · Google for Jobs",
+      "automatica": "Automática · {fuente}",
+      "original": "Texto original de la empresa · solo staff",
+      "originalAyuda": "No se publica: no es nuestro. Léelo para revisar los datos y escribir un resumen con tus palabras. Solo se publica entero si la empresa lo autoriza.",
+      "originalVacio": "La empresa no puso texto."
     },
     "comprobaciones": {
       "empresa": "La empresa existe y es quien dice ser",
@@ -494,7 +499,10 @@
       "seguirBorrador": "Seguir con ella",
       "descartarBorrador": "Descartar",
       "autorizada": "La empresa nos autoriza a publicarla",
-      "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella)."
+      "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella).",
+      "resumenObligatorio": "Resumen (obligatorio)",
+      "resumenAyudaAutomatica": "Con tus palabras, sin copiar el texto de la empresa: es lo que se publica. Quedan {quedan} caracteres.",
+      "descripcionAutomatica": "Descripción (solo si la empresa lo autoriza)"
     },
     "errores": {
       "falta": "Falta este dato.",
@@ -533,10 +541,15 @@
         "estado": "Esta oferta ya no está publicada.",
         "no_encontrada": "Esta oferta ya no existe.",
         "sin_permiso": "Ya no tienes acceso al panel de staff.",
-        "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+        "desconocido": "No se ha podido hacer. Inténtalo de nuevo.",
+        "resumen": "Escribe un resumen con tus palabras antes de publicarla.",
+        "incompleta": "Faltan datos: edita la oferta y rellena los campos marcados (por ejemplo, desde dónde se puede trabajar)."
       },
       "salario": {
         "falta": "Escribe el salario o marca «La oferta no dice el salario»."
+      },
+      "resumen": {
+        "propio": "Escribe un resumen con tus palabras antes de publicarla."
       }
     },
     "reportes": {
@@ -549,6 +562,37 @@
       "ocultar": "Ocultar perfil",
       "reportado": "Reportado {tiempo}",
       "visibilidad": "Ahora: {visibilidad}"
+    },
+    "empresas": {
+      "pestana": "Empresas",
+      "titulo": "Empresas",
+      "entradilla": "Pega el enlace de la página de empleo de una empresa (Greenhouse, Lever o Ashby) y cada mañana entrarán sus ofertas técnicas y 100 % remotas como pendientes.",
+      "anadir": "Añadir empresa",
+      "nombre": "Nombre",
+      "pagina": "Página de empleo",
+      "paginaAyuda": "Por ejemplo: boards.greenhouse.io/empresa, jobs.lever.co/empresa o jobs.ashbyhq.com/empresa",
+      "guardar": "Añadir",
+      "guardando": "Guardando…",
+      "cambiarPagina": "Cambiar página de empleo",
+      "quitarPagina": "Quitar",
+      "ponerPagina": "Añadir página de empleo",
+      "sincronizar": "Leer sus ofertas cada día",
+      "bloqueada": "No publicar sus ofertas",
+      "bloqueadaAyuda": "La empresa nos ha pedido que no salgan. Sus pendientes automáticas se descartan.",
+      "ofertas": "{count, plural, =0 {Sin ofertas} one {# oferta} other {# ofertas}}",
+      "leida": "Leída {tiempo}",
+      "sinLeer": "Aún no se ha leído: se leerá mañana por la mañana.",
+      "error": "Último error: {error}",
+      "conAts": "Con página de empleo",
+      "sinAts": "Sin página de empleo",
+      "vacio": "Aún no hay empresas.",
+      "errores": {
+        "nombre": "El nombre tiene que tener entre 2 y 80 caracteres.",
+        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever o Ashby.",
+        "empresa": "Esa empresa ya no existe.",
+        "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
+      },
+      "cancelar": "Cancelar"
     }
   },
   "formulario": {

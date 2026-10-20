@@ -33,6 +33,7 @@ export async function FilaStaff({ oferta, ahora }: { oferta: OfertaStaff; ahora:
           <Etiqueta>{t(`areas.${oferta.area}`)}</Etiqueta>
           <Etiqueta>{t(`seniority.${oferta.seniority}`)}</Etiqueta>
           <Etiqueta>{t(`modalidades.${oferta.modalidad}`)}</Etiqueta>
+          {oferta.origen === "automatica" && <Etiqueta tono="borde">{t("staff.lista.automatica")}</Etiqueta>}
           {caducada && <Etiqueta tono="postit">{t("staff.lista.yaNoSale")}</Etiqueta>}
         </p>
         {oferta.estado === "rechazada" && oferta.motivoRechazo && (

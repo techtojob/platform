@@ -1,4 +1,4 @@
-import { TECNOLOGIAS, type OfertaStaff } from "@techtojob/shared";
+import { NOMBRES_ATS, TECNOLOGIAS, type OfertaStaff } from "@techtojob/shared";
 import { getFormatter, getNow, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
 import { notFound } from "next/navigation";
@@ -55,6 +55,7 @@ async function Contenido({ params }: Pick<Props, "params">) {
             {oferta.empresa.nombre}
             <Etiqueta tono={oferta.estado === "publicada" ? "acento" : "postit"}>{t(`staff.estadoUna.${oferta.estado}`)}</Etiqueta>
             {caducada && <Etiqueta tono="borde">{t("staff.lista.yaNoSale")}</Etiqueta>}
+            {oferta.fuenteAts && <Etiqueta tono="borde">{t("staff.detalle.automatica", { fuente: NOMBRES_ATS[oferta.fuenteAts] })}</Etiqueta>}
             {oferta.autorizada && <Etiqueta tono="borde">{t("staff.detalle.autorizada")}</Etiqueta>}
           </span>
         }
@@ -76,6 +77,7 @@ async function Contenido({ params }: Pick<Props, "params">) {
               </p>
             )}
             <VistaPrevia oferta={oferta} />
+            {oferta.origen === "automatica" && <TextoOriginal oferta={oferta} />}
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
@@ -162,5 +164,33 @@ function VistaPrevia({ oferta }: { oferta: OfertaStaff }) {
         {!oferta.resumen && parrafos.length === 0 && <p className="text-suave">{t("staff.detalle.sinDescripcion")}</p>}
       </div>
     </Tarjeta>
+  );
+}
+
+/** El texto de la empresa: solo para el staff, para revisar los datos y escribir el resumen. No se publica. */
+function TextoOriginal({ oferta }: { oferta: OfertaStaff }) {
+  const t = useTranslations("staff.detalle");
+  const parrafos = (oferta.descripcionOriginal ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  return (
+    <details open={oferta.estado === "pendiente"} className="group rounded-tarjeta border border-dashed border-borde-fuerte bg-tarjeta/60 p-6 sm:p-8">
+      <summary className="cursor-pointer list-none font-bold">
+        <span className="mr-2 inline-block transition-transform group-open:rotate-90" aria-hidden>
+          ▸
+        </span>
+        {t("original")}
+      </summary>
+      <p className="mt-3 text-sm text-suave">{t("originalAyuda")}</p>
+      <div className="mt-5 flex max-h-[32rem] max-w-[68ch] flex-col gap-3 overflow-y-auto border-t border-borde pt-5 text-sm leading-relaxed" lang={oferta.idioma}>
+        {parrafos.length ? (
+          parrafos.map((p, i) => (
+            <p key={i} className="whitespace-pre-line">
+              {p}
+            </p>
+          ))
+        ) : (
+          <p className="text-suave">{t("originalVacio")}</p>
+        )}
+      </div>
+    </details>
   );
 }

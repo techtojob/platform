@@ -86,7 +86,7 @@
     "volver": "Back to job offers",
     "escritaEn": "Written in {idioma}",
     "faltanIdiomas": "{count, plural, one {This offer requires {idiomas}, which is not among the languages you speak.} other {This offer requires {idiomas}, which are not among the languages you speak.}}",
-    "sinDescripcion": "The company hasn't published more details. You'll find them on their website.",
+    "sinDescripcion": "All the details are on the company's website.",
     "aplicar": "Apply on their website",
     "abreOtraWeb": "opens in a new tab",
     "aplicarAyuda": "You apply to {empresa} on their own website. TechToJob doesn't store your data.",
@@ -330,7 +330,8 @@
       "caducada": "Expired {tiempo}",
       "revisada": "Reviewed {tiempo}",
       "yaNoSale": "No longer on the job board",
-      "motivo": "Reason: {motivo}"
+      "motivo": "Reason: {motivo}",
+      "automatica": "Automatic"
     },
     "detalle": {
       "publicada": "Published {tiempo}",
@@ -338,7 +339,11 @@
       "sinSalario": "Not stated",
       "sinDescripcion": "No summary or description.",
       "verEnLaBolsa": "See it on the job board",
-      "autorizada": "Authorized · Google for Jobs"
+      "autorizada": "Authorized · Google for Jobs",
+      "automatica": "Automatic · {fuente}",
+      "original": "Company's original text · staff only",
+      "originalAyuda": "Not published: it isn't ours. Read it to check the details and write a summary in your own words. It's only published in full if the company authorises it.",
+      "originalVacio": "The company didn't include any text."
     },
     "comprobaciones": {
       "empresa": "The company exists and is who it says it is",
@@ -494,7 +499,10 @@
       "seguirBorrador": "Continue it",
       "descartarBorrador": "Discard",
       "autorizada": "The company authorizes us to publish it",
-      "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us)."
+      "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us).",
+      "resumenObligatorio": "Summary (required)",
+      "resumenAyudaAutomatica": "In your own words, without copying the company's text: this is what gets published. {quedan} characters left.",
+      "descripcionAutomatica": "Description (only if the company authorises it)"
     },
     "errores": {
       "falta": "This is missing.",
@@ -533,10 +541,15 @@
         "estado": "This offer is no longer published.",
         "no_encontrada": "This offer no longer exists.",
         "sin_permiso": "You no longer have access to the staff panel.",
-        "desconocido": "It couldn't be done. Try again."
+        "desconocido": "It couldn't be done. Try again.",
+        "resumen": "Write a summary in your own words before publishing it.",
+        "incompleta": "Some details are missing: edit the offer and fill in the marked fields (for example, where people can work from)."
       },
       "salario": {
         "falta": "Write the salary or tick “The offer doesn't state the salary”."
+      },
+      "resumen": {
+        "propio": "Write a summary in your own words before publishing it."
       }
     },
     "reportes": {
@@ -549,6 +562,37 @@
       "ocultar": "Hide profile",
       "reportado": "Reported {tiempo}",
       "visibilidad": "Now: {visibilidad}"
+    },
+    "empresas": {
+      "pestana": "Companies",
+      "titulo": "Companies",
+      "entradilla": "Paste a company's job board link (Greenhouse, Lever or Ashby) and every morning its tech, fully remote offers will come in as pending.",
+      "anadir": "Add company",
+      "nombre": "Name",
+      "pagina": "Job board",
+      "paginaAyuda": "For example: boards.greenhouse.io/company, jobs.lever.co/company or jobs.ashbyhq.com/company",
+      "guardar": "Add",
+      "guardando": "Saving…",
+      "cambiarPagina": "Change job board",
+      "quitarPagina": "Remove",
+      "ponerPagina": "Add job board",
+      "sincronizar": "Read its offers every day",
+      "bloqueada": "Don't publish its offers",
+      "bloqueadaAyuda": "The company asked us not to show them. Its pending automatic offers are discarded.",
+      "ofertas": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+      "leida": "Read {tiempo}",
+      "sinLeer": "Not read yet: it will be read tomorrow morning.",
+      "error": "Last error: {error}",
+      "conAts": "With job board",
+      "sinAts": "Without job board",
+      "vacio": "No companies yet.",
+      "errores": {
+        "nombre": "The name must be between 2 and 80 characters.",
+        "ats": "That link isn't a Greenhouse, Lever or Ashby job board.",
+        "empresa": "That company no longer exists.",
+        "desconocido": "Couldn't save. Please try again."
+      },
+      "cancelar": "Cancel"
     }
   },
   "formulario": {

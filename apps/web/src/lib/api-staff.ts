@@ -49,8 +49,18 @@ export async function listarEmpresas(): Promise<EmpresaStaff[]> {
   return pedir<EmpresaStaff[]>("/staff/empresas", await conCookie());
 }
 
-export async function crearEmpresa(nombre: string, web: string): Promise<EmpresaStaff> {
-  return pedir<EmpresaStaff>("/staff/empresas", await conCookie({ method: "POST", body: JSON.stringify({ nombre, web }) }));
+export async function crearEmpresa(nombre: string, web: string, paginaEmpleo?: string): Promise<EmpresaStaff> {
+  return pedir<EmpresaStaff>(
+    "/staff/empresas",
+    await conCookie({ method: "POST", body: JSON.stringify({ nombre, web, ...(paginaEmpleo !== undefined && { paginaEmpleo }) }) }),
+  );
+}
+
+export type CambiosEmpresa = { paginaEmpleo?: string; sincronizar?: boolean; bloqueada?: boolean };
+
+/** Página de empleo, leer cada día y "no publicar". */
+export async function configurarEmpresaEnApi(id: string, cambios: CambiosEmpresa): Promise<EmpresaStaff> {
+  return pedir<EmpresaStaff>(`/staff/empresas/${encodeURIComponent(id)}`, await conCookie({ method: "PATCH", body: JSON.stringify(cambios) }));
 }
 
 /** Crea (sin id) o edita (con id). Si algo está mal, lanza ErrorDeApi con `campos`. */

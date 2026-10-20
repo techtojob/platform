@@ -44,6 +44,8 @@ export async function guardarOferta(
     if (publicar) await accionOferta(guardadaId, { accion: "publicar", comprobaciones: publicar });
   } catch (error) {
     if (error instanceof ErrorDeApi && Object.keys(error.campos).length) return { errores: error.campos };
+    // Se guardó, pero no se pudo publicar: una automática necesita un resumen propio.
+    if (error instanceof ErrorDeApi && error.codigo === "resumen") return { errores: { resumen: "propio" } };
     return { error: error instanceof ErrorDeApi ? error.codigo : "desconocido" };
   }
   revalidatePath("/[locale]/staff", "layout");

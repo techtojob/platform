@@ -79,6 +79,11 @@ type Props = {
   ofertaId: string | null;
   /** "Ahora" del servidor, para la vista previa (así no cambia entre servidor y navegador). */
   ahora: number;
+  /**
+   * Si la oferta es automática (leída de la página de empleo de la empresa), su texto original.
+   * Solo lo ve el staff: para publicarla hace falta un resumen propio, salvo que la empresa lo autorice.
+   */
+  original?: { texto: string | null } | null;
 };
 
 /**
@@ -86,7 +91,7 @@ type Props = {
  * enlace → la oferta → el puesto → dónde → salario → idiomas. A la derecha (abajo en el móvil),
  * la vista previa en el listado, lo que falta y los botones para guardar o publicar.
  */
-export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) {
+export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null }: Props) {
   const t = useTranslations("staff");
   const tr = useTranslations();
   const locale = useLocale();
@@ -95,6 +100,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
 
   const [v, ponerValores] = useState<ValoresOferta>(inicial);
   const [intentado, intentar] = useState(false);
+  const [intentoPublicar, intentarPublicar] = useState(false);
   const [erroresServidor, ponerErroresServidor] = useState<Record<string, string>>({});
   const [errorGeneral, ponerErrorGeneral] = useState<string | null>(null);
   const [comprobaciones, marcar] = useState<Comprobacion[]>([]);
@@ -124,7 +130,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
     if (!v.sinSalario && !v.salarioMin.trim() && !v.salarioMax.trim()) e.salario = "falta";
     return e;
   }, [v]);
-  const visibles = intentado ? { ...errores, ...erroresServidor } : erroresServidor;
+  // Una automática sin autorización se publica con un resumen propio (el texto de la empresa no es nuestro).
+  const faltaResumen = !!original && !v.autorizada && !v.resumen.trim();
+  const visibles = intentado
+    ? { ...errores, ...(intentoPublicar && faltaResumen ? { resumen: "propio" } : {}), ...erroresServidor }
+    : erroresServidor;
   const mensajeError = (campo: string) => {
     const codigo = visibles[campo];
     if (!codigo) return undefined;
@@ -144,8 +154,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
 
   function enviar(publicar: boolean) {
     intentar(true);
+    intentarPublicar(publicar);
     ponerErrorGeneral(null);
-    const listos = Object.keys(errores).length === 0 && (!publicar || COMPROBACIONES.every((c) => comprobaciones.includes(c)));
+    const listos =
+      Object.keys(errores).length === 0 &&
+      (!publicar || (COMPROBACIONES.every((c) => comprobaciones.includes(c)) && !faltaResumen));
     if (!listos) {
       requestAnimationFrame(() => alerta.current?.focus());
       return;
@@ -279,8 +292,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
             )}
           </div>
           <AreaTexto
-            etiqueta={t("form.resumen")}
-            ayuda={t("form.resumenAyuda", { max: LIMITES.resumen.max, quedan: LIMITES.resumen.max - v.resumen.length })}
+            etiqueta={original && !v.autorizada ? t("form.resumenObligatorio") : t("form.resumen")}
+            ayuda={t(original && !v.autorizada ? "form.resumenAyudaAutomatica" : "form.resumenAyuda", {
+              max: LIMITES.resumen.max,
+              quedan: LIMITES.resumen.max - v.resumen.length,
+            })}
             rows={2}
             maxLength={LIMITES.resumen.max}
             value={v.resumen}
@@ -288,7 +304,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
             error={mensajeError("resumen")}
           />
           <AreaTexto
-            etiqueta={t("form.descripcion")}
+            etiqueta={original && !v.autorizada ? t("form.descripcionAutomatica") : t("form.descripcion")}
             ayuda={t("form.descripcionAyuda")}
             rows={8}
             maxLength={LIMITES.descripcion.max}
@@ -296,6 +312,20 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora }: Props) 
             onChange={(e) => cambiar({ descripcion: e.target.value })}
             error={mensajeError("descripcion")}
           />
+          {original && (
+            <details className="group rounded-2xl border border-dashed border-borde-fuerte p-4">
+              <summary className="cursor-pointer list-none text-sm font-bold">
+                <span className="mr-2 inline-block transition-transform group-open:rotate-90" aria-hidden>
+                  ▸
+                </span>
+                {t("detalle.original")}
+              </summary>
+              <p className="mt-2 text-sm text-suave">{t("detalle.originalAyuda")}</p>
+              <div className="mt-3 max-h-80 overflow-y-auto whitespace-pre-line border-t border-borde pt-3 text-sm leading-relaxed" lang={v.idioma}>
+                {original.texto || t("detalle.originalVacio")}
+              </div>
+            </details>
+          )}
         </Seccion>
 
         <Seccion id="seccion-puesto" numero={3} titulo={t("form.seccionPuesto")}>

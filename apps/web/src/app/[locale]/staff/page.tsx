@@ -68,6 +68,12 @@ async function Contenido({ searchParams }: Pick<Props, "searchParams">) {
           );
         })}
         <Link
+          href="/staff/empresas"
+          className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-chip px-4 text-sm font-bold text-texto transition-colors hover:bg-hover"
+        >
+          {t("empresas.pestana")}
+        </Link>
+        <Link
           href="/staff/reportes"
           className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-chip px-4 text-sm font-bold text-texto transition-colors hover:bg-hover"
         >

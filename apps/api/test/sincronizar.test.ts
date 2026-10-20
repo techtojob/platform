@@ -6,6 +6,7 @@ import { empresas, ofertaIdiomas, ofertas } from "../src/db/esquema";
 import { esRemoto, esTecnica, filtrar, leerAts, zonaRemoto, type OfertaAts } from "../src/servicios/ats";
 import type { Pedir } from "../src/servicios/importar";
 import { configurarEmpresa, crearEmpresa, ErrorStaff, publicarOferta } from "../src/servicios/ofertas-staff";
+import { obtenerOferta } from "../src/servicios/ofertas";
 import { sincronizarEmpresa, sincronizarTodas } from "../src/servicios/sincronizar";
 import { crearDbPrueba } from "./db";
 
@@ -353,6 +354,10 @@ describe("empresas y publicar", () => {
     await db.update(ofertas).set({ resumen: "Backend de pagos con TypeScript, 100 % remoto desde España." }).where(eq(ofertas.id, backend.id));
     await publicarOferta(db, backend.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, backend.id)))[0]!.estado).toBe("publicada");
+    // Lo público: el resumen propio, sin el texto de la empresa.
+    const publica = await obtenerOferta(db, backend.id);
+    expect(publica).toMatchObject({ resumen: "Backend de pagos con TypeScript, 100 % remoto desde España.", descripcion: null });
+    expect(JSON.stringify(publica)).not.toContain("payments platform");
 
     // Con autorización de la empresa, no hace falta resumen.
     await db.update(ofertas).set({ remotoDesde: "eu", autorizada: true }).where(eq(ofertas.id, sre.id));

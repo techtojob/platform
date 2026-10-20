@@ -19,6 +19,7 @@
         "/staff/ofertas/[id]": "/staff/ofertas/[id]",
         "/staff/ofertas/[id]/editar": "/staff/ofertas/[id]/editar",
         "/staff/reportes": "/staff/reportes",
+        "/staff/empresas": "/staff/empresas",
         "/componentes": "/componentes"
       }
     },
@@ -40,6 +41,7 @@
         "/staff/ofertas/[id]": "/staff/offers/[id]",
         "/staff/ofertas/[id]/editar": "/staff/offers/[id]/edit",
         "/staff/reportes": "/staff/reports",
+        "/staff/empresas": "/staff/companies",
         "/componentes": "/components"
       }
     }
