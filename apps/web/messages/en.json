@@ -812,7 +812,7 @@
         "sin_sesion": "Your session has expired. Please log in again.",
         "no_recruiter": "Only recruiters can post jobs."
       },
-      "empresaFija": "This is the company on your recruiter account. If you need to post for another one, contact us."
+      "empresaFija": "This is the company on your recruiter account. Need to post for another one? Email us at <correo>contacto@techtojob.com</correo> or <ticket>open a ticket on Discord</ticket>."
     },
     "prompt": {
       "pestana": "AI prompt",
@@ -1158,7 +1158,7 @@
     "linkedinAyuda": "Staff check it when reviewing your jobs.",
     "mensaje": "Anything else (optional)",
     "mensajeAyuda": "For example, which profiles you're looking for.",
-    "publico": "Your name, role and company will show on the jobs you post. Are you an agency or headhunter? Tell us in “Anything else” and we'll let you post for several companies.",
+    "publico": "Your name, role and company will show on the jobs you post.",
     "enviar": "Sign up and post a job",
     "enviando": "Saving…",
     "errorGeneral": "It couldn't be saved. Please try again.",
@@ -1189,6 +1189,7 @@
     "activoAyuda": "You can post your company's jobs: up to 3 at a time. We review them before they go live.",
     "activoAgencia": "As an agency, you can post jobs from any company: up to 3 at a time. We review them before they go live.",
     "bloqueado": "Your recruiter account is blocked: you can't post jobs.",
-    "bloqueadoAyuda": "If you think it's a mistake, contact us on Discord."
+    "bloqueadoAyuda": "If you think it's a mistake, contact us on Discord.",
+    "variasEmpresas": "Need to post jobs for more than one company (agency or headhunter)? Email us at <correo>contacto@techtojob.com</correo> or <ticket>open a ticket on Discord</ticket>."
   }
 }

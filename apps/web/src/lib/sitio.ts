@@ -8,6 +8,9 @@ export const LANDING_URL = (process.env.NEXT_PUBLIC_LANDING_URL ?? "https://tech
 
 export const sitio = {
   discord: "https://discord.gg/pzCa8esFGA",
+  /** Para escribirnos: el correo y el canal de tickets del Discord. */
+  correo: "contacto@techtojob.com",
+  tickets: "https://discord.com/channels/1500449244019036219/1500449247399641128",
   linkedin: "https://www.linkedin.com/company/techtojob/",
   x: "https://x.com/techtojob",
   instagram: "https://www.instagram.com/techtojob",

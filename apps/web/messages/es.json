@@ -812,7 +812,7 @@
         "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
         "no_recruiter": "Solo los recruiters pueden publicar ofertas."
       },
-      "empresaFija": "Es la empresa de tu cuenta de recruiter. Si necesitas publicar para otra, escríbenos."
+      "empresaFija": "Es la empresa de tu cuenta de recruiter. ¿Necesitas publicar para otra? Escríbenos a <correo>contacto@techtojob.com</correo> o <ticket>crea un ticket en el Discord</ticket>."
     },
     "prompt": {
       "pestana": "Prompt IA",
@@ -1158,7 +1158,7 @@
     "linkedinAyuda": "El staff lo mira al revisar tus ofertas.",
     "mensaje": "Algo más (opcional)",
     "mensajeAyuda": "Por ejemplo, qué perfiles buscáis.",
-    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques. ¿Eres de una agencia o headhunter? Cuéntalo en «Algo más» y te dejamos publicar para varias empresas.",
+    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques.",
     "enviar": "Registrarme y publicar una oferta",
     "enviando": "Guardando…",
     "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo.",
@@ -1189,6 +1189,7 @@
     "activoAyuda": "Puedes publicar ofertas de tu empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
     "activoAgencia": "Como agencia, puedes publicar ofertas de cualquier empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
     "bloqueado": "Tu cuenta de recruiter está bloqueada: no puedes publicar ofertas.",
-    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord."
+    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord.",
+    "variasEmpresas": "¿Necesitas publicar ofertas de más de una empresa (agencia o headhunter)? Escríbenos a <correo>contacto@techtojob.com</correo> o <ticket>crea un ticket en el Discord</ticket>."
   }
 }

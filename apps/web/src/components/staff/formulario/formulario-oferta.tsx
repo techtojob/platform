@@ -35,6 +35,7 @@ import { SelectorEmpresa } from "./selector-empresa";
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorRemoto } from "./selector-remoto";
 import { ResumirConIA } from "./resumir-con-ia";
+import { enlacesContacto } from "@/components/ui/contacto";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
 /** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña (uno para el staff y otro para el resto). */
@@ -298,7 +299,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             <div className="flex flex-col gap-1 rounded-2xl border border-borde p-4">
               <p className="text-sm font-bold">{t("form.empresaNombre")}</p>
               <p className="text-lg font-bold">{empresaFija}</p>
-              <p className="text-sm text-suave">{t("publicar.empresaFija")}</p>
+              <p className="text-sm text-suave">{t.rich("publicar.empresaFija", enlacesContacto)}</p>
             </div>
           ) : publico ? (
             <div className="grid gap-5 sm:grid-cols-2">
