@@ -563,7 +563,8 @@
       "descripcionRecruiter": "Job description",
       "descripcionAutorizada": "It's published as is, because the company authorises us.",
       "descripcionBloqueada": "Only published if the company authorises us: tick “The company authorises us to publish it” to write it.",
-      "faltaTextoIA": "To publish: paste the AI summary (summary and responsibilities), or tick that the company authorises us and add its description."
+      "faltaTextoIA": "To publish: paste the AI summary (summary and responsibilities), or tick that the company authorises us and add its description.",
+      "descripcionRecruiterAyuda": "Required. It's published as is: paste the whole job (tasks, requirements, what you offer). Leave a blank line between paragraphs."
     },
     "errores": {
       "falta": "This is missing.",

@@ -364,38 +364,43 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
               <p className="text-sm text-suave">{t("form.idiomaAyuda")}</p>
             )}
           </div>
-          <AreaTexto
-            etiqueta={t("form.resumen")}
-            ayuda={t("form.resumenAyuda", {
-              max: LIMITES.resumen.max,
-              quedan: LIMITES.resumen.max - v.resumen.length,
-            })}
-            rows={2}
-            maxLength={LIMITES.resumen.max}
-            value={v.resumen}
-            onChange={(e) => cambiar({ resumen: e.target.value })}
-            error={mensajeError("resumen")}
-          />
-          <AreaTexto
-            etiqueta={t("form.responsabilidades")}
-            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
-            rows={4}
-            value={v.responsabilidades}
-            onChange={(e) => cambiar({ responsabilidades: e.target.value })}
-            error={mensajeError("responsabilidades")}
-          />
-          <AreaTexto
-            etiqueta={t("form.requisitos")}
-            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
-            rows={4}
-            value={v.requisitos}
-            onChange={(e) => cambiar({ requisitos: e.target.value })}
-            error={mensajeError("requisitos")}
-          />
+          {/* Lo que escribe el staff con la IA. Un recruiter no lo necesita: su descripción se publica tal cual. */}
+          {!publico && (
+            <>
+            <AreaTexto
+              etiqueta={t("form.resumen")}
+              ayuda={t("form.resumenAyuda", {
+                max: LIMITES.resumen.max,
+                quedan: LIMITES.resumen.max - v.resumen.length,
+              })}
+              rows={2}
+              maxLength={LIMITES.resumen.max}
+              value={v.resumen}
+              onChange={(e) => cambiar({ resumen: e.target.value })}
+              error={mensajeError("resumen")}
+            />
+            <AreaTexto
+              etiqueta={t("form.responsabilidades")}
+              ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+              rows={4}
+              value={v.responsabilidades}
+              onChange={(e) => cambiar({ responsabilidades: e.target.value })}
+              error={mensajeError("responsabilidades")}
+            />
+            <AreaTexto
+              etiqueta={t("form.requisitos")}
+              ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+              rows={4}
+              value={v.requisitos}
+              onChange={(e) => cambiar({ requisitos: e.target.value })}
+              error={mensajeError("requisitos")}
+            />
+            </>
+          )}
           {/* El texto de la empresa: solo se publica si nos autoriza (las de recruiters lo están). */}
           <AreaTexto
             etiqueta={publico ? t("form.descripcionRecruiter") : t("form.descripcionEmpresa")}
-            ayuda={publico ? t("form.descripcionAyuda") : v.autorizada ? t("form.descripcionAutorizada") : t("form.descripcionBloqueada")}
+            ayuda={publico ? t("form.descripcionRecruiterAyuda") : v.autorizada ? t("form.descripcionAutorizada") : t("form.descripcionBloqueada")}
             rows={8}
             maxLength={LIMITES.descripcion.max}
             value={v.descripcion}

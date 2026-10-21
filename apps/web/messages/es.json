@@ -563,7 +563,8 @@
       "descripcionRecruiter": "Descripción de la oferta",
       "descripcionAutorizada": "Se publica tal cual, porque la empresa nos autoriza.",
       "descripcionBloqueada": "Solo se publica si la empresa nos autoriza: marca «La empresa nos autoriza a publicarla» para poder escribirla.",
-      "faltaTextoIA": "Para publicar: pega el resumen de la IA (resumen y responsabilidades), o marca que la empresa nos autoriza y pon su descripción."
+      "faltaTextoIA": "Para publicar: pega el resumen de la IA (resumen y responsabilidades), o marca que la empresa nos autoriza y pon su descripción.",
+      "descripcionRecruiterAyuda": "Obligatoria. Se publica tal cual: copia la oferta entera (tareas, requisitos, qué ofrecéis). Deja una línea en blanco entre párrafos."
     },
     "errores": {
       "falta": "Falta este dato.",
