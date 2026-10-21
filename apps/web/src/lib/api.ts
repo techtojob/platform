@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -105,6 +105,44 @@ export function guardarUbicacionEnApi(cookie: string, pais: string, region: stri
   });
 }
 
+/* ── Recruiters y sus ofertas ── */
+
+export function miRecruiterEnApi(cookie: string): Promise<MiRecruiter | null> {
+  return pedir<MiRecruiter | null>("/cuenta/recruiter", { headers: { cookie } });
+}
+
+export function solicitarRecruiterEnApi(cookie: string, datos: unknown): Promise<MiRecruiter> {
+  return pedir<MiRecruiter>("/cuenta/recruiter", {
+    method: "PUT",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
+
+export function misOfertasEnApi(cookie: string): Promise<MisOfertas> {
+  return pedir<MisOfertas>("/cuenta/ofertas", { headers: { cookie } });
+}
+
+export function subirOfertaEnApi(cookie: string, datos: unknown): Promise<{ id: string }> {
+  return pedir<{ id: string }>("/cuenta/ofertas", {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
+
+export function retirarOfertaEnApi(cookie: string, id: string): Promise<MisOfertas> {
+  return pedir<MisOfertas>(`/cuenta/ofertas/${encodeURIComponent(id)}/retirar`, { method: "POST", headers: { cookie } });
+}
+
+export function importarComoUsuarioEnApi(cookie: string, url: string): Promise<OfertaImportada> {
+  return pedir<OfertaImportada>("/cuenta/ofertas/importar", {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+}
+
 /** ¿Lleva la cookie de sesión de Better Auth? Si no, ni se pregunta al API. */
 export function tieneCookieDeSesion(cookie: string): boolean {
   return /(^|;\s*)(__Secure-)?better-auth\.session_token=/.test(cookie);
@@ -157,6 +195,15 @@ export function reportarPerfilEnApi(cookie: string, alias: string, motivo: strin
     method: "POST",
     headers: { cookie, "content-type": "application/json" },
     body: JSON.stringify({ motivo }),
+  });
+}
+
+/** Reportar una oferta o a quien la publicó ("recruiter"). */
+export function reportarOfertaEnApi(cookie: string, id: string, motivo: string, sobre: "oferta" | "recruiter"): Promise<{ ok: true }> {
+  return pedir(`/ofertas/${encodeURIComponent(id)}/reportar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ motivo, sobre }),
   });
 }
 

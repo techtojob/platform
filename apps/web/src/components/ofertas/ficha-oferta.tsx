@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso, AvatarBlob, clasesBoton, Etiqueta } from "@/components/ui";
+import { ReportarOferta } from "./reportar-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { CopiarEnlace } from "./copiar-enlace";
 import { useDondeRemoto, useLugarCorto, useSalario } from "./datos-oferta";
@@ -18,6 +19,8 @@ type Props = {
   desde: string | null;
   parecidas: OfertaListado[];
   ahora: number;
+  /** Para reportar hay que haber iniciado sesión. */
+  conSesion: boolean;
 };
 
 /**
@@ -26,7 +29,7 @@ type Props = {
  * la descripción y ofertas parecidas. A la derecha, la tarjeta turquesa para aplicar
  * (en el móvil, una barra fija abajo).
  */
-export function FichaOferta({ oferta, hablo, desde, parecidas, ahora }: Props) {
+export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion }: Props) {
   const t = useTranslations();
   const locale = useLocale();
   const format = useFormatter();
@@ -88,6 +91,12 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora }: Props) {
           <Etiqueta tono="borde" className="py-2">
             {t("ofertas.publicada", { tiempo: format.relativeTime(new Date(oferta.publicadaEn), ahora) })}
           </Etiqueta>
+          {/* La publicó un recruiter: quién es. */}
+          {oferta.recruiter && (
+            <Etiqueta tono="postit" className="py-2">
+              {t("recruiter.publicadaPor", { nombre: oferta.recruiter.nombre, cargo: t(`recruiter.cargos.${oferta.recruiter.cargo}`), empresa: oferta.recruiter.empresa })}
+            </Etiqueta>
+          )}
         </p>
       </Portada>
 
@@ -164,6 +173,7 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora }: Props) {
                 {!oferta.resumen && parrafos.length === 0 && <p className="text-suave">{t("ofertas.sinDescripcion")}</p>}
               </div>
             </div>
+            <ReportarOferta id={oferta.id} recruiter={oferta.recruiter?.nombre ?? null} conSesion={conSesion} />
 
             {parecidas.length > 0 && (
               <section aria-labelledby="parecidas" className="flex flex-col gap-4">

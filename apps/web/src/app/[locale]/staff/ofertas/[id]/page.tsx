@@ -7,6 +7,8 @@ import { useLugarCorto, useSalario } from "@/components/ofertas/datos-oferta";
 import { AccionesOferta } from "@/components/staff/acciones-oferta";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarBlob, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
+import { CopiarTexto } from "@/components/staff/copiar-texto";
+import { promptConOferta } from "@/lib/prompt-ia";
 import { Link } from "@/i18n/navigation";
 import { exigirStaff, obtenerOfertaStaff, siguienteStaff } from "@/lib/api-staff";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
@@ -106,6 +108,34 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
                 {t(`staff.cadena.hecho.${hecho}`)}
               </p>
             )}
+            {oferta.origen === "usuario" && (
+              <div className="flex flex-col gap-1 rounded-tarjeta bg-postit px-5 py-3 text-sm text-ink">
+                <p className="font-bold">
+                  {oferta.autor
+                    ? t("staff.detalle.subidaPor", { nombre: oferta.autor.nombre, email: oferta.autor.email })
+                    : t("staff.detalle.subidaPorBorrada")}
+                </p>
+                {/* Quién es como recruiter: lo que hay que mirar para fiarse de la oferta. */}
+                {oferta.autor?.recruiter && (
+                  <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span>
+                      {t(`recruiter.cargos.${oferta.autor.recruiter.cargo}`)} · {oferta.autor.recruiter.empresa}
+                    </span>
+                    <a href={oferta.autor.recruiter.linkedin} target="_blank" rel="noopener noreferrer" className="font-bold underline">
+                      LinkedIn
+                    </a>
+                    <span className="font-bold">
+                      {oferta.autor.recruiter.emailEmpresa ? t("staff.recruiters.emailEmpresa") : t("staff.recruiters.emailOtro")}
+                    </span>
+                    {oferta.autor.recruiter.agencia && <span className="font-bold">{t("staff.recruiters.agencia")}</span>}
+                    {oferta.autor.recruiter.estado === "bloqueado" && <span className="font-bold text-peligro">{t("staff.recruiters.estados.bloqueado")}</span>}
+                    <Link href={{ pathname: "/staff/recruiters" }} className="underline">
+                      {t("staff.recruiters.ver")}
+                    </Link>
+                  </p>
+                )}
+              </div>
+            )}
             {(oferta.estado === "rechazada" || oferta.estado === "cerrada") && oferta.motivoRechazo && (
               <p className="rounded-tarjeta border border-peligro bg-tarjeta p-5 font-bold">
                 {t("staff.lista.motivo", { motivo: oferta.motivoRechazo })}
@@ -126,6 +156,19 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
             >
               {t("staff.editar")}
             </Link>
+            {/* El prompt para la IA con esta oferta ya dentro: se pega en ChatGPT o Claude y sale el resumen. */}
+            <CopiarTexto
+              variante="secundario"
+              className="w-full"
+              etiqueta={t("staff.prompt.copiarConOferta")}
+              texto={promptConOferta({
+                titulo: oferta.titulo,
+                empresa: oferta.empresa.nombre,
+                texto: oferta.descripcionOriginal || oferta.descripcion || oferta.resumen,
+                enlace: oferta.urlOriginal,
+                donde: dondeParaPrompt(oferta),
+              })}
+            />
             {oferta.estado === "publicada" && !caducada && (
               <Link
                 href={{ pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } }}
@@ -231,4 +274,15 @@ function TextoOriginal({ oferta }: { oferta: OfertaStaff }) {
       </div>
     </details>
   );
+}
+
+/** "Remoto desde: España, México" o "Híbrido en Madrid (España)", en español, para el prompt de la IA. */
+function dondeParaPrompt(o: { modalidad: string; remotoMundo: boolean; remotoPaises: string[]; ciudad: string | null; pais: string | null }): string | null {
+  const pais = (c: string) => new Intl.DisplayNames(["es"], { type: "region" }).of(c) ?? c;
+  if (o.modalidad === "remoto") {
+    if (o.remotoMundo) return "Remoto desde cualquier país";
+    return o.remotoPaises.length ? `Remoto desde ${o.remotoPaises.map(pais).join(", ")}` : null;
+  }
+  const lugar = [o.ciudad, o.pais && pais(o.pais)].filter(Boolean).join(", ");
+  return lugar ? `${o.modalidad === "hibrido" ? "Híbrido" : "Presencial"} en ${lugar}` : null;
 }

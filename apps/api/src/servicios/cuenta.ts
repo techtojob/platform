@@ -1,8 +1,9 @@
 import type { Cuenta } from "@techtojob/shared";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, reportesPerfil, sesiones, usuarios } from "../db/esquema";
+import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
+import { resumenRecruiter } from "./recruiters";
 
 export type { Cuenta } from "@techtojob/shared";
 
@@ -14,10 +15,11 @@ export async function datosCuenta(
   usuario: Usuario,
   opciones: { discordDisponible: boolean; invitacion: string | null; esStaff: boolean },
 ): Promise<Cuenta> {
-  const [vinculadas, [estado], [perfil]] = await Promise.all([
+  const [vinculadas, [estado], [perfil], recruiter] = await Promise.all([
     db.select({ id: cuentas.id, proveedor: cuentas.providerId, idExterno: cuentas.accountId }).from(cuentas).where(eq(cuentas.userId, usuario.id)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, usuario.id)).limit(1),
     db.select({ pais: perfiles.pais }).from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
+    resumenRecruiter(db, usuario.id),
   ]);
   const [ubicacion] = await db.select({ pais: usuarios.pais, region: usuarios.region }).from(usuarios).where(eq(usuarios.id, usuario.id)).limit(1);
   const discord = vinculadas.find((c) => c.proveedor === "discord");
@@ -32,6 +34,7 @@ export async function datosCuenta(
     proveedores: vinculadas.map((c) => c.proveedor),
     ubicacion: ubicacion?.pais ? { pais: ubicacion.pais, region: ubicacion.region } : null,
     pais: ubicacion?.pais ?? perfil?.pais ?? null,
+    recruiter,
     discord: {
       disponible: opciones.discordDisponible,
       vinculado: !!discord,
@@ -52,6 +55,8 @@ export async function datosCuenta(
  */
 export async function borrarCuenta(db: Db, userId: string) {
   await db.update(ofertas).set({ revisadaPor: null }).where(eq(ofertas.revisadaPor, userId));
+  // Las ofertas que subió y nadie ha revisado aún se borran; las ya publicadas se quedan, sin autor.
+  await db.delete(ofertas).where(and(eq(ofertas.autorId, userId), eq(ofertas.estado, "pendiente")));
   await db.delete(usuarios).where(eq(usuarios.id, userId));
 }
 
@@ -60,7 +65,7 @@ export async function borrarCuenta(db: Db, userId: string) {
  * Sin tokens ni datos internos de seguridad.
  */
 export async function exportarDatos(db: Db, userId: string) {
-  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas] = await Promise.all([
+  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas, [recruiter], otrosReportes] = await Promise.all([
     db.select().from(usuarios).where(eq(usuarios.id, userId)).limit(1),
     db.select({ proveedor: cuentas.providerId, creadaEn: cuentas.createdAt }).from(cuentas).where(eq(cuentas.userId, userId)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1),
@@ -72,6 +77,15 @@ export async function exportarDatos(db: Db, userId: string) {
       .innerJoin(perfiles, eq(perfiles.userId, reportesPerfil.perfilUserId))
       .where(eq(reportesPerfil.reportadoPor, userId)),
     db.select({ creadaEn: sesiones.createdAt, caducaEn: sesiones.expiresAt, ip: sesiones.ipAddress, navegador: sesiones.userAgent }).from(sesiones).where(eq(sesiones.userId, userId)),
+    db
+      .select({ titulo: ofertas.titulo, enlace: ofertas.urlOriginal, estado: ofertas.estado, creadaEn: ofertas.creadaEn, publicadaEn: ofertas.publicadaEn })
+      .from(ofertas)
+      .where(eq(ofertas.autorId, userId)),
+    db.select().from(recruiters).where(eq(recruiters.userId, userId)).limit(1),
+    db
+      .select({ oferta: reportes.ofertaId, recruiter: reportes.recruiterId, motivo: reportes.motivo, creadoEn: reportes.creadoEn })
+      .from(reportes)
+      .where(eq(reportes.reportadoPor, userId)),
   ]);
   return {
     exportadoEn: new Date().toISOString(),
@@ -90,8 +104,17 @@ export async function exportarDatos(db: Db, userId: string) {
     discord: discord ? { id: discord.discordId, nombre: discord.nombre, enServidor: discord.enServidor, roles: discord.roles, comprobadoEn: discord.comprobadoEn } : null,
     perfilDeTalento: perfil ? (({ userId: _u, ...resto }) => resto)(perfil) : null,
     emblemas: susEmblemas.map(({ tipo, nombre, otorgadoEn, caducaEn }) => ({ tipo, nombre, otorgadoEn, caducaEn })),
-    reportesQueHiciste: reportesHechos,
+    reportesQueHiciste: [
+      ...reportesHechos.map((r) => ({ de: "perfil", ...r })),
+      ...otrosReportes.map((r) => ({ de: r.oferta ? "oferta" : "recruiter", motivo: r.motivo, creadoEn: r.creadoEn })),
+    ],
     sesiones: sesionesActivas,
+    ofertasQueSubiste: ofertasSubidas,
+    recruiter: recruiter
+      ? (({ cargo, empresaNombre, empresaWeb, linkedin, mensaje, estado, agencia, motivo, creadaEn }) => ({
+          cargo, empresa: empresaNombre, web: empresaWeb, linkedin, mensaje, estado, agencia, motivo, registradoEn: creadaEn,
+        }))(recruiter)
+      : null,
   };
 }
 

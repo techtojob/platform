@@ -18,6 +18,7 @@
     "ofertas:common-crawl:ci": "tsx scripts/common-crawl.ts",
     "db:migrar:produccion": "tsx --env-file=.produccion.vars scripts/migrar.ts",
     "ofertas:sincronizar": "tsx --env-file=.dev.vars scripts/sincronizar.ts",
+    "ofertas:borrar-todas": "tsx --env-file=.dev.vars scripts/borrar-ofertas.ts",
     "ofertas:sincronizar:ci": "tsx scripts/sincronizar.ts"
   },
   "dependencies": {

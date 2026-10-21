@@ -6,6 +6,7 @@ import { Buscador } from "@/components/buscador";
 import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
 import { Portada, Resaltado } from "@/components/sitio/portada";
 import { Aviso } from "@/components/ui";
+import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
 /** Inicio de la bolsa: portada con el buscador y, debajo, el listado de ofertas. */
@@ -24,6 +25,16 @@ export default function Inicio({ params, searchParams }: PageProps<"/[locale]">)
       >
         <div className="mt-8 w-full max-w-2xl">
           <Buscador />
+          {/* Para quien contrata: cualquiera con cuenta puede subir ofertas (las revisa el staff). */}
+          <p className="mt-4 text-sm text-suave">
+            {t.rich("ofertas.publicarLlamada", {
+              enlace: (texto) => (
+                <Link href="/cuenta/ofertas/nueva" className="font-bold text-enlace underline">
+                  {texto}
+                </Link>
+              ),
+            })}
+          </p>
         </div>
       </Portada>
 

@@ -28,7 +28,12 @@ export async function MenuCuenta() {
     <>
       {/* Sin país todavía: a completar la cuenta. */}
       {!cuenta.ubicacion && <ExigirUbicacion />}
-      <DesplegableCuenta nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} esStaff={cuenta.esStaff} />
+      <DesplegableCuenta
+        nombre={cuenta.usuario.nombre}
+        imagen={cuenta.usuario.imagen}
+        esStaff={cuenta.esStaff}
+        recruiter={cuenta.recruiter?.estado ?? null}
+      />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { adivinarPuesto, detectarIdiomaTexto, detectarIdiomasPedidos, detectarTecnologias, type OfertaRepetida } from "@techtojob/shared";
+import { adivinarPuesto, detectarIdiomaTexto, detectarIdiomasPedidos, detectarTecnologias, type OfertaImportada, type OfertaRepetida } from "@techtojob/shared";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { comprobarEnlace, importarDesdeEnlace } from "@/app/[locale]/staff/acciones";
@@ -21,12 +21,17 @@ export function PasoEnlace({
   onCambio,
   ofertaId,
   error,
+  publico = false,
+  importar = importarDesdeEnlace,
 }: {
   valores: ValoresOferta;
   onCambio: (v: ValoresOferta) => void;
   /** Al editar: la propia oferta no cuenta como repetida, y no se ofrece rellenar. */
   ofertaId: string | null;
   error?: string;
+  /** La sube cualquiera (no el staff): no se comprueba al pegar y la repetida no se enlaza. */
+  publico?: boolean;
+  importar?: (url: string) => Promise<OfertaImportada | { error: string }>;
 }) {
   const t = useTranslations("staff.form");
   const [repetida, ponerRepetida] = useState<OfertaRepetida | null>(null);
@@ -37,6 +42,7 @@ export function PasoEnlace({
   const nombres = (campos: string[]) => campos.map((c) => t(`rellenado.${c}` as "rellenado.titulo")).join(", ");
 
   function comprobar(url: string) {
+    if (publico) return;
     if (!/^https?:\/\/\S+\.\S+/.test(url.trim())) return ponerRepetida(null);
     comprobarEnlace(url, ofertaId).then(ponerRepetida);
   }
@@ -44,7 +50,7 @@ export function PasoEnlace({
   function rellenar() {
     ponerMensaje(null);
     empezar(async () => {
-      const r = await importarDesdeEnlace(valores.urlOriginal);
+      const r = await importar(valores.urlOriginal);
       if ("error" in r) return ponerMensaje({ tono: "mal", texto: t("importarError") });
       ponerRepetida(r.repetida);
       if (r.fuente === "nada") {
@@ -116,10 +122,16 @@ export function PasoEnlace({
 
       {repetida && (
         <p role="alert" className="rounded-2xl bg-postit p-4 text-sm font-bold text-ink">
-          {t("repetida", { titulo: repetida.titulo, empresa: repetida.empresa, estado: t(`estados.${repetida.estado}`) })}{" "}
-          <Link href={{ pathname: "/staff/ofertas/[id]", params: { id: repetida.id } }} className="underline">
-            {t("verRepetida")}
-          </Link>
+          {publico ? (
+            t("repetidaPublica", { titulo: repetida.titulo, empresa: repetida.empresa })
+          ) : (
+            <>
+              {t("repetida", { titulo: repetida.titulo, empresa: repetida.empresa, estado: t(`estados.${repetida.estado}`) })}{" "}
+              <Link href={{ pathname: "/staff/ofertas/[id]", params: { id: repetida.id } }} className="underline">
+                {t("verRepetida")}
+              </Link>
+            </>
+          )}
         </p>
       )}
 

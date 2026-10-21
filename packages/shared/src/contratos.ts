@@ -40,6 +40,8 @@ export type OfertaDetalle = OfertaListado & {
   autorizada: boolean;
   /** Fecha ISO en que deja de salir (para Google: validThrough). */
   caducaEn: string | null;
+  /** Si la publicó un recruiter: quién es (sale en la oferta). */
+  recruiter: { nombre: string; cargo: import("./recruiters").CargoRecruiter; empresa: string } | null;
 };
 
 /** Respuesta de GET /ofertas/mapa y GET /talento/mapa: lo justo para el mapa del sitio. */
@@ -84,6 +86,8 @@ export type Cuenta = {
   ubicacion: { pais: string; region: string | null } | null;
   /** País para enseñarle las ofertas que puede hacer desde allí: el de su cuenta o, si no, el de su perfil. */
   pais: string | null;
+  /** Si se ha registrado como recruiter (solo los activos publican ofertas). */
+  recruiter: { estado: "activo" | "bloqueado"; agencia: boolean; empresa: string } | null;
   discord: {
     /** Si en este entorno se puede vincular Discord (está configurado). */
     disponible: boolean;
@@ -135,8 +139,22 @@ export type DatosOferta = {
 
 /** Una oferta vista por el staff: todo, en cualquier estado. */
 export type OfertaStaff = DatosOferta & {
-  /** "manual" (la metió el staff) o "automatica" (leída de la página de empleo de la empresa). */
+  /** "manual" (la metió el staff), "automatica" (leída de la página de empleo de la empresa) o "usuario" (la subió alguien desde la web). */
   origen: OrigenOferta;
+  /** Si la subió un recruiter desde la web: quién es (null si borró su cuenta). */
+  autor: {
+    id: string;
+    nombre: string;
+    email: string;
+    recruiter: {
+      cargo: import("./recruiters").CargoRecruiter;
+      empresa: string;
+      linkedin: string;
+      agencia: boolean;
+      emailEmpresa: boolean;
+      estado: import("./recruiters").EstadoRecruiter;
+    } | null;
+  } | null;
   /** Si es automática, de qué ATS viene. */
   fuenteAts: Ats | null;
   /** Si es automática, el texto original de la empresa. SOLO para el staff: no se publica. */
@@ -151,6 +169,42 @@ export type OfertaStaff = DatosOferta & {
   publicadaEn: string | null;
   caducaEn: string | null;
   revisadaEn: string | null;
+};
+
+/* ── Ofertas que sube cualquiera ──────────────────────────────── */
+
+/** Cuántas ofertas puede tener una cuenta a la vez (pendientes de revisar + publicadas sin caducar). */
+export const LIMITE_OFERTAS_USUARIO = 3;
+
+/**
+ * Lo que manda quien sube una oferta (POST /mis-ofertas): como la del staff, pero la empresa
+ * se escribe (nombre y web) en vez de elegirse, y no puede marcar "autorizada".
+ */
+export type DatosOfertaUsuario = Omit<DatosOferta, "empresaId" | "autorizada"> & {
+  empresa: { nombre: string; web: string | null };
+};
+
+/** Una oferta en "Mis ofertas". */
+export type MiOferta = {
+  id: string;
+  slug: string;
+  titulo: string;
+  empresa: string;
+  /** "caducada": estaba publicada y ya pasó su fecha. "retirada": la quitó quien la subió. */
+  estado: "pendiente" | "publicada" | "rechazada" | "caducada" | "retirada";
+  motivoRechazo: string | null;
+  /** Fechas ISO. */
+  creadaEn: string;
+  publicadaEn: string | null;
+  caducaEn: string | null;
+};
+
+/** GET /mis-ofertas */
+export type MisOfertas = {
+  ofertas: MiOferta[];
+  limite: number;
+  /** Las que cuentan para el límite (pendientes + publicadas sin caducar). */
+  enMarcha: number;
 };
 
 /** Lo que el staff marca antes de publicar: lo que promete el post-it del listado. */
@@ -300,6 +354,25 @@ export type MiPerfil = {
 };
 
 /** Un reporte de perfil para el staff. */
+/** Un reporte de una oferta, para el staff (GET /staff/reportes-ofertas). */
+export type ReporteOferta = {
+  id: string;
+  oferta: { id: string; slug: string; titulo: string; empresa: string; estado: EstadoOferta };
+  motivo: string;
+  creadoEn: string;
+};
+
+/** Un reporte de un recruiter, para el staff (GET /staff/reportes-recruiters). */
+export type ReporteRecruiter = {
+  id: string;
+  recruiter: { id: string; nombre: string; email: string; empresa: string; estado: import("./recruiters").EstadoRecruiter };
+  motivo: string;
+  creadoEn: string;
+};
+
+/** Cuántos reportes hay sin revisar de cada cosa (para las pestañas del panel). */
+export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number };
+
 export type ReportePerfil = {
   id: string;
   perfil: { alias: string; nombre: string; titular: string; visibilidad: VisibilidadPerfil };

@@ -1,7 +1,7 @@
-import type { DatosOferta } from "./contratos";
+import type { DatosOferta, DatosOfertaUsuario } from "./contratos";
 import { MONEDAS } from "./contratos";
 import { PAISES } from "./paises";
-import { ordenarPaises } from "./remoto";
+import { ordenarPaises, PAISES_PUBLICO } from "./remoto";
 import { esIdioma, NIVELES_IDIOMA } from "./idiomas";
 import { AREAS, MODALIDADES, SENIORITY } from "./listas";
 import { TECNOLOGIAS } from "./tecnologias";
@@ -157,6 +157,47 @@ export function validarOferta(entrada: unknown): Resultado {
       autorizada: e.autorizada === true,
     },
   };
+}
+
+/**
+ * ¿Se puede hacer desde España o Latinoamérica? Es lo único que publica la bolsa por ahora.
+ * Remoto: desde cualquier país o desde alguno de esos. Híbrido o presencial: en alguno de esos países.
+ */
+export function esDeEspanaOLatam(d: Pick<DatosOferta, "modalidad" | "remotoMundo" | "remotoPaises" | "pais">): boolean {
+  if (d.modalidad === "remoto") return d.remotoMundo || d.remotoPaises.some((p) => PAISES_PUBLICO.includes(p));
+  return !!d.pais && PAISES_PUBLICO.includes(d.pais);
+}
+
+/**
+ * Comprueba una oferta que sube cualquiera desde la web: las mismas reglas que las del staff y, además,
+ * - la empresa se escribe: { empresa: { nombre, web? } };
+ * - tiene que poderse hacer desde España o Latinoamérica (código "fuera" en remotoPaises o pais);
+ * - hay que marcar que es real y que tiene permiso para publicarla (declaracion: true).
+ */
+export function validarOfertaUsuario(
+  entrada: unknown,
+): { datos: DatosOfertaUsuario; errores?: undefined } | { datos?: undefined; errores: Record<string, string> } {
+  const e = (entrada && typeof entrada === "object" ? entrada : {}) as Record<string, unknown>;
+  const errores: Record<string, string> = {};
+
+  const empresa = (e.empresa && typeof e.empresa === "object" ? e.empresa : {}) as Record<string, unknown>;
+  const nombre = texto(empresa.nombre);
+  if (!nombre) errores.empresa = "falta";
+  else if (nombre.length < 2) errores.empresa = "corto";
+  else if (nombre.length > 80) errores.empresa = "largo";
+  const web = texto(empresa.web);
+  if (web && (!esUrlWeb(web) || web.length > 200)) errores.empresaWeb = "url";
+
+  const base = validarOferta({ ...e, empresaId: "la-de-la-oferta", autorizada: false });
+  Object.assign(errores, base.errores);
+  if (base.datos && !esDeEspanaOLatam(base.datos)) {
+    errores[base.datos.modalidad === "remoto" ? "remotoPaises" : "pais"] = "fuera";
+  }
+  if (e.declaracion !== true) errores.declaracion = "falta";
+
+  if (Object.keys(errores).length || !base.datos) return { errores };
+  const { empresaId: _e, autorizada: _a, ...datos } = base.datos;
+  return { datos: { ...datos, empresa: { nombre: nombre!, web } } };
 }
 
 /** "Backend Developer (Node.js)" + "marea-cloud" → "backend-developer-nodejs-marea-cloud". */

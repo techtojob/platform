@@ -13,6 +13,9 @@
         "/cuenta/perfil": "/cuenta/perfil",
         "/cuenta/ajustes": "/cuenta/ajustes",
         "/cuenta/bienvenida": "/cuenta/bienvenida",
+        "/cuenta/ofertas": "/cuenta/ofertas",
+        "/cuenta/ofertas/nueva": "/cuenta/ofertas/nueva",
+        "/cuenta/recruiter": "/cuenta/recruiter",
         "/creditos": "/creditos",
         "/privacidad": "/privacidad",
         "/staff": "/staff",
@@ -21,6 +24,8 @@
         "/staff/ofertas/[id]/editar": "/staff/ofertas/[id]/editar",
         "/staff/reportes": "/staff/reportes",
         "/staff/empresas": "/staff/empresas",
+        "/staff/recruiters": "/staff/recruiters",
+        "/staff/prompt": "/staff/prompt",
         "/componentes": "/componentes"
       }
     },
@@ -36,6 +41,9 @@
         "/cuenta/perfil": "/account/profile",
         "/cuenta/ajustes": "/account/settings",
         "/cuenta/bienvenida": "/account/welcome",
+        "/cuenta/ofertas": "/account/jobs",
+        "/cuenta/ofertas/nueva": "/account/jobs/new",
+        "/cuenta/recruiter": "/account/recruiter",
         "/creditos": "/credits",
         "/privacidad": "/privacy",
         "/staff": "/staff",
@@ -44,6 +52,8 @@
         "/staff/ofertas/[id]/editar": "/staff/offers/[id]/edit",
         "/staff/reportes": "/staff/reports",
         "/staff/empresas": "/staff/companies",
+        "/staff/recruiters": "/staff/recruiters",
+        "/staff/prompt": "/staff/prompt",
         "/componentes": "/components"
       }
     }

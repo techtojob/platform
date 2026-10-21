@@ -11,6 +11,7 @@ import type {
   TipoEmblema,
   VisibilidadPerfil,
 } from "@techtojob/shared";
+import type { CargoRecruiter, EstadoRecruiter } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -140,6 +141,8 @@ export const ofertas = pgTable(
     /** La empresa nos autoriza a publicarla. Solo esas llevan los datos para Google for Jobs. */
     autorizada: boolean("autorizada").notNull().default(false),
     estado: text("estado").$type<EstadoOferta>().notNull().default("pendiente"),
+    /** Ofertas que sube cualquiera desde la web (origen "usuario"): quién la subió. */
+    autorId: text("autor_id").references(() => usuarios.id, { onDelete: "set null" }),
     motivoRechazo: text("motivo_rechazo"),
     /** Quién del staff la revisó y cuándo. */
     revisadaPor: text("revisada_por"),
@@ -154,6 +157,7 @@ export const ofertas = pgTable(
     index("ofertas_tecnologias_idx").using("gin", t.tecnologias),
     index("ofertas_remoto_paises_idx").using("gin", t.remotoPaises),
     uniqueIndex("ofertas_externas_idx").on(t.empresaId, t.fuenteAts, t.idExterno),
+    index("ofertas_autor_idx").on(t.autorId),
   ],
 );
 
@@ -357,6 +361,60 @@ export const reportesPerfil = pgTable(
     creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("reportes_perfil_unico_idx").on(t.perfilUserId, t.reportadoPor)],
+);
+
+/**
+ * Recruiters: quien se registra para publicar ofertas desde la web. Una fila por cuenta.
+ * Se registra al momento (no lo aprueba nadie); el staff revisa cada oferta y puede bloquearlo.
+ */
+export const recruiters = pgTable(
+  "recruiters",
+  {
+    userId: text("usuario_id")
+      .primaryKey()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    estado: text("estado").$type<EstadoRecruiter>().notNull().default("activo"),
+    cargo: text("cargo").$type<CargoRecruiter>().notNull(),
+    /** Tal cual lo escribe al registrarse. */
+    empresaNombre: text("empresa_nombre").notNull(),
+    empresaWeb: text("empresa_web"),
+    linkedin: text("linkedin").notNull(),
+    mensaje: text("mensaje"),
+    /** La empresa de la bolsa con la que se enlaza con su primera oferta: solo publica ofertas de esa (salvo agencia). */
+    empresaId: text("empresa_id").references(() => empresas.id, { onDelete: "set null" }),
+    /** Headhunter o agencia: puede publicar ofertas de cualquier empresa. Lo decide el staff. */
+    agencia: boolean("agencia").notNull().default(false),
+    /** Si está bloqueado: por qué (lo ve la persona), quién del staff y cuándo. */
+    motivo: text("motivo"),
+    bloqueadoPor: text("bloqueado_por").references(() => usuarios.id, { onDelete: "set null" }),
+    bloqueadoEn: timestamp("bloqueado_en", { withTimezone: true }),
+    ...fechas,
+  },
+  (t) => [index("recruiters_estado_idx").on(t.estado, t.creadaEn)],
+);
+
+/**
+ * Reportes de ofertas y de recruiters (los de perfiles van en reportes_perfil). Hay que haber iniciado sesión
+ * y cada persona reporta cada cosa una vez. Una fila es de una oferta o de un recruiter (la otra columna, vacía).
+ */
+export const reportes = pgTable(
+  "reportes",
+  {
+    id: text("id").primaryKey(),
+    ofertaId: text("oferta_id").references(() => ofertas.id, { onDelete: "cascade" }),
+    recruiterId: text("recruiter_id").references(() => recruiters.userId, { onDelete: "cascade" }),
+    reportadoPor: text("reportado_por")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    motivo: text("motivo").notNull(),
+    estado: text("estado").$type<"pendiente" | "revisado">().notNull().default("pendiente"),
+    creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("reportes_oferta_unico_idx").on(t.ofertaId, t.reportadoPor),
+    uniqueIndex("reportes_recruiter_unico_idx").on(t.recruiterId, t.reportadoPor),
+    index("reportes_estado_idx").on(t.estado, t.creadoEn),
+  ],
 );
 
 export type Empresa = typeof empresas.$inferSelect;

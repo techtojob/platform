@@ -125,7 +125,30 @@
     "verTodasPaises": "Show them anyway",
     "desdeDonde": "Where from",
     "puedesDesde": "You can work from {pais}",
-    "noDesde": "Heads up: this offer can't be done from {pais}."
+    "noDesde": "Heads up: this offer can't be done from {pais}.",
+    "publicarLlamada": "Are you a recruiter? <enlace>Post your jobs for free</enlace>: we review each one before it goes live.",
+    "reportar": {
+      "boton": "Report",
+      "titulo": "Report",
+      "sobre": "What do you want to report?",
+      "laOferta": "The job",
+      "elRecruiter": "Whoever posted it ({nombre})",
+      "motivoOferta": "What's wrong? (fake job, broken link, no longer available, discriminatory…)",
+      "motivoRecruiter": "What's wrong? (pretends to be the company, spam, inappropriate behaviour…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. Staff will review it.",
+      "entraAntes": "You need to log in to report.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own job.",
+        "no_existe": "This job is no longer published.",
+        "otro": "It couldn't be sent. Please try again."
+      }
+    }
   },
   "regiones": {
     "eu": "Europe",
@@ -189,6 +212,8 @@
     "perfilEditar": "Edit my profile",
     "perfilVer": "See my profile",
     "miPerfil": "My profile",
+    "misOfertas": "My jobs",
+    "recruiter": "Recruiter",
     "menu": "Account menu for {nombre}",
     "panelStaff": "Staff panel",
     "datos": {
@@ -343,7 +368,8 @@
       "revisada": "Reviewed {tiempo}",
       "yaNoSale": "No longer on the job board",
       "motivo": "Reason: {motivo}",
-      "automatica": "Automatic"
+      "automatica": "Automatic",
+      "usuario": "From a user"
     },
     "detalle": {
       "publicada": "Published {tiempo}",
@@ -355,7 +381,9 @@
       "automatica": "Automatic · {fuente}",
       "original": "Company's original text · staff only",
       "originalAyuda": "Not published: it isn't ours. Read it to check the details. If you like, write a summary in your own words (optional). It's only published in full if the company authorises it.",
-      "originalVacio": "The company didn't include any text."
+      "originalVacio": "The company didn't include any text.",
+      "subidaPor": "Posted by {nombre} ({email})",
+      "subidaPorBorrada": "Posted by someone who has deleted their account"
     },
     "comprobaciones": {
       "empresa": "The company exists and is who it says it is",
@@ -501,7 +529,10 @@
         "ciudad": "City or country",
         "pais": "Country",
         "salario": "Salary",
-        "idiomasRequeridos": "Languages"
+        "idiomasRequeridos": "Languages",
+        "empresa": "Company",
+        "empresaWeb": "Company website",
+        "declaracion": "Confirm"
       },
       "crearYPublicar": "Create and publish",
       "paraPublicar": "To publish now, tick the three checks.",
@@ -518,7 +549,9 @@
       "otroPais": "+ Another country…",
       "paisesElegidos": "Where people can work from",
       "quitarSitio": "Remove {nombre}",
-      "seVeraAsi": "It will look like this:"
+      "seVeraAsi": "It will look like this:",
+      "empresaNombre": "Company",
+      "repetidaPublica": "This job is already on TechToJob: “{titulo}” at {empresa}."
     },
     "errores": {
       "falta": "This is missing.",
@@ -566,19 +599,73 @@
       },
       "remotoPaises": {
         "falta": "Choose where people can work from: any country or at least one.",
-        "codigo": "There's a country we don't recognise."
+        "codigo": "There's a country we don't recognise.",
+        "fuera": "For now we only publish jobs that can be done from Spain or Latin America: pick one of those countries (or any country)."
+      },
+      "empresa": {
+        "falta": "Write the company name."
+      },
+      "declaracion": {
+        "falta": "Tick the box to confirm it's real and you're allowed to post it."
+      },
+      "pais": {
+        "fuera": "For now we only publish jobs in Spain or Latin America."
       }
     },
     "reportes": {
       "pestana": "Reports",
-      "titulo": "Reported profiles",
-      "entradilla": "Review each report: if the profile is fine, dismiss it; if not, hide it (only its owner will see it).",
+      "titulo": "Reports",
+      "entradilla": "What the community has reported. If it's fine, dismiss it; if not, hide the profile, close the job or block the recruiter.",
       "vacio": "No pending reports.",
       "verPerfil": "See profile",
       "descartar": "It's fine, dismiss",
       "ocultar": "Hide profile",
       "reportado": "Reported {tiempo}",
-      "visibilidad": "Now: {visibilidad}"
+      "visibilidad": "Now: {visibilidad}",
+      "de": {
+        "perfiles": "Profiles",
+        "ofertas": "Jobs",
+        "recruiters": "Recruiters"
+      },
+      "verOferta": "See job",
+      "verEnPanel": "Open in the panel",
+      "cerrarOferta": "Close the job",
+      "bloquear": "Block the recruiter",
+      "cancelar": "Cancel",
+      "motivoBloqueo": "Why they're blocked",
+      "motivoBloqueoAyuda": "The person will see it. Their pending jobs are discarded.",
+      "error": "It couldn't be done. Please try again."
+    },
+    "recruiters": {
+      "pestana": "Recruiters",
+      "titulo": "Recruiters",
+      "entradilla": "They sign up on their own: what you review are their jobs. Here you can mark agencies and block anyone who abuses it.",
+      "estados": {
+        "activo": "Active",
+        "bloqueado": "Blocked"
+      },
+      "vacio": "Nothing here.",
+      "emailEmpresa": "Company email ✓",
+      "emailOtro": "Personal email",
+      "agencia": "Agency",
+      "empresa": "Company",
+      "ofertas": "{count, plural, =0 {no jobs} one {# job} other {# jobs}}",
+      "motivo": "Reason:",
+      "esAgencia": "Agency or headhunter",
+      "agenciaAyuda": "Can post jobs from any company.",
+      "noAgenciaAyuda": "Only posts their company's jobs.",
+      "cancelar": "Cancel",
+      "motivoAyuda": "The person will see it. Their pending jobs are discarded.",
+      "errores": {
+        "estado": "This has changed: reload the page.",
+        "motivo": "Write the reason (3 to 300 characters).",
+        "desconocido": "It couldn't be done. Please try again."
+      },
+      "registrado": "Signed up",
+      "ver": "See recruiters",
+      "desbloquear": "Unblock",
+      "bloquear": "Block",
+      "motivoBloqueo": "Why they're blocked"
     },
     "empresas": {
       "pestana": "Companies",
@@ -643,6 +730,7 @@
       },
       "origen": "Source",
       "manual": "Manual",
+      "usuario": "Posted by users",
       "automatica": "Automatic (all)",
       "automaticaDe": "Automatic · {fuente}",
       "desde": "Can be done from",
@@ -691,6 +779,36 @@
         "rechazar": "Rejected. Here's the next one."
       },
       "fin": "Done! No more with these filters."
+    },
+    "publicar": {
+      "declaracion": "The job is real and I'm allowed to post it (I work at the company or they asked me to).",
+      "enviar": "Send for review",
+      "enviarAyuda": "Staff review it before it goes live. You can have 3 jobs at a time.",
+      "errores": {
+        "limite": "You already have 3 active jobs. Withdraw one to post another.",
+        "repetida": "This job is already on TechToJob.",
+        "empresa": "That company has asked us not to publish its jobs.",
+        "sin_sesion": "Your session has expired. Please log in again.",
+        "no_recruiter": "Only recruiters can post jobs."
+      },
+      "empresaFija": "This is the company on your recruiter account. If you need to post for another one, contact us."
+    },
+    "prompt": {
+      "pestana": "AI prompt",
+      "titulo": "Summarise jobs with AI",
+      "entradilla": "A prompt for ChatGPT or Claude: paste the job and it gives you the summary in the TechToJob format (role, where from, responsibilities…). The summary is always in Spanish.",
+      "comoTitulo": "How to use it",
+      "paso1": "Click “Copy prompt” and paste it into a new ChatGPT or Claude conversation.",
+      "paso2": "The AI will reply “Pega aquí la oferta” (paste the job here).",
+      "paso3": "Copy the job from the company's website (the text and the link) and paste it.",
+      "paso4": "Copy the summary. For the next one, paste it in the same conversation.",
+      "consejo": "Tip: save it once as the instructions of a Claude Project (or a GPT in ChatGPT) so you don't have to paste it every time.",
+      "desdeLaFicha": "On each job's page in the panel there's “Copy prompt with this job”: it has the prompt and the job together, ready to paste.",
+      "copiar": "Copy prompt",
+      "copiarConOferta": "Copy prompt with this job",
+      "copiado": "Copied!",
+      "noCopiado": "It couldn't be copied",
+      "ver": "See the prompt"
     }
   },
   "formulario": {
@@ -846,7 +964,9 @@
         "<b>Where you live:</b> the country and region (autonomous community, state or province) you enter the first time you sign in, to show you the offers you can do from there. You can change it in My account.",
         "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
-        "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
+        "<b>If you sign up as a recruiter:</b> your role, your company, its website, your LinkedIn and anything you tell us, so staff can review your jobs. Your name, role and company show on the jobs you post.",
+        "<b>The jobs you post, if you do:</b> what you write in the form and that you posted them. Staff see your name and email so they can review them.",
+        "<b>The reports you make:</b> which profile, job or recruiter you report and why. We don't tell them who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
         "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
         "<b>If you're staff:</b> which offers you've reviewed."
@@ -875,7 +995,8 @@
       "items": [
         "<b>Your account and profile:</b> until you delete them.",
         "<b>Your sessions:</b> they expire after 30 days without use.",
-        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted."
+        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted.",
+        "<b>The jobs you post:</b> those not yet reviewed are deleted if you delete your account; published ones stay on the board without your name."
       ]
     },
     "derechos": {
@@ -951,5 +1072,94 @@
       "region": "Choose your community, state or province.",
       "desconocido": "Couldn't save. Please try again."
     }
+  },
+  "misOfertas": {
+    "titulo": "My jobs",
+    "entradilla": "The jobs you have posted. Staff review them before they go on the board.",
+    "enviada": "Job sent! We'll review it and, if it's fine, it goes on the board. You can see its status here.",
+    "enMarcha": "{enMarcha} of {limite} active",
+    "quedan": "{count, plural, one {You can post # more.} other {You can post # more.}}",
+    "sinHueco": "Withdraw one or wait for it to expire (published jobs last 45 days) to post another.",
+    "sinHuecoTitulo": "You already have {limite} active jobs",
+    "publicar": "Post a job",
+    "publicarTitulo": "Post a job",
+    "publicarEntradilla": "Paste the link and we'll fill in what we can. Staff review it before it goes on the board. Only jobs that can be done from Spain or Latin America.",
+    "verMias": "See my jobs",
+    "vacio": "You haven't posted any jobs yet.",
+    "estados": {
+      "pendiente": "Pending review",
+      "publicada": "Published",
+      "rechazada": "Not published",
+      "caducada": "Expired",
+      "retirada": "Withdrawn"
+    },
+    "hasta": "On the board until {fecha}.",
+    "pendienteAyuda": "Sent on {fecha}. We'll review it as soon as possible.",
+    "enviadaEl": "Sent on {fecha}.",
+    "motivo": "Why it wasn't published:",
+    "retirar": "Withdraw",
+    "retirarPendiente": "Withdraw it? It will be deleted and won't be published.",
+    "retirarPublicada": "Withdraw it? It will stop showing on the board.",
+    "siRetirar": "Yes, withdraw it",
+    "retirando": "Withdrawing…",
+    "cancelar": "Cancel",
+    "errorRetirar": "It couldn't be withdrawn. Please try again.",
+    "noRecruiter": "Your recruiter account is blocked: you can't post more jobs. <enlace>See why</enlace>"
+  },
+  "recruiter": {
+    "titulo": "Recruiter",
+    "entradilla": "Only recruiters can post jobs on TechToJob. Signing up is instant; we review each job before it goes live.",
+    "como": {
+      "uno": "Fill in your details: role, company and LinkedIn.",
+      "dos": "Post your company's jobs: up to 3 at a time.",
+      "tres": "We review each job before it goes on the board."
+    },
+    "cargo": "Your role",
+    "cargos": {
+      "recruiter": "Recruiter",
+      "rrhh": "HR",
+      "fundador": "Founder",
+      "manager": "Engineering manager",
+      "otro": "Other"
+    },
+    "empresa": "Company",
+    "web": "Company website",
+    "webAyuda": "If your email is from this domain, we review your jobs sooner.",
+    "linkedin": "Your LinkedIn profile",
+    "linkedinAyuda": "Staff check it when reviewing your jobs.",
+    "mensaje": "Anything else (optional)",
+    "mensajeAyuda": "For example, which profiles you're looking for.",
+    "publico": "Your name, role and company will show on the jobs you post. Are you an agency or headhunter? Tell us in “Anything else” and we'll let you post for several companies.",
+    "enviar": "Sign up and post a job",
+    "enviando": "Saving…",
+    "errorGeneral": "It couldn't be saved. Please try again.",
+    "motivo": "Reason:",
+    "publicar": "Post a job",
+    "misOfertas": "My jobs",
+    "publicadaPor": "Posted by {nombre} · {cargo} at {empresa}",
+    "errores": {
+      "falta": "This is missing.",
+      "corto": "It's too short.",
+      "largo": "It's too long.",
+      "url": "It must be a web address (https://…).",
+      "cargo": {
+        "falta": "Choose your role."
+      },
+      "empresa": {
+        "falta": "Write the company name."
+      },
+      "linkedin": {
+        "falta": "Paste the link to your LinkedIn profile.",
+        "linkedin": "It must be a linkedin.com link."
+      }
+    },
+    "guardar": "Save changes",
+    "guardado": "Saved.",
+    "tusDatos": "Your recruiter details",
+    "activo": "You're a recruiter at {empresa}",
+    "activoAyuda": "You can post your company's jobs: up to 3 at a time. We review them before they go live.",
+    "activoAgencia": "As an agency, you can post jobs from any company: up to 3 at a time. We review them before they go live.",
+    "bloqueado": "Your recruiter account is blocked: you can't post jobs.",
+    "bloqueadoAyuda": "If you think it's a mistake, contact us on Discord."
   }
 }

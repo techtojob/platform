@@ -68,6 +68,9 @@ export type TipoEmblema = (typeof TIPOS_EMBLEMA)[number];
 export const ESTADOS_OFERTA = ["pendiente", "publicada", "rechazada", "cerrada"] as const;
 export type EstadoOferta = (typeof ESTADOS_OFERTA)[number];
 
-/** Cómo llegó la oferta: la trajo un conector (automática) o la subió el staff (manual). */
-export const ORIGENES_OFERTA = ["automatica", "manual"] as const;
+/**
+ * Cómo llegó la oferta: la trajo un conector (automática), la subió el staff (manual)
+ * o la subió alguien desde la web con su cuenta (usuario; la revisa el staff antes de salir).
+ */
+export const ORIGENES_OFERTA = ["automatica", "manual", "usuario"] as const;
 export type OrigenOferta = (typeof ORIGENES_OFERTA)[number];

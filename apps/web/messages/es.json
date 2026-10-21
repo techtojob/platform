@@ -125,7 +125,30 @@
     "verTodasPaises": "Verlas igualmente",
     "desdeDonde": "Desde dónde",
     "puedesDesde": "Puedes trabajar desde {pais}",
-    "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}."
+    "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}.",
+    "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga.",
+    "reportar": {
+      "boton": "Reportar",
+      "titulo": "Reportar",
+      "sobre": "¿Qué quieres reportar?",
+      "laOferta": "La oferta",
+      "elRecruiter": "A quien la publicó ({nombre})",
+      "motivoOferta": "¿Qué pasa? (oferta falsa, el enlace no funciona, ya no está disponible, discriminatoria…)",
+      "motivoRecruiter": "¿Qué pasa? (se hace pasar por la empresa, spam, trato inadecuado…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propia oferta.",
+        "no_existe": "Esta oferta ya no está publicada.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    }
   },
   "regiones": {
     "eu": "Europa",
@@ -189,6 +212,8 @@
     "perfilEditar": "Editar mi perfil",
     "perfilVer": "Ver mi perfil",
     "miPerfil": "Mi perfil",
+    "misOfertas": "Mis ofertas",
+    "recruiter": "Recruiter",
     "menu": "Menú de la cuenta de {nombre}",
     "panelStaff": "Panel de staff",
     "datos": {
@@ -343,7 +368,8 @@
       "revisada": "Revisada {tiempo}",
       "yaNoSale": "Ya no sale en la bolsa",
       "motivo": "Motivo: {motivo}",
-      "automatica": "Automática"
+      "automatica": "Automática",
+      "usuario": "De usuario"
     },
     "detalle": {
       "publicada": "Publicada {tiempo}",
@@ -355,7 +381,9 @@
       "automatica": "Automática · {fuente}",
       "original": "Texto original de la empresa · solo staff",
       "originalAyuda": "No se publica: no es nuestro. Léelo para comprobar los datos. Si quieres, escribe un resumen con tus palabras (es opcional). Solo se publica entero si la empresa lo autoriza.",
-      "originalVacio": "La empresa no puso texto."
+      "originalVacio": "La empresa no puso texto.",
+      "subidaPor": "Subida por {nombre} ({email})",
+      "subidaPorBorrada": "Subida por alguien que ya borró su cuenta"
     },
     "comprobaciones": {
       "empresa": "La empresa existe y es quien dice ser",
@@ -501,7 +529,10 @@
         "ciudad": "Ciudad o país",
         "pais": "País",
         "salario": "Salario",
-        "idiomasRequeridos": "Idiomas"
+        "idiomasRequeridos": "Idiomas",
+        "empresa": "Empresa",
+        "empresaWeb": "Web de la empresa",
+        "declaracion": "Confirmar"
       },
       "crearYPublicar": "Crear y publicar",
       "paraPublicar": "Para publicar ya, marca las tres comprobaciones.",
@@ -518,7 +549,9 @@
       "otroPais": "+ Otro país…",
       "paisesElegidos": "Desde dónde se puede trabajar",
       "quitarSitio": "Quitar {nombre}",
-      "seVeraAsi": "Se verá así:"
+      "seVeraAsi": "Se verá así:",
+      "empresaNombre": "Empresa",
+      "repetidaPublica": "Esta oferta ya está en TechToJob: «{titulo}» de {empresa}."
     },
     "errores": {
       "falta": "Falta este dato.",
@@ -566,19 +599,73 @@
       },
       "remotoPaises": {
         "falta": "Elige desde dónde se puede trabajar en remoto: cualquier país o al menos uno.",
-        "codigo": "Hay un país que no conocemos."
+        "codigo": "Hay un país que no conocemos.",
+        "fuera": "Por ahora solo publicamos ofertas que se puedan hacer desde España o Latinoamérica: elige alguno de esos países (o cualquier país)."
+      },
+      "empresa": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "declaracion": {
+        "falta": "Marca la casilla para confirmar que es real y tienes permiso."
+      },
+      "pais": {
+        "fuera": "Por ahora solo publicamos ofertas en España o Latinoamérica."
       }
     },
     "reportes": {
       "pestana": "Reportes",
-      "titulo": "Perfiles reportados",
-      "entradilla": "Revisa cada reporte: si el perfil está bien, descártalo; si no, ocúltalo (solo lo verá su dueño).",
+      "titulo": "Reportes",
+      "entradilla": "Lo que ha reportado la comunidad. Si está bien, descártalo; si no, oculta el perfil, cierra la oferta o bloquea al recruiter.",
       "vacio": "No hay reportes pendientes.",
       "verPerfil": "Ver perfil",
       "descartar": "Está bien, descartar",
       "ocultar": "Ocultar perfil",
       "reportado": "Reportado {tiempo}",
-      "visibilidad": "Ahora: {visibilidad}"
+      "visibilidad": "Ahora: {visibilidad}",
+      "de": {
+        "perfiles": "Perfiles",
+        "ofertas": "Ofertas",
+        "recruiters": "Recruiters"
+      },
+      "verOferta": "Ver oferta",
+      "verEnPanel": "Abrir en el panel",
+      "cerrarOferta": "Cerrar la oferta",
+      "bloquear": "Bloquear al recruiter",
+      "cancelar": "Cancelar",
+      "motivoBloqueo": "Por qué se bloquea",
+      "motivoBloqueoAyuda": "Lo verá la persona. Sus ofertas pendientes se descartan.",
+      "error": "No se ha podido hacer. Inténtalo de nuevo."
+    },
+    "recruiters": {
+      "pestana": "Recruiters",
+      "titulo": "Recruiters",
+      "entradilla": "Se registran solos: lo que revisáis son sus ofertas. Aquí podéis marcar agencias y bloquear a quien abuse.",
+      "estados": {
+        "activo": "Activos",
+        "bloqueado": "Bloqueados"
+      },
+      "vacio": "No hay ninguno aquí.",
+      "emailEmpresa": "Email de la empresa ✓",
+      "emailOtro": "Email personal",
+      "agencia": "Agencia",
+      "empresa": "Empresa",
+      "ofertas": "{count, plural, =0 {sin ofertas} one {# oferta} other {# ofertas}}",
+      "motivo": "Motivo:",
+      "esAgencia": "Es agencia o headhunter",
+      "agenciaAyuda": "Puede publicar ofertas de cualquier empresa.",
+      "noAgenciaAyuda": "Solo publica ofertas de su empresa.",
+      "cancelar": "Cancelar",
+      "motivoAyuda": "Lo verá la persona. Sus ofertas pendientes se descartan.",
+      "errores": {
+        "estado": "Esto ha cambiado: recarga la página.",
+        "motivo": "Escribe el motivo (de 3 a 300 caracteres).",
+        "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+      },
+      "registrado": "Registrado",
+      "ver": "Ver recruiters",
+      "desbloquear": "Desbloquear",
+      "bloquear": "Bloquear",
+      "motivoBloqueo": "Por qué se bloquea"
     },
     "empresas": {
       "pestana": "Empresas",
@@ -643,6 +730,7 @@
       },
       "origen": "Origen",
       "manual": "Manual",
+      "usuario": "Subidas por usuarios",
       "automatica": "Automática (todas)",
       "automaticaDe": "Automática · {fuente}",
       "desde": "Se puede hacer desde",
@@ -691,6 +779,36 @@
         "rechazar": "Rechazada. Esta es la siguiente."
       },
       "fin": "¡Listo! No quedan más con estos filtros."
+    },
+    "publicar": {
+      "declaracion": "La oferta es real y tengo permiso para publicarla (soy de la empresa o me lo han pedido).",
+      "enviar": "Enviar para revisar",
+      "enviarAyuda": "La revisa el staff antes de que salga. Puedes tener 3 ofertas a la vez.",
+      "errores": {
+        "limite": "Ya tienes 3 ofertas en marcha. Retira una para subir otra.",
+        "repetida": "Esta oferta ya está en TechToJob.",
+        "empresa": "Esa empresa nos ha pedido que no publiquemos sus ofertas.",
+        "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
+        "no_recruiter": "Solo los recruiters pueden publicar ofertas."
+      },
+      "empresaFija": "Es la empresa de tu cuenta de recruiter. Si necesitas publicar para otra, escríbenos."
+    },
+    "prompt": {
+      "pestana": "Prompt IA",
+      "titulo": "Resumir ofertas con IA",
+      "entradilla": "Un prompt para ChatGPT o Claude: le pegas la oferta y te devuelve el resumen con el formato de TechToJob (puesto, desde dónde, responsabilidades…).",
+      "comoTitulo": "Cómo se usa",
+      "paso1": "Pulsa «Copiar prompt» y pégalo en una conversación nueva de ChatGPT o Claude.",
+      "paso2": "La IA te contestará «Pega aquí la oferta».",
+      "paso3": "Copia la oferta desde la web de la empresa (el texto y el enlace) y pégala.",
+      "paso4": "Copia el resumen. Para la siguiente, pégala en la misma conversación.",
+      "consejo": "Consejo: guárdalo una vez como instrucciones de un Proyecto en Claude (o un GPT en ChatGPT) y así no tienes que pegarlo cada vez.",
+      "desdeLaFicha": "En la ficha de cada oferta del panel tienes «Copiar prompt con esta oferta»: lleva el prompt y la oferta juntos, listo para pegar.",
+      "copiar": "Copiar prompt",
+      "copiarConOferta": "Copiar prompt con esta oferta",
+      "copiado": "¡Copiado!",
+      "noCopiado": "No se ha podido copiar",
+      "ver": "Ver el prompt"
     }
   },
   "formulario": {
@@ -846,7 +964,9 @@
         "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
-        "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
+        "<b>Si te registras como recruiter:</b> tu cargo, tu empresa, su web, tu LinkedIn y lo que nos cuentes, para que el staff revise tus ofertas. Tu nombre, tu cargo y tu empresa salen en las ofertas que publiques.",
+        "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
+        "<b>Los reportes que haces:</b> qué perfil, oferta o recruiter reportas y por qué. A quien reportas no le decimos quién ha sido.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
         "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
         "<b>Si eres del staff:</b> qué ofertas has revisado."
@@ -875,7 +995,8 @@
       "items": [
         "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
         "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
-        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada."
+        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada.",
+        "<b>Las ofertas que subes:</b> las que aún no se han revisado se borran si borras tu cuenta; las publicadas se quedan en la bolsa sin tu nombre."
       ]
     },
     "derechos": {
@@ -951,5 +1072,94 @@
       "region": "Elige tu comunidad, estado o provincia.",
       "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
     }
+  },
+  "misOfertas": {
+    "titulo": "Mis ofertas",
+    "entradilla": "Las ofertas que has subido. Antes de salir en la bolsa las revisa el staff.",
+    "enviada": "¡Oferta enviada! La revisamos y, si está bien, sale en la bolsa. Aquí verás en qué estado está.",
+    "enMarcha": "{enMarcha} de {limite} en marcha",
+    "quedan": "{count, plural, one {Puedes subir # más.} other {Puedes subir # más.}}",
+    "sinHueco": "Retira una o espera a que caduque (las publicadas duran 45 días) para subir otra.",
+    "sinHuecoTitulo": "Ya tienes {limite} ofertas en marcha",
+    "publicar": "Publicar una oferta",
+    "publicarTitulo": "Publicar una oferta",
+    "publicarEntradilla": "Pega el enlace y rellenamos lo que podamos. El staff la revisa antes de que salga en la bolsa. Solo ofertas que se puedan hacer desde España o Latinoamérica.",
+    "verMias": "Ver mis ofertas",
+    "vacio": "Aún no has subido ninguna oferta.",
+    "estados": {
+      "pendiente": "Pendiente de revisar",
+      "publicada": "Publicada",
+      "rechazada": "No publicada",
+      "caducada": "Caducada",
+      "retirada": "Retirada"
+    },
+    "hasta": "Sale en la bolsa hasta el {fecha}.",
+    "pendienteAyuda": "Enviada el {fecha}. La revisamos lo antes posible.",
+    "enviadaEl": "Enviada el {fecha}.",
+    "motivo": "Por qué no se ha publicado:",
+    "retirar": "Retirar",
+    "retirarPendiente": "¿Retirarla? Se borra y no se publicará.",
+    "retirarPublicada": "¿Retirarla? Dejará de salir en la bolsa.",
+    "siRetirar": "Sí, retirarla",
+    "retirando": "Retirando…",
+    "cancelar": "Cancelar",
+    "errorRetirar": "No se ha podido retirar. Inténtalo de nuevo.",
+    "noRecruiter": "Tu cuenta de recruiter está bloqueada: no puedes publicar más ofertas. <enlace>Ver por qué</enlace>"
+  },
+  "recruiter": {
+    "titulo": "Recruiter",
+    "entradilla": "Solo los recruiters pueden publicar ofertas en TechToJob. Registrarte es al momento; cada oferta la revisamos antes de que salga.",
+    "como": {
+      "uno": "Rellena tus datos: cargo, empresa y LinkedIn.",
+      "dos": "Publica ofertas de tu empresa: hasta 3 a la vez.",
+      "tres": "Revisamos cada oferta antes de que salga en la bolsa."
+    },
+    "cargo": "Tu cargo",
+    "cargos": {
+      "recruiter": "Recruiter",
+      "rrhh": "RR. HH.",
+      "fundador": "Fundador/a",
+      "manager": "Manager técnico",
+      "otro": "Otro"
+    },
+    "empresa": "Empresa",
+    "web": "Web de la empresa",
+    "webAyuda": "Si tu email es de este dominio, revisamos tus ofertas antes.",
+    "linkedin": "Tu perfil de LinkedIn",
+    "linkedinAyuda": "El staff lo mira al revisar tus ofertas.",
+    "mensaje": "Algo más (opcional)",
+    "mensajeAyuda": "Por ejemplo, qué perfiles buscáis.",
+    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques. ¿Eres de una agencia o headhunter? Cuéntalo en «Algo más» y te dejamos publicar para varias empresas.",
+    "enviar": "Registrarme y publicar una oferta",
+    "enviando": "Guardando…",
+    "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo.",
+    "motivo": "Motivo:",
+    "publicar": "Publicar una oferta",
+    "misOfertas": "Mis ofertas",
+    "publicadaPor": "Publicada por {nombre} · {cargo} en {empresa}",
+    "errores": {
+      "falta": "Falta este dato.",
+      "corto": "Es demasiado corto.",
+      "largo": "Es demasiado largo.",
+      "url": "Tiene que ser una dirección web (https://…).",
+      "cargo": {
+        "falta": "Elige tu cargo."
+      },
+      "empresa": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "linkedin": {
+        "falta": "Pega el enlace a tu perfil de LinkedIn.",
+        "linkedin": "Tiene que ser un enlace de linkedin.com."
+      }
+    },
+    "guardar": "Guardar cambios",
+    "guardado": "Guardado.",
+    "tusDatos": "Tus datos de recruiter",
+    "activo": "Eres recruiter de {empresa}",
+    "activoAyuda": "Puedes publicar ofertas de tu empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
+    "activoAgencia": "Como agencia, puedes publicar ofertas de cualquier empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
+    "bloqueado": "Tu cuenta de recruiter está bloqueada: no puedes publicar ofertas.",
+    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord."
   }
 }

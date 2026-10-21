@@ -7,7 +7,7 @@ import { FichaOferta } from "@/components/ofertas/ficha-oferta";
 import { getPathname, redirect } from "@/i18n/navigation";
 import { jobPosting, jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL } from "@/lib/sitio";
-import { obtenerCuenta, obtenerOferta, obtenerOfertas } from "@/lib/api";
+import { obtenerCuenta, obtenerOferta, obtenerOfertas, tieneCookieDeSesion } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
 import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
@@ -72,7 +72,14 @@ async function CargarOferta({ params }: Pick<Props, "params">) {
   return (
     <>
       {google && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(google) }} />}
-      <FichaOferta oferta={oferta} hablo={hablo} desde={desde} parecidas={parecidas} ahora={(await getNow()).getTime()} />
+      <FichaOferta
+        oferta={oferta}
+        hablo={hablo}
+        desde={desde}
+        parecidas={parecidas}
+        ahora={(await getNow()).getTime()}
+        conSesion={tieneCookieDeSesion(cabeceras.get("cookie") ?? "")}
+      />
     </>
   );
 }

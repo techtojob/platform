@@ -9,8 +9,8 @@ import {
 } from "@techtojob/shared";
 import { and, arrayContains, asc, count, desc, eq, gte, ilike, inArray, isNull, lte, ne, not, notInArray, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertaIdiomas, ofertas } from "../db/esquema";
-import { aStaff, columnasEmpresa, ErrorStaff } from "./ofertas-staff";
+import { empresas, ofertaIdiomas, ofertas, usuarios } from "../db/esquema";
+import { aStaff, columnasAutor, columnasEmpresa, ErrorStaff } from "./ofertas-staff";
 
 /**
  * La lista del panel de staff: pestañas por estado, atajos ("sin resumen", "caducan esta semana"…),
@@ -90,9 +90,10 @@ export async function listarStaff(db: Db, f: FiltrosStaff, ahora = new Date()): 
   const condiciones = condicionesStaff(db, f, ahora);
   const [filas, [{ total }], porEstado, atajos] = await Promise.all([
     db
-      .select({ oferta: ofertas, empresa: columnasEmpresa })
+      .select({ oferta: ofertas, empresa: columnasEmpresa, autor: columnasAutor })
       .from(ofertas)
       .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+      .leftJoin(usuarios, eq(usuarios.id, ofertas.autorId))
       .where(and(...condiciones))
       .orderBy(...ordenStaff(f))
       .limit(POR_PAGINA_STAFF)
@@ -114,7 +115,7 @@ export async function listarStaff(db: Db, f: FiltrosStaff, ahora = new Date()): 
   const idiomas = ids.length ? await db.select().from(ofertaIdiomas).where(inArray(ofertaIdiomas.ofertaId, ids)) : [];
   return {
     estado: f.estado,
-    ofertas: filas.map((x) => aStaff(x.oferta, x.empresa, idiomas)),
+    ofertas: filas.map((x) => aStaff(x.oferta, x.empresa, idiomas, x.autor)),
     total: Number(total),
     cuentas: Object.fromEntries(porEstado.map((x) => [x.estado, Number(x.total)])),
     atajos: Object.fromEntries(atajos),

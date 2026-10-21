@@ -35,6 +35,7 @@ export async function FilaStaff({ oferta, ahora, query = {} }: { oferta: OfertaS
           <Etiqueta>{t(`seniority.${oferta.seniority}`)}</Etiqueta>
           <Etiqueta>{t(`modalidades.${oferta.modalidad}`)}</Etiqueta>
           {oferta.origen === "automatica" && <Etiqueta tono="borde">{t("staff.lista.automatica")}</Etiqueta>}
+          {oferta.origen === "usuario" && <Etiqueta tono="postit">{t("staff.lista.usuario")}</Etiqueta>}
           {oferta.idioma !== "es" && <Etiqueta tono="borde">{oferta.idioma.toUpperCase()}</Etiqueta>}
           {caducada && <Etiqueta tono="postit">{t("staff.lista.yaNoSale")}</Etiqueta>}
         </p>
