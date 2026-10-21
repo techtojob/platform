@@ -150,6 +150,7 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
           <aside className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
             <AccionesOferta
               oferta={oferta}
+              editadaHace={oferta.editadaEn ? hace(oferta.editadaEn) : null}
               accion={hacerAccion.bind(null, oferta.id, siguiente.id ? { id: siguiente.id, query: conSaltadas(saltadas), locale } : null)}
             />
             <Link

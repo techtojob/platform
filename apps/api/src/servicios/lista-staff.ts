@@ -32,8 +32,14 @@ function fechaDe(estado: FiltrosStaff["estado"]) {
 function condicionAtajo(atajo: AtajoStaff, ahora: Date): SQL {
   switch (atajo) {
     case "sin_resumen":
-      // Automáticas sin autorización y sin un resumen nuestro: no se pueden publicar todavía.
-      return and(eq(ofertas.origen, "automatica"), eq(ofertas.autorizada, false), or(isNull(ofertas.resumen), eq(ofertas.resumen, "")))!;
+      // Sin autorización y sin nuestro resumen de la IA (resumen y responsabilidades): no se pueden publicar todavía.
+      return and(
+        eq(ofertas.autorizada, false),
+        or(isNull(ofertas.resumen), eq(ofertas.resumen, ""), sql`cardinality(${ofertas.responsabilidades}) = 0`),
+      )!;
+    case "editadas":
+      // Un recruiter la cambió estando publicada y el staff aún no la ha vuelto a mirar.
+      return sql`${ofertas.editadaEn} is not null`;
     case "sin_zona":
       return and(eq(ofertas.modalidad, "remoto"), eq(ofertas.remotoMundo, false), sql`cardinality(${ofertas.remotoPaises}) = 0`)!;
     case "hoy":

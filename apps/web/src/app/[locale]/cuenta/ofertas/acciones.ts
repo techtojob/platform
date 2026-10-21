@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "@/i18n/navigation";
 import { locales, type Locale } from "@/i18n/routing";
-import { ErrorDeApi, importarComoUsuarioEnApi, retirarOfertaEnApi, subirOfertaEnApi } from "@/lib/api";
+import { editarMiOfertaEnApi, ErrorDeApi, importarComoUsuarioEnApi, retirarOfertaEnApi, subirOfertaEnApi, volverAPublicarEnApi } from "@/lib/api";
 import { datosUsuarioParaApi, type ValoresOferta } from "@/lib/formulario-oferta";
 
 export type ResultadoSubir = { errores?: Record<string, string>; error?: string };
@@ -29,6 +29,42 @@ export async function subirOferta(valores: ValoresOferta, declaracion: boolean, 
   const locale = (locales as string[]).includes(idioma) ? (idioma as Locale) : locales[0]!;
   redirect({ href: { pathname: "/cuenta/ofertas", query: { enviada: "1" } }, locale });
   return {};
+}
+
+/** Guardar los cambios de una oferta mía. Si va bien, lleva a "Mis ofertas" diciendo cómo ha quedado. */
+export async function editarMiOferta(id: string, valores: ValoresOferta, declaracion: boolean, idioma: string): Promise<ResultadoSubir> {
+  const datos = datosUsuarioParaApi(valores, declaracion);
+  const r = validarOfertaUsuario(datos);
+  if (r.errores) return { errores: r.errores };
+  const c = await cookie();
+  if (!c) return { error: "sin_sesion" };
+  let estado: "pendiente" | "publicada";
+  try {
+    ({ estado } = await editarMiOfertaEnApi(c, id, datos));
+  } catch (error) {
+    if (error instanceof ErrorDeApi && Object.keys(error.campos).length) return { errores: error.campos };
+    return { error: error instanceof ErrorDeApi ? error.codigo : "desconocido" };
+  }
+  revalidatePath("/[locale]", "layout");
+  const locale = (locales as string[]).includes(idioma) ? (idioma as Locale) : locales[0]!;
+  redirect({ href: { pathname: "/cuenta/ofertas", query: { editada: estado } }, locale });
+  return {};
+}
+
+/** Volver a publicar una caducada, retirada o no publicada: crea una copia pendiente y lleva a editarla. */
+export async function volverAPublicar(id: string, idioma: string): Promise<string | null> {
+  const c = await cookie();
+  if (!c) return "sin_sesion";
+  let nueva: string;
+  try {
+    ({ id: nueva } = await volverAPublicarEnApi(c, id));
+  } catch (error) {
+    return error instanceof ErrorDeApi ? error.codigo : "desconocido";
+  }
+  revalidatePath("/[locale]/cuenta/ofertas", "page");
+  const locale = (locales as string[]).includes(idioma) ? (idioma as Locale) : locales[0]!;
+  redirect({ href: { pathname: "/cuenta/ofertas/[id]/editar", params: { id: nueva }, query: { copia: "1" } }, locale });
+  return null;
 }
 
 /** "Rellenar desde el enlace". */

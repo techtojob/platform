@@ -150,6 +150,8 @@ export const ofertas = pgTable(
     /** Ofertas que sube cualquiera desde la web (origen "usuario"): quién la subió. */
     autorId: text("autor_id").references(() => usuarios.id, { onDelete: "set null" }),
     motivoRechazo: text("motivo_rechazo"),
+    /** Última vez que quien la subió (un recruiter) la cambió estando publicada: el staff la vuelve a mirar. */
+    editadaEn: timestamp("editada_en", { withTimezone: true }),
     /** Quién del staff la revisó y cuándo. */
     revisadaPor: text("revisada_por"),
     revisadaEn: timestamp("revisada_en", { withTimezone: true }),

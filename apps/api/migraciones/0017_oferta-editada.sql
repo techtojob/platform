@@ -1,0 +1,1 @@
+ALTER TABLE "ofertas" ADD COLUMN "editada_en" timestamp with time zone;

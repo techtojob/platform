@@ -47,9 +47,11 @@ describe("lista del panel", () => {
   });
 
   it("atajos con su recuento", async () => {
+    // "Sin resumen": las que no se pueden publicar aún (sin autorizar y sin resumen + responsabilidades de la IA).
     const r = await listarStaff(db, f({ atajo: "sin_resumen" }), AHORA);
-    expect(r.ofertas.map((o) => o.titulo)).toEqual(["Backend Automática"]);
-    expect(r.atajos).toMatchObject({ sin_resumen: 1, sin_zona: 1, hoy: 2 });
+    expect(r.ofertas.map((o) => o.titulo)).toContain("Backend Automática");
+    expect(r.ofertas.every((o) => !o.autorizada && (!o.resumen || !o.responsabilidades.length))).toBe(true);
+    expect(r.atajos).toMatchObject({ sin_resumen: r.ofertas.length, sin_zona: 1, hoy: 2 });
     expect(await titulos({ atajo: "sin_zona" })).toEqual(["Backend Automática"]);
     expect(await titulos({ atajo: "hoy" })).toEqual(["Frontend Manual", "Data Automática"]);
   });

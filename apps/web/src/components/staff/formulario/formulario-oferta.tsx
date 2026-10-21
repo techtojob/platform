@@ -23,7 +23,7 @@ import {
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { guardarOferta } from "@/app/[locale]/staff/acciones";
-import { importarComoUsuario, subirOferta } from "@/app/[locale]/cuenta/ofertas/acciones";
+import { editarMiOferta, importarComoUsuario, subirOferta } from "@/app/[locale]/cuenta/ofertas/acciones";
 import { FilaOferta } from "@/components/ofertas/fila-oferta";
 import { Boton, Campo, Casilla } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -104,6 +104,8 @@ type Props = {
   modo?: "staff" | "usuario";
   /** Modo "usuario": la empresa del recruiter (no se puede cambiar). null: es agencia y la escribe. */
   empresaFija?: string | null;
+  /** Modo "usuario" al editar una suya: en qué estado está (para explicar qué pasa al guardar). */
+  estadoMio?: "pendiente" | "publicada";
 };
 
 /**
@@ -111,7 +113,7 @@ type Props = {
  * enlace → la oferta → el puesto → dónde → salario → idiomas. A la derecha (abajo en el móvil),
  * la vista previa en el listado, lo que falta y los botones para guardar o publicar.
  */
-export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff", empresaFija = null }: Props) {
+export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff", empresaFija = null, estadoMio }: Props) {
   const publico = modo === "usuario";
   const claveBorrador = CLAVES_BORRADOR[modo];
   const t = useTranslations("staff");
@@ -194,7 +196,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     empezar(async () => {
       // Si sale bien, el servidor lleva a la oferta (o a "Mis ofertas"); el borrador ya no hace falta.
       if (nueva) guardarBorrador(claveBorrador, null);
-      const r = publico ? await subirOferta(v, declaracion, locale) : await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
+      const r = publico
+        ? ofertaId
+          ? await editarMiOferta(ofertaId, v, declaracion, locale)
+          : await subirOferta(v, declaracion, locale)
+        : await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
       if (r?.errores) ponerErroresServidor(r.errores);
       if (r?.error) ponerErrorGeneral(r.error);
       if (r?.errores || r?.error) requestAnimationFrame(() => alerta.current?.focus());
@@ -601,9 +607,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                 <TextoError>{mensajeError("declaracion")}</TextoError>
               </div>
               <Boton type="submit" tamano="lg" className="w-full" disabled={guardando}>
-                {guardando ? t("guardando") : t("publicar.enviar")}
+                {guardando ? t("guardando") : nueva ? t("publicar.enviar") : t("guardarCambios")}
               </Boton>
-              <p className="-mt-2 text-xs text-suave">{t("publicar.enviarAyuda")}</p>
+              <p className="-mt-2 text-xs text-suave">
+                {nueva ? t("publicar.enviarAyuda") : estadoMio === "publicada" ? t("publicar.editarPublicada") : t("publicar.editarPendiente")}
+              </p>
             </>
           ) : nueva ? (
             <>

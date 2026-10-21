@@ -386,7 +386,9 @@
       "originalAyuda": "Not published: it isn't ours. Read it to check the details. If you like, write a summary in your own words (optional). It's only published in full if the company authorises it.",
       "originalVacio": "The company didn't include any text.",
       "subidaPor": "Posted by {nombre} ({email})",
-      "subidaPorBorrada": "Posted by someone who has deleted their account"
+      "subidaPorBorrada": "Posted by someone who has deleted their account",
+      "editada": "Their recruiter changed it {tiempo}. Take a look.",
+      "marcarRevisada": "I've reviewed it"
     },
     "comprobaciones": {
       "empresa": "The company exists and is who it says it is",
@@ -414,7 +416,8 @@
       "publicar": "Published. It will be on the job board for 45 days.",
       "rechazar": "Rejected.",
       "cerrar": "Closed. It's no longer on the job board.",
-      "alargar": "Extended 45 more days."
+      "alargar": "Extended 45 more days.",
+      "revisada": "Marked as reviewed."
     },
     "form": {
       "seccionEnlace": "The link",
@@ -735,9 +738,10 @@
     "filtros": {
       "atajos": "Shortcuts",
       "atajosNombres": {
-        "sin_resumen": "No summary (optional)",
+        "sin_resumen": "No AI summary",
         "sin_zona": "No location",
         "hoy": "Came in today",
+        "editadas": "Edited by their recruiter",
         "caducan": "Expire this week",
         "desaparecidas": "Gone from the company's site"
       },
@@ -812,7 +816,9 @@
         "sin_sesion": "Your session has expired. Please log in again.",
         "no_recruiter": "Only recruiters can post jobs."
       },
-      "empresaFija": "This is the company on your recruiter account. Need to post for another one? Email us at <correo>contacto@techtojob.com</correo> or <ticket>open a ticket on Discord</ticket>."
+      "empresaFija": "This is the company on your recruiter account. Need to post for another one? Email us at <correo>contacto@techtojob.com</correo> or <ticket>open a ticket on Discord</ticket>.",
+      "editarPublicada": "It stays published with the changes. If you change the link, it goes back to review before going live.",
+      "editarPendiente": "Still pending review."
     },
     "prompt": {
       "pestana": "AI prompt",
@@ -1133,7 +1139,15 @@
     "retirando": "Withdrawing…",
     "cancelar": "Cancel",
     "errorRetirar": "It couldn't be withdrawn. Please try again.",
-    "noRecruiter": "Your recruiter account is blocked: you can't post more jobs. <enlace>See why</enlace>"
+    "noRecruiter": "Your recruiter account is blocked: you can't post more jobs. <enlace>See why</enlace>",
+    "editar": "Edit",
+    "editarTitulo": "Edit the job",
+    "noSeEdita": "This job is no longer active. Post it again from “My jobs”.",
+    "copiaCreada": "We've created a new copy (pending review). Check the details, update what has changed and save.",
+    "editadaPublicada": "Changes saved: the job is still published. Staff will take a look.",
+    "editadaPendiente": "Changes saved. The job is pending review (if you changed the link, we review it again before publishing).",
+    "volverAPublicar": "Post again",
+    "copiando": "Copying…"
   },
   "recruiter": {
     "titulo": "Recruiter",
@@ -1175,7 +1189,8 @@
         "falta": "Choose your role."
       },
       "empresa": {
-        "falta": "Write the company name."
+        "falta": "Write the company name.",
+        "ofertas_en_marcha": "To change company, withdraw your active jobs first."
       },
       "linkedin": {
         "falta": "Paste the link to your LinkedIn profile.",

@@ -92,7 +92,7 @@ export async function hacerAccion(id: string, siguiente: Siguiente, _previo: Est
     peticion = { accion, comprobaciones: marcadas };
   } else if (accion === "rechazar") {
     peticion = { accion, motivo: String(formulario.get("motivo") ?? "") };
-  } else if (accion === "cerrar" || accion === "alargar") {
+  } else if (accion === "cerrar" || accion === "alargar" || accion === "revisada") {
     peticion = { accion };
   } else {
     return { error: "desconocido" };

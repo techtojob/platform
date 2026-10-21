@@ -120,6 +120,13 @@
       "when": 1792584009755,
       "tag": "0016_puntos-de-la-oferta",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792624559605,
+      "tag": "0017_oferta-editada",
+      "breakpoints": true
     }
   ]
 }
