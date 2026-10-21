@@ -581,7 +581,7 @@
     "empresas": {
       "pestana": "Companies",
       "titulo": "Companies",
-      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters). Tech, fully remote offers come in as pending: up to 40 a day, 20 reserved for offers written in Spanish and 20 for offers in English (whatever one language doesn't use, the other can).",
+      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters). Up to 10 tech, fully remote offers a day that can be done from Spain or Latin America come in as pending: first up to 3 for Spain (or from anywhere) and the rest for Latin America.",
       "anadir": "Add a company manually",
       "nombre": "Name",
       "pagina": "Job board",

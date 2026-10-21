@@ -28,10 +28,10 @@ export const REGIONES = {
 export type Region = keyof typeof REGIONES;
 
 /**
- * Países de la gente a la que va la bolsa: España, Latinoamérica, EE. UU., Canadá y Reino Unido.
- * Una oferta automática solo entra si se puede hacer desde alguno de ellos.
+ * Países de la gente a la que va la bolsa (de momento): España y Latinoamérica.
+ * Una oferta automática solo entra si se puede hacer desde alguno de ellos (o desde cualquier país).
  */
-export const PAISES_PUBLICO: readonly string[] = ["ES", ...REGIONES.latam, "US", "CA", "GB"];
+export const PAISES_PUBLICO: readonly string[] = ["ES", ...REGIONES.latam];
 
 /** Lista limpia: sin repetidos, en mayúsculas y en el orden de siempre (España primero). */
 export function ordenarPaises(paises: Iterable<string>): string[] {

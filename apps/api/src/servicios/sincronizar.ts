@@ -21,10 +21,11 @@ import { nuevoId } from "./ofertas-staff";
  * Ofertas automáticas: cada día se leen las páginas de empleo de las empresas que tienen
  * "sincronizar" activado (ver scripts/sincronizar.ts y .github/workflows/ofertas.yml).
  *
- * - Una oferta nueva (técnica, 100 % remota, en español o inglés) entra PENDIENTE: el staff la revisa,
- *   escribe un resumen con sus palabras y la publica. El texto original se guarda solo para el staff.
- * - Como mucho entran 40 ofertas nuevas al día (CUPO_DIARIO): 20 reservadas para cada idioma y,
- *   lo que uno no use, para el otro. Repartidas entre empresas.
+ * - Una oferta nueva (técnica, 100 % remota, en español o inglés, que se pueda hacer desde España o
+ *   Latinoamérica) entra PENDIENTE: el staff revisa los datos y la publica (el resumen es opcional).
+ *   El texto original se guarda solo para el staff.
+ * - Como mucho entran 10 ofertas nuevas al día (CUPO_DIARIO): primero hasta 3 que se puedan hacer desde
+ *   España (o desde cualquier país) y el resto, de Latinoamérica. Repartidas entre empresas.
  *   Las que no caben se quedan para el día siguiente (siguen en la página de la empresa).
  * - Una que ya teníamos: se apunta que sigue ahí (`vistaEn`).
  * - Una que ya no está (dos lecturas seguidas): se cierra.
@@ -33,11 +34,12 @@ import { nuevoId } from "./ofertas-staff";
  */
 
 /**
- * Ofertas nuevas al día: 40, con 20 reservadas para las escritas en español y 20 para las escritas
- * en inglés. Lo que un idioma no use, lo usa el otro. Las de otros idiomas no entran.
+ * Ofertas nuevas al día: 10. Primero hasta 3 que se puedan hacer desde España (o desde cualquier país);
+ * el resto, que se puedan hacer desde Latinoamérica. Si no hay 3 de España, se completa con Latinoamérica.
  */
-export const CUPO_DIARIO = { total: 40, reservas: { es: 20, en: 20 } } as const;
-export type IdiomaCupo = keyof typeof CUPO_DIARIO.reservas;
+export const CUPO_DIARIO = { total: 10, espana: 3 } as const;
+/** Idiomas en que tiene que estar escrita una oferta para entrar. */
+export type IdiomaCupo = "es" | "en";
 
 export type ResultadoEmpresa = {
   empresa: string;
@@ -158,73 +160,61 @@ async function leerEmpresa(db: Db, empresa: Empresa, pedir: Pedir, ahora: Date) 
   return { resultado, candidatas };
 }
 
-export type Cupos = { total: number; reservas: Record<IdiomaCupo, number> };
+export type Cupos = { total: number; espana: number };
 
-/** España y Latinoamérica: la mayor parte de la comunidad. */
-const NUESTRO_PUBLICO = new Set(["ES", ...REGIONES.latam]);
-
-/**
- * Qué ofertas entran antes en el cupo:
- * 0. las que se pueden hacer desde España o Latinoamérica (o desde cualquier país);
- * 1. las que aún no dicen desde dónde (las rellena el staff);
- * 2. las que son solo para otros sitios (EE. UU., Canadá, Reino Unido…): con lo que sobre.
- */
-export function prioridad(remoto: Remoto | null | undefined): 0 | 1 | 2 {
-  if (!remoto) return 1;
-  if (remoto.mundo || remoto.paises.some((p) => NUESTRO_PUBLICO.has(p))) return 0;
-  return 2;
-}
+const LATAM = new Set<string>(REGIONES.latam);
+/** Se puede hacer desde España: España en la lista (o Europa, que la incluye) o desde cualquier país. */
+export const desdeEspana = (r: Remoto | null | undefined) => !!r && (r.mundo || r.paises.includes("ES"));
+/** Se puede hacer desde algún país de Latinoamérica (o desde cualquier país). */
+export const desdeLatam = (r: Remoto | null | undefined) => !!r && (r.mundo || r.paises.some((p) => LATAM.has(p)));
 
 /**
- * Elige las que entran hoy.
- *
- * 1. Cada idioma tiene su reserva (20 en español, 20 en inglés).
- * 2. Lo que un idioma no use, lo puede usar el otro, hasta el total (40).
- *
- * Dentro de cada idioma, una de cada empresa por turnos (para que una empresa grande
- * no se coma el cupo) y, dentro de cada empresa, las más nuevas primero.
+ * Elige las que entran hoy (como mucho `cupos.total`):
+ * 1. hasta `cupos.espana` que se puedan hacer desde España (primero las que dicen España, luego "cualquier país");
+ * 2. el resto, que se puedan hacer desde Latinoamérica (primero las que dicen algún país de allí);
+ * 3. si aún sobra sitio: más de España y, al final, las que no dicen desde dónde (las rellena el staff).
+ * En cada grupo, una de cada empresa por turnos (para que una grande no se coma el cupo) y las más nuevas primero.
  */
-export function elegir<
-  T extends { empresa: { id: string }; oferta: { publicadaEn: Date | null; remoto?: Remoto | null }; idioma: IdiomaCupo },
->(candidatas: T[], cupos: Cupos): T[] {
-  const idiomas = Object.keys(cupos.reservas) as IdiomaCupo[];
-  // Una cola por idioma, ya en el orden en que entrarían: primero las que se pueden hacer desde España
-  // o Latinoamérica; dentro de eso, por turnos entre empresas y las más nuevas primero.
-  const colas = new Map<IdiomaCupo, T[]>();
-  for (const idioma of idiomas) {
-    const cola: T[] = [];
-    for (const nivel of [0, 1, 2]) {
-      const porEmpresa = new Map<string, T[]>();
-      for (const c of candidatas.filter((c) => c.idioma === idioma && prioridad(c.oferta.remoto) === nivel)) {
-        porEmpresa.set(c.empresa.id, [...(porEmpresa.get(c.empresa.id) ?? []), c]);
-      }
-      const listas = [...porEmpresa.values()].map((l) =>
-        l.sort((a, b) => (b.oferta.publicadaEn?.getTime() ?? 0) - (a.oferta.publicadaEn?.getTime() ?? 0)),
-      );
-      while (listas.some((l) => l.length)) for (const l of listas) if (l.length) cola.push(l.shift()!);
+export function elegir<T extends { empresa: { id: string }; oferta: { publicadaEn: Date | null; remoto?: Remoto | null } }>(
+  candidatas: T[],
+  cupos: Cupos,
+): T[] {
+  const elegidas = new Set<T>();
+  let quedan = Math.max(0, cupos.total);
+  /** Por turnos entre empresas, las más nuevas primero. */
+  const enTurnos = (lista: T[]) => {
+    const porEmpresa = new Map<string, T[]>();
+    for (const c of lista) porEmpresa.set(c.empresa.id, [...(porEmpresa.get(c.empresa.id) ?? []), c]);
+    const colas = [...porEmpresa.values()].map((l) =>
+      l.sort((a, b) => (b.oferta.publicadaEn?.getTime() ?? 0) - (a.oferta.publicadaEn?.getTime() ?? 0)),
+    );
+    const r: T[] = [];
+    while (colas.some((l) => l.length)) for (const l of colas) if (l.length) r.push(l.shift()!);
+    return r;
+  };
+  const tomar = (grupo: T[], cuantas: number) => {
+    for (const c of grupo) {
+      if (cuantas <= 0 || quedan <= 0) return;
+      if (elegidas.has(c)) continue;
+      elegidas.add(c);
+      cuantas--;
+      quedan--;
     }
-    colas.set(idioma, cola);
-  }
-
-  const elegidas: T[] = [];
-  let total = Math.max(0, cupos.total);
-  // 1. Las reservas de cada idioma.
-  for (const idioma of idiomas) {
-    const n = Math.min(Math.max(0, cupos.reservas[idioma]), total);
-    const tomadas = colas.get(idioma)!.splice(0, n);
-    elegidas.push(...tomadas);
-    total -= tomadas.length;
-  }
-  // 2. Lo que sobre, para quien tenga más: un idioma y otro por turnos.
-  while (total > 0 && idiomas.some((i) => colas.get(i)!.length)) {
-    for (const idioma of idiomas) {
-      const siguiente = colas.get(idioma)!.shift();
-      if (!siguiente) continue;
-      elegidas.push(siguiente);
-      if (--total === 0) break;
-    }
-  }
-  return elegidas;
+  };
+  const remoto = (c: T) => c.oferta.remoto;
+  const espana = [
+    ...enTurnos(candidatas.filter((c) => desdeEspana(remoto(c)) && !remoto(c)!.mundo)),
+    ...enTurnos(candidatas.filter((c) => remoto(c)?.mundo)),
+  ];
+  const latam = [
+    ...enTurnos(candidatas.filter((c) => desdeLatam(remoto(c)) && !remoto(c)!.mundo)),
+    ...enTurnos(candidatas.filter((c) => remoto(c)?.mundo)),
+  ];
+  tomar(espana, cupos.espana);
+  tomar(latam, quedan);
+  tomar(espana, quedan);
+  tomar(enTurnos(candidatas.filter((c) => !remoto(c))), quedan);
+  return [...elegidas];
 }
 
 async function crearOfertaAutomatica(db: Db, { empresa, oferta: o, idioma }: Candidata, ahora: Date) {
@@ -266,15 +256,14 @@ async function crearOfertaAutomatica(db: Db, { empresa, oferta: o, idioma }: Can
  * GitHub lanza la tarea un poco más tarde, al siguiente no se queda sin cupo.
  */
 async function cuposRestantes(db: Db, ahora: Date, cupos: Cupos): Promise<Cupos> {
-  const filas = await db
-    .select({ idioma: ofertas.idioma, n: sql<number>`count(*)` })
+  const [fila] = await db
+    .select({
+      total: sql<number>`count(*)`,
+      espana: sql<number>`count(*) filter (where ${ofertas.remotoMundo} or 'ES' = any(${ofertas.remotoPaises}))`,
+    })
     .from(ofertas)
-    .where(and(eq(ofertas.origen, "automatica"), gte(ofertas.creadaEn, new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate())))))
-    .groupBy(ofertas.idioma);
-  const hechas = new Map(filas.map((f) => [f.idioma, Number(f.n)]));
-  const es = hechas.get("es") ?? 0;
-  const en = hechas.get("en") ?? 0;
-  return { total: cupos.total - es - en, reservas: { es: cupos.reservas.es - es, en: cupos.reservas.en - en } };
+    .where(and(eq(ofertas.origen, "automatica"), gte(ofertas.creadaEn, new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate())))));
+  return { total: cupos.total - Number(fila?.total ?? 0), espana: cupos.espana - Number(fila?.espana ?? 0) };
 }
 
 /** Cuántas empresas se leen a la vez. */

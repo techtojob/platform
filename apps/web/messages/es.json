@@ -581,7 +581,7 @@
     "empresas": {
       "pestana": "Empresas",
       "titulo": "Empresas",
-      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters). Las ofertas técnicas y 100 % remotas entran como pendientes: como mucho 40 al día, 20 reservadas para las escritas en español y 20 para las escritas en inglés (lo que un idioma no use, lo usa el otro).",
+      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters). Entran como pendientes, como mucho 10 al día, las ofertas técnicas y 100 % remotas que se pueden hacer desde España o Latinoamérica: primero hasta 3 para España (o desde cualquier país) y el resto para Latinoamérica.",
       "anadir": "Añadir una empresa a mano",
       "nombre": "Nombre",
       "pagina": "Página de empleo",

@@ -45,44 +45,70 @@ beforeEach(async () => {
 const automaticas = () => db.select().from(ofertas).where(eq(ofertas.origen, "automatica"));
 
 describe("cupo diario", () => {
-  it("elegir: por turnos entre empresas, las más nuevas primero, y respeta cada idioma", () => {
-    const c = (empresa: string, idioma: "es" | "en", dia: number) => ({ empresa: { id: empresa }, idioma, oferta: { publicadaEn: new Date(2026, 8, dia) } });
-    const lista = [c("a", "en", 1), c("a", "en", 5), c("a", "en", 3), c("b", "en", 2), c("a", "es", 1)];
-    const elegidas = elegir(lista, { total: 3, reservas: { en: 3, es: 0 } });
-    expect(elegidas.map((x) => `${x.empresa.id}${x.oferta.publicadaEn.getDate()}`)).toEqual(["a5", "b2", "a3"]);
+  const r = (...paises: string[]) => ({ mundo: false, paises });
+  const mundo = { mundo: true, paises: [] as string[] };
+  const c = (id: string, remoto: { mundo: boolean; paises: string[] } | null, empresa = id, dia = 1) => ({
+    id,
+    empresa: { id: empresa },
+    oferta: { publicadaEn: new Date(2026, 8, dia), remoto },
+  });
+  const ids = (l: Array<{ id: string }>) => l.map((x) => x.id);
+
+  it("elegir: por turnos entre empresas y las más nuevas primero", () => {
+    const lista = [c("a1", r("MX"), "a", 1), c("a5", r("MX"), "a", 5), c("a3", r("MX"), "a", 3), c("b2", r("MX"), "b", 2)];
+    expect(ids(elegir(lista, { total: 3, espana: 0 }))).toEqual(["a5", "b2", "a3"]);
   });
 
-  it("elegir: lo que un idioma no usa, lo usa el otro (hasta el total)", () => {
-    const c = (idioma: "es" | "en", n: number) => ({ empresa: { id: `e${n}` }, idioma, oferta: { publicadaEn: null } });
-    const solo = (idioma: "es" | "en", n: number) => Array.from({ length: n }, (_, i) => c(idioma, i));
-    const cupos = { total: 40, reservas: { es: 20, en: 20 } };
-    expect(elegir([...solo("en", 50), ...solo("es", 1)], cupos).filter((x) => x.idioma === "en")).toHaveLength(39);
-    expect(elegir(solo("es", 60), cupos)).toHaveLength(40);
-    // Si los dos tienen de sobra, mitad y mitad.
-    const ambos = elegir([...solo("en", 50), ...solo("es", 50)], cupos);
-    expect([ambos.filter((x) => x.idioma === "es").length, ambos.filter((x) => x.idioma === "en").length]).toEqual([20, 20]);
+  it("elegir: primero 3 de España (o desde cualquier país), el resto de Latinoamérica", () => {
+    const lista = [
+      ...Array.from({ length: 10 }, (_, i) => c(`mx${i}`, r("MX", "CO"))),
+      c("es1", r("ES")),
+      c("eu1", r("ES", "PT", "FR")),
+      c("mundo1", mundo),
+      c("mundo2", mundo),
+      c("nada", null),
+    ];
+    const elegidas = ids(elegir(lista, { total: 10, espana: 3 }));
+    expect(elegidas).toHaveLength(10);
+    // Las que dicen España, antes que las de cualquier país.
+    expect(elegidas.slice(0, 3)).toEqual(["es1", "eu1", "mundo1"]);
+    expect(elegidas.slice(3).every((id) => id.startsWith("mx"))).toBe(true);
   });
 
-  it("como mucho 40 al día (20 en español y 20 en inglés si hay de los dos); otros idiomas no entran; el resto espera", async () => {
+  it("elegir: si no hay 3 de España, se completa con Latinoamérica; y al final, las que no dicen desde dónde", () => {
+    const lista = [c("es1", r("ES")), ...Array.from({ length: 5 }, (_, i) => c(`ar${i}`, r("AR"))), c("nada", null)];
+    expect(ids(elegir(lista, { total: 10, espana: 3 }))).toEqual(["es1", "ar0", "ar1", "ar2", "ar3", "ar4", "nada"]);
+  });
+
+  it("elegir: si no hay de Latinoamérica, más de España", () => {
+    const lista = Array.from({ length: 12 }, (_, i) => c(`es${i}`, r("ES")));
+    expect(elegir(lista, { total: 10, espana: 3 })).toHaveLength(10);
+  });
+
+  it("como mucho 10 al día; otros idiomas no entran; el resto espera", async () => {
     await crearEmpresa(db, { nombre: "Grande", paginaEmpleo: "https://jobs.ashbyhq.com/grande" });
     await crearEmpresa(db, { nombre: "Pequeña", paginaEmpleo: "https://jobs.ashbyhq.com/pequena" });
+    // Las "en" son desde cualquier país; las "es", desde Latinoamérica.
     const pedir = falso({ [URL_ASHBY("grande")]: ashby("grande", { en: 30, es: 25, de: 5 }), [URL_ASHBY("pequena")]: ashby("pequena", { en: 2 }) });
     const dia1 = new Date("2026-10-01T05:15:00Z");
     const r1 = await sincronizarTodas(db, pedir, dia1);
     const todas = await automaticas();
-    expect(todas.filter((o) => o.idioma === "en")).toHaveLength(20);
-    expect(todas.filter((o) => o.idioma === "es")).toHaveLength(20);
+    expect(todas).toHaveLength(10);
+    // 3 "de España" (aquí, desde cualquier país) y 7 de Latinoamérica.
+    expect(todas.filter((o) => o.remotoMundo)).toHaveLength(3);
+    expect(todas.filter((o) => o.remotoPaises.includes("MX"))).toHaveLength(7);
     expect(todas.some((o) => o.titulo.includes("DE"))).toBe(false);
     // La pequeña no se queda fuera por culpa de la grande.
-    expect(r1.find((r) => r.empresa === "Pequeña")).toMatchObject({ nuevas: 2, enEspera: 0 });
-    expect(r1.find((r) => r.empresa === "Grande")).toMatchObject({ nuevas: 38, enEspera: 17 });
+    expect(r1.find((x) => x.empresa === "Pequeña")).toMatchObject({ nuevas: 1, enEspera: 1 });
+    expect(r1.find((x) => x.empresa === "Grande")).toMatchObject({ nuevas: 9, enEspera: 46 });
 
     // Si se lanza otra vez el mismo día, no entra ninguna más.
     const r2 = await sincronizarTodas(db, pedir, new Date(dia1.getTime() + 3_600_000));
-    expect(r2.reduce((n, r) => n + r.nuevas, 0)).toBe(0);
-    // Al día siguiente, entran las que esperaban (y no se cierra ninguna).
+    expect(r2.reduce((n, x) => n + x.nuevas, 0)).toBe(0);
+    // Al día siguiente, otras 10 (y no se cierra ninguna).
     const r3 = await sincronizarTodas(db, pedir, new Date(dia1.getTime() + 86_400_000));
-    expect(r3.find((r) => r.empresa === "Grande")).toMatchObject({ nuevas: 17, enEspera: 0, cerradas: 0 });
+    expect(r3.reduce((n, x) => n + x.nuevas, 0)).toBe(10);
+    expect(r3.reduce((n, x) => n + x.cerradas, 0)).toBe(0);
   });
 });
 

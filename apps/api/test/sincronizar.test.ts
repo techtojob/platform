@@ -183,24 +183,24 @@ describe("filtros", () => {
     expect(dondeRemoto(["Remote - Spain", "Remote - LATAM"])).toEqual(paises(...ordenarPaises(["ES", ...REGIONES.latam])));
     expect(dondeRemoto(["Remote", "Anywhere"])).toEqual({ mundo: true, paises: [] });
     expect(dondeRemoto(["Remote"])).toBeNull();
-    expect(dondeRemoto(["Remote - US"])).toEqual(paises("US"));
-    expect(dondeRemoto(["United States (Remote)"])).toEqual(paises("US"));
-    expect(dondeRemoto(["Remote - Canada"])).toEqual(paises("CA"));
-    expect(dondeRemoto(["Remote (US & Canada)"])).toEqual(paises("US", "CA"));
-    expect(dondeRemoto(["Remote - North America"])).toEqual(paises("US", "CA"));
+    // EE. UU., Canadá y Reino Unido solos: de momento no son nuestro público.
+    expect(dondeRemoto(["Remote - US"])).toBe("fuera");
+    expect(dondeRemoto(["United States (Remote)"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - Canada"])).toBe("fuera");
+    expect(dondeRemoto(["Remote (US & Canada)"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - North America"])).toBe("fuera");
     expect(dondeRemoto(["Remote - Americas"])).toEqual(paises(...ordenarPaises([...REGIONES.latam, "US", "CA"])));
     expect(dondeRemoto(["Remote - Buenos Aires"])).toEqual(paises("AR"));
-    // Reino Unido entra (está en inglés y hay mucha gente de aquí allí); otros países solos, no.
-    expect(dondeRemoto(["Remote - United Kingdom"])).toEqual(paises("GB"));
+    expect(dondeRemoto(["Remote - United Kingdom"])).toBe("fuera");
     expect(dondeRemoto(["Remote - India"])).toBe("fuera");
     expect(dondeRemoto(["Remote - Germany"])).toBe("fuera");
     expect(dondeRemoto(["Remote - Spain", "Remote - Germany"])).toEqual(paises("ES", "DE"));
     // El título también cuenta, pero lo que no se entiende de él no deja la oferta fuera.
-    expect(dondeRemoto(["Remote"], "CEO, AI Services - US-Based")).toEqual(paises("US"));
+    expect(dondeRemoto(["Remote"], "CEO, AI Services - US-Based")).toBe("fuera");
     expect(dondeRemoto(["Remote"], "Backend Engineer - LATAM")).toEqual(paises(...ordenarPaises(REGIONES.latam)));
     expect(dondeRemoto(["Remote"], "Data Engineer (Remote, Spain)")).toEqual(paises("ES"));
     expect(dondeRemoto(["Remote"], "Senior Backend Engineer (Node.js)")).toBeNull();
-    expect(dondeRemoto(["Anywhere"], "Frontend Developer - US-Based")).toEqual(paises("US"));
+    expect(dondeRemoto(["Anywhere"], "Frontend Developer - US-Based")).toBe("fuera");
     expect(dondeRemoto(["Remote - India"], "Platform Engineer - Spain")).toEqual(paises("ES", "IN"));
   });
 

@@ -4,9 +4,9 @@ name: Ofertas automáticas
 #   1. Descubre empresas: prueba 25 nombres de la lista y 300 páginas de empleo encontradas con
 #      Common Crawl (ver common-crawl.yml) para ver si tienen ofertas que nos sirvan, y las añade.
 #   2. Lee las páginas de empleo de las empresas con "Leer sus ofertas cada día" activado.
-#      Las ofertas nuevas (como mucho 40: 20 reservadas para las escritas en español y 20 para
-#      las escritas en inglés; lo que un idioma no use, lo usa el otro) quedan pendientes para
-#      que el staff las revise; las que desaparecen se cierran.
+#      Las ofertas nuevas (como mucho 10 al día: hasta 3 para España, o desde cualquier país, y el
+#      resto para Latinoamérica) quedan pendientes para que el staff las revise; las que
+#      desaparecen se cierran y las que llevan 14 días sin revisar se descartan.
 # También se puede lanzar a mano: Actions → Ofertas automáticas → Run workflow.
 #
 # Necesita el secreto DATABASE_URL_PRODUCCION en GitHub (Settings → Secrets and variables → Actions):

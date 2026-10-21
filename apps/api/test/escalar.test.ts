@@ -2,28 +2,29 @@ import { MOTIVO_SIN_REVISAR, REGIONES } from "@techtojob/shared";
 import { eq, inArray } from "drizzle-orm";
 import { describe, expect, it } from "vitest";
 import { ofertas } from "../src/db/esquema";
-import { descartarPendientesViejas, elegir, enParalelo, prioridad } from "../src/servicios/sincronizar";
+import { descartarPendientesViejas, desdeEspana, desdeLatam, enParalelo } from "../src/servicios/sincronizar";
 import { crearDbPrueba } from "./db";
 
 const r = (...paises: string[]) => ({ mundo: false, paises });
 
-describe("prioridad en el cupo", () => {
-  it("primero lo que se puede hacer desde España o Latinoamérica", () => {
-    expect(prioridad({ mundo: true, paises: [] })).toBe(0);
-    expect(prioridad(r("ES"))).toBe(0);
-    expect(prioridad(r("MX"))).toBe(0);
-    expect(prioridad(r(...REGIONES.eu))).toBe(0); // Europa incluye España
-    expect(prioridad(null)).toBe(1);
-    expect(prioridad(r("US"))).toBe(2);
-    expect(prioridad(r("US", "CA", "GB"))).toBe(2);
+describe("desde España / desde Latinoamérica", () => {
+  it("cuenta como España si la incluye (o Europa) o es desde cualquier país; igual con Latinoamérica", () => {
+    expect(desdeEspana({ mundo: true, paises: [] })).toBe(true);
+    expect(desdeEspana(r("ES"))).toBe(true);
+    expect(desdeEspana(r(...REGIONES.eu))).toBe(true);
+    expect(desdeEspana(r("MX"))).toBe(false);
+    expect(desdeEspana(null)).toBe(false);
+    expect(desdeLatam(r("MX"))).toBe(true);
+    expect(desdeLatam({ mundo: true, paises: [] })).toBe(true);
+    expect(desdeLatam(r("ES"))).toBe(false);
   });
 
-  it("elegir: las solo de EE. UU. entran con lo que sobra", () => {
-    const c = (id: string, remoto: ReturnType<typeof r> | null, empresa = id) => ({ empresa: { id: empresa }, idioma: "en" as const, oferta: { publicadaEn: null, remoto }, id });
-    const lista = [c("us1", r("US")), c("us2", r("US")), c("es1", r("ES")), c("nada", null), c("mx1", r("MX"))];
-    const cupos = { total: 3, reservas: { es: 0, en: 3 } };
-    expect(elegir(lista, cupos).map((x) => x.id)).toEqual(["es1", "mx1", "nada"]);
-    expect(elegir(lista, { total: 5, reservas: { es: 0, en: 5 } }).map((x) => x.id)).toEqual(["es1", "mx1", "nada", "us1", "us2"]);
+  it("solo entran ofertas que se puedan hacer desde España o Latinoamérica", async () => {
+    const { dondeRemoto } = await import("../src/servicios/ats");
+    expect(dondeRemoto(["Remote - US"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - United Kingdom"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - Canada"])).toBe("fuera");
+    expect(dondeRemoto(["Remote - US", "Remote - Mexico"])).toEqual(r("MX", "US"));
   });
 });
 
