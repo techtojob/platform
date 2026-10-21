@@ -808,7 +808,9 @@
       "copiarConOferta": "Copy prompt with this job",
       "copiado": "Copied!",
       "noCopiado": "It couldn't be copied",
-      "ver": "See the prompt"
+      "ver": "See the prompt",
+      "enFormularioTitulo": "Summarise with AI",
+      "enFormularioAyuda": "Copy the prompt with this job, paste it into ChatGPT or Claude and use the result for the description (or to post it on Discord and social media). Fill in the link and, if you can, where it can be done from first."
     }
   },
   "formulario": {

@@ -808,7 +808,9 @@
       "copiarConOferta": "Copiar prompt con esta oferta",
       "copiado": "¡Copiado!",
       "noCopiado": "No se ha podido copiar",
-      "ver": "Ver el prompt"
+      "ver": "Ver el prompt",
+      "enFormularioTitulo": "Resumir con IA",
+      "enFormularioAyuda": "Copia el prompt con esta oferta, pégalo en ChatGPT o Claude y usa el resultado para la descripción (o para publicarla en Discord y redes). Rellena antes el enlace y, si puedes, desde dónde se puede trabajar."
     }
   },
   "formulario": {

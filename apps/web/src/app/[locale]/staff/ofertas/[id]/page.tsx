@@ -8,7 +8,7 @@ import { AccionesOferta } from "@/components/staff/acciones-oferta";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarBlob, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { CopiarTexto } from "@/components/staff/copiar-texto";
-import { promptConOferta } from "@/lib/prompt-ia";
+import { dondeParaPrompt, promptConOferta } from "@/lib/prompt-ia";
 import { Link } from "@/i18n/navigation";
 import { exigirStaff, obtenerOfertaStaff, siguienteStaff } from "@/lib/api-staff";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
@@ -276,13 +276,3 @@ function TextoOriginal({ oferta }: { oferta: OfertaStaff }) {
   );
 }
 
-/** "Remoto desde: España, México" o "Híbrido en Madrid (España)", en español, para el prompt de la IA. */
-function dondeParaPrompt(o: { modalidad: string; remotoMundo: boolean; remotoPaises: string[]; ciudad: string | null; pais: string | null }): string | null {
-  const pais = (c: string) => new Intl.DisplayNames(["es"], { type: "region" }).of(c) ?? c;
-  if (o.modalidad === "remoto") {
-    if (o.remotoMundo) return "Remoto desde cualquier país";
-    return o.remotoPaises.length ? `Remoto desde ${o.remotoPaises.map(pais).join(", ")}` : null;
-  }
-  const lugar = [o.ciudad, o.pais && pais(o.pais)].filter(Boolean).join(", ");
-  return lugar ? `${o.modalidad === "hibrido" ? "Híbrido" : "Presencial"} en ${lugar}` : null;
-}

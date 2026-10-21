@@ -77,3 +77,17 @@ ${o.texto?.trim() || "(sin descripción)"}
 
 Enlace: ${o.enlace}`;
 }
+
+/** "Remoto desde España, México" o "Híbrido en Madrid, España", en español, para el prompt. */
+export function dondeParaPrompt(
+  o: { modalidad: string; remotoMundo: boolean; remotoPaises: string[]; ciudad: string | null; pais: string | null },
+): string | null {
+  const pais = (c: string) => new Intl.DisplayNames(["es"], { type: "region" }).of(c) ?? c;
+  if (o.modalidad === "remoto") {
+    if (o.remotoMundo) return "Remoto desde cualquier país";
+    return o.remotoPaises.length ? `Remoto desde ${o.remotoPaises.map(pais).join(", ")}` : null;
+  }
+  if (!o.modalidad) return null;
+  const lugar = [o.ciudad, o.pais && pais(o.pais)].filter(Boolean).join(", ");
+  return lugar ? `${o.modalidad === "hibrido" ? "Híbrido" : "Presencial"} en ${lugar}` : null;
+}
