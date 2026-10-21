@@ -281,6 +281,25 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             error={mensajeError("urlOriginal")}
             {...(publico && { publico, importar: importarComoUsuario })}
           />
+          {/* Resumir con IA: el prompt con lo que hay ahora en el formulario (el texto original, si es automática). */}
+          {!publico && (
+            <div className="flex flex-col gap-3 rounded-2xl border border-dashed border-borde-fuerte p-4">
+              <p className="text-sm font-bold">{t("prompt.enFormularioTitulo")}</p>
+              <p className="text-sm text-suave">{t("prompt.enFormularioAyuda")}</p>
+              <CopiarTexto
+                variante="secundario"
+                className="self-start"
+                etiqueta={t("prompt.copiarConOferta")}
+                texto={promptConOferta({
+                  titulo: v.titulo || "(sin título)",
+                  empresa: v.empresa?.nombre || "(sin empresa)",
+                  texto: original?.texto || v.descripcion || v.resumen,
+                  enlace: v.urlOriginal || "(sin enlace)",
+                  donde: dondeParaPrompt(v),
+                })}
+              />
+            </div>
+          )}
         </Seccion>
 
         <Seccion id="seccion-oferta" numero={2} titulo={t("form.seccionOferta")}>
@@ -388,25 +407,6 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                 {original.texto || t("detalle.originalVacio")}
               </div>
             </details>
-          )}
-          {/* Resumir con IA: el prompt con lo que hay ahora en el formulario (el texto original, si es automática). */}
-          {!publico && (
-            <div className="flex flex-col gap-3 rounded-2xl border border-dashed border-borde-fuerte p-4">
-              <p className="text-sm font-bold">{t("prompt.enFormularioTitulo")}</p>
-              <p className="text-sm text-suave">{t("prompt.enFormularioAyuda")}</p>
-              <CopiarTexto
-                variante="secundario"
-                className="self-start"
-                etiqueta={t("prompt.copiarConOferta")}
-                texto={promptConOferta({
-                  titulo: v.titulo || "(sin título)",
-                  empresa: v.empresa?.nombre || "(sin empresa)",
-                  texto: original?.texto || v.descripcion || v.resumen,
-                  enlace: v.urlOriginal || "(sin enlace)",
-                  donde: dondeParaPrompt(v),
-                })}
-              />
-            </div>
           )}
         </Seccion>
 
