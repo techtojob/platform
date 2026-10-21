@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
+import { Suspense, useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { locales, nombresIdiomas, type Locale } from "@/i18n/routing";
 
@@ -10,10 +10,19 @@ import { locales, nombresIdiomas, type Locale } from "@/i18n/routing";
  * Cambia el idioma de la web y lleva a la misma página en el otro idioma
  * (/empleo/talento → /jobs/talent). La elección se guarda y se respeta en
  * las siguientes visitas.
+ *
+ * Necesita la dirección de la página, que en las páginas variables (una oferta)
+ * solo se sabe al visitarla: mientras tanto se ve el mismo selector, quieto.
  */
 export function SelectorIdioma() {
-  const t = useTranslations("selectorIdioma");
-  const locale = useLocale();
+  return (
+    <Suspense fallback={<Selector />}>
+      <SelectorConDireccion />
+    </Suspense>
+  );
+}
+
+function SelectorConDireccion() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
@@ -26,18 +35,25 @@ export function SelectorIdioma() {
     });
   }
 
+  return <Selector onCambiar={cambiar} pendiente={pendiente} />;
+}
+
+function Selector({ onCambiar, pendiente = false }: { onCambiar?: (l: Locale) => void; pendiente?: boolean }) {
+  const t = useTranslations("selectorIdioma");
+  const locale = useLocale();
   return (
     <label className="flex items-center gap-2 text-sm font-semibold">
       <span className="sr-only">{t("etiqueta")}</span>
       <select
         value={locale}
-        disabled={pendiente}
-        onChange={(e) => cambiar(e.target.value as Locale)}
-        className="min-h-11 rounded-full border border-white/20 bg-ink px-4 text-white"
+        disabled={pendiente || !onCambiar}
+        onChange={(e) => onCambiar?.(e.target.value as Locale)}
+        className="h-11 cursor-pointer rounded-full bg-transparent px-2.5 text-sm font-bold text-texto transition-colors hover:bg-hover"
       >
         {locales.map((l) => (
-          <option key={l} value={l}>
-            {l.toUpperCase()} · {nombresIdiomas[l]}
+          // Solo el código para que quepa en el móvil; el nombre, para lectores de pantalla.
+          <option key={l} value={l} aria-label={nombresIdiomas[l]}>
+            {l.toUpperCase()}
           </option>
         ))}
       </select>

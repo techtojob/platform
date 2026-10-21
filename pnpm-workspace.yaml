@@ -2,6 +2,14 @@ packages:
   - apps/*
   - packages/*
 
+# Paquetes que pueden ejecutar su script de instalación (los necesitan el API y Wrangler).
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+
+# Paquetes cuyo script de instalación no hace falta.
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+  - "@swc/core"
+  - "@parcel/watcher"

@@ -1,0 +1,31 @@
+// La web de la bolsa en Cloudflare Workers, con OpenNext. Ver apps/web/README.md, "Despliegue".
+//
+// - Sin --env: para probar en local la versión de Cloudflare (pnpm preview:cloudflare).
+// - --env production: techtojob.com/empleo y techtojob.com/jobs. La landing sigue en el resto
+//   del dominio: en Cloudflare, una ruta concreta gana a la del dominio entero.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "techtojob-empleo",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "observability": { "enabled": true },
+  "vars": {
+    "API_URL": "http://localhost:8787"
+  },
+  "env": {
+    "production": {
+      "name": "techtojob-empleo",
+      "routes": [
+        // Páginas de la bolsa en español (y sus archivos: /empleo-recursos/…) y en inglés.
+        { "pattern": "techtojob.com/empleo*", "zone_name": "techtojob.com" },
+        { "pattern": "techtojob.com/jobs*", "zone_name": "techtojob.com" }
+      ],
+      "vars": {
+        "API_URL": "https://api.techtojob.com",
+        "NEXT_PUBLIC_LANDING_URL": "https://techtojob.com"
+      }
+    }
+  }
+}

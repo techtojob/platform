@@ -1,0 +1,39 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "deploy": "wrangler deploy --env production",
+    "typecheck": "wrangler types && tsc --noEmit",
+    "test": "vitest run",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "db:generar": "drizzle-kit generate",
+    "db:migrar": "tsx --env-file=.dev.vars scripts/migrar.ts",
+    "db:datos-prueba": "tsx --env-file=.dev.vars scripts/datos-prueba.ts",
+    "db:quitar-datos-prueba": "tsx --env-file=.dev.vars scripts/quitar-datos-prueba.ts",
+    "ofertas:probar": "tsx scripts/probar-pagina.ts",
+    "ofertas:common-crawl": "tsx --env-file=.dev.vars scripts/common-crawl.ts",
+    "ofertas:common-crawl:ci": "tsx scripts/common-crawl.ts",
+    "db:migrar:produccion": "tsx --env-file=.produccion.vars scripts/migrar.ts",
+    "ofertas:sincronizar": "tsx --env-file=.dev.vars scripts/sincronizar.ts",
+    "ofertas:sincronizar:ci": "tsx scripts/sincronizar.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "1.2.0",
+    "better-auth": "1.7.7",
+    "drizzle-orm": "0.45.3",
+    "hono": "4.13.12"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@techtojob/shared": "workspace:*",
+    "@types/node": "^22.20.5",
+    "drizzle-kit": "0.31.11",
+    "tsx": "4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "5.0.3",
+    "wrangler": "4.147.0"
+  }
+}

@@ -1,33 +1,58 @@
-import { AREAS } from "@techtojob/shared";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { use } from "react";
+import { Suspense, use } from "react";
+import { Buscador } from "@/components/buscador";
+import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
+import { Portada, Resaltado } from "@/components/sitio/portada";
+import { Aviso } from "@/components/ui";
 import type { Locale } from "@/i18n/routing";
 
-// Página provisional. Se sustituye por el listado de ofertas cuando el equipo
-// de diseño tenga las pantallas aprobadas.
-export default function Inicio({ params }: PageProps<"/[locale]">) {
+/** Inicio de la bolsa: portada con el buscador y, debajo, el listado de ofertas. */
+export default function Inicio({ params, searchParams }: PageProps<"/[locale]">) {
   const { locale } = use(params);
   setRequestLocale(locale as Locale);
   const t = useTranslations();
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center gap-6 px-6 py-20">
-      <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-        {t("inicio.etiqueta")}
-      </p>
-      <h1 className="text-4xl font-bold leading-tight">{t("inicio.titulo")}</h1>
-      <p className="text-lg text-white/70">{t("inicio.descripcion")}</p>
-      <ul className="flex flex-wrap gap-2" aria-label={t("inicio.areas")}>
-        {AREAS.map((area) => (
-          <li
-            key={area}
-            className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm"
-          >
-            {t(`areas.${area}`)}
+    <main id="contenido" className="flex flex-1 flex-col">
+      <Portada
+        migas={[{ texto: t("navegacion.empleo") }]}
+        titulo={t.rich("ofertas.portadaTitulo", { resaltado: (texto) => <Resaltado>{texto}</Resaltado> })}
+        entradilla={t("ofertas.portadaTexto")}
+        lado={<PostitRevision />}
+      >
+        <div className="mt-8 w-full max-w-2xl">
+          <Buscador />
+        </div>
+      </Portada>
+
+      <section className="rejilla flex-1 px-[var(--margen)] py-10 sm:py-14">
+        <div className="mx-auto max-w-[80rem]">
+          {/* El listado depende de los idiomas de cada persona, lo que busca y los filtros: se carga en cada visita. */}
+          <Suspense fallback={<div aria-busy="true" className="h-[32rem] animate-pulse rounded-tarjeta bg-tarjeta/60" />}>
+            <ListadoOfertas searchParams={searchParams} />
+          </Suspense>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+/** El post-it de la portada: qué revisa el staff antes de publicar una oferta. */
+function PostitRevision() {
+  const t = useTranslations("ofertas.revision");
+  return (
+    <Aviso giro="rotate-[2deg]" className="w-[21rem] p-7">
+      <p className="text-xl font-bold leading-tight tracking-tight">{t("titulo")}</p>
+      <ul className="mt-4 grid gap-2.5">
+        {(["empresa", "enlace", "idiomas", "salario"] as const).map((clave) => (
+          <li key={clave} className="flex items-start gap-2.5 border-t border-ink/15 pt-2.5 text-sm font-bold">
+            <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto shrink-0" />
+            {t(clave)}
           </li>
         ))}
       </ul>
-    </main>
+    </Aviso>
   );
 }

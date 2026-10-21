@@ -1,31 +1,142 @@
 @import "tailwindcss";
+@import "blobatar/motion.css";
 
 /*
- * Colores de marca de TechToJob: los mismos que la landing (techtojob/landing, app/global.css).
- * Si cambian allí, se cambian aquí también para que las dos webs se vean iguales.
+ * Estilos base de la bolsa: los mismos de la landing (techtojob.com), para que la bolsa
+ * se vea como una sección más de la web. Si diseño cambia un color, un tamaño o un
+ * redondeo, se cambia aquí y se aplica en toda la bolsa.
+ *
+ * COLORES CON NOMBRE DE FUNCIÓN, no de color: `bg-fondo`, `text-suave`, `border-borde`…
+ * Los componentes solo usan estos nombres, nunca `text-white` ni `#84c0bf`: así, si un día
+ * cambia la paleta, se cambia aquí y nada más.
+ *
+ * Solo hay un modo, el oscuro de la landing.
+ *
+ * Colores de la marca: ink #2f3436, slate #3b4245, turquesa #84c0bf, post-it #e4d7bf.
  */
+
+/* Colores (el modo oscuro de la landing) */
 :root {
-  --ink: #2f3436;     /* fondo principal */
-  --slate: #3b4245;   /* fondo de secciones */
-  --primary: #84c0bf; /* color principal: botones, enlaces, destacados */
-  --postit: #e4d7bf;  /* post-its y etiquetas */
+  color-scheme: dark;
+  --fondo: #2f3436;            /* fondo de la página (ink) */
+  --fondo-hondo: #292e30;      /* parte baja de las cabeceras con degradado */
+  --superficie: #3b4245;       /* secciones con cuadrícula (slate) */
+  --tarjeta: #2f3436;          /* ofertas, paneles */
+  --tarjeta-hover: #353b3d;
+  --ventana: #313338;          /* paneles "tipo Discord" (#filtros) */
+  --texto: #ffffff;
+  --suave: rgb(255 255 255 / 72%);
+  --borde: rgb(255 255 255 / 10%);
+  --borde-fuerte: rgb(255 255 255 / 22%);
+  --enlace: #84c0bf;           /* texto en color y enlaces */
+  --chip: rgb(255 255 255 / 8%);
+  --hover: rgb(255 255 255 / 8%);
+  --peligro: #f3a3a3;
+  --rejilla: rgb(132 192 191 / 10%);
+  --sombra: 0 24px 70px rgb(0 0 0 / 28%);
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-slate: var(--slate);
-  --color-primary: var(--primary);
-  --color-postit: var(--postit);
-  --font-sans: var(--font-sora);
+  /* Colores con nombre de función */
+  --color-fondo: var(--fondo);
+  --color-fondo-hondo: var(--fondo-hondo);
+  --color-superficie: var(--superficie);
+  --color-tarjeta: var(--tarjeta);
+  --color-tarjeta-hover: var(--tarjeta-hover);
+  --color-ventana: var(--ventana);
+  --color-texto: var(--texto);
+  --color-suave: var(--suave);
+  --color-borde: var(--borde);
+  --color-borde-fuerte: var(--borde-fuerte);
+  --color-enlace: var(--enlace);
+  --color-chip: var(--chip);
+  --color-hover: var(--hover);
+  --color-peligro: var(--peligro);
+
+  /* Colores de la marca */
+  --color-acento: #84c0bf;      /* botones principales, casillas marcadas */
+  --color-sobre-acento: #2f3436; /* texto encima del acento */
+  --color-postit: #e4d7bf;      /* post-its: avisos importantes */
+  --color-ink: #2f3436;         /* texto encima del post-it */
+
+  --shadow-tarjeta: var(--sombra);
+
+  /* Tipografía: Sora en todo, como la landing */
+  --font-sans: var(--font-sora), system-ui, sans-serif;
+  --font-titulo: var(--font-sora), system-ui, sans-serif;
+
+  /* Tamaños de título: text-titulo-1 (cabecera de página), -2 (secciones), -3 (tarjetas) */
+  --text-titulo-1: clamp(2.5rem, 6vw, 4.75rem);
+  --text-titulo-1--line-height: 1.03;
+  --text-titulo-1--letter-spacing: -0.04em;
+  --text-titulo-2: clamp(1.75rem, 3.4vw, 2.75rem);
+  --text-titulo-2--line-height: 1.05;
+  --text-titulo-2--letter-spacing: -0.035em;
+  --text-titulo-3: 1.1875rem;
+  --text-titulo-3--line-height: 1.25;
+  --text-titulo-3--letter-spacing: -0.02em;
+
+  /* Redondeos: rounded-control (botones y campos: píldora), rounded-tarjeta (tarjetas y paneles) */
+  --radius-control: 9999px;
+  --radius-tarjeta: 1rem;
+}
+
+:root {
+  /* Margen a los lados de la página, el mismo de la landing */
+  --margen: clamp(1.25rem, 5vw, 5.5rem);
 }
 
 body {
-  background: var(--ink);
-  color: #ffffff;
-  font-family: var(--font-sora), sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sora), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--primary);
-  color: var(--ink);
+  background: #84c0bf;
+  color: #2f3436;
+}
+
+/* Foco visible para quien navega con teclado, como en la landing. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 4px;
+}
+:where(input, select, textarea):focus-visible {
+  outline-color: var(--enlace);
+  outline-offset: 2px;
+}
+
+/* Cabecera de página: el degradado con brillo turquesa de la landing */
+.fondo-portada {
+  background:
+    radial-gradient(circle at 78% 24%, rgb(132 192 191 / 18%), transparent 31rem),
+    linear-gradient(180deg, var(--fondo) 0%, var(--fondo-hondo) 100%);
+}
+
+/* Sección con cuadrícula turquesa, como "Cómo funciona" en la landing */
+.rejilla {
+  background-color: var(--superficie);
+  background-image:
+    linear-gradient(to bottom, rgb(0 0 0 / 18%), transparent),
+    linear-gradient(to right, var(--rejilla) 1px, transparent 2px),
+    linear-gradient(to bottom, var(--rejilla) 1px, transparent 2px);
+  background-position: top, center, center;
+  background-repeat: no-repeat, repeat, repeat;
+  background-size: 100% clamp(4rem, 8vw, 8rem), 5rem 5rem, 5rem 5rem;
+}
+
+/* Enlace subrayado en turquesa, como "Ver todas las noticias" en la landing */
+.enlace-subrayado {
+  background-image: linear-gradient(var(--color-acento), var(--color-acento));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 2px;
+  padding-bottom: 3px;
+  transition: background-size 0.25s ease;
+}
+.enlace-subrayado:hover {
+  background-size: 0% 2px;
+  background-position: right bottom;
 }

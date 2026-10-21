@@ -10,7 +10,8 @@ function mezclar(base: Mensajes, encima: Mensajes): Mensajes {
   for (const [clave, valor] of Object.entries(encima)) {
     const anterior = resultado[clave];
     resultado[clave] =
-      valor && typeof valor === "object" && anterior && typeof anterior === "object"
+      // Las listas (arrays) se toman enteras, no se mezclan.
+      valor && typeof valor === "object" && !Array.isArray(valor) && anterior && typeof anterior === "object" && !Array.isArray(anterior)
         ? mezclar(anterior as Mensajes, valor as Mensajes)
         : valor;
   }
@@ -18,6 +19,7 @@ function mezclar(base: Mensajes, encima: Mensajes): Mensajes {
 }
 
 export default getRequestConfig(async ({ requestLocale }) => {
+  // El idioma sale de la dirección (/empleo → es): lo pone el layout con setRequestLocale.
   const pedido = await requestLocale;
   const locale = hasLocale(routing.locales, pedido) ? pedido : routing.defaultLocale;
 

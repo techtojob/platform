@@ -7,19 +7,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "next typegen && tsc --noEmit && node scripts/comprobar-idiomas.mjs"
+    "typecheck": "next typegen && tsc --noEmit && node scripts/comprobar-idiomas.mjs",
+    "test": "vitest run",
+    "build:cloudflare": "opennextjs-cloudflare build && node scripts/mover-recursos.mjs",
+    "preview:cloudflare": "wrangler dev --port 8790",
+    "deploy": "pnpm build:cloudflare && wrangler deploy --env production"
   },
   "dependencies": {
+    "@blobatar/react": "2.7.0",
     "@fontsource-variable/sora": "^5.3.0",
     "@formatjs/intl-localematcher": "0.8.1",
     "@techtojob/shared": "workspace:*",
+    "better-auth": "1.7.7",
+    "blobatar": "2.7.0",
     "negotiator": "1.0.0",
     "next": "16.4.1",
     "next-intl": "4.14.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "1.20.12",
     "@tailwindcss/turbopack": "^4",
     "@types/negotiator": "^0.6.5",
     "@types/node": "^20",
@@ -28,6 +37,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "5.0.3",
+    "wrangler": "4.148.0"
   }
 }

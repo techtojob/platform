@@ -20,7 +20,7 @@ export const TECNOLOGIAS = [
   // Lenguajes
   { id: "javascript", nombre: "JavaScript", alias: ["js", "ecmascript"], areas: ["desarrollo"] },
   { id: "typescript", nombre: "TypeScript", alias: ["ts"], areas: ["desarrollo"] },
-  { id: "python", nombre: "Python", alias: ["py", "python3"], areas: ["desarrollo", "datos-ia"] },
+  { id: "python", nombre: "Python", alias: ["py", "python3"], areas: ["desarrollo", "datos", "ia"] },
   { id: "java", nombre: "Java", alias: [], areas: ["desarrollo"] },
   { id: "csharp", nombre: "C#", alias: ["c sharp", "csharp"], areas: ["desarrollo"] },
   { id: "php", nombre: "PHP", alias: [], areas: ["desarrollo"] },
@@ -28,7 +28,7 @@ export const TECNOLOGIAS = [
   { id: "rust", nombre: "Rust", alias: [], areas: ["desarrollo"] },
   { id: "kotlin", nombre: "Kotlin", alias: [], areas: ["desarrollo"] },
   { id: "swift", nombre: "Swift", alias: [], areas: ["desarrollo"] },
-  { id: "sql", nombre: "SQL", alias: [], areas: ["desarrollo", "datos-ia"] },
+  { id: "sql", nombre: "SQL", alias: [], areas: ["desarrollo", "datos"] },
 
   // Frontend
   { id: "react", nombre: "React", alias: ["reactjs", "react.js"], areas: ["desarrollo"] },
@@ -46,16 +46,21 @@ export const TECNOLOGIAS = [
   { id: "laravel", nombre: "Laravel", alias: [], areas: ["desarrollo"] },
   { id: "dotnet", nombre: ".NET", alias: ["dotnet", "asp.net"], areas: ["desarrollo"] },
 
-  // Datos e IA
-  { id: "postgresql", nombre: "PostgreSQL", alias: ["postgres", "psql"], areas: ["desarrollo", "datos-ia"] },
-  { id: "mongodb", nombre: "MongoDB", alias: ["mongo"], areas: ["desarrollo", "datos-ia"] },
-  { id: "spark", nombre: "Apache Spark", alias: ["spark", "pyspark"], areas: ["datos-ia"] },
-  { id: "airflow", nombre: "Apache Airflow", alias: ["airflow"], areas: ["datos-ia"] },
-  { id: "dbt", nombre: "dbt", alias: [], areas: ["datos-ia"] },
-  { id: "pandas", nombre: "pandas", alias: [], areas: ["datos-ia"] },
-  { id: "power-bi", nombre: "Power BI", alias: ["powerbi"], areas: ["datos-ia"] },
-  { id: "pytorch", nombre: "PyTorch", alias: ["torch"], areas: ["datos-ia"] },
-  { id: "tensorflow", nombre: "TensorFlow", alias: ["tf"], areas: ["datos-ia"] },
+  // Datos
+  { id: "postgresql", nombre: "PostgreSQL", alias: ["postgres", "psql"], areas: ["desarrollo", "datos"] },
+  { id: "mongodb", nombre: "MongoDB", alias: ["mongo"], areas: ["desarrollo", "datos"] },
+  { id: "spark", nombre: "Apache Spark", alias: ["spark", "pyspark"], areas: ["datos"] },
+  { id: "airflow", nombre: "Apache Airflow", alias: ["airflow"], areas: ["datos"] },
+  { id: "dbt", nombre: "dbt", alias: [], areas: ["datos"] },
+  { id: "pandas", nombre: "pandas", alias: [], areas: ["datos"] },
+  { id: "power-bi", nombre: "Power BI", alias: ["powerbi"], areas: ["datos"] },
+
+  // IA y machine learning
+  { id: "pytorch", nombre: "PyTorch", alias: ["torch"], areas: ["ia", "datos"] },
+  { id: "tensorflow", nombre: "TensorFlow", alias: ["tf"], areas: ["ia", "datos"] },
+  { id: "scikit-learn", nombre: "scikit-learn", alias: ["sklearn", "scikit learn"], areas: ["ia", "datos"] },
+  { id: "hugging-face", nombre: "Hugging Face", alias: ["huggingface", "transformers"], areas: ["ia"] },
+  { id: "langchain", nombre: "LangChain", alias: [], areas: ["ia"] },
 
   // Infra y DevOps
   { id: "docker", nombre: "Docker", alias: [], areas: ["infra-devops", "desarrollo"] },

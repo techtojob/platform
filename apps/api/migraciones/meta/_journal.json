@@ -1,0 +1,97 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792350977410,
+      "tag": "0000_ofertas-y-empresas",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792352791402,
+      "tag": "0001_descripcion-ofertas",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792400344444,
+      "tag": "0002_usuarios-y-sesiones",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792447109403,
+      "tag": "0003_caducidad-ofertas",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792452996612,
+      "tag": "0004_perfiles-de-talento",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792487276430,
+      "tag": "0005_ofertas-autorizadas",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792494709125,
+      "tag": "0006_ofertas-automaticas",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792496101608,
+      "tag": "0007_descubrir-empresas",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792499341573,
+      "tag": "0008_remoto-por-paises",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792499349423,
+      "tag": "0009_quitar-remoto-desde",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792536021952,
+      "tag": "0010_areas-datos-ia",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792540295497,
+      "tag": "0011_candidatas-con-ats",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792572774517,
+      "tag": "0012_ubicacion-de-la-cuenta",
+      "breakpoints": true
+    }
+  ]
+}

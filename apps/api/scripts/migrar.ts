@@ -1,0 +1,19 @@
+// Aplica las migraciones pendientes a la base de datos de DATABASE_URL.
+// Uso: pnpm --filter api db:migrar              → rama dev (DATABASE_URL de .dev.vars)
+//      pnpm --filter api db:migrar:produccion   → rama production (DATABASE_URL de .produccion.vars)
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
+import { migrate } from "drizzle-orm/neon-http/migrator";
+
+const url = process.env.DATABASE_URL;
+if (!url) {
+  console.error("Falta DATABASE_URL. Cópiala en apps/api/.dev.vars (mira .dev.vars.example).");
+  process.exit(1);
+}
+if (url.includes("ep-xxxx") || url.includes("usuario:contraseña")) {
+  console.error("DATABASE_URL todavía es la de ejemplo. Pega en apps/api/.dev.vars la connection string de la rama dev de Neon.");
+  process.exit(1);
+}
+
+await migrate(drizzle(neon(url)), { migrationsFolder: "./migraciones" });
+console.log("✓ Base de datos al día.");

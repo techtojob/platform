@@ -14,7 +14,8 @@
   },
   "areas": {
     "desarrollo": "Desarrollo",
-    "datos-ia": "Datos e IA",
+    "datos": "Datos",
+    "ia": "IA",
     "ciberseguridad": "Ciberseguridad",
     "producto-diseno": "Producto y diseño",
     "infra-devops": "Infra y DevOps",
@@ -42,5 +43,913 @@
     "publico": "Público",
     "registrados": "Solo usuarios registrados",
     "oculto": "Oculto"
+  },
+  "componentes": {
+    "titulo": "Componentes base",
+    "descripcion": "Catálogo interno para el equipo: así se ven los componentes de la bolsa. Si cambias uno, se cambia en toda la web.",
+    "botones": "Botones",
+    "primario": "Principal",
+    "secundario": "Secundario",
+    "fantasma": "Fantasma",
+    "peligro": "Borrar",
+    "desactivado": "Desactivado",
+    "grande": "Grande",
+    "etiquetas": "Etiquetas",
+    "chips": "Filtros",
+    "quitar": "Quitar filtro {filtro}",
+    "campos": "Campos",
+    "campoNombre": "Nombre o alias",
+    "campoNombreAyuda": "Es lo que verán las empresas.",
+    "campoGithub": "GitHub",
+    "campoGithubError": "Ese enlace no es de GitHub.",
+    "tarjeta": "Tarjeta",
+    "tarjetaTexto": "La caja base para ofertas, perfiles y formularios.",
+    "casillas": "Casillas de filtro",
+    "aviso": "Aviso (post-it)"
+  },
+  "ofertas": {
+    "hablo": "Hablo",
+    "cambiarIdiomas": "Cambiar",
+    "elegirIdiomas": "¿Qué idiomas hablas?",
+    "ayudaIdiomas": "Solo verás ofertas que piden idiomas de esta lista.",
+    "guardar": "Guardar",
+    "cancelar": "Cancelar",
+    "ocultas": "{count, plural, one {Hay # oferta más que pide {idioma}.} other {Hay # ofertas más que piden {idioma}.}}",
+    "anadirIdioma": "Hablo {idioma}",
+    "vacio": "Ahora mismo no hay ofertas que encajen. Vuelve pronto: el staff revisa ofertas nuevas cada día.",
+    "error": "No hemos podido cargar las ofertas. Inténtalo de nuevo en un momento.",
+    "nativo": "nativo",
+    "publicada": "Publicada {tiempo}",
+    "vacioConFiltros": "No hay ofertas con estos filtros. Prueba a quitar alguno.",
+    "paginas": "Más ofertas",
+    "masOfertas": "Ver más ofertas",
+    "primeraPagina": "Volver a las más recientes",
+    "volver": "Volver a las ofertas",
+    "escritaEn": "Escrita en {idioma}",
+    "faltanIdiomas": "{count, plural, one {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.} other {Esta oferta pide {idiomas}, que no tienes entre los idiomas que hablas.}}",
+    "sinDescripcion": "Toda la información está en la web de la empresa.",
+    "aplicar": "Aplicar en su web",
+    "abreOtraWeb": "se abre en otra pestaña",
+    "aplicarAyuda": "La candidatura se envía a {empresa} desde su propia web. TechToJob no guarda tus datos.",
+    "nueva": "Nueva",
+    "loQuePide": "Lo que pide",
+    "idiomas": "Idiomas",
+    "tecnologias": "Tecnologías",
+    "loHablas": "lo hablas",
+    "noLoHablas": "no lo tienes marcado",
+    "salarioAnual": "{salario} al año",
+    "parecidas": "Ofertas parecidas",
+    "copiarEnlace": "Copiar enlace",
+    "enlaceCopiado": "Enlace copiado",
+    "revisada": "Revisada por el staff de TechToJob",
+    "aplicarAyudaCorta": "Se abre su web. TechToJob no guarda tus datos.",
+    "portadaTitulo": "Ofertas tech <resaltado>revisadas</resaltado> por la comunidad",
+    "portadaTexto": "Sin ofertas fantasma ni portales infinitos: el staff revisa cada una antes de publicarla. Y solo ves las que piden idiomas que hablas.",
+    "revision": {
+      "titulo": "Cada oferta pasa por el staff",
+      "empresa": "La empresa es real",
+      "enlace": "El enlace para aplicar funciona",
+      "idiomas": "Dice qué idiomas pide",
+      "salario": "Salario, si lo publican"
+    },
+    "tituloSeccion": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
+    "teEncaja": "¿Te encaja?",
+    "remotoDonde": "Remoto · {donde}",
+    "trabajoDesde": "Trabajo desde:",
+    "cualquierPais": "cualquier país (todas las ofertas)",
+    "cambiarPais": "Cambiar",
+    "elegirPais": "¿Desde qué país trabajas?",
+    "ayudaPais": "Solo te enseñamos las ofertas que puedes hacer desde allí: en remoto desde tu país (o desde cualquiera), o en una oficina de tu país.",
+    "todosLosPaises": "Todas las ofertas, sin filtrar por país",
+    "ocultasPorPais": "{count, plural, one {Hay # oferta más que no se puede hacer desde {pais}.} other {Hay # ofertas más que no se pueden hacer desde {pais}.}}",
+    "verTodasPaises": "Verlas igualmente",
+    "desdeDonde": "Desde dónde",
+    "puedesDesde": "Puedes trabajar desde {pais}",
+    "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}."
+  },
+  "regiones": {
+    "eu": "Europa",
+    "latam": "Latinoamérica"
+  },
+  "filtros": {
+    "titulo": "Filtros",
+    "tituloConActivos": "Filtros ({count})",
+    "area": "Área",
+    "nivel": "Nivel",
+    "modalidad": "Modalidad",
+    "conSalario": "Solo con salario publicado",
+    "conSalarioCorto": "Con salario",
+    "activos": "Filtros puestos",
+    "quitar": "Quitar {filtro}",
+    "limpiar": "Quitar todos",
+    "ver": "{count, plural, =0 {Ninguna oferta} one {Ver # oferta} other {Ver # ofertas}}",
+    "canal": "filtros",
+    "disponibilidad": "Disponibilidad"
+  },
+  "noEncontrada": {
+    "titulo": "Esta página no existe",
+    "texto": "Puede que la oferta ya no esté publicada o que el enlace esté mal copiado.",
+    "volver": "Ver las ofertas"
+  },
+  "buscador": {
+    "etiqueta": "Buscar ofertas",
+    "ejemplo": "Busca puesto, empresa o tecnología: data engineer, React…",
+    "buscar": "Buscar"
+  },
+  "cuenta": {
+    "entrar": "Entrar",
+    "miCuenta": "Mi cuenta",
+    "titulo": "Mi cuenta",
+    "formasDeEntrar": "Cómo entras",
+    "mismoEmail": "Si entras con Google y con GitHub usando el mismo email, es la misma cuenta.",
+    "cerrarSesion": "Cerrar sesión",
+    "discord": {
+      "noDisponible": "Vincular Discord aún no está disponible.",
+      "porQue": "Vincula tu Discord para que sepamos que eres de la comunidad de TechToJob. Solo vemos tu nombre de usuario; Discord no sirve para entrar.",
+      "vincular": "Vincular Discord",
+      "vinculado": "Discord vinculado",
+      "miembro": "Miembro de la comunidad",
+      "noMiembro": "Fuera del servidor",
+      "enServidor": "Estás en el servidor de TechToJob.",
+      "fueraServidor": "Aún no estás en el servidor de TechToJob. Únete y vuelve a comprobarlo.",
+      "unirme": "Unirme al servidor",
+      "yaMeHeUnido": "Ya me he unido, comprobar",
+      "comprobando": "Comprobando…",
+      "comprobado": "Comprobado {tiempo}",
+      "desvincular": "Desvincular Discord",
+      "errorVincular": "No se ha podido vincular Discord. Inténtalo de nuevo.",
+      "errorDesvincular": "No se ha podido desvincular. Inténtalo de nuevo.",
+      "errorComprobar": "No se ha podido comprobar. Inténtalo de nuevo.",
+      "errorNoResponde": "Discord no responde ahora mismo. Prueba en un rato."
+    },
+    "perfilTitulo": "Tu perfil de talento",
+    "perfilNoTienes": "Aún no tienes perfil. Créalo para que las empresas de la comunidad te encuentren.",
+    "perfilTienes": "Tu perfil está en {direccion}.",
+    "perfilCrear": "Crear mi perfil",
+    "perfilEditar": "Editar mi perfil",
+    "perfilVer": "Ver mi perfil",
+    "miPerfil": "Mi perfil",
+    "menu": "Menú de la cuenta de {nombre}",
+    "panelStaff": "Panel de staff",
+    "datos": {
+      "titulo": "Tus datos",
+      "texto": "Puedes descargar todo lo que guardamos de ti o borrar tu cuenta cuando quieras. Más detalles en <enlace>Privacidad</enlace>.",
+      "descargar": "Descargar mis datos",
+      "descargando": "Preparando…",
+      "borrar": "Borrar mi cuenta",
+      "borrarTitulo": "Borrar tu cuenta",
+      "borrarTexto": "Se borran tu cuenta, tu perfil de talento, tus emblemas, tu Discord vinculado y los reportes que hayas hecho. No se puede deshacer. Podrás volver a registrarte cuando quieras, pero empezarás de cero.",
+      "escribeEmail": "Para confirmar, escribe tu email: {email}",
+      "borrarSi": "Borrar mi cuenta para siempre",
+      "borrando": "Borrando…",
+      "cancelar": "Cancelar",
+      "errorDescargar": "No se han podido preparar tus datos. Inténtalo de nuevo.",
+      "errorConfirmacion": "El email no coincide con el de tu cuenta.",
+      "errorBorrar": "No se ha podido borrar la cuenta. Inténtalo de nuevo o escríbenos a contacto@techtojob.com."
+    },
+    "dondeVives": "Dónde vives",
+    "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí."
+  },
+  "entrar": {
+    "titulo": "Entra en TechToJob",
+    "texto": "Con tu cuenta de Google o de GitHub. No hace falta crear contraseña.",
+    "google": "Continuar con Google",
+    "github": "Continuar con GitHub",
+    "abriendo": "Abriendo…",
+    "privacidad": "Solo guardamos tu nombre, tu email y tu foto. Tu Discord lo puedes vincular después, en Mi cuenta.",
+    "errores": {
+      "discord_solo_vincular": "Con Discord no se puede entrar. Entra con Google o GitHub y vincula tu Discord en Mi cuenta.",
+      "account_not_linked": "Ya hay una cuenta con ese email. Entra con la forma que usaste la primera vez.",
+      "access_denied": "Has cancelado el inicio de sesión.",
+      "otro": "No se ha podido iniciar sesión. Inténtalo de nuevo."
+    },
+    "privacidadTitulo": "Solo lo justo",
+    "avisoPrivacidad": "Al entrar aceptas que guardemos tu nombre, email y foto para tu cuenta. Más en <enlace>Privacidad</enlace>."
+  },
+  "navegacion": {
+    "empleo": "Empleo",
+    "irALanding": "TechToJob: ir a la web de la comunidad",
+    "inicio": "TechToJob",
+    "migas": "Ruta de navegación",
+    "ofertas": "Ofertas",
+    "talento": "Talento",
+    "principal": "Menú de la bolsa",
+    "abrir": "Abrir menú"
+  },
+  "pie": {
+    "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",
+    "empleo": "Empleo",
+    "ofertas": "Ofertas",
+    "miCuenta": "Mi cuenta",
+    "irALanding": "Ir a techtojob.com",
+    "discord": "Únete al Discord",
+    "redes": "Redes de TechToJob",
+    "privacidad": "Privacidad",
+    "avisoLegal": "Aviso legal",
+    "talento": "Talento",
+    "cookies": "Cookies"
+  },
+  "talento": {
+    "titulo": "Talento de la comunidad",
+    "portadaTitulo": "Gente tech que <resaltado>sabe</resaltado> lo que hace",
+    "entradilla": "Perfiles de la comunidad de TechToJob: su stack, su nivel, si busca trabajo y dónde encontrar lo que ha construido.",
+    "buscadorEjemplo": "Busca rol, nombre o tecnología: data engineer, React…",
+    "postitTitulo": "¿Buscas trabajo?",
+    "postitTexto": "Crea tu perfil en dos minutos y que las empresas te encuentren. Tú decides quién lo ve.",
+    "crearMiPerfil": "Crear mi perfil",
+    "postitTienes": "Ya tienes perfil",
+    "postitTienesTexto": "Mantenlo al día: los perfiles que se tocan hace poco salen primero.",
+    "editarMiPerfil": "Editar mi perfil",
+    "tituloSeccion": "{count, plural, =0 {Ningún perfil} one {# perfil} other {# perfiles}}",
+    "verPerfiles": "{count, plural, =0 {Sin perfiles} one {Ver # perfil} other {Ver # perfiles}}",
+    "soloVerificados": "Solo miembros verificados",
+    "pais": "País",
+    "todosLosPaises": "Todos",
+    "vacio": "Todavía no hay perfiles. ¡Sé de los primeros!",
+    "vacioConFiltros": "No hay perfiles con estos filtros. Prueba a quitar alguno.",
+    "error": "No hemos podido cargar los perfiles. Inténtalo de nuevo en un momento.",
+    "paginas": "Más perfiles",
+    "masPerfiles": "Ver más perfiles",
+    "primeraPagina": "Volver al principio",
+    "entraParaVerMas": "{count, plural, one {Hay # perfil más que solo ven los usuarios registrados.} other {Hay # perfiles más que solo ven los usuarios registrados.}}",
+    "verificado": "Verificado",
+    "verificadoAyuda": "Miembro de la comunidad: tiene su Discord vinculado y está en el servidor de TechToJob.",
+    "emblemasTitulo": "Emblemas",
+    "emblemas": {
+      "fundador": "Miembro fundador",
+      "torneo": "Ganador de un torneo",
+      "quiz": "Top del quiz"
+    },
+    "soloRegistradosTitulo": "Perfil solo para registrados",
+    "soloRegistradosTexto": "Esta persona ha elegido que su perfil solo lo vean usuarios registrados. Entra con Google o GitHub para verlo.",
+    "esMio": "Este es tu perfil. Ahora mismo es visible para: {visibilidad}.",
+    "sobreMi": "Sobre mí",
+    "sinSobreMi": "Todavía no ha escrito nada sobre sí.",
+    "stack": "Stack",
+    "idiomas": "Idiomas",
+    "enlaces": "Dónde ver su trabajo",
+    "portfolio": "Portfolio",
+    "reportar": {
+      "boton": "Reportar perfil",
+      "titulo": "Reportar este perfil",
+      "motivo": "¿Qué pasa? (spam, perfil falso, contenido ofensivo…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar un perfil tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propio perfil.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    }
+  },
+  "staff": {
+    "titulo": "Panel de staff",
+    "entradilla": "Revisa las ofertas antes de que salgan en la bolsa. Solo lo ve el staff.",
+    "enlace": "Staff",
+    "nueva": "Nueva oferta",
+    "nuevaEntradilla": "Pega el enlace y rellenamos lo que podamos. Puedes publicarla ya o dejarla pendiente para que la revise otra persona.",
+    "editar": "Editar oferta",
+    "guardarCambios": "Guardar cambios",
+    "guardando": "Guardando…",
+    "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo en un momento.",
+    "estados": {
+      "titulo": "Estado de las ofertas",
+      "pendiente": "Pendientes",
+      "publicada": "Publicadas",
+      "rechazada": "Rechazadas",
+      "cerrada": "Cerradas"
+    },
+    "estadoUna": {
+      "pendiente": "Pendiente",
+      "publicada": "Publicada",
+      "rechazada": "Rechazada",
+      "cerrada": "Cerrada"
+    },
+    "vacio": {
+      "pendiente": "No hay ofertas pendientes. ¡Todo revisado!",
+      "publicada": "No hay ofertas publicadas.",
+      "rechazada": "No hay ofertas rechazadas.",
+      "cerrada": "No hay ofertas cerradas."
+    },
+    "lista": {
+      "creada": "Creada {tiempo}",
+      "caduca": "Caduca {tiempo}",
+      "caducada": "Caducó {tiempo}",
+      "revisada": "Revisada {tiempo}",
+      "yaNoSale": "Ya no sale en la bolsa",
+      "motivo": "Motivo: {motivo}",
+      "automatica": "Automática"
+    },
+    "detalle": {
+      "publicada": "Publicada {tiempo}",
+      "lugar": "Dónde",
+      "sinSalario": "No lo dice",
+      "sinDescripcion": "Sin resumen ni descripción.",
+      "verEnLaBolsa": "Ver en la bolsa",
+      "autorizada": "Autorizada · Google for Jobs",
+      "automatica": "Automática · {fuente}",
+      "original": "Texto original de la empresa · solo staff",
+      "originalAyuda": "No se publica: no es nuestro. Léelo para comprobar los datos. Si quieres, escribe un resumen con tus palabras (es opcional). Solo se publica entero si la empresa lo autoriza.",
+      "originalVacio": "La empresa no puso texto."
+    },
+    "comprobaciones": {
+      "empresa": "La empresa existe y es quien dice ser",
+      "enlace": "El enlace funciona y lleva a esta oferta",
+      "idiomas": "Los idiomas que pide son los correctos"
+    },
+    "acciones": {
+      "revisar": "Revisar y publicar",
+      "volverAPublicar": "Volver a publicar",
+      "antesDePublicar": "Antes de publicar",
+      "abrirOriginal": "Abrir la oferta original ↗",
+      "publicar": "Publicar 45 días",
+      "marcaTodas": "Marca las tres comprobaciones para publicar.",
+      "noPublicar": "No publicar esta oferta…",
+      "motivo": "¿Por qué no se publica?",
+      "rechazar": "Rechazar",
+      "cancelar": "Cancelar",
+      "publicadaTitulo": "Está en la bolsa",
+      "alargar": "Alargar 45 días",
+      "alargarAyuda": "Si la empresa sigue buscando. Se suman a lo que le quedaba.",
+      "cerrar": "Cerrar oferta",
+      "cerrarAyuda": "Deja de salir en la bolsa (ya no buscan o el enlace no funciona)."
+    },
+    "hecho": {
+      "publicar": "Publicada. Saldrá en la bolsa 45 días.",
+      "rechazar": "Rechazada.",
+      "cerrar": "Cerrada. Ya no sale en la bolsa.",
+      "alargar": "Alargada 45 días más."
+    },
+    "form": {
+      "seccionEnlace": "El enlace",
+      "seccionEnlaceAyuda": "Pega el enlace de la oferta. Si la página trae los datos, los rellenamos por ti.",
+      "seccionOferta": "La oferta",
+      "seccionPuesto": "El puesto",
+      "seccionDonde": "Dónde",
+      "seccionSalario": "Salario bruto al año",
+      "urlOriginal": "Enlace a la oferta original",
+      "urlOriginalAyuda": "Donde se aplica. Comprueba que funciona.",
+      "urlOriginalAyudaNueva": "Donde se aplica: la web de la empresa, InfoJobs, LinkedIn…",
+      "rellenar": "Rellenar desde el enlace",
+      "leyendo": "Leyendo la página…",
+      "importarDatos": "Hemos rellenado: {campos}. Revísalo todo antes de guardar.",
+      "importarPagina": "La página no trae todos los datos. Hemos puesto: {campos}. Completa el resto.",
+      "importarNada": "No hemos podido leer esta página (pasa con LinkedIn y otras que piden iniciar sesión). Pega el texto de la oferta y sacamos lo que podamos.",
+      "importarError": "No se ha podido leer la página. Inténtalo de nuevo o rellénala a mano.",
+      "rellenado": {
+        "titulo": "título",
+        "empresa": "empresa",
+        "idioma": "idioma",
+        "resumen": "resumen",
+        "descripcion": "descripción",
+        "area": "área",
+        "seniority": "nivel",
+        "modalidad": "modalidad",
+        "remotoDesde": "desde dónde (remoto)",
+        "lugar": "lugar",
+        "tecnologias": "tecnologías",
+        "salario": "salario",
+        "idiomas": "idiomas"
+      },
+      "repetida": "Ya hay una oferta con este enlace: «{titulo}» de {empresa} ({estado}).",
+      "verRepetida": "Verla",
+      "estados": {
+        "pendiente": "pendiente",
+        "publicada": "publicada",
+        "rechazada": "rechazada",
+        "cerrada": "cerrada"
+      },
+      "pegarTextoAbrir": "¿No se puede leer? Pega el texto de la oferta",
+      "pegarTexto": "Texto de la oferta",
+      "pegarTextoAyuda": "Cópialo entero de la página. Sacamos el título (primera línea), las tecnologías, los idiomas, el área y el nivel.",
+      "usarTexto": "Usar este texto",
+      "textoUsado": "Listo: hemos usado el texto. Revisa lo que hemos rellenado.",
+      "cancelar": "Cancelar",
+      "empresa": "Empresa",
+      "empresaBuscar": "Escribe el nombre…",
+      "empresaEscribe": "Escribe el nombre de la empresa.",
+      "crearEmpresa": "+ Crear «{nombre}»",
+      "empresaOfertas": "{count, plural, =0 {Sin ofertas} one {# oferta} other {# ofertas}}",
+      "empresaSeCrea": "Empresa nueva: se crea al guardar",
+      "empresaWeb": "Web de la empresa (opcional)",
+      "cambiar": "Cambiar",
+      "titulo": "Título",
+      "idioma": "Idioma en que está escrita",
+      "idiomaAyuda": "Para avisar a quien la lee en otro idioma.",
+      "pareceEstarEn": "Parece que está en {idioma}.",
+      "cambiarA": "Cambiar a {idioma}",
+      "resumen": "Resumen (opcional)",
+      "resumenAyuda": "Una o dos frases: es lo primero que se lee. Quedan {quedan} caracteres.",
+      "descripcion": "Descripción (opcional)",
+      "descripcionAyuda": "Deja una línea en blanco entre párrafos. Las tecnologías que aparezcan aquí te las proponemos abajo.",
+      "area": "Área",
+      "seniority": "Nivel",
+      "tecnologias": "Tecnologías",
+      "tecnologiasAyuda": "Las que pide la oferta. Como mucho {max}. Entiende abreviaturas: js, k8s, postgres…",
+      "tecnologiasBuscar": "Busca: react, python, aws…",
+      "tecnologiasLleno": "Ya hay 12: quita alguna para añadir otra",
+      "tecnologiaNoEsta": "No está en la lista. Si hace falta, pídela al equipo.",
+      "tecnologiasElegidas": "Tecnologías elegidas",
+      "enElTexto": "Salen en el texto de la oferta:",
+      "anadirTodas": "Añadir todas",
+      "tipicasDelArea": "Típicas de esta área:",
+      "anadir": "Añadir {nombre}",
+      "quitar": "Quitar {nombre}",
+      "modalidad": "Modalidad",
+      "eligeModalidad": "Elige la modalidad y te pedimos solo lo que haga falta.",
+      "remotoDesde": "¿Desde dónde se puede trabajar?",
+      "ciudad": "Ciudad",
+      "pais": "País",
+      "sinPais": "Sin país",
+      "salarioAyuda": "Escríbelo como quieras: 35000, 35.000 o 35k. Si es al mes, multiplícalo por 12.",
+      "salarioMin": "Desde",
+      "salarioMax": "Hasta",
+      "salarioEjemploMin": "30k",
+      "salarioEjemploMax": "36k",
+      "moneda": "Moneda",
+      "salarioLeido": "Saldrá como: {salario}",
+      "sinSalario": "La oferta no dice el salario",
+      "idiomasQuePide": "Idiomas que pide",
+      "idiomasQuePideAyuda": "Quien no los hable no verá la oferta en su listado. Por defecto, el idioma en que está escrita.",
+      "otroIdioma": "+ Otro idioma",
+      "nivel": "Nivel",
+      "sinNivel": "Sin nivel",
+      "nativo": "Nativo",
+      "quitarCorto": "Quitar",
+      "vistaPrevia": "Así saldrá en el listado",
+      "vistaTitulo": "Título de la oferta",
+      "vistaEmpresa": "Empresa",
+      "faltan": "{count, plural, one {Falta # cosa:} other {Faltan # cosas:}}",
+      "listo": "Todo listo.",
+      "campo": {
+        "urlOriginal": "Enlace",
+        "empresaId": "Empresa",
+        "titulo": "Título",
+        "idioma": "Idioma",
+        "resumen": "Resumen",
+        "descripcion": "Descripción",
+        "area": "Área",
+        "seniority": "Nivel",
+        "tecnologias": "Tecnologías",
+        "modalidad": "Modalidad",
+        "remotoPaises": "Desde dónde (remoto)",
+        "ciudad": "Ciudad o país",
+        "pais": "País",
+        "salario": "Salario",
+        "idiomasRequeridos": "Idiomas"
+      },
+      "crearYPublicar": "Crear y publicar",
+      "paraPublicar": "Para publicar ya, marca las tres comprobaciones.",
+      "guardarPendiente": "Guardar como pendiente",
+      "guardarPendienteAyuda": "Para que la revise otra persona del staff.",
+      "hayBorrador": "Tienes una oferta a medias de la última vez.",
+      "seguirBorrador": "Seguir con ella",
+      "descartarBorrador": "Descartar",
+      "autorizada": "La empresa nos autoriza a publicarla",
+      "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella).",
+      "resumenAyudaAutomatica": "Opcional. Si lo escribes, con tus palabras: el texto de la empresa no se publica. Quedan {quedan} caracteres.",
+      "descripcionAutomatica": "Descripción (solo si la empresa lo autoriza)",
+      "cualquierPais": "Cualquier país",
+      "otroPais": "+ Otro país…",
+      "paisesElegidos": "Desde dónde se puede trabajar",
+      "quitarSitio": "Quitar {nombre}",
+      "seVeraAsi": "Se verá así:"
+    },
+    "errores": {
+      "falta": "Falta este dato.",
+      "corto": "Es demasiado corto.",
+      "largo": "Es demasiado largo.",
+      "url": "Tiene que ser una dirección web (https://…).",
+      "desconocida": "Hay una tecnología que no conocemos.",
+      "demasiadas": "Son demasiadas.",
+      "demasiados": "Son demasiados (como mucho 5).",
+      "codigo": "Tiene que ser un código de 2 letras (ES, PT…).",
+      "numero": "Tiene que ser un número sin decimales.",
+      "menor": "Tiene que ser mayor o igual que «Desde».",
+      "idioma": "Hay un idioma que no conocemos.",
+      "nivel": "Hay un nivel de idioma que no conocemos.",
+      "empresaId": {
+        "falta": "Elige la empresa o crea una nueva."
+      },
+      "empresaNombre": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "ciudad": {
+        "falta": "Si no es en remoto, pon la ciudad o el país."
+      },
+      "moneda": {
+        "falta": "Elige la moneda del salario."
+      },
+      "idiomasRequeridos": {
+        "falta": "Marca al menos un idioma."
+      },
+      "accion": {
+        "comprobaciones": "Marca las tres comprobaciones antes de publicar.",
+        "motivo": "Escribe por qué no se publica (de 3 a 300 caracteres).",
+        "estado": "Esta oferta ya no está publicada.",
+        "no_encontrada": "Esta oferta ya no existe.",
+        "sin_permiso": "Ya no tienes acceso al panel de staff.",
+        "desconocido": "No se ha podido hacer. Inténtalo de nuevo.",
+        "resumen": "Escribe un resumen con tus palabras antes de publicarla.",
+        "incompleta": "Faltan datos: edita la oferta y rellena los campos marcados (por ejemplo, desde dónde se puede trabajar)."
+      },
+      "salario": {
+        "falta": "Escribe el salario o marca «La oferta no dice el salario»."
+      },
+      "resumen": {
+        "propio": "Escribe un resumen con tus palabras antes de publicarla."
+      },
+      "remotoPaises": {
+        "falta": "Elige desde dónde se puede trabajar en remoto: cualquier país o al menos uno.",
+        "codigo": "Hay un país que no conocemos."
+      }
+    },
+    "reportes": {
+      "pestana": "Reportes",
+      "titulo": "Perfiles reportados",
+      "entradilla": "Revisa cada reporte: si el perfil está bien, descártalo; si no, ocúltalo (solo lo verá su dueño).",
+      "vacio": "No hay reportes pendientes.",
+      "verPerfil": "Ver perfil",
+      "descartar": "Está bien, descartar",
+      "ocultar": "Ocultar perfil",
+      "reportado": "Reportado {tiempo}",
+      "visibilidad": "Ahora: {visibilidad}"
+    },
+    "empresas": {
+      "pestana": "Empresas",
+      "titulo": "Empresas",
+      "entradilla": "Cada mañana el sistema busca empresas solo y lee sus páginas de empleo (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters). Entran como pendientes, como mucho 10 al día, las ofertas técnicas y 100 % remotas que se pueden hacer desde España o Latinoamérica: primero hasta 3 para España (o desde cualquier país) y el resto para Latinoamérica.",
+      "anadir": "Añadir una empresa a mano",
+      "nombre": "Nombre",
+      "pagina": "Página de empleo",
+      "paginaAyuda": "Por ejemplo: boards.greenhouse.io/empresa, jobs.lever.co/empresa, jobs.ashbyhq.com/empresa, empresa.teamtailor.com o empresa.jobs.personio.de",
+      "guardar": "Añadir",
+      "guardando": "Guardando…",
+      "cambiarPagina": "Cambiar página de empleo",
+      "quitarPagina": "Quitar",
+      "ponerPagina": "Añadir página de empleo",
+      "sincronizar": "Leer sus ofertas cada día",
+      "bloqueada": "No publicar sus ofertas",
+      "bloqueadaAyuda": "La empresa nos ha pedido que no salgan. Sus pendientes automáticas se descartan.",
+      "ofertas": "{count, plural, =0 {Sin ofertas} one {# oferta} other {# ofertas}}",
+      "leida": "Leída {tiempo}",
+      "sinLeer": "Aún no se ha leído: se leerá mañana por la mañana.",
+      "error": "Último error: {error}",
+      "conAts": "Con página de empleo",
+      "sinAts": "Sin página de empleo",
+      "vacio": "Aún no hay empresas.",
+      "errores": {
+        "nombre": "El nombre tiene que tener entre 2 y 80 caracteres.",
+        "ats": "Ese enlace no es de una página de empleo de Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee o SmartRecruiters.",
+        "empresa": "Esa empresa ya no existe.",
+        "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
+      },
+      "cancelar": "Cancelar",
+      "descubierta": "Descubierta sola",
+      "descubrir": {
+        "titulo": "Descubrir empresas",
+        "ayuda": "Una vez al mes se buscan en Common Crawl (un archivo público de la web) miles de páginas de empleo, y cada día se prueban 300 de ellas más 25 nombres de la lista. Las que tienen ofertas que nos sirven se añaden solas.",
+        "pendiente": "Por probar",
+        "encontrada": "Añadidas",
+        "sin_ofertas": "Sin ofertas que nos sirvan (se reprueban en 30 días)",
+        "no_existe": "Sin página de empleo conocida",
+        "sugerir": "Sugerir empresas",
+        "sugerirAyuda": "Una por línea (o separadas por comas). Se probarán en los próximos días.",
+        "enviar": "Añadir a la lista",
+        "anadidas": "{count, plural, =0 {Ya estaban todas en la lista.} one {# empresa nueva en la lista.} other {# empresas nuevas en la lista.}}"
+      }
+    },
+    "filtros": {
+      "atajos": "Atajos",
+      "atajosNombres": {
+        "sin_resumen": "Sin resumen (opcional)",
+        "sin_zona": "Sin zona",
+        "hoy": "Entraron hoy",
+        "caducan": "Caducan esta semana",
+        "desaparecidas": "Ya no están en la web de la empresa"
+      },
+      "buscar": "Buscar por título o empresa",
+      "buscarBoton": "Buscar",
+      "idioma": "Idioma de la oferta",
+      "idiomas": {
+        "es": "Español",
+        "en": "Inglés",
+        "otros": "Otros"
+      },
+      "origen": "Origen",
+      "manual": "Manual",
+      "automatica": "Automática (todas)",
+      "automaticaDe": "Automática · {fuente}",
+      "desde": "Se puede hacer desde",
+      "cualquierSitio": "Cualquier sitio",
+      "fecha": "Fecha",
+      "siempre": "Cualquier fecha",
+      "fechas": {
+        "hoy": "Hoy",
+        "7": "Últimos 7 días",
+        "30": "Últimos 30 días"
+      },
+      "orden": "Ordenar",
+      "ordenes": {
+        "antiguas": "Más antiguas primero",
+        "nuevas": "Más nuevas primero",
+        "caducan": "Caducan antes"
+      },
+      "todos": "Todos",
+      "todas": "Todas",
+      "total": "{count, plural, =0 {Ninguna oferta} one {# oferta} other {# ofertas}}",
+      "limpiar": "Quitar filtros",
+      "vacio": "No hay ofertas con estos filtros.",
+      "paginas": "Páginas",
+      "anterior": "← Anteriores",
+      "siguiente": "Más →",
+      "pagina": "Página {pagina} de {total}"
+    },
+    "varias": {
+      "todas": "Seleccionar todas las de esta página",
+      "marcar": "Seleccionar «{titulo}»",
+      "marcadas": "{count, plural, one {# seleccionada} other {# seleccionadas}}",
+      "motivo": "¿Por qué no se publican?",
+      "rechazar": "{count, plural, one {Rechazar #} other {Rechazar #}}",
+      "rechazando": "Rechazando…",
+      "cancelar": "Cancelar",
+      "faltaMotivo": "Escribe el motivo (al menos 3 caracteres).",
+      "error": "No se han podido rechazar. Inténtalo de nuevo.",
+      "hecho": "{count, plural, one {# oferta rechazada.} other {# ofertas rechazadas.}}"
+    },
+    "cadena": {
+      "volver": "← Volver a la lista",
+      "saltar": "Saltar →",
+      "quedan": "{count, plural, =0 {No quedan más con estos filtros} one {Queda # más con estos filtros} other {Quedan # más con estos filtros}}",
+      "hecho": {
+        "publicar": "Publicada. Esta es la siguiente.",
+        "rechazar": "Rechazada. Esta es la siguiente."
+      },
+      "fin": "¡Listo! No quedan más con estos filtros."
+    }
+  },
+  "formulario": {
+    "tecnologias": "Tecnologías",
+    "tecnologiasAyuda": "Como mucho {max}. Entiende abreviaturas: js, k8s, postgres…",
+    "tecnologiasBuscar": "Busca: react, python, aws…",
+    "tecnologiasLleno": "Ya hay {max}: quita alguna para añadir otra",
+    "tecnologiaNoEsta": "No está en la lista. Si hace falta, pídela al equipo.",
+    "tecnologiasElegidas": "Tecnologías elegidas",
+    "enElTexto": "Salen en el texto:",
+    "anadirTodas": "Añadir todas",
+    "tipicasDelArea": "Típicas de esta área:",
+    "anadir": "Añadir {nombre}",
+    "quitar": "Quitar {nombre}",
+    "idiomas": "Idiomas",
+    "otroIdioma": "+ Otro idioma",
+    "nivel": "Nivel",
+    "sinNivel": "Sin nivel",
+    "nativo": "Nativo",
+    "quitarCorto": "Quitar"
+  },
+  "miPerfil": {
+    "titulo": "Mi perfil",
+    "entradilla": "Lo que la gente verá de ti en Talento. Nunca se enseña tu email.",
+    "seccionTu": "Tú",
+    "alias": "Alias",
+    "aliasAyuda": "Tu dirección: {direccion}. Minúsculas, números y guiones.",
+    "nombre": "Nombre",
+    "nombreAyuda": "Tu nombre o como quieras que te conozcan.",
+    "titular": "Titular",
+    "titularAyuda": "Una línea que diga qué haces.",
+    "titularEjemplo": "Desarrolladora frontend junior",
+    "mostrarFoto": "Mostrar mi foto de Google o GitHub (si no, un avatar de la comunidad)",
+    "sinFoto": "Tu cuenta no tiene foto: saldrá un avatar de la comunidad.",
+    "seccionSobre": "Sobre ti",
+    "sobreMi": "Sobre mí (opcional)",
+    "sobreMiAyuda": "Qué haces, qué te gusta, qué buscas. Las tecnologías que nombres te las proponemos abajo. Quedan {quedan} caracteres.",
+    "seccionHaces": "Lo que haces",
+    "area": "Área",
+    "seniority": "Nivel",
+    "tecnologias": "Tu stack",
+    "tecnologiasAyuda": "Con lo que trabajas. Como mucho {max}.",
+    "seccionDonde": "Disponibilidad y dónde",
+    "disponibilidad": "¿Buscas trabajo?",
+    "modalidades": "Cómo prefieres trabajar",
+    "modalidadesAyuda": "Puedes marcar varias.",
+    "ciudad": "Ciudad (opcional)",
+    "pais": "País",
+    "sinPais": "Prefiero no decirlo",
+    "seccionIdiomas": "Idiomas que hablas",
+    "idiomasAyuda": "Y tu nivel, si quieres.",
+    "seccionEnlaces": "Enlaces",
+    "enlacesAyuda": "Opcionales. Nunca se enseña tu email ni tu teléfono.",
+    "portfolio": "Portfolio o web",
+    "seccionVisibilidad": "Quién puede verlo",
+    "recomendado": "Recomendado",
+    "visibilidadAyuda": {
+      "publico": "Cualquiera, también Google. Útil si quieres que te encuentren desde fuera.",
+      "registrados": "Solo quien ha iniciado sesión en TechToJob: empresas y comunidad.",
+      "oculto": "Nadie más que tú. Útil mientras lo preparas."
+    },
+    "vistaPrevia": "Así saldrá en el buscador",
+    "vistaNombre": "Tu nombre",
+    "vistaTitular": "Tu titular",
+    "faltan": "{count, plural, one {Falta # cosa:} other {Faltan # cosas:}}",
+    "listo": "Todo listo.",
+    "campo": {
+      "alias": "Alias",
+      "nombre": "Nombre",
+      "titular": "Titular",
+      "sobreMi": "Sobre mí",
+      "area": "Área",
+      "seniority": "Nivel",
+      "tecnologias": "Stack",
+      "ciudad": "Ciudad",
+      "pais": "País",
+      "modalidades": "Cómo trabajar",
+      "disponibilidad": "Disponibilidad",
+      "idiomas": "Idiomas",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portfolio",
+      "visibilidad": "Visibilidad"
+    },
+    "crear": "Crear mi perfil",
+    "guardar": "Guardar cambios",
+    "guardando": "Guardando…",
+    "creado": "¡Perfil creado! Ya sale en Talento.",
+    "guardado": "Cambios guardados.",
+    "errorGuardar": "No se ha podido guardar. Inténtalo de nuevo.",
+    "verComoQueda": "Ver cómo queda",
+    "borrar": "Borrar mi perfil",
+    "borrarSeguro": "¿Seguro? Desaparece de Talento. Tu cuenta sigue.",
+    "borrarSi": "Sí, borrarlo",
+    "cancelar": "Cancelar",
+    "borrado": "Perfil borrado. Puedes crear otro cuando quieras.",
+    "errorBorrar": "No se ha podido borrar. Inténtalo de nuevo.",
+    "errores": {
+      "alias": {
+        "falta": "Elige un alias.",
+        "corto": "Al menos 3 caracteres.",
+        "largo": "Como mucho 30 caracteres.",
+        "formato": "Solo minúsculas, números y guiones (sin guion al principio ni al final).",
+        "reservado": "Ese alias está reservado. Elige otro.",
+        "ocupado": "Ese alias ya lo usa otra persona."
+      },
+      "titular": {
+        "corto": "Al menos 5 caracteres."
+      },
+      "modalidades": {
+        "falta": "Marca al menos una."
+      },
+      "idiomas": {
+        "falta": "Marca al menos un idioma."
+      },
+      "linkedin": {
+        "url": "Tiene que ser un perfil de LinkedIn: linkedin.com/in/…"
+      },
+      "github": {
+        "url": "Tiene que ser un perfil de GitHub: github.com/…"
+      },
+      "portfolio": {
+        "url": "Tiene que ser una dirección web."
+      }
+    }
+  },
+  "errorPagina": {
+    "etiqueta": "Error",
+    "titulo": "Algo ha fallado",
+    "texto": "No es culpa tuya. Vuelve a intentarlo en un momento; si sigue pasando, avísanos en el Discord.",
+    "reintentar": "Reintentar",
+    "volver": "Ir a las ofertas"
+  },
+  "privacidad": {
+    "titulo": "Privacidad",
+    "entradilla": "Qué datos guarda la bolsa de empleo de TechToJob, para qué y cómo puedes verlos o borrarlos. Sin letra pequeña.",
+    "actualizado": "Última actualización: octubre de 2026",
+    "resumenTitulo": "En corto",
+    "resumen": [
+      "Entras con Google o GitHub: nunca vemos tu contraseña.",
+      "Tu perfil de talento solo lo ve quien tú elijas, y nunca enseñamos tu email.",
+      "No vendemos datos, no hay publicidad y no usamos cookies de seguimiento.",
+      "Puedes descargar tus datos o borrar tu cuenta cuando quieras, desde Mi cuenta."
+    ],
+    "responsable": {
+      "titulo": "Quién es el responsable",
+      "texto": "TechToJob. Los datos del titular están en el <aviso>aviso legal</aviso>. Para cualquier cosa sobre tus datos, escríbenos a <correo>contacto@techtojob.com</correo>."
+    },
+    "que": {
+      "titulo": "Qué datos guardamos",
+      "items": [
+        "<b>Tu cuenta:</b> el nombre, el email y la foto que nos da Google o GitHub cuando entras. Tu contraseña la gestionan ellos: nunca la vemos.",
+        "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
+        "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
+        "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
+        "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
+        "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
+        "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
+        "<b>Si eres del staff:</b> qué ofertas has revisado."
+      ],
+      "nunca": "No pedimos CV, teléfono, dirección ni datos de pago."
+    },
+    "para": {
+      "titulo": "Para qué los usamos",
+      "items": [
+        "<b>Darte el servicio que pides al registrarte</b> (tu cuenta, tu perfil, ver ofertas y talento). Es la base del contrato de uso (art. 6.1.b del RGPD).",
+        "<b>Enseñar tu perfil</b> a otras personas y empresas, solo con la visibilidad que tú elijas. Es tu consentimiento, y lo puedes retirar poniéndolo en oculto o borrándolo (art. 6.1.a).",
+        "<b>Mantener la bolsa segura</b>: sesiones, reportes y comprobar que estás en el Discord. Es nuestro interés legítimo en evitar abusos (art. 6.1.f)."
+      ]
+    },
+    "quien": {
+      "titulo": "Quién más los trata",
+      "items": [
+        "<b>Neon</b>: la base de datos, en servidores de Frankfurt (Unión Europea).",
+        "<b>Cloudflare</b>: aloja la web y la protege. Su red está en todo el mundo; los datos que salen de la UE van con las garantías del RGPD (cláusulas contractuales tipo).",
+        "<b>Google, GitHub y Discord</b>: solo cuando tú entras o vinculas tu cuenta con ellos."
+      ],
+      "empresas": "Las empresas no reciben tus datos: ven tu perfil como cualquier visitante, según la visibilidad que elijas. Al aplicar a una oferta vas a la web de la empresa, y ahí manda su propia política de privacidad."
+    },
+    "cuanto": {
+      "titulo": "Cuánto tiempo",
+      "items": [
+        "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
+        "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
+        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada."
+      ]
+    },
+    "derechos": {
+      "titulo": "Tus derechos",
+      "items": [
+        "<b>Ver y llevarte tus datos:</b> «Descargar mis datos» en <cuenta>Mi cuenta</cuenta>, en un archivo que puedes usar en otro sitio.",
+        "<b>Corregirlos:</b> editando tu perfil cuando quieras.",
+        "<b>Borrarlos:</b> «Borrar mi cuenta» en <cuenta>Mi cuenta</cuenta>. Se borra todo, al momento.",
+        "<b>Oponerte o limitar su uso, y retirar tu consentimiento:</b> pon tu perfil en oculto o escríbenos."
+      ],
+      "reclamar": "Si crees que no tratamos bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos (<aepd>aepd.es</aepd>). Antes, escríbenos: lo arreglaremos."
+    },
+    "cookies": {
+      "titulo": "Cookies",
+      "texto": "Solo usamos cookies necesarias para que la web funcione. No hay analítica, publicidad ni seguimiento, así que no tienes que aceptar nada. Si algún día añadimos algo así, te pediremos permiso antes.",
+      "nombre": "Cookie",
+      "para": "Para qué",
+      "dura": "Cuánto dura",
+      "lista": [
+        [
+          "better-auth.session_token",
+          "Mantener tu sesión iniciada.",
+          "30 días"
+        ],
+        [
+          "better-auth.state",
+          "Proteger el inicio de sesión con Google o GitHub.",
+          "5 minutos, solo mientras entras"
+        ],
+        [
+          "TTJ_IDIOMA",
+          "Recordar el idioma de la web que eliges.",
+          "1 año"
+        ],
+        [
+          "TTJ_HABLO",
+          "Recordar los idiomas que hablas, para enseñarte las ofertas que puedes hacer.",
+          "1 año"
+        ],
+        [
+          "TTJ_DESDE",
+          "Recordar desde qué país trabajas (si lo eliges), para enseñarte las ofertas que puedes hacer desde allí.",
+          "1 año"
+        ]
+      ]
+    }
+  },
+  "remoto": {
+    "mundo": "Desde cualquier país",
+    "solo": "Solo {lugar}",
+    "mas": "{count} más",
+    "salvo": "{region} salvo {paises}"
+  },
+  "ubicacion": {
+    "titulo": "¿Desde dónde trabajas?",
+    "entradilla": "Dínoslo una vez y te enseñaremos las ofertas que puedes hacer desde allí. Lo puedes cambiar cuando quieras en Mi cuenta, y en el listado de ofertas puedes mirar las de otro país.",
+    "pais": "País",
+    "eligePais": "Elige tu país",
+    "cerca": "España y Latinoamérica",
+    "otros": "Otros países",
+    "region": {
+      "ES": "Comunidad autónoma",
+      "estado": "Estado",
+      "otro": "Provincia, departamento o región"
+    },
+    "eligeRegion": "Elige una",
+    "continuar": "Continuar",
+    "guardar": "Guardar",
+    "guardando": "Guardando…",
+    "guardado": "Guardado.",
+    "errores": {
+      "pais": "Elige tu país.",
+      "region": "Elige tu comunidad, estado o provincia.",
+      "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
+    }
   }
 }

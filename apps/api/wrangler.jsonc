@@ -1,0 +1,41 @@
+// Configuración del API en Cloudflare Workers. Ver apps/api/README.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "techtojob-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    // Webs que pueden llamar al API desde el navegador (CORS), separadas por comas.
+    "ORIGENES_PERMITIDOS": "https://techtojob.com,http://localhost:3000",
+    // Dirección de la web: el inicio de sesión vuelve aquí. En producción, https://techtojob.com.
+    "WEB_URL": "http://localhost:3000",
+    // Servidor de Discord de TechToJob (no es secreto) y su invitación.
+    "DISCORD_SERVIDOR_ID": "1500449244019036219",
+    "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
+    // Rol de moderador del servidor: quien lo tiene (con su Discord vinculado) entra al panel de staff.
+    "DISCORD_ROL_STAFF": "1500449244102787149"
+  },
+  // Producción: `wrangler deploy --env production` (lo hace GitHub al subir a main).
+  // Las claves (DATABASE_URL, BETTER_AUTH_SECRET, GITHUB_CLIENT_*, STAFF_EMAILS…) van como
+  // secretos de Cloudflare: `wrangler secret put NOMBRE --env production`. Ver apps/api/README.md.
+  "env": {
+    "production": {
+      "name": "techtojob-api",
+      "routes": [
+        // El API, para la web (desde el servidor) y para lo que venga después.
+        { "pattern": "api.techtojob.com", "custom_domain": true },
+        // El inicio de sesión, en el propio dominio: así la cookie de sesión es de techtojob.com.
+        { "pattern": "techtojob.com/api/auth/*", "zone_name": "techtojob.com" }
+      ],
+      "vars": {
+        "ORIGENES_PERMITIDOS": "https://techtojob.com",
+        "WEB_URL": "https://techtojob.com",
+        "DISCORD_SERVIDOR_ID": "1500449244019036219",
+        "DISCORD_INVITACION": "https://discord.gg/pzCa8esFGA",
+        "DISCORD_ROL_STAFF": "1500449244102787149"
+      }
+    }
+  }
+}

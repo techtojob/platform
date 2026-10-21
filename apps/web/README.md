@@ -3,12 +3,45 @@
 La web de la bolsa de empleo: Next.js + TypeScript + Tailwind CSS.
 
 ```bash
-pnpm dev        # desde la raíz del repo → http://localhost:3000 (te lleva a /empleo o /jobs)
+pnpm dev:api    # en una terminal: el API (ver apps/api/README.md)
+pnpm dev        # en otra: la web → http://localhost:3000 (te lleva a /empleo o /jobs)
 ```
 
-- Colores y tipografía de la marca: `src/app/globals.css` (`bg-ink`, `bg-slate`, `text-primary`, `bg-postit`), iguales que en la landing.
+La web pide los datos al API de `API_URL` (por defecto `http://localhost:8787`). Las llamadas están en `src/lib/api.ts`; las páginas nunca usan `fetch` directamente.
+
+- Colores y tipografía: `src/app/globals.css`. Los colores tienen **nombre de función**, no de color (`bg-fondo`, `bg-superficie`, `text-texto`, `text-suave`, `border-borde`, `text-enlace`, `bg-acento`, `bg-postit`…). Si cambia la paleta, se cambia ahí y nada más.
+- **Mismo estilo que la landing** (repo techtojob-landing): cabecera flotante, pie, Sora en todo, fondo con cuadrícula (`rejilla`) y cabecera de página con brillo turquesa (`fondo-portada`). Los dibujos (logo, chincheta, círculo, check, iconos de Discord) son los de la landing, en `public/images/`.
+- Solo hay un modo, el oscuro de la landing.
+- Piezas de página en `src/components/sitio/`: `Portada` (migas, título enorme y entradilla), `Resaltado` (el círculo dibujado a mano), `Pie`. Los enlaces a la landing usan `NEXT_PUBLIC_LANDING_URL` (por defecto https://techtojob.com).
 - Listas fijas (áreas, tecnologías…): se importan de `@techtojob/shared`, nunca se copian aquí.
 - Antes de escribir código, lee `AGENTS.md`: esta versión de Next.js tiene cambios respecto a lo que conoces.
+
+## Dónde va cada cosa
+
+La regla: **lo que hace la web y cómo se ve van separados**. Así se puede programar antes de tener el diseño final y cambiar el diseño después sin romper nada.
+
+```
+src/
+  app/[locale]/      Páginas. Delgadas: piden datos, los pasan a componentes y poco más.
+  components/ui/     Componentes base (Boton, Campo, Etiqueta, Aviso = post-it con chincheta,
+                     Ventana = panel tipo Discord, AvatarBlob, Casilla, Tarjeta…).
+                     Todo el aspecto visual vive aquí y en globals.css.
+  components/        Componentes de la bolsa hechos con los de ui/ (tarjeta de oferta, filtros…).
+  lib/               Lógica sin aspecto visual: llamadas al API, filtros, formatos… Sin JSX.
+  i18n/              Idiomas y rutas.
+  app/globals.css    Colores, tamaños de título y redondeos. Un cambio aquí afecta a toda la web.
+```
+
+- **Nunca un botón, campo o chip hecho a mano** en una página: se usa el de `@/components/ui`. Si falta alguno, se añade allí.
+- **Nada de colores sueltos** (`#84c0bf`, `bg-[#…]`, `text-white`): se usan los del tema (`bg-acento`, `text-suave`, `text-peligro`…). Si no, ese trozo se rompe en uno de los dos modos.
+- **El catálogo** con todos los componentes está en `/empleo/componentes`. Útil para revisar cambios de diseño de un vistazo.
+
+## Ofertas
+
+- **Buscador** (cabecera, `src/components/buscador.tsx`): busca en título, empresa y resumen mientras se escribe. Si lo escrito es una tecnología ("react", "k8s") y se pulsa Enter, se convierte en filtro.
+- **Listado** (`/empleo`): filas compactas y filtros de área, nivel, modalidad y "solo con salario", con cuántas ofertas hay en cada uno. En el móvil, los filtros van en un panel que sube desde abajo. Todo se guarda en la dirección (`/empleo?q=data&nivel=junior&tec=react&salario=1`), así se puede compartir y funcionan atrás y adelante. La lógica está en `src/lib/filtros.ts`.
+- **Una oferta** (`/empleo/ofertas/<slug>-<id>`): lo que cuenta es el id del final. Si el slug no coincide (el título cambió), lleva a la dirección buena. "Lo que pide" va arriba y marca qué idiomas habla la persona; si falta alguno, se le avisa pero puede verla. Al final, ofertas parecidas (misma área).
+- **Sin Cache Components** (`cacheComponents` en `next.config.ts`): Cloudflare Workers todavía no los soporta y las páginas se quedaban colgadas. Las páginas se pintan en cada visita. Cuando OpenNext lo arregle, se puede volver a activar.
 
 ## Idiomas
 
@@ -47,3 +80,20 @@ Cada idioma tiene su propia dirección y sus rutas traducidas:
 3. En Cloudflare, añadir la ruta `techtojob.com/<base>*` hacia esta app.
 
 `pnpm typecheck` comprueba que las bases no choquen y que las rutas cuadren, y avisa de los textos que faltan por traducir.
+
+## Despliegue
+
+La web va en **Cloudflare Workers** con [OpenNext](https://opennext.js.org/cloudflare), en el mismo dominio que la landing:
+
+| Dirección | Va a |
+| --- | --- |
+| `techtojob.com/empleo…`, `techtojob.com/jobs…` | esta web (worker `techtojob-empleo`) |
+| `techtojob.com/api/auth/…` | el API (inicio de sesión, para que la cookie sea de techtojob.com) |
+| `api.techtojob.com` | el API |
+| todo lo demás | la landing |
+
+En Cloudflare, una ruta concreta gana a la del dominio entero, así que la landing no se toca.
+
+- **Archivos con prefijo:** la landing también es una app de Next y usa `/_next/…`. Para no pisarse, los de la bolsa van en `/empleo-recursos/…` (`assetPrefix` en `next.config.ts`; las imágenes están en `public/empleo-recursos/`). Una imagen nueva va en esa carpeta y se usa como `/empleo-recursos/nombre.svg`.
+- **Se despliega solo** al subir a `main` (`.github/workflows/desplegar.yml`), o a mano desde GitHub → Actions → Desplegar → *Run workflow*.
+- **Probar en local la versión de Cloudflare** (con el API en marcha): `pnpm --filter web build:cloudflare` y luego `pnpm --filter web preview:cloudflare` → http://localhost:8790/empleo. En Windows, OpenNext funciona mejor dentro de WSL; si falla, deja que lo construya GitHub.

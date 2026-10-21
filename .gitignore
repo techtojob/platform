@@ -21,3 +21,15 @@ next-env.d.ts
 
 # Logs
 *.log
+
+# Cloudflare Workers (API): carpeta local de wrangler y tipos generados con `wrangler types`
+.wrangler/
+.dev.vars
+!.dev.vars.example
+apps/api/worker-configuration.d.ts
+
+# Cloudflare Workers (web): lo que genera OpenNext al construir
+.open-next/
+
+# Variables de producción para ejecutar migraciones desde tu ordenador (nunca se suben)
+.produccion.vars

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "types": ["./worker-configuration.d.ts", "node"]
+  },
+  "include": ["src", "test", "scripts", "drizzle.config.ts", "worker-configuration.d.ts"]
+}

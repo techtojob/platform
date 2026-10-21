@@ -14,7 +14,8 @@
   },
   "areas": {
     "desarrollo": "Development",
-    "datos-ia": "Data & AI",
+    "datos": "Data",
+    "ia": "AI",
     "ciberseguridad": "Cybersecurity",
     "producto-diseno": "Product & design",
     "infra-devops": "Infra & DevOps",
@@ -42,5 +43,913 @@
     "publico": "Public",
     "registrados": "Registered users only",
     "oculto": "Hidden"
+  },
+  "componentes": {
+    "titulo": "Base components",
+    "descripcion": "Internal catalogue for the team: this is how the job board components look. Change one and it changes everywhere.",
+    "botones": "Buttons",
+    "primario": "Primary",
+    "secundario": "Secondary",
+    "fantasma": "Ghost",
+    "peligro": "Delete",
+    "desactivado": "Disabled",
+    "grande": "Large",
+    "etiquetas": "Tags",
+    "chips": "Filters",
+    "quitar": "Remove filter {filtro}",
+    "campos": "Fields",
+    "campoNombre": "Name or alias",
+    "campoNombreAyuda": "This is what companies will see.",
+    "campoGithub": "GitHub",
+    "campoGithubError": "That link is not a GitHub link.",
+    "tarjeta": "Card",
+    "tarjetaTexto": "The base box for job offers, profiles and forms.",
+    "casillas": "Filter checkboxes",
+    "aviso": "Notice (post-it)"
+  },
+  "ofertas": {
+    "hablo": "I speak",
+    "cambiarIdiomas": "Change",
+    "elegirIdiomas": "Which languages do you speak?",
+    "ayudaIdiomas": "You will only see job offers that ask for languages on this list.",
+    "guardar": "Save",
+    "cancelar": "Cancel",
+    "ocultas": "{count, plural, one {There is # more job offer that asks for {idioma}.} other {There are # more job offers that ask for {idioma}.}}",
+    "anadirIdioma": "I speak {idioma}",
+    "vacio": "There are no matching job offers right now. Come back soon: the staff reviews new ones every day.",
+    "error": "We couldn't load the job offers. Please try again in a moment.",
+    "nativo": "native",
+    "publicada": "Posted {tiempo}",
+    "vacioConFiltros": "No job offers match these filters. Try removing some.",
+    "paginas": "More job offers",
+    "masOfertas": "Show more job offers",
+    "primeraPagina": "Back to the newest",
+    "volver": "Back to job offers",
+    "escritaEn": "Written in {idioma}",
+    "faltanIdiomas": "{count, plural, one {This offer requires {idiomas}, which is not among the languages you speak.} other {This offer requires {idiomas}, which are not among the languages you speak.}}",
+    "sinDescripcion": "All the details are on the company's website.",
+    "aplicar": "Apply on their website",
+    "abreOtraWeb": "opens in a new tab",
+    "aplicarAyuda": "You apply to {empresa} on their own website. TechToJob doesn't store your data.",
+    "nueva": "New",
+    "loQuePide": "Requirements",
+    "idiomas": "Languages",
+    "tecnologias": "Technologies",
+    "loHablas": "you speak it",
+    "noLoHablas": "not in your languages",
+    "salarioAnual": "{salario} a year",
+    "parecidas": "Similar job offers",
+    "copiarEnlace": "Copy link",
+    "enlaceCopiado": "Link copied",
+    "revisada": "Reviewed by the TechToJob staff",
+    "aplicarAyudaCorta": "Opens their website. TechToJob doesn't store your data.",
+    "portadaTitulo": "Tech jobs <resaltado>reviewed</resaltado> by the community",
+    "portadaTexto": "No ghost jobs, no endless portals: the staff reviews every offer before it goes live. And you only see the ones that ask for languages you speak.",
+    "revision": {
+      "titulo": "Every offer is checked by the staff",
+      "empresa": "The company is real",
+      "enlace": "The apply link works",
+      "idiomas": "It says which languages it requires",
+      "salario": "Salary, if they publish it"
+    },
+    "tituloSeccion": "{count, plural, =0 {No job offers} one {# job offer} other {# job offers}}",
+    "teEncaja": "Is it a fit?",
+    "remotoDonde": "Remote · {donde}",
+    "trabajoDesde": "I work from:",
+    "cualquierPais": "any country (all offers)",
+    "cambiarPais": "Change",
+    "elegirPais": "Which country do you work from?",
+    "ayudaPais": "We only show offers you can do from there: remote from your country (or from anywhere), or at an office in your country.",
+    "todosLosPaises": "All offers, no country filter",
+    "ocultasPorPais": "{count, plural, one {There's # more offer you can't do from {pais}.} other {There are # more offers you can't do from {pais}.}}",
+    "verTodasPaises": "Show them anyway",
+    "desdeDonde": "Where from",
+    "puedesDesde": "You can work from {pais}",
+    "noDesde": "Heads up: this offer can't be done from {pais}."
+  },
+  "regiones": {
+    "eu": "Europe",
+    "latam": "Latin America"
+  },
+  "filtros": {
+    "titulo": "Filters",
+    "tituloConActivos": "Filters ({count})",
+    "area": "Area",
+    "nivel": "Level",
+    "modalidad": "Work mode",
+    "conSalario": "Only with published salary",
+    "conSalarioCorto": "With salary",
+    "activos": "Active filters",
+    "quitar": "Remove {filtro}",
+    "limpiar": "Clear all",
+    "ver": "{count, plural, =0 {No job offers} one {Show # job offer} other {Show # job offers}}",
+    "canal": "filters",
+    "disponibilidad": "Availability"
+  },
+  "noEncontrada": {
+    "titulo": "This page doesn't exist",
+    "texto": "The job offer may no longer be published, or the link may be incomplete.",
+    "volver": "See job offers"
+  },
+  "buscador": {
+    "etiqueta": "Search job offers",
+    "ejemplo": "Search by role, company or technology: data engineer, React…",
+    "buscar": "Search"
+  },
+  "cuenta": {
+    "entrar": "Log in",
+    "miCuenta": "My account",
+    "titulo": "My account",
+    "formasDeEntrar": "How you log in",
+    "mismoEmail": "If you log in with Google and GitHub using the same email, it's the same account.",
+    "cerrarSesion": "Log out",
+    "discord": {
+      "noDisponible": "Linking Discord isn't available yet.",
+      "porQue": "Link your Discord so we know you're part of the TechToJob community. We only see your username; Discord can't be used to log in.",
+      "vincular": "Link Discord",
+      "vinculado": "Discord linked",
+      "miembro": "Community member",
+      "noMiembro": "Not in the server",
+      "enServidor": "You're in the TechToJob server.",
+      "fueraServidor": "You're not in the TechToJob server yet. Join and check again.",
+      "unirme": "Join the server",
+      "yaMeHeUnido": "I've joined, check again",
+      "comprobando": "Checking…",
+      "comprobado": "Checked {tiempo}",
+      "desvincular": "Unlink Discord",
+      "errorVincular": "Couldn't link Discord. Please try again.",
+      "errorDesvincular": "Couldn't unlink. Please try again.",
+      "errorComprobar": "Couldn't check. Please try again.",
+      "errorNoResponde": "Discord isn't responding right now. Try again later."
+    },
+    "perfilTitulo": "Your talent profile",
+    "perfilNoTienes": "You don't have a profile yet. Create it so community companies can find you.",
+    "perfilTienes": "Your profile is at {direccion}.",
+    "perfilCrear": "Create my profile",
+    "perfilEditar": "Edit my profile",
+    "perfilVer": "See my profile",
+    "miPerfil": "My profile",
+    "menu": "Account menu for {nombre}",
+    "panelStaff": "Staff panel",
+    "datos": {
+      "titulo": "Your data",
+      "texto": "You can download everything we store about you or delete your account at any time. More details in <enlace>Privacy</enlace>.",
+      "descargar": "Download my data",
+      "descargando": "Preparing…",
+      "borrar": "Delete my account",
+      "borrarTitulo": "Delete your account",
+      "borrarTexto": "Your account, talent profile, badges, linked Discord and the reports you've made will be deleted. It can't be undone. You can sign up again whenever you want, but you'll start from scratch.",
+      "escribeEmail": "To confirm, type your email: {email}",
+      "borrarSi": "Delete my account forever",
+      "borrando": "Deleting…",
+      "cancelar": "Cancel",
+      "errorDescargar": "We couldn't prepare your data. Try again.",
+      "errorConfirmacion": "The email doesn't match your account's.",
+      "errorBorrar": "The account couldn't be deleted. Try again or write to contacto@techtojob.com."
+    },
+    "dondeVives": "Where you live",
+    "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here."
+  },
+  "entrar": {
+    "titulo": "Log in to TechToJob",
+    "texto": "With your Google or GitHub account. No password needed.",
+    "google": "Continue with Google",
+    "github": "Continue with GitHub",
+    "abriendo": "Opening…",
+    "privacidad": "We only store your name, email and photo. You can link your Discord later, in My account.",
+    "errores": {
+      "discord_solo_vincular": "You can't log in with Discord. Log in with Google or GitHub and link Discord in My account.",
+      "account_not_linked": "There's already an account with that email. Log in the way you did the first time.",
+      "access_denied": "You cancelled the login.",
+      "otro": "Couldn't log in. Please try again."
+    },
+    "privacidadTitulo": "Only what's needed",
+    "avisoPrivacidad": "By logging in you agree that we store your name, email and photo for your account. More in <enlace>Privacy</enlace>."
+  },
+  "navegacion": {
+    "empleo": "Jobs",
+    "irALanding": "TechToJob: go to the community website",
+    "inicio": "TechToJob",
+    "migas": "Breadcrumb",
+    "ofertas": "Job offers",
+    "talento": "Talent",
+    "principal": "Job board menu",
+    "abrir": "Open menu"
+  },
+  "pie": {
+    "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",
+    "empleo": "Jobs",
+    "ofertas": "Job offers",
+    "miCuenta": "My account",
+    "irALanding": "Go to techtojob.com",
+    "discord": "Join the Discord",
+    "redes": "TechToJob social media",
+    "privacidad": "Privacy",
+    "avisoLegal": "Legal notice",
+    "talento": "Talent",
+    "cookies": "Cookies"
+  },
+  "talento": {
+    "titulo": "Community talent",
+    "portadaTitulo": "Tech people who <resaltado>know</resaltado> what they do",
+    "entradilla": "Profiles from the TechToJob community: their stack, their level, whether they're looking for work and where to see what they've built.",
+    "buscadorEjemplo": "Search role, name or technology: data engineer, React…",
+    "postitTitulo": "Looking for work?",
+    "postitTexto": "Create your profile in two minutes and let companies find you. You decide who sees it.",
+    "crearMiPerfil": "Create my profile",
+    "postitTienes": "You have a profile",
+    "postitTienesTexto": "Keep it up to date: recently updated profiles show up first.",
+    "editarMiPerfil": "Edit my profile",
+    "tituloSeccion": "{count, plural, =0 {No profiles} one {# profile} other {# profiles}}",
+    "verPerfiles": "{count, plural, =0 {No profiles} one {See # profile} other {See # profiles}}",
+    "soloVerificados": "Verified members only",
+    "pais": "Country",
+    "todosLosPaises": "All",
+    "vacio": "No profiles yet. Be one of the first!",
+    "vacioConFiltros": "No profiles match these filters. Try removing some.",
+    "error": "We couldn't load the profiles. Try again in a moment.",
+    "paginas": "More profiles",
+    "masPerfiles": "See more profiles",
+    "primeraPagina": "Back to the start",
+    "entraParaVerMas": "{count, plural, one {There's # more profile only registered users can see.} other {There are # more profiles only registered users can see.}}",
+    "verificado": "Verified",
+    "verificadoAyuda": "Community member: has linked Discord and is in the TechToJob server.",
+    "emblemasTitulo": "Badges",
+    "emblemas": {
+      "fundador": "Founding member",
+      "torneo": "Tournament winner",
+      "quiz": "Quiz top player"
+    },
+    "soloRegistradosTitulo": "Profile for registered users only",
+    "soloRegistradosTexto": "This person chose to show their profile only to registered users. Log in with Google or GitHub to see it.",
+    "esMio": "This is your profile. Right now it's visible to: {visibilidad}.",
+    "sobreMi": "About me",
+    "sinSobreMi": "Nothing written yet.",
+    "stack": "Stack",
+    "idiomas": "Languages",
+    "enlaces": "Where to see their work",
+    "portfolio": "Portfolio",
+    "reportar": {
+      "boton": "Report profile",
+      "titulo": "Report this profile",
+      "motivo": "What's wrong? (spam, fake profile, offensive content…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. The staff will review it.",
+      "entraAntes": "You need to be logged in to report a profile.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own profile.",
+        "otro": "It couldn't be sent. Try again."
+      }
+    }
+  },
+  "staff": {
+    "titulo": "Staff panel",
+    "entradilla": "Review offers before they go live on the job board. Only staff can see this.",
+    "enlace": "Staff",
+    "nueva": "New offer",
+    "nuevaEntradilla": "Paste the link and we fill in what we can. Publish it now or leave it pending for someone else to review.",
+    "editar": "Edit offer",
+    "guardarCambios": "Save changes",
+    "guardando": "Saving…",
+    "errorGeneral": "It couldn't be saved. Try again in a moment.",
+    "estados": {
+      "titulo": "Offer status",
+      "pendiente": "Pending",
+      "publicada": "Published",
+      "rechazada": "Rejected",
+      "cerrada": "Closed"
+    },
+    "estadoUna": {
+      "pendiente": "Pending",
+      "publicada": "Published",
+      "rechazada": "Rejected",
+      "cerrada": "Closed"
+    },
+    "vacio": {
+      "pendiente": "No pending offers. All reviewed!",
+      "publicada": "No published offers.",
+      "rechazada": "No rejected offers.",
+      "cerrada": "No closed offers."
+    },
+    "lista": {
+      "creada": "Created {tiempo}",
+      "caduca": "Expires {tiempo}",
+      "caducada": "Expired {tiempo}",
+      "revisada": "Reviewed {tiempo}",
+      "yaNoSale": "No longer on the job board",
+      "motivo": "Reason: {motivo}",
+      "automatica": "Automatic"
+    },
+    "detalle": {
+      "publicada": "Published {tiempo}",
+      "lugar": "Where",
+      "sinSalario": "Not stated",
+      "sinDescripcion": "No summary or description.",
+      "verEnLaBolsa": "See it on the job board",
+      "autorizada": "Authorized · Google for Jobs",
+      "automatica": "Automatic · {fuente}",
+      "original": "Company's original text · staff only",
+      "originalAyuda": "Not published: it isn't ours. Read it to check the details. If you like, write a summary in your own words (optional). It's only published in full if the company authorises it.",
+      "originalVacio": "The company didn't include any text."
+    },
+    "comprobaciones": {
+      "empresa": "The company exists and is who it says it is",
+      "enlace": "The link works and leads to this offer",
+      "idiomas": "The required languages are correct"
+    },
+    "acciones": {
+      "revisar": "Review and publish",
+      "volverAPublicar": "Publish again",
+      "antesDePublicar": "Before publishing",
+      "abrirOriginal": "Open the original offer ↗",
+      "publicar": "Publish for 45 days",
+      "marcaTodas": "Tick the three checks to publish.",
+      "noPublicar": "Don't publish this offer…",
+      "motivo": "Why isn't it published?",
+      "rechazar": "Reject",
+      "cancelar": "Cancel",
+      "publicadaTitulo": "It's on the job board",
+      "alargar": "Extend 45 days",
+      "alargarAyuda": "If the company is still hiring. Added to the time it had left.",
+      "cerrar": "Close offer",
+      "cerrarAyuda": "Removes it from the job board (no longer hiring or the link is broken)."
+    },
+    "hecho": {
+      "publicar": "Published. It will be on the job board for 45 days.",
+      "rechazar": "Rejected.",
+      "cerrar": "Closed. It's no longer on the job board.",
+      "alargar": "Extended 45 more days."
+    },
+    "form": {
+      "seccionEnlace": "The link",
+      "seccionEnlaceAyuda": "Paste the link to the offer. If the page has the data, we fill it in for you.",
+      "seccionOferta": "The offer",
+      "seccionPuesto": "The role",
+      "seccionDonde": "Where",
+      "seccionSalario": "Gross yearly salary",
+      "urlOriginal": "Link to the original offer",
+      "urlOriginalAyuda": "Where people apply. Check that it works.",
+      "urlOriginalAyudaNueva": "Where people apply: the company website, InfoJobs, LinkedIn…",
+      "rellenar": "Fill in from the link",
+      "leyendo": "Reading the page…",
+      "importarDatos": "We filled in: {campos}. Check everything before saving.",
+      "importarPagina": "The page doesn't have all the data. We added: {campos}. Fill in the rest.",
+      "importarNada": "We couldn't read this page (it happens with LinkedIn and others that require signing in). Paste the text of the offer and we'll get what we can.",
+      "importarError": "The page couldn't be read. Try again or fill it in by hand.",
+      "rellenado": {
+        "titulo": "title",
+        "empresa": "company",
+        "idioma": "language",
+        "resumen": "summary",
+        "descripcion": "description",
+        "area": "area",
+        "seniority": "level",
+        "modalidad": "work mode",
+        "remotoDesde": "where from (remote)",
+        "lugar": "location",
+        "tecnologias": "technologies",
+        "salario": "salary",
+        "idiomas": "languages"
+      },
+      "repetida": "There's already an offer with this link: “{titulo}” by {empresa} ({estado}).",
+      "verRepetida": "See it",
+      "estados": {
+        "pendiente": "pending",
+        "publicada": "published",
+        "rechazada": "rejected",
+        "cerrada": "closed"
+      },
+      "pegarTextoAbrir": "Can't be read? Paste the text of the offer",
+      "pegarTexto": "Text of the offer",
+      "pegarTextoAyuda": "Copy all of it from the page. We get the title (first line), technologies, languages, area and level.",
+      "usarTexto": "Use this text",
+      "textoUsado": "Done: we used the text. Check what we filled in.",
+      "cancelar": "Cancel",
+      "empresa": "Company",
+      "empresaBuscar": "Type the name…",
+      "empresaEscribe": "Type the company name.",
+      "crearEmpresa": "+ Create “{nombre}”",
+      "empresaOfertas": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+      "empresaSeCrea": "New company: created when you save",
+      "empresaWeb": "Company website (optional)",
+      "cambiar": "Change",
+      "titulo": "Title",
+      "idioma": "Language it's written in",
+      "idiomaAyuda": "To warn people reading it in another language.",
+      "pareceEstarEn": "It looks like it's in {idioma}.",
+      "cambiarA": "Change to {idioma}",
+      "resumen": "Summary (optional)",
+      "resumenAyuda": "One or two sentences: it's the first thing people read. {quedan} characters left.",
+      "descripcion": "Description (optional)",
+      "descripcionAyuda": "Leave a blank line between paragraphs. We suggest the technologies that appear here below.",
+      "area": "Area",
+      "seniority": "Level",
+      "tecnologias": "Technologies",
+      "tecnologiasAyuda": "The ones the offer asks for. {max} at most. Understands abbreviations: js, k8s, postgres…",
+      "tecnologiasBuscar": "Search: react, python, aws…",
+      "tecnologiasLleno": "There are already 12: remove one to add another",
+      "tecnologiaNoEsta": "It's not on the list. If needed, ask the team.",
+      "tecnologiasElegidas": "Chosen technologies",
+      "enElTexto": "They appear in the text of the offer:",
+      "anadirTodas": "Add all",
+      "tipicasDelArea": "Common in this area:",
+      "anadir": "Add {nombre}",
+      "quitar": "Remove {nombre}",
+      "modalidad": "Work mode",
+      "eligeModalidad": "Choose the work mode and we'll only ask for what's needed.",
+      "remotoDesde": "Where can people work from?",
+      "ciudad": "City",
+      "pais": "Country",
+      "sinPais": "No country",
+      "salarioAyuda": "Write it however you like: 35000, 35,000 or 35k. If it's monthly, multiply by 12.",
+      "salarioMin": "From",
+      "salarioMax": "To",
+      "salarioEjemploMin": "30k",
+      "salarioEjemploMax": "36k",
+      "moneda": "Currency",
+      "salarioLeido": "It will show as: {salario}",
+      "sinSalario": "The offer doesn't state the salary",
+      "idiomasQuePide": "Required languages",
+      "idiomasQuePideAyuda": "People who don't speak them won't see the offer in their list. By default, the language it's written in.",
+      "otroIdioma": "+ Other language",
+      "nivel": "Level",
+      "sinNivel": "No level",
+      "nativo": "Native",
+      "quitarCorto": "Remove",
+      "vistaPrevia": "How it will look in the list",
+      "vistaTitulo": "Offer title",
+      "vistaEmpresa": "Company",
+      "faltan": "{count, plural, one {# thing missing:} other {# things missing:}}",
+      "listo": "All set.",
+      "campo": {
+        "urlOriginal": "Link",
+        "empresaId": "Company",
+        "titulo": "Title",
+        "idioma": "Language",
+        "resumen": "Summary",
+        "descripcion": "Description",
+        "area": "Area",
+        "seniority": "Level",
+        "tecnologias": "Technologies",
+        "modalidad": "Work mode",
+        "remotoPaises": "Where from (remote)",
+        "ciudad": "City or country",
+        "pais": "Country",
+        "salario": "Salary",
+        "idiomasRequeridos": "Languages"
+      },
+      "crearYPublicar": "Create and publish",
+      "paraPublicar": "To publish now, tick the three checks.",
+      "guardarPendiente": "Save as pending",
+      "guardarPendienteAyuda": "So someone else on the staff reviews it.",
+      "hayBorrador": "You have an unfinished offer from last time.",
+      "seguirBorrador": "Continue it",
+      "descartarBorrador": "Discard",
+      "autorizada": "The company authorizes us to publish it",
+      "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us).",
+      "resumenAyudaAutomatica": "Optional. If you write one, use your own words: the company's text isn't published. {quedan} characters left.",
+      "descripcionAutomatica": "Description (only if the company authorises it)",
+      "cualquierPais": "Any country",
+      "otroPais": "+ Another country…",
+      "paisesElegidos": "Where people can work from",
+      "quitarSitio": "Remove {nombre}",
+      "seVeraAsi": "It will look like this:"
+    },
+    "errores": {
+      "falta": "This is missing.",
+      "corto": "It's too short.",
+      "largo": "It's too long.",
+      "url": "It must be a web address (https://…).",
+      "desconocida": "There's a technology we don't know.",
+      "demasiadas": "Too many.",
+      "demasiados": "Too many (5 at most).",
+      "codigo": "It must be a 2-letter code (ES, PT…).",
+      "numero": "It must be a whole number.",
+      "menor": "It must be greater than or equal to “From”.",
+      "idioma": "There's a language we don't know.",
+      "nivel": "There's a language level we don't know.",
+      "empresaId": {
+        "falta": "Choose the company or create a new one."
+      },
+      "empresaNombre": {
+        "falta": "Write the company name."
+      },
+      "ciudad": {
+        "falta": "If it's not remote, add the city or the country."
+      },
+      "moneda": {
+        "falta": "Choose the salary currency."
+      },
+      "idiomasRequeridos": {
+        "falta": "Tick at least one language."
+      },
+      "accion": {
+        "comprobaciones": "Tick the three checks before publishing.",
+        "motivo": "Write why it isn't published (3 to 300 characters).",
+        "estado": "This offer is no longer published.",
+        "no_encontrada": "This offer no longer exists.",
+        "sin_permiso": "You no longer have access to the staff panel.",
+        "desconocido": "It couldn't be done. Try again.",
+        "resumen": "Write a summary in your own words before publishing it.",
+        "incompleta": "Some details are missing: edit the offer and fill in the marked fields (for example, where people can work from)."
+      },
+      "salario": {
+        "falta": "Write the salary or tick “The offer doesn't state the salary”."
+      },
+      "resumen": {
+        "propio": "Write a summary in your own words before publishing it."
+      },
+      "remotoPaises": {
+        "falta": "Choose where people can work from: any country or at least one.",
+        "codigo": "There's a country we don't recognise."
+      }
+    },
+    "reportes": {
+      "pestana": "Reports",
+      "titulo": "Reported profiles",
+      "entradilla": "Review each report: if the profile is fine, dismiss it; if not, hide it (only its owner will see it).",
+      "vacio": "No pending reports.",
+      "verPerfil": "See profile",
+      "descartar": "It's fine, dismiss",
+      "ocultar": "Hide profile",
+      "reportado": "Reported {tiempo}",
+      "visibilidad": "Now: {visibilidad}"
+    },
+    "empresas": {
+      "pestana": "Companies",
+      "titulo": "Companies",
+      "entradilla": "Every morning the system looks for companies on its own and reads their job boards (Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters). Up to 10 tech, fully remote offers a day that can be done from Spain or Latin America come in as pending: first up to 3 for Spain (or from anywhere) and the rest for Latin America.",
+      "anadir": "Add a company manually",
+      "nombre": "Name",
+      "pagina": "Job board",
+      "paginaAyuda": "For example: boards.greenhouse.io/company, jobs.lever.co/company, jobs.ashbyhq.com/company, company.teamtailor.com or company.jobs.personio.de",
+      "guardar": "Add",
+      "guardando": "Saving…",
+      "cambiarPagina": "Change job board",
+      "quitarPagina": "Remove",
+      "ponerPagina": "Add job board",
+      "sincronizar": "Read its offers every day",
+      "bloqueada": "Don't publish its offers",
+      "bloqueadaAyuda": "The company asked us not to show them. Its pending automatic offers are discarded.",
+      "ofertas": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+      "leida": "Read {tiempo}",
+      "sinLeer": "Not read yet: it will be read tomorrow morning.",
+      "error": "Last error: {error}",
+      "conAts": "With job board",
+      "sinAts": "Without job board",
+      "vacio": "No companies yet.",
+      "errores": {
+        "nombre": "The name must be between 2 and 80 characters.",
+        "ats": "That link isn't a Greenhouse, Lever, Ashby, Teamtailor, Personio, Workable, Recruitee or SmartRecruiters job board.",
+        "empresa": "That company no longer exists.",
+        "desconocido": "Couldn't save. Please try again."
+      },
+      "cancelar": "Cancel",
+      "descubierta": "Found automatically",
+      "descubrir": {
+        "titulo": "Find companies",
+        "ayuda": "Once a month, thousands of job boards are found through Common Crawl (a public web archive), and every day 300 of them plus 25 names from the list are checked. Those with suitable offers are added automatically.",
+        "pendiente": "To check",
+        "encontrada": "Added",
+        "sin_ofertas": "No suitable offers (rechecked in 30 days)",
+        "no_existe": "No known job board",
+        "sugerir": "Suggest companies",
+        "sugerirAyuda": "One per line (or comma-separated). They'll be checked over the next few days.",
+        "enviar": "Add to the list",
+        "anadidas": "{count, plural, =0 {They were all on the list already.} one {# new company on the list.} other {# new companies on the list.}}"
+      }
+    },
+    "filtros": {
+      "atajos": "Shortcuts",
+      "atajosNombres": {
+        "sin_resumen": "No summary (optional)",
+        "sin_zona": "No location",
+        "hoy": "Came in today",
+        "caducan": "Expire this week",
+        "desaparecidas": "Gone from the company's site"
+      },
+      "buscar": "Search by title or company",
+      "buscarBoton": "Search",
+      "idioma": "Offer language",
+      "idiomas": {
+        "es": "Spanish",
+        "en": "English",
+        "otros": "Others"
+      },
+      "origen": "Source",
+      "manual": "Manual",
+      "automatica": "Automatic (all)",
+      "automaticaDe": "Automatic · {fuente}",
+      "desde": "Can be done from",
+      "cualquierSitio": "Anywhere",
+      "fecha": "Date",
+      "siempre": "Any date",
+      "fechas": {
+        "hoy": "Today",
+        "7": "Last 7 days",
+        "30": "Last 30 days"
+      },
+      "orden": "Sort",
+      "ordenes": {
+        "antiguas": "Oldest first",
+        "nuevas": "Newest first",
+        "caducan": "Expiring soonest"
+      },
+      "todos": "All",
+      "todas": "All",
+      "total": "{count, plural, =0 {No offers} one {# offer} other {# offers}}",
+      "limpiar": "Clear filters",
+      "vacio": "No offers match these filters.",
+      "paginas": "Pages",
+      "anterior": "← Previous",
+      "siguiente": "More →",
+      "pagina": "Page {pagina} of {total}"
+    },
+    "varias": {
+      "todas": "Select all on this page",
+      "marcar": "Select “{titulo}”",
+      "marcadas": "{count} selected",
+      "motivo": "Why aren't they being published?",
+      "rechazar": "Reject {count}",
+      "rechazando": "Rejecting…",
+      "cancelar": "Cancel",
+      "faltaMotivo": "Write the reason (at least 3 characters).",
+      "error": "Couldn't reject them. Please try again.",
+      "hecho": "{count, plural, one {# offer rejected.} other {# offers rejected.}}"
+    },
+    "cadena": {
+      "volver": "← Back to the list",
+      "saltar": "Skip →",
+      "quedan": "{count, plural, =0 {No more with these filters} one {# more with these filters} other {# more with these filters}}",
+      "hecho": {
+        "publicar": "Published. Here's the next one.",
+        "rechazar": "Rejected. Here's the next one."
+      },
+      "fin": "Done! No more with these filters."
+    }
+  },
+  "formulario": {
+    "tecnologias": "Technologies",
+    "tecnologiasAyuda": "{max} at most. Understands abbreviations: js, k8s, postgres…",
+    "tecnologiasBuscar": "Search: react, python, aws…",
+    "tecnologiasLleno": "There are already {max}: remove one to add another",
+    "tecnologiaNoEsta": "It's not on the list. If needed, ask the team.",
+    "tecnologiasElegidas": "Chosen technologies",
+    "enElTexto": "They appear in the text:",
+    "anadirTodas": "Add all",
+    "tipicasDelArea": "Common in this area:",
+    "anadir": "Add {nombre}",
+    "quitar": "Remove {nombre}",
+    "idiomas": "Languages",
+    "otroIdioma": "+ Other language",
+    "nivel": "Level",
+    "sinNivel": "No level",
+    "nativo": "Native",
+    "quitarCorto": "Remove"
+  },
+  "miPerfil": {
+    "titulo": "My profile",
+    "entradilla": "What people will see about you in Talent. Your email is never shown.",
+    "seccionTu": "You",
+    "alias": "Alias",
+    "aliasAyuda": "Your address: {direccion}. Lowercase letters, numbers and hyphens.",
+    "nombre": "Name",
+    "nombreAyuda": "Your name or how you want to be known.",
+    "titular": "Headline",
+    "titularAyuda": "One line saying what you do.",
+    "titularEjemplo": "Junior frontend developer",
+    "mostrarFoto": "Show my Google or GitHub photo (otherwise, a community avatar)",
+    "sinFoto": "Your account has no photo: a community avatar will be shown.",
+    "seccionSobre": "About you",
+    "sobreMi": "About me (optional)",
+    "sobreMiAyuda": "What you do, what you like, what you're looking for. We suggest the technologies you mention below. {quedan} characters left.",
+    "seccionHaces": "What you do",
+    "area": "Area",
+    "seniority": "Level",
+    "tecnologias": "Your stack",
+    "tecnologiasAyuda": "What you work with. {max} at most.",
+    "seccionDonde": "Availability and where",
+    "disponibilidad": "Looking for work?",
+    "modalidades": "How you prefer to work",
+    "modalidadesAyuda": "You can pick several.",
+    "ciudad": "City (optional)",
+    "pais": "Country",
+    "sinPais": "I'd rather not say",
+    "seccionIdiomas": "Languages you speak",
+    "idiomasAyuda": "And your level, if you like.",
+    "seccionEnlaces": "Links",
+    "enlacesAyuda": "Optional. Your email and phone are never shown.",
+    "portfolio": "Portfolio or website",
+    "seccionVisibilidad": "Who can see it",
+    "recomendado": "Recommended",
+    "visibilidadAyuda": {
+      "publico": "Anyone, including Google. Useful if you want to be found from outside.",
+      "registrados": "Only people logged in to TechToJob: companies and community.",
+      "oculto": "No one but you. Useful while you prepare it."
+    },
+    "vistaPrevia": "How it will look in the search",
+    "vistaNombre": "Your name",
+    "vistaTitular": "Your headline",
+    "faltan": "{count, plural, one {# thing missing:} other {# things missing:}}",
+    "listo": "All set.",
+    "campo": {
+      "alias": "Alias",
+      "nombre": "Name",
+      "titular": "Headline",
+      "sobreMi": "About me",
+      "area": "Area",
+      "seniority": "Level",
+      "tecnologias": "Stack",
+      "ciudad": "City",
+      "pais": "Country",
+      "modalidades": "How to work",
+      "disponibilidad": "Availability",
+      "idiomas": "Languages",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "portfolio": "Portfolio",
+      "visibilidad": "Visibility"
+    },
+    "crear": "Create my profile",
+    "guardar": "Save changes",
+    "guardando": "Saving…",
+    "creado": "Profile created! It now shows in Talent.",
+    "guardado": "Changes saved.",
+    "errorGuardar": "It couldn't be saved. Try again.",
+    "verComoQueda": "See how it looks",
+    "borrar": "Delete my profile",
+    "borrarSeguro": "Sure? It disappears from Talent. Your account stays.",
+    "borrarSi": "Yes, delete it",
+    "cancelar": "Cancel",
+    "borrado": "Profile deleted. You can create another whenever you want.",
+    "errorBorrar": "It couldn't be deleted. Try again.",
+    "errores": {
+      "alias": {
+        "falta": "Choose an alias.",
+        "corto": "At least 3 characters.",
+        "largo": "30 characters at most.",
+        "formato": "Only lowercase letters, numbers and hyphens (no hyphen at the start or end).",
+        "reservado": "That alias is reserved. Choose another.",
+        "ocupado": "Someone else already uses that alias."
+      },
+      "titular": {
+        "corto": "At least 5 characters."
+      },
+      "modalidades": {
+        "falta": "Pick at least one."
+      },
+      "idiomas": {
+        "falta": "Pick at least one language."
+      },
+      "linkedin": {
+        "url": "It must be a LinkedIn profile: linkedin.com/in/…"
+      },
+      "github": {
+        "url": "It must be a GitHub profile: github.com/…"
+      },
+      "portfolio": {
+        "url": "It must be a web address."
+      }
+    }
+  },
+  "errorPagina": {
+    "etiqueta": "Error",
+    "titulo": "Something went wrong",
+    "texto": "It's not your fault. Try again in a moment; if it keeps happening, let us know on Discord.",
+    "reintentar": "Try again",
+    "volver": "Go to the offers"
+  },
+  "privacidad": {
+    "titulo": "Privacy",
+    "entradilla": "What data the TechToJob job board stores, what for, and how you can see or delete it. No small print.",
+    "actualizado": "Last updated: October 2026",
+    "resumenTitulo": "In short",
+    "resumen": [
+      "You log in with Google or GitHub: we never see your password.",
+      "Your talent profile is only visible to whoever you choose, and we never show your email.",
+      "We don't sell data, there are no ads and we don't use tracking cookies.",
+      "You can download your data or delete your account whenever you want, from My account."
+    ],
+    "responsable": {
+      "titulo": "Who is responsible",
+      "texto": "TechToJob. The owner's details are in the <aviso>legal notice</aviso>. For anything about your data, write to <correo>contacto@techtojob.com</correo>."
+    },
+    "que": {
+      "titulo": "What data we store",
+      "items": [
+        "<b>Your account:</b> the name, email and photo Google or GitHub give us when you log in. They handle your password: we never see it.",
+        "<b>Where you live:</b> the country and region (autonomous community, state or province) you enter the first time you sign in, to show you the offers you can do from there. You can change it in My account.",
+        "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
+        "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
+        "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
+        "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
+        "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
+        "<b>If you're staff:</b> which offers you've reviewed."
+      ],
+      "nunca": "We don't ask for your CV, phone, address or payment details."
+    },
+    "para": {
+      "titulo": "What we use them for",
+      "items": [
+        "<b>Providing the service you ask for when you sign up</b> (your account, your profile, browsing offers and talent). It's the basis of the terms of use (art. 6.1.b GDPR).",
+        "<b>Showing your profile</b> to other people and companies, only with the visibility you choose. It's your consent, and you can withdraw it by hiding or deleting it (art. 6.1.a).",
+        "<b>Keeping the job board safe</b>: sessions, reports and checking you're in the Discord. It's our legitimate interest in preventing abuse (art. 6.1.f)."
+      ]
+    },
+    "quien": {
+      "titulo": "Who else processes them",
+      "items": [
+        "<b>Neon</b>: the database, on servers in Frankfurt (European Union).",
+        "<b>Cloudflare</b>: hosts and protects the website. Its network is worldwide; data leaving the EU is covered by GDPR safeguards (standard contractual clauses).",
+        "<b>Google, GitHub and Discord</b>: only when you log in or link your account with them."
+      ],
+      "empresas": "Companies don't receive your data: they see your profile like any visitor, according to the visibility you choose. When you apply to an offer you go to the company's website, where their own privacy policy applies."
+    },
+    "cuanto": {
+      "titulo": "How long",
+      "items": [
+        "<b>Your account and profile:</b> until you delete them.",
+        "<b>Your sessions:</b> they expire after 30 days without use.",
+        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted."
+      ]
+    },
+    "derechos": {
+      "titulo": "Your rights",
+      "items": [
+        "<b>See and take your data:</b> “Download my data” in <cuenta>My account</cuenta>, in a file you can use elsewhere.",
+        "<b>Correct it:</b> by editing your profile whenever you want.",
+        "<b>Delete it:</b> “Delete my account” in <cuenta>My account</cuenta>. Everything is deleted, right away.",
+        "<b>Object to or restrict its use, and withdraw your consent:</b> hide your profile or write to us."
+      ],
+      "reclamar": "If you think we're not handling your data properly, you can complain to the Spanish Data Protection Agency (<aepd>aepd.es</aepd>). Write to us first: we'll fix it."
+    },
+    "cookies": {
+      "titulo": "Cookies",
+      "texto": "We only use cookies needed for the website to work. There's no analytics, advertising or tracking, so you don't have to accept anything. If we ever add something like that, we'll ask for your permission first.",
+      "nombre": "Cookie",
+      "para": "What for",
+      "dura": "How long",
+      "lista": [
+        [
+          "better-auth.session_token",
+          "Keeping you logged in.",
+          "30 days"
+        ],
+        [
+          "better-auth.state",
+          "Protecting the login with Google or GitHub.",
+          "5 minutes, only while logging in"
+        ],
+        [
+          "TTJ_IDIOMA",
+          "Remembering the website language you choose.",
+          "1 year"
+        ],
+        [
+          "TTJ_HABLO",
+          "Remembering the languages you speak, to show you the offers you can apply to.",
+          "1 year"
+        ],
+        [
+          "TTJ_DESDE",
+          "Remember which country you work from (if you choose it), to show you the offers you can do from there.",
+          "1 year"
+        ]
+      ]
+    }
+  },
+  "remoto": {
+    "mundo": "From any country",
+    "solo": "{lugar} only",
+    "mas": "{count} more",
+    "salvo": "{region} except {paises}"
+  },
+  "ubicacion": {
+    "titulo": "Where do you work from?",
+    "entradilla": "Tell us once and we'll show you the offers you can do from there. You can change it any time in My account, and in the offers list you can look at another country's.",
+    "pais": "Country",
+    "eligePais": "Choose your country",
+    "cerca": "Spain and Latin America",
+    "otros": "Other countries",
+    "region": {
+      "ES": "Autonomous community",
+      "estado": "State",
+      "otro": "Province, department or region"
+    },
+    "eligeRegion": "Choose one",
+    "continuar": "Continue",
+    "guardar": "Save",
+    "guardando": "Saving…",
+    "guardado": "Saved.",
+    "errores": {
+      "pais": "Choose your country.",
+      "region": "Choose your community, state or province.",
+      "desconocido": "Couldn't save. Please try again."
+    }
   }
 }

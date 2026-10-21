@@ -3,12 +3,14 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
-import { SelectorIdioma } from "@/components/selector-idioma";
+import { Cabecera } from "@/components/cabecera";
+import { Pie } from "@/components/sitio/pie";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-// Sora, la tipografía de la marca, alojada en el propio proyecto (paquete
-// @fontsource-variable/sora): no depende de Google Fonts ni envía datos a terceros.
+// Tipografías alojadas en el propio proyecto (paquetes @fontsource-variable/…):
+// no dependen de Google Fonts ni envían datos a terceros.
+// Sora, la de la marca, en todo (como la landing).
 const sora = localFont({
   src: "../../../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2",
   variable: "--font-sora",
@@ -35,12 +37,11 @@ export default async function LayoutIdioma({ children, params }: LayoutProps<"/[
 
   return (
     <html lang={locale} className={`${sora.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
-          <header className="flex justify-end px-6 py-4">
-            <SelectorIdioma />
-          </header>
-          {children}
+          <Cabecera />
+          <div className="flex flex-1 flex-col">{children}</div>
+          <Pie />
         </NextIntlClientProvider>
       </body>
     </html>
