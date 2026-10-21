@@ -4,16 +4,18 @@ import type { Db } from "../db/cliente";
 import { empresas, ofertas } from "../db/esquema";
 import { buscarRepetida, importarOferta, type Pedir } from "./importar";
 import { crearEmpresa, crearOferta } from "./ofertas-staff";
+import { enlazarEmpresa, recruiterActivo } from "./recruiters";
 
 /**
- * Ofertas que sube cualquiera con su cuenta. Entran pendientes (origen "usuario") y las revisa
- * el staff como las demás. Cada cuenta puede tener LIMITE_OFERTAS_USUARIO a la vez: las pendientes
- * y las publicadas que no han caducado. Las rechazadas, caducadas o retiradas no cuentan.
+ * Ofertas que suben los recruiters desde la web (ver recruiters.ts). Entran pendientes
+ * (origen "usuario") y las revisa el staff como las demás. Cada recruiter puede tener LIMITE_OFERTAS_USUARIO
+ * a la vez: las pendientes y las publicadas que no han caducado. Las rechazadas, caducadas o retiradas no cuentan.
+ * Un recruiter publica solo ofertas de su empresa; si el staff lo marcó como agencia, de cualquiera.
  */
 
 export class ErrorMisOfertas extends Error {
   constructor(
-    public readonly codigo: "limite" | "repetida" | "empresa" | "no_encontrada" | "estado",
+    public readonly codigo: "limite" | "repetida" | "empresa" | "no_encontrada" | "estado" | "no_recruiter",
     mensaje: string,
   ) {
     super(mensaje);
@@ -79,8 +81,16 @@ export async function listarMisOfertas(db: Db, userId: string, ahora = new Date(
   };
 }
 
+/** Solo los recruiters (activos) pueden subir ofertas. */
+export async function exigirRecruiter(db: Db, userId: string) {
+  const r = await recruiterActivo(db, userId);
+  if (!r) throw new ErrorMisOfertas("no_recruiter", "Solo los recruiters pueden publicar ofertas.");
+  return r;
+}
+
 /** Sube una oferta (ya validada con validarOfertaUsuario). Devuelve su id. */
 export async function subirOferta(db: Db, userId: string, d: DatosOfertaUsuario): Promise<string> {
+  const recruiter = await exigirRecruiter(db, userId);
   if ((await contarEnMarcha(db, userId)) >= LIMITE_OFERTAS_USUARIO) {
     throw new ErrorMisOfertas("limite", `Puedes tener ${LIMITE_OFERTAS_USUARIO} ofertas a la vez. Retira una o espera a que caduque.`);
   }
@@ -89,11 +99,24 @@ export async function subirOferta(db: Db, userId: string, d: DatosOfertaUsuario)
   if (repetida && repetida.estado !== "rechazada" && repetida.estado !== "cerrada") {
     throw new ErrorMisOfertas("repetida", "Esa oferta ya está en TechToJob.");
   }
-  // La empresa: si ya existe (mismo nombre sin contar "S.L.", mayúsculas ni acentos), esa.
-  const empresa = await crearEmpresa(db, { nombre: d.empresa.nombre, web: d.empresa.web });
-  if (empresa.bloqueada) throw new ErrorMisOfertas("empresa", "Esa empresa nos ha pedido que no publiquemos sus ofertas.");
+  // La empresa: la suya (la de su registro; se enlaza con la bolsa en su primera oferta).
+  // Una agencia escribe la de cada oferta. Si ya existe (mismo nombre sin contar "S.L.", mayúsculas ni acentos), esa.
+  let empresaId: string;
+  if (recruiter.agencia) {
+    const empresa = await crearEmpresa(db, { nombre: d.empresa.nombre, web: d.empresa.web });
+    if (empresa.bloqueada) throw new ErrorMisOfertas("empresa", "Esa empresa nos ha pedido que no publiquemos sus ofertas.");
+    empresaId = empresa.id;
+  } else {
+    const [enlazada] = recruiter.empresaId
+      ? await db.select({ id: empresas.id, bloqueada: empresas.bloqueada }).from(empresas).where(eq(empresas.id, recruiter.empresaId))
+      : [];
+    const empresa = enlazada ?? (await crearEmpresa(db, { nombre: recruiter.empresaNombre, web: recruiter.empresaWeb }));
+    if (empresa.bloqueada) throw new ErrorMisOfertas("empresa", "Esa empresa nos ha pedido que no publiquemos sus ofertas.");
+    if (!enlazada) await enlazarEmpresa(db, userId, empresa.id);
+    empresaId = empresa.id;
+  }
   const { empresa: _e, ...resto } = d;
-  return crearOferta(db, { ...resto, empresaId: empresa.id, autorizada: false }, { autorId: userId });
+  return crearOferta(db, { ...resto, empresaId, autorizada: false }, { autorId: userId });
 }
 
 /**
@@ -116,11 +139,14 @@ export async function retirarOferta(db: Db, userId: string, id: string) {
 }
 
 /**
- * "Rellenar desde el enlace" para quien sube una oferta. Como el del staff, pero sin datos internos:
+ * "Rellenar desde el enlace" para un recruiter. Como el del staff, pero sin datos internos:
  * de la repetida solo se dice si ya está en la bolsa (no su id ni si está pendiente o rechazada).
+ * Si no es agencia, la empresa no se toca (es siempre la suya).
  */
-export async function importarParaUsuario(db: Db, url: string, pedir?: Pedir): Promise<OfertaImportada> {
+export async function importarParaUsuario(db: Db, userId: string, url: string, pedir?: Pedir): Promise<OfertaImportada> {
+  const recruiter = await exigirRecruiter(db, userId);
   const r = await importarOferta(db, url, pedir);
+  if (!recruiter.agencia) delete r.empresa;
   const repetida = r.repetida && (r.repetida.estado === "publicada" || r.repetida.estado === "pendiente") ? r.repetida : null;
   return {
     ...r,

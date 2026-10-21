@@ -88,6 +88,12 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora }: Props) {
           <Etiqueta tono="borde" className="py-2">
             {t("ofertas.publicada", { tiempo: format.relativeTime(new Date(oferta.publicadaEn), ahora) })}
           </Etiqueta>
+          {/* La publicó un recruiter: quién es. */}
+          {oferta.recruiter && (
+            <Etiqueta tono="postit" className="py-2">
+              {t("recruiter.publicadaPor", { nombre: oferta.recruiter.nombre, cargo: t(`recruiter.cargos.${oferta.recruiter.cargo}`), empresa: oferta.recruiter.empresa })}
+            </Etiqueta>
+          )}
         </p>
       </Portada>
 

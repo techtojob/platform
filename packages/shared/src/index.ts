@@ -10,3 +10,4 @@ export * from "./ats";
 export * from "./remoto";
 export * from "./filtros-staff";
 export * from "./subdivisiones";
+export * from "./recruiters";

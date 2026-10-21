@@ -1,7 +1,7 @@
 import { buscarTecnologia, type Area, type EntradaMapa, type Idioma, type Modalidad, type OfertaDetalle, type OfertaListado, type ResultadoOfertas, type Seniority } from "@techtojob/shared";
 import { and, arrayContains, arrayOverlaps, count, countDistinct, desc, eq, gt, ilike, inArray, isNotNull, isNull, ne, not, notExists, notInArray, or, lt, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertaIdiomas, ofertas, type Oferta, type OfertaIdioma } from "../db/esquema";
+import { empresas, ofertaIdiomas, ofertas, recruiters, usuarios, type Oferta, type OfertaIdioma } from "../db/esquema";
 
 export type FiltrosOfertas = {
   /** Idiomas que habla quien busca. Solo salen ofertas que piden idiomas de esta lista. */
@@ -187,9 +187,13 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
     .select({
       oferta: ofertas,
       empresa: { nombre: empresas.nombre, slug: empresas.slug, logoUrl: empresas.logoUrl, web: empresas.web },
+      recruiter: { estado: recruiters.estado, cargo: recruiters.cargo, empresa: recruiters.empresaNombre, nombre: usuarios.name },
     })
     .from(ofertas)
     .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+    // Si la publicó un recruiter verificado (y lo sigue siendo), sale quién es.
+    .leftJoin(recruiters, eq(recruiters.userId, ofertas.autorId))
+    .leftJoin(usuarios, eq(usuarios.id, ofertas.autorId))
     .where(and(eq(ofertas.id, id), eq(ofertas.estado, "publicada"), vigente()))
     .limit(1);
   if (!fila) return null;
@@ -202,6 +206,10 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
     urlOriginal: fila.oferta.urlOriginal,
     autorizada: fila.oferta.autorizada,
     caducaEn: fila.oferta.caducaEn?.toISOString() ?? null,
+    recruiter:
+      fila.recruiter?.estado === "activo" && fila.recruiter.nombre
+        ? { nombre: fila.recruiter.nombre, cargo: fila.recruiter.cargo!, empresa: fila.recruiter.empresa! }
+        : null,
   };
 }
 

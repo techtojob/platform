@@ -11,6 +11,7 @@ import type {
   TipoEmblema,
   VisibilidadPerfil,
 } from "@techtojob/shared";
+import type { CargoRecruiter, EstadoRecruiter } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -360,6 +361,36 @@ export const reportesPerfil = pgTable(
     creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("reportes_perfil_unico_idx").on(t.perfilUserId, t.reportadoPor)],
+);
+
+/**
+ * Recruiters: quien se registra para publicar ofertas desde la web. Una fila por cuenta.
+ * Se registra al momento (no lo aprueba nadie); el staff revisa cada oferta y puede bloquearlo.
+ */
+export const recruiters = pgTable(
+  "recruiters",
+  {
+    userId: text("usuario_id")
+      .primaryKey()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    estado: text("estado").$type<EstadoRecruiter>().notNull().default("activo"),
+    cargo: text("cargo").$type<CargoRecruiter>().notNull(),
+    /** Tal cual lo escribe al registrarse. */
+    empresaNombre: text("empresa_nombre").notNull(),
+    empresaWeb: text("empresa_web"),
+    linkedin: text("linkedin").notNull(),
+    mensaje: text("mensaje"),
+    /** La empresa de la bolsa con la que se enlaza con su primera oferta: solo publica ofertas de esa (salvo agencia). */
+    empresaId: text("empresa_id").references(() => empresas.id, { onDelete: "set null" }),
+    /** Headhunter o agencia: puede publicar ofertas de cualquier empresa. Lo decide el staff. */
+    agencia: boolean("agencia").notNull().default(false),
+    /** Si está bloqueado: por qué (lo ve la persona), quién del staff y cuándo. */
+    motivo: text("motivo"),
+    bloqueadoPor: text("bloqueado_por").references(() => usuarios.id, { onDelete: "set null" }),
+    bloqueadoEn: timestamp("bloqueado_en", { withTimezone: true }),
+    ...fechas,
+  },
+  (t) => [index("recruiters_estado_idx").on(t.estado, t.creadaEn)],
 );
 
 export type Empresa = typeof empresas.$inferSelect;

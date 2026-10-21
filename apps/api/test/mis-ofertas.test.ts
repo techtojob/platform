@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { testUtils } from "better-auth/plugins";
-import { validarOfertaUsuario } from "@techtojob/shared";
+import { esEmailDeLaEmpresa, validarOfertaUsuario, validarSolicitudRecruiter } from "@techtojob/shared";
 import { eq } from "drizzle-orm";
 import { beforeAll, describe, expect, it } from "vitest";
 import { crearApp } from "../src/app";
@@ -86,10 +86,90 @@ describe("validarOfertaUsuario", () => {
   });
 });
 
-describe("subir ofertas con tu cuenta", () => {
+const solicitud = (cambios: Record<string, unknown> = {}) => ({
+  cargo: "recruiter",
+  empresa: "Nube Canaria",
+  web: "https://www.nubecanaria.example.com",
+  linkedin: "https://www.linkedin.com/in/ana-recruiter",
+  mensaje: "Contratamos 3 personas este trimestre.",
+  ...cambios,
+});
+type MiRecruiter = { estado: string; motivo: string | null; emailEmpresa: boolean; agencia: boolean };
+const cuenta = async (h: Headers) => (await (await pedir("/cuenta", h)).json()) as { recruiter: { estado: string; agencia: boolean; empresa: string } | null };
+
+describe("validar la solicitud de recruiter", () => {
+  it("pide cargo, empresa y un LinkedIn de verdad", () => {
+    expect(validarSolicitudRecruiter(solicitud()).errores).toBeUndefined();
+    expect(validarSolicitudRecruiter(solicitud({ cargo: "jefe" })).errores).toMatchObject({ cargo: "falta" });
+    expect(validarSolicitudRecruiter(solicitud({ empresa: "" })).errores).toMatchObject({ empresa: "falta" });
+    expect(validarSolicitudRecruiter(solicitud({ linkedin: "" })).errores).toMatchObject({ linkedin: "falta" });
+    expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://linkedin.com.evil.example/in/x" })).errores).toMatchObject({ linkedin: "linkedin" });
+    expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://es.linkedin.com/in/ana" })).errores).toBeUndefined();
+    expect(validarSolicitudRecruiter(solicitud({ web: "nube" })).errores).toMatchObject({ web: "url" });
+  });
+
+  it("email de la empresa: mismo dominio que la web, nunca uno gratuito", () => {
+    expect(esEmailDeLaEmpresa("ana@volcandata.com", "https://www.volcandata.com")).toBe(true);
+    expect(esEmailDeLaEmpresa("ana@es.volcandata.com", "https://careers.volcandata.com/jobs")).toBe(true);
+    expect(esEmailDeLaEmpresa("ana@empresa.com.mx", "https://empresa.com.mx")).toBe(true);
+    expect(esEmailDeLaEmpresa("ana@otra.com.mx", "https://empresa.com.mx")).toBe(false);
+    expect(esEmailDeLaEmpresa("ana@gmail.com", "https://gmail.com")).toBe(false);
+    expect(esEmailDeLaEmpresa("ana@volcandata.com", null)).toBe(false);
+  });
+});
+
+describe("registrarse como recruiter", () => {
+  it("sin ser recruiter no se puede subir ni rellenar desde el enlace", async () => {
+    const r = await pedir("/cuenta/ofertas", ana, { method: "POST", body: oferta() });
+    expect(r.status).toBe(403);
+    expect(((await r.json()) as { error: { codigo: string } }).error.codigo).toBe("no_recruiter");
+    expect((await pedir("/cuenta/ofertas/importar", ana, { method: "POST", body: { url: "https://example.com/x" } })).status).toBe(403);
+    expect(await (await pedir("/cuenta/recruiter", ana)).json()).toBeNull();
+    expect((await cuenta(ana)).recruiter).toBeNull();
+  });
+
+  it("se registra al momento (sin que lo apruebe nadie) y aún no crea la empresa", async () => {
+    expect((await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud({ linkedin: "" }) })).status).toBe(400);
+    const r = await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud() });
+    expect(r.status).toBe(200);
+    // ana@example.com y la web nubecanaria.example.com: mismo dominio.
+    expect(await r.json()).toMatchObject({ estado: "activo", emailEmpresa: true, agencia: false, empresaId: null });
+    expect((await cuenta(ana)).recruiter).toMatchObject({ estado: "activo", empresa: "Nube Canaria" });
+    expect(await db.select().from(empresas).where(eq(empresas.nombre, "Nube Canaria"))).toHaveLength(0);
+    await pedir("/cuenta/recruiter", bea, { method: "PUT", body: solicitud({ empresa: "Talento Rápido", web: "https://talentorapido.dev", cargo: "otro" }) });
+  });
+
+  it("puede cambiar sus datos cuando quiera", async () => {
+    const r = (await (await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud({ cargo: "rrhh" }) })).json()) as { cargo: string };
+    expect(r.cargo).toBe("rrhh");
+    await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud() });
+  });
+
+  it("solo el staff ve la lista y marca agencias", async () => {
+    expect((await pedir("/staff/recruiters", ana)).status).toBe(403);
+    const lista = (await (await pedir("/staff/recruiters", pablo)).json()) as { recruiters: Array<{ usuario: { nombre: string }; emailEmpresa: boolean }>; cuentas: Record<string, number> };
+    expect(lista.cuentas).toMatchObject({ activo: 2 });
+    expect(lista.recruiters.map((r) => [r.usuario.nombre, r.emailEmpresa]).sort()).toEqual([["Ana", true], ["Bea", false]]);
+    // Bea es de una agencia: puede publicar de cualquier empresa.
+    expect((await pedir(`/staff/recruiters/${idBea}/agencia`, pablo, { method: "POST", body: { agencia: true } })).status).toBe(200);
+    expect((await cuenta(bea)).recruiter).toMatchObject({ estado: "activo", agencia: true });
+  });
+});
+
+describe("subir ofertas (recruiters)", () => {
   it("sin sesión, no", async () => {
     expect((await pedir("/cuenta/ofertas", null)).status).toBe(401);
     expect((await pedir("/cuenta/ofertas", null, { method: "POST", body: oferta() })).status).toBe(401);
+  });
+
+  it("un recruiter que no es agencia publica siempre de su empresa (se crea con su primera oferta)", async () => {
+    const r = await pedir("/cuenta/ofertas", ana, { method: "POST", body: oferta({ empresa: { nombre: "Google" } }) });
+    expect(r.status).toBe(201);
+    const { id } = (await r.json()) as { id: string };
+    const [o] = await db.select({ empresa: empresas.nombre }).from(ofertas).innerJoin(empresas, eq(empresas.id, ofertas.empresaId)).where(eq(ofertas.id, id));
+    expect(o!.empresa).toBe("Nube Canaria");
+    expect(((await (await pedir("/cuenta/recruiter", ana)).json()) as { empresaId: string | null }).empresaId).not.toBeNull();
+    await pedir(`/cuenta/ofertas/${id}/retirar`, ana, { method: "POST" });
   });
 
   it("con datos mal, dice qué campos", async () => {
@@ -115,6 +195,8 @@ describe("subir ofertas con tu cuenta", () => {
     expect(lista.ofertas[0]).toMatchObject({ id, estado: "pendiente" });
     // Bea no la ve.
     expect((await misOfertas(bea)).ofertas).toHaveLength(0);
+    // La página de empleo no se aprende al subirla (solo cuando el staff la publica).
+    expect(e!.ats).toBeNull();
   });
 
   it("la misma oferta (mismo enlace) no se puede subir dos veces", async () => {
@@ -149,13 +231,19 @@ describe("subir ofertas con tu cuenta", () => {
     const [publicar, rechazar] = [mias[0]!.id, mias[1]!.id];
 
     const vista = (await (await pedir(`/staff/ofertas/${publicar}`, pablo)).json()) as { origen: string; autor: { nombre: string } };
-    expect(vista).toMatchObject({ origen: "usuario", autor: { nombre: "Ana" } });
+    expect(vista).toMatchObject({
+      origen: "usuario",
+      autor: { nombre: "Ana", recruiter: { cargo: "recruiter", empresa: "Nube Canaria", linkedin: "https://www.linkedin.com/in/ana-recruiter", emailEmpresa: true, agencia: false } },
+    });
     const lista = (await (await pedir("/staff/ofertas?origen=usuario", pablo)).json()) as { ofertas: Array<{ origen: string }> };
     expect(lista.ofertas.length).toBe(3);
     expect(lista.ofertas.every((o) => o.origen === "usuario")).toBe(true);
 
     const p = await pedir(`/staff/ofertas/${publicar}/publicar`, pablo, { method: "POST", body: { comprobaciones: ["empresa", "enlace", "idiomas"] } });
     expect(p.status).toBe(200);
+    // En la bolsa sale quién la publicó, con el emblema de recruiter verificado.
+    const publica = (await (await pedir(`/ofertas/${publicar}`, null)).json()) as { recruiter: unknown };
+    expect(publica.recruiter).toEqual({ nombre: "Ana", cargo: "recruiter", empresa: "Nube Canaria" });
     await pedir(`/staff/ofertas/${rechazar}/rechazar`, pablo, { method: "POST", body: { motivo: "El enlace no funciona." } });
 
     const despues = await misOfertas(ana);
@@ -198,6 +286,25 @@ describe("subir ofertas con tu cuenta", () => {
     expect(r.status).toBe(400);
     expect(((await r.json()) as { error: { codigo: string } }).error.codigo).toBe("empresa");
     await db.update(empresas).set({ bloqueada: false }).where(eq(empresas.nombre, "Nube Canaria"));
+  });
+
+  it("bloquearlo: sus pendientes se descartan, ya no publica ni cambia sus datos y la bolsa no dice quién es", async () => {
+    const nueva = (await (await pedir("/cuenta/ofertas", ana, { method: "POST", body: oferta() })).json()) as { id: string };
+    const publicada = (await db.select().from(ofertas).where(eq(ofertas.autorId, idAna))).find((o) => o.estado === "publicada");
+    expect((await pedir(`/staff/recruiters/${idAna}/bloquear`, pablo, { method: "POST", body: { motivo: "" } })).status).toBe(400);
+    expect((await pedir(`/staff/recruiters/${idAna}/bloquear`, pablo, { method: "POST", body: { motivo: "Ofertas falsas." } })).status).toBe(200);
+    expect(await (await pedir("/cuenta/recruiter", ana)).json()).toMatchObject({ estado: "bloqueado", motivo: "Ofertas falsas." });
+    const [o] = await db.select().from(ofertas).where(eq(ofertas.id, nueva.id));
+    expect(o).toMatchObject({ estado: "rechazada", motivoRechazo: "La cuenta de recruiter está bloqueada." });
+    expect((await pedir("/cuenta/ofertas", ana, { method: "POST", body: oferta() })).status).toBe(403);
+    expect((await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud() })).status).toBe(409);
+    if (publicada) {
+      await db.update(ofertas).set({ caducaEn: new Date(Date.now() + 86_400_000) }).where(eq(ofertas.id, publicada.id));
+      expect(((await (await pedir(`/ofertas/${publicada.id}`, null)).json()) as { recruiter: unknown }).recruiter).toBeNull();
+    }
+    // Desbloquearlo: vuelve a poder publicar.
+    expect((await pedir(`/staff/recruiters/${idAna}/desbloquear`, pablo, { method: "POST" })).status).toBe(200);
+    expect((await cuenta(ana)).recruiter).toMatchObject({ estado: "activo" });
   });
 
   it("al borrar la cuenta: sus pendientes se borran; las demás se quedan sin autor", async () => {

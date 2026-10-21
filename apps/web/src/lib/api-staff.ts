@@ -3,6 +3,8 @@ import {
   parametrosStaff,
   type Comprobacion,
   type EmpresaStaff,
+  type EstadoRecruiter,
+  type ListaRecruiters,
   type FiltrosStaff,
   type ListaStaff,
   type OfertaImportada,
@@ -126,4 +128,19 @@ export async function resumenCandidatas(): Promise<ResumenCandidatas> {
 /** Sugerir empresas para descubrir (una por línea). */
 export async function sugerirCandidatasEnApi(nombres: string): Promise<{ anadidas: number; resumen: ResumenCandidatas }> {
   return pedir("/staff/candidatas", await conCookie({ method: "POST", body: JSON.stringify({ nombres }) }));
+}
+
+/* ── Recruiters ── */
+
+export async function listarRecruitersStaff(estado: EstadoRecruiter): Promise<ListaRecruiters> {
+  return pedir<ListaRecruiters>(`/staff/recruiters?estado=${estado}`, await conCookie());
+}
+
+export type AccionRecruiter = { accion: "bloquear"; motivo: string } | { accion: "desbloquear" } | { accion: "agencia"; agencia: boolean };
+
+export async function accionRecruiterEnApi(userId: string, { accion, ...datos }: AccionRecruiter): Promise<void> {
+  await pedir<{ ok: true }>(
+    `/staff/recruiters/${encodeURIComponent(userId)}/${accion}`,
+    await conCookie({ method: "POST", body: JSON.stringify(datos) }),
+  );
 }

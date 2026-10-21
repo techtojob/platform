@@ -107,11 +107,32 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
               </p>
             )}
             {oferta.origen === "usuario" && (
-              <p className="rounded-tarjeta bg-postit px-5 py-3 text-sm font-bold text-ink">
-                {oferta.autor
-                  ? t("staff.detalle.subidaPor", { nombre: oferta.autor.nombre, email: oferta.autor.email })
-                  : t("staff.detalle.subidaPorBorrada")}
-              </p>
+              <div className="flex flex-col gap-1 rounded-tarjeta bg-postit px-5 py-3 text-sm text-ink">
+                <p className="font-bold">
+                  {oferta.autor
+                    ? t("staff.detalle.subidaPor", { nombre: oferta.autor.nombre, email: oferta.autor.email })
+                    : t("staff.detalle.subidaPorBorrada")}
+                </p>
+                {/* Quién es como recruiter: lo que hay que mirar para fiarse de la oferta. */}
+                {oferta.autor?.recruiter && (
+                  <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span>
+                      {t(`recruiter.cargos.${oferta.autor.recruiter.cargo}`)} · {oferta.autor.recruiter.empresa}
+                    </span>
+                    <a href={oferta.autor.recruiter.linkedin} target="_blank" rel="noopener noreferrer" className="font-bold underline">
+                      LinkedIn
+                    </a>
+                    <span className="font-bold">
+                      {oferta.autor.recruiter.emailEmpresa ? t("staff.recruiters.emailEmpresa") : t("staff.recruiters.emailOtro")}
+                    </span>
+                    {oferta.autor.recruiter.agencia && <span className="font-bold">{t("staff.recruiters.agencia")}</span>}
+                    {oferta.autor.recruiter.estado === "bloqueado" && <span className="font-bold text-peligro">{t("staff.recruiters.estados.bloqueado")}</span>}
+                    <Link href={{ pathname: "/staff/recruiters" }} className="underline">
+                      {t("staff.recruiters.ver")}
+                    </Link>
+                  </p>
+                )}
+              </div>
             )}
             {(oferta.estado === "rechazada" || oferta.estado === "cerrada") && oferta.motivoRechazo && (
               <p className="rounded-tarjeta border border-peligro bg-tarjeta p-5 font-bold">

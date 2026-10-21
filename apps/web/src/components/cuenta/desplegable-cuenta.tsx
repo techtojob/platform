@@ -11,9 +11,20 @@ const clasesOpcion = "flex min-h-11 w-full items-center rounded-xl px-3 text-lef
 
 /**
  * Menú de la cuenta en la cabecera (igual en el móvil y en el ordenador):
- * Mi perfil, Mis ofertas, Mi cuenta, Panel de staff (solo staff) y Cerrar sesión.
+ * Mi perfil, Mis ofertas (recruiters), Mi cuenta, Panel de staff (solo staff) y Cerrar sesión.
  */
-export function DesplegableCuenta({ nombre, imagen, esStaff }: { nombre: string; imagen: string | null; esStaff: boolean }) {
+export function DesplegableCuenta({
+  nombre,
+  imagen,
+  esStaff,
+  recruiter,
+}: {
+  nombre: string;
+  imagen: string | null;
+  esStaff: boolean;
+  /** Si es recruiter: activo → "Mis ofertas"; bloqueado → "Recruiter" (para ver por qué). */
+  recruiter: "activo" | "bloqueado" | null;
+}) {
   const t = useTranslations("cuenta");
   const router = useRouter();
   const { abierto, setAbierto, raiz, boton } = useDesplegable();
@@ -49,9 +60,17 @@ export function DesplegableCuenta({ nombre, imagen, esStaff }: { nombre: string;
           <Link href="/cuenta/perfil" className={clasesOpcion}>
             {t("miPerfil")}
           </Link>
-          <Link href="/cuenta/ofertas" className={clasesOpcion}>
-            {t("misOfertas")}
-          </Link>
+          {recruiter === "activo" ? (
+            <Link href="/cuenta/ofertas" className={clasesOpcion}>
+              {t("misOfertas")}
+            </Link>
+          ) : (
+            recruiter && (
+              <Link href="/cuenta/recruiter" className={clasesOpcion}>
+                {t("recruiter")}
+              </Link>
+            )
+          )}
           <Link href="/cuenta/ajustes" className={clasesOpcion}>
             {t("miCuenta")}
           </Link>

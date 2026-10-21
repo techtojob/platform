@@ -6,11 +6,12 @@ import { cuentas } from "../db/esquema";
 import type { Db } from "../db/cliente";
 import { borrarCuenta, datosCuenta, exportarDatos, guardarUbicacion } from "../servicios/cuenta";
 import { esStaff } from "../servicios/staff";
-import { PAISES, validarPerfil, validarUbicacion } from "@techtojob/shared";
+import { PAISES, validarPerfil, validarSolicitudRecruiter, validarUbicacion } from "@techtojob/shared";
 import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicios/talento";
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
 import { rutasMisOfertas } from "./mis-ofertas";
+import { ErrorRecruiter, miRecruiter, registrarRecruiter } from "../servicios/recruiters";
 
 /**
  * "Mi cuenta". Necesita sesión iniciada (la cookie la manda la web).
@@ -20,7 +21,9 @@ import { rutasMisOfertas } from "./mis-ofertas";
  * GET  /cuenta/perfil              → mi perfil de talento (o null) y sugerencias para crearlo.
  * PUT  /cuenta/perfil              → crearlo o guardarlo.
  * DELETE /cuenta/perfil            → borrarlo.
- * /cuenta/ofertas/…               → las ofertas que subo yo (ver rutas/mis-ofertas.ts).
+ * /cuenta/ofertas/…               → las ofertas que subo yo, si soy recruiter (ver rutas/mis-ofertas.ts).
+ * GET  /cuenta/recruiter           → mis datos de recruiter (o null).
+ * PUT  /cuenta/recruiter           { cargo, empresa, web?, linkedin, mensaje? } → registrarme (al momento) o cambiarlos.
  * PUT  /cuenta/ubicacion           { pais, region } → dónde vive (obligatorio al completar la cuenta).
  * GET  /cuenta/datos               → todo lo que guardamos de la persona, en JSON.
  * DELETE /cuenta                   { confirmacion: <su email> } → borra la cuenta y todo lo suyo.
@@ -54,6 +57,19 @@ export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
   .route("/perfil", rutasPerfilPropio)
   .route("/ofertas", rutasMisOfertas)
+  .get("/recruiter", async (c) => c.json(await miRecruiter(c.var.db, c.var.usuario)))
+  .put("/recruiter", async (c) => {
+    const r = validarSolicitudRecruiter(await c.req.json().catch(() => ({})));
+    if (r.errores) {
+      return c.json({ error: { codigo: "datos_invalidos", mensaje: "Revisa los campos marcados.", campos: r.errores } }, 400);
+    }
+    try {
+      return c.json(await registrarRecruiter(c.var.db, c.var.usuario, r.datos));
+    } catch (e) {
+      if (e instanceof ErrorRecruiter) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, 409);
+      throw e;
+    }
+  })
   .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
   .put("/ubicacion", async (c) => {
     const r = validarUbicacion(await c.req.json().catch(() => ({})), PAISES);

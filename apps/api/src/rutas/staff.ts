@@ -18,6 +18,14 @@ import { resumenCandidatas, sugerirCandidatas } from "../servicios/descubrir";
 import { buscarRepetida, importarOferta } from "../servicios/importar";
 import { listarStaff, rechazarVarias, siguienteStaff } from "../servicios/lista-staff";
 import { listarReportes, resolverReporte } from "../servicios/talento";
+import {
+  bloquearRecruiter,
+  desbloquearRecruiter,
+  ErrorRecruiter,
+  leerEstadoRecruiter,
+  listarRecruiters,
+  marcarAgencia,
+} from "../servicios/recruiters";
 import { responderErrorTalento } from "./talento";
 import { conSesion, soloStaff } from "./sesion";
 
@@ -44,6 +52,8 @@ import { conSesion, soloStaff } from "./sesion";
  * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
  * GET  /staff/reportes                    → reportes de perfiles sin revisar
  * POST /staff/reportes/:id/descartar · /ocultar
+ * GET  /staff/recruiters?estado=activo|bloqueado → recruiters (se registran solos; el staff revisa sus ofertas)
+ * POST /staff/recruiters/:userId/bloquear { motivo } · /desbloquear · /agencia { agencia }
  */
 
 const ESTADOS_HTTP = {
@@ -163,6 +173,32 @@ export const rutasStaff = new Hono<Entorno>()
       return c.json(await listarReportes(c.var.db));
     } catch (e) {
       return responderErrorTalento(c, e);
+    }
+  })
+  .get("/recruiters", async (c) => c.json(await listarRecruiters(c.var.db, leerEstadoRecruiter(c.req.query("estado")))))
+  .post("/recruiters/:userId/:accion{bloquear|desbloquear|agencia}", async (c) => {
+    const userId = c.req.param("userId");
+    const staffId = c.var.usuario.id;
+    const datos = await cuerpo(c);
+    try {
+      switch (c.req.param("accion")) {
+        case "bloquear":
+          await bloquearRecruiter(c.var.db, userId, staffId, datos.motivo);
+          break;
+        case "desbloquear":
+          await desbloquearRecruiter(c.var.db, userId);
+          break;
+        case "agencia":
+          await marcarAgencia(c.var.db, userId, datos.agencia);
+          break;
+      }
+      return c.json({ ok: true });
+    } catch (e) {
+      if (e instanceof ErrorRecruiter) {
+        const http = { no_encontrado: 404, estado: 409, motivo: 400 } as const;
+        return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, http[e.codigo]);
+      }
+      throw e;
     }
   })
   .get("/empresas", async (c) => c.json(await listarEmpresas(c.var.db)))

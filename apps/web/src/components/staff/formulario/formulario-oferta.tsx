@@ -96,6 +96,8 @@ type Props = {
    * marca que es real y la manda a revisar.
    */
   modo?: "staff" | "usuario";
+  /** Modo "usuario": la empresa del recruiter (no se puede cambiar). null: es agencia y la escribe. */
+  empresaFija?: string | null;
 };
 
 /**
@@ -103,7 +105,7 @@ type Props = {
  * enlace → la oferta → el puesto → dónde → salario → idiomas. A la derecha (abajo en el móvil),
  * la vista previa en el listado, lo que falta y los botones para guardar o publicar.
  */
-export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff" }: Props) {
+export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff", empresaFija = null }: Props) {
   const publico = modo === "usuario";
   const claveBorrador = CLAVES_BORRADOR[modo];
   const t = useTranslations("staff");
@@ -130,7 +132,8 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
   // Borrador: lo escrito en una oferta nueva se guarda en este navegador, por si se cierra la pestaña.
   // Al volver, se ofrece seguir con él (no se pone solo: igual se quiere empezar otra).
   const borrador = useSyncExternalStore(sinSuscripcion, () => leerBorrador(claveBorrador), () => null);
-  const vacio = JSON.stringify(v) === JSON.stringify(VALORES_VACIOS);
+  // "Vacío": tal y como empezó (a un recruiter ya le viene puesta su empresa y su país).
+  const vacio = JSON.stringify(v) === JSON.stringify(inicial);
   useEffect(() => {
     if (!nueva || vacio) return;
     const temporizador = setTimeout(() => guardarBorrador(claveBorrador, JSON.stringify(v)), 400);
@@ -240,7 +243,12 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                 type="button"
                 onClick={() => {
                   try {
-                    ponerValores({ ...VALORES_VACIOS, ...(JSON.parse(borrador) as Partial<ValoresOferta>) });
+                    ponerValores({
+                      ...VALORES_VACIOS,
+                      ...(JSON.parse(borrador) as Partial<ValoresOferta>),
+                      // La empresa de un recruiter no se cambia, aunque el borrador diga otra.
+                      ...(empresaFija && { empresa: inicial.empresa }),
+                    });
                   } catch {
                     guardarBorrador(claveBorrador, null);
                   }
@@ -274,7 +282,13 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
         </Seccion>
 
         <Seccion id="seccion-oferta" numero={2} titulo={t("form.seccionOferta")}>
-          {publico ? (
+          {publico && empresaFija ? (
+            <div className="flex flex-col gap-1 rounded-2xl border border-borde p-4">
+              <p className="text-sm font-bold">{t("form.empresaNombre")}</p>
+              <p className="text-lg font-bold">{empresaFija}</p>
+              <p className="text-sm text-suave">{t("publicar.empresaFija")}</p>
+            </div>
+          ) : publico ? (
             <div className="grid gap-5 sm:grid-cols-2">
               <Campo
                 etiqueta={t("form.empresaNombre")}

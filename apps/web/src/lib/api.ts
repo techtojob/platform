@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -105,7 +105,19 @@ export function guardarUbicacionEnApi(cookie: string, pais: string, region: stri
   });
 }
 
-/* ── Ofertas que sube cualquiera con su cuenta ── */
+/* ── Recruiters y sus ofertas ── */
+
+export function miRecruiterEnApi(cookie: string): Promise<MiRecruiter | null> {
+  return pedir<MiRecruiter | null>("/cuenta/recruiter", { headers: { cookie } });
+}
+
+export function solicitarRecruiterEnApi(cookie: string, datos: unknown): Promise<MiRecruiter> {
+  return pedir<MiRecruiter>("/cuenta/recruiter", {
+    method: "PUT",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
 
 export function misOfertasEnApi(cookie: string): Promise<MisOfertas> {
   return pedir<MisOfertas>("/cuenta/ofertas", { headers: { cookie } });

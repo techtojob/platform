@@ -126,7 +126,7 @@
     "desdeDonde": "Desde dónde",
     "puedesDesde": "Puedes trabajar desde {pais}",
     "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}.",
-    "publicarLlamada": "¿Contratas? <enlace>Publica tu oferta gratis</enlace>: la revisamos y sale en la bolsa."
+    "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga."
   },
   "regiones": {
     "eu": "Europa",
@@ -191,6 +191,7 @@
     "perfilVer": "Ver mi perfil",
     "miPerfil": "Mi perfil",
     "misOfertas": "Mis ofertas",
+    "recruiter": "Recruiter",
     "menu": "Menú de la cuenta de {nombre}",
     "panelStaff": "Panel de staff",
     "datos": {
@@ -600,6 +601,37 @@
       "reportado": "Reportado {tiempo}",
       "visibilidad": "Ahora: {visibilidad}"
     },
+    "recruiters": {
+      "pestana": "Recruiters",
+      "titulo": "Recruiters",
+      "entradilla": "Se registran solos: lo que revisáis son sus ofertas. Aquí podéis marcar agencias y bloquear a quien abuse.",
+      "estados": {
+        "activo": "Activos",
+        "bloqueado": "Bloqueados"
+      },
+      "vacio": "No hay ninguno aquí.",
+      "emailEmpresa": "Email de la empresa ✓",
+      "emailOtro": "Email personal",
+      "agencia": "Agencia",
+      "empresa": "Empresa",
+      "ofertas": "{count, plural, =0 {sin ofertas} one {# oferta} other {# ofertas}}",
+      "motivo": "Motivo:",
+      "esAgencia": "Es agencia o headhunter",
+      "agenciaAyuda": "Puede publicar ofertas de cualquier empresa.",
+      "noAgenciaAyuda": "Solo publica ofertas de su empresa.",
+      "cancelar": "Cancelar",
+      "motivoAyuda": "Lo verá la persona. Sus ofertas pendientes se descartan.",
+      "errores": {
+        "estado": "Esto ha cambiado: recarga la página.",
+        "motivo": "Escribe el motivo (de 3 a 300 caracteres).",
+        "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+      },
+      "registrado": "Registrado",
+      "ver": "Ver recruiters",
+      "desbloquear": "Desbloquear",
+      "bloquear": "Bloquear",
+      "motivoBloqueo": "Por qué se bloquea"
+    },
     "empresas": {
       "pestana": "Empresas",
       "titulo": "Empresas",
@@ -721,8 +753,10 @@
         "limite": "Ya tienes 3 ofertas en marcha. Retira una para subir otra.",
         "repetida": "Esta oferta ya está en TechToJob.",
         "empresa": "Esa empresa nos ha pedido que no publiquemos sus ofertas.",
-        "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar."
-      }
+        "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
+        "no_recruiter": "Solo los recruiters pueden publicar ofertas."
+      },
+      "empresaFija": "Es la empresa de tu cuenta de recruiter. Si necesitas publicar para otra, escríbenos."
     }
   },
   "formulario": {
@@ -878,6 +912,7 @@
         "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
+        "<b>Si te registras como recruiter:</b> tu cargo, tu empresa, su web, tu LinkedIn y lo que nos cuentes, para que el staff revise tus ofertas. Tu nombre, tu cargo y tu empresa salen en las ofertas que publiques.",
         "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
         "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
@@ -996,7 +1031,7 @@
     "sinHuecoTitulo": "Ya tienes {limite} ofertas en marcha",
     "publicar": "Publicar una oferta",
     "publicarTitulo": "Publicar una oferta",
-    "publicarEntradilla": "Gratis. Pega el enlace y rellenamos lo que podamos. El staff la revisa antes de que salga en la bolsa. Solo ofertas que se puedan hacer desde España o Latinoamérica.",
+    "publicarEntradilla": "Pega el enlace y rellenamos lo que podamos. El staff la revisa antes de que salga en la bolsa. Solo ofertas que se puedan hacer desde España o Latinoamérica.",
     "verMias": "Ver mis ofertas",
     "vacio": "Aún no has subido ninguna oferta.",
     "estados": {
@@ -1016,6 +1051,63 @@
     "siRetirar": "Sí, retirarla",
     "retirando": "Retirando…",
     "cancelar": "Cancelar",
-    "errorRetirar": "No se ha podido retirar. Inténtalo de nuevo."
+    "errorRetirar": "No se ha podido retirar. Inténtalo de nuevo.",
+    "noRecruiter": "Tu cuenta de recruiter está bloqueada: no puedes publicar más ofertas. <enlace>Ver por qué</enlace>"
+  },
+  "recruiter": {
+    "titulo": "Recruiter",
+    "entradilla": "Solo los recruiters pueden publicar ofertas en TechToJob. Registrarte es al momento; cada oferta la revisamos antes de que salga.",
+    "como": {
+      "uno": "Rellena tus datos: cargo, empresa y LinkedIn.",
+      "dos": "Publica ofertas de tu empresa: hasta 3 a la vez.",
+      "tres": "Revisamos cada oferta antes de que salga en la bolsa."
+    },
+    "cargo": "Tu cargo",
+    "cargos": {
+      "recruiter": "Recruiter",
+      "rrhh": "RR. HH.",
+      "fundador": "Fundador/a",
+      "manager": "Manager técnico",
+      "otro": "Otro"
+    },
+    "empresa": "Empresa",
+    "web": "Web de la empresa",
+    "webAyuda": "Si tu email es de este dominio, revisamos tus ofertas antes.",
+    "linkedin": "Tu perfil de LinkedIn",
+    "linkedinAyuda": "El staff lo mira al revisar tus ofertas.",
+    "mensaje": "Algo más (opcional)",
+    "mensajeAyuda": "Por ejemplo, qué perfiles buscáis.",
+    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques. ¿Eres de una agencia o headhunter? Cuéntalo en «Algo más» y te dejamos publicar para varias empresas.",
+    "enviar": "Registrarme y publicar una oferta",
+    "enviando": "Guardando…",
+    "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo.",
+    "motivo": "Motivo:",
+    "publicar": "Publicar una oferta",
+    "misOfertas": "Mis ofertas",
+    "publicadaPor": "Publicada por {nombre} · {cargo} en {empresa}",
+    "errores": {
+      "falta": "Falta este dato.",
+      "corto": "Es demasiado corto.",
+      "largo": "Es demasiado largo.",
+      "url": "Tiene que ser una dirección web (https://…).",
+      "cargo": {
+        "falta": "Elige tu cargo."
+      },
+      "empresa": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "linkedin": {
+        "falta": "Pega el enlace a tu perfil de LinkedIn.",
+        "linkedin": "Tiene que ser un enlace de linkedin.com."
+      }
+    },
+    "guardar": "Guardar cambios",
+    "guardado": "Guardado.",
+    "tusDatos": "Tus datos de recruiter",
+    "activo": "Eres recruiter de {empresa}",
+    "activoAyuda": "Puedes publicar ofertas de tu empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
+    "activoAgencia": "Como agencia, puedes publicar ofertas de cualquier empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
+    "bloqueado": "Tu cuenta de recruiter está bloqueada: no puedes publicar ofertas.",
+    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord."
   }
 }

@@ -1,5 +1,6 @@
 import {
   COMPROBACIONES,
+  esEmailDeLaEmpresa,
   nombreEmpresaComparable,
   slugEmpresa,
   slugOferta,
@@ -13,7 +14,7 @@ import {
 } from "@techtojob/shared";
 import { and, asc, count, eq, isNull, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertaIdiomas, ofertas, usuarios, type Oferta } from "../db/esquema";
+import { empresas, ofertaIdiomas, ofertas, recruiters, usuarios, type Oferta } from "../db/esquema";
 
 /**
  * Lo que hace el staff con las ofertas: crear, editar, publicar (con comprobaciones),
@@ -53,7 +54,8 @@ export function aStaff(
   o: Oferta,
   empresa: OfertaStaff["empresa"],
   idiomas: Array<{ ofertaId: string; idioma: OfertaStaff["idioma"]; nivel: OfertaStaff["idiomasRequeridos"][number]["nivel"] }>,
-  autor: OfertaStaff["autor"] = null,
+  autor: { id: string | null; nombre: string | null; email: string | null } | null = null,
+  recruiter: (Omit<NonNullable<NonNullable<OfertaStaff["autor"]>["recruiter"]>, "emailEmpresa"> & { web: string | null }) | null = null,
 ): OfertaStaff {
   return {
     id: o.id,
@@ -78,7 +80,16 @@ export function aStaff(
     moneda: o.moneda as OfertaStaff["moneda"],
     autorizada: o.autorizada,
     origen: o.origen,
-    autor: autor?.id ? autor : null,
+    autor: autor?.id
+      ? {
+          id: autor.id,
+          nombre: autor.nombre!,
+          email: autor.email!,
+          recruiter: recruiter?.cargo
+            ? { cargo: recruiter.cargo, empresa: recruiter.empresa, linkedin: recruiter.linkedin, agencia: recruiter.agencia, estado: recruiter.estado, emailEmpresa: esEmailDeLaEmpresa(autor.email!, recruiter.web) }
+            : null,
+        }
+      : null,
     fuenteAts: o.fuenteAts,
     descripcionOriginal: o.descripcionOriginal,
     idiomasRequeridos: idiomas.filter((i) => i.ofertaId === o.id).map(({ idioma, nivel }) => ({ idioma, nivel })),
@@ -92,20 +103,29 @@ export function aStaff(
 }
 
 export const columnasEmpresa = { id: empresas.id, nombre: empresas.nombre, slug: empresas.slug, web: empresas.web };
-/** Quién subió la oferta (solo las de origen "usuario"; con leftJoin a usuarios). */
+/** Quién subió la oferta (solo las de origen "usuario"; con leftJoin a usuarios y a recruiters). */
 export const columnasAutor = { id: usuarios.id, nombre: usuarios.name, email: usuarios.email };
+export const columnasRecruiter = {
+  cargo: recruiters.cargo,
+  empresa: recruiters.empresaNombre,
+  web: recruiters.empresaWeb,
+  linkedin: recruiters.linkedin,
+  agencia: recruiters.agencia,
+  estado: recruiters.estado,
+};
 
 export async function obtenerOfertaStaff(db: Db, id: string): Promise<OfertaStaff | null> {
   const [fila] = await db
-    .select({ oferta: ofertas, empresa: columnasEmpresa, autor: columnasAutor })
+    .select({ oferta: ofertas, empresa: columnasEmpresa, autor: columnasAutor, recruiter: columnasRecruiter })
     .from(ofertas)
     .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
     .leftJoin(usuarios, eq(usuarios.id, ofertas.autorId))
+    .leftJoin(recruiters, eq(recruiters.userId, ofertas.autorId))
     .where(eq(ofertas.id, id))
     .limit(1);
   if (!fila) return null;
   const idiomas = await db.select().from(ofertaIdiomas).where(eq(ofertaIdiomas.ofertaId, id));
-  return aStaff(fila.oferta, fila.empresa, idiomas, fila.autor);
+  return aStaff(fila.oferta, fila.empresa, idiomas, fila.autor, fila.recruiter as never);
 }
 
 async function empresaDe(db: Db, empresaId: string) {

@@ -55,7 +55,10 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ofer
   const cuenta = await obtenerCuenta(cookie).catch(() => null);
   if (!cuenta || !cookie) redirect({ href: { pathname: "/entrar", query: { volver: "ofertas" } }, locale });
   const { ofertas, limite, enMarcha } = await misOfertasEnApi(cookie!);
-  const quedan = Math.max(0, limite - enMarcha);
+  const esRecruiter = cuenta!.recruiter?.estado === "activo";
+  // Sin ser recruiter y sin ofertas de antes: a registrarse.
+  if (!esRecruiter && !ofertas.length) redirect({ href: "/cuenta/recruiter", locale });
+  const quedan = esRecruiter ? Math.max(0, limite - enMarcha) : 0;
   const fecha = (iso: string | null) => (iso ? format.dateTime(new Date(iso), { day: "numeric", month: "long" }) : "");
 
   return (
@@ -66,10 +69,24 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ofer
         </Aviso>
       )}
 
+      {!esRecruiter && (
+        <Aviso chincheta={false} giro="">
+          <p className="font-bold">
+            {t.rich("noRecruiter", {
+              enlace: (texto) => (
+                <Link href="/cuenta/recruiter" className="underline">
+                  {texto}
+                </Link>
+              ),
+            })}
+          </p>
+        </Aviso>
+      )}
+
       <Tarjeta className="flex flex-wrap items-center justify-between gap-4 p-5">
         <div className="flex flex-col gap-1">
           <p className="text-lg font-bold">{t("enMarcha", { enMarcha, limite })}</p>
-          <p className="text-sm text-suave">{quedan > 0 ? t("quedan", { count: quedan }) : t("sinHueco")}</p>
+          <p className="text-sm text-suave">{!esRecruiter ? cuenta!.recruiter?.empresa : quedan > 0 ? t("quedan", { count: quedan }) : t("sinHueco")}</p>
         </div>
         {quedan > 0 && (
           <Link href="/cuenta/ofertas/nueva" className={clasesBoton({})}>

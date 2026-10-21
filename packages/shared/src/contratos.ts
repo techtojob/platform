@@ -40,6 +40,8 @@ export type OfertaDetalle = OfertaListado & {
   autorizada: boolean;
   /** Fecha ISO en que deja de salir (para Google: validThrough). */
   caducaEn: string | null;
+  /** Si la publicó un recruiter: quién es (sale en la oferta). */
+  recruiter: { nombre: string; cargo: import("./recruiters").CargoRecruiter; empresa: string } | null;
 };
 
 /** Respuesta de GET /ofertas/mapa y GET /talento/mapa: lo justo para el mapa del sitio. */
@@ -84,6 +86,8 @@ export type Cuenta = {
   ubicacion: { pais: string; region: string | null } | null;
   /** País para enseñarle las ofertas que puede hacer desde allí: el de su cuenta o, si no, el de su perfil. */
   pais: string | null;
+  /** Si se ha registrado como recruiter (solo los activos publican ofertas). */
+  recruiter: { estado: "activo" | "bloqueado"; agencia: boolean; empresa: string } | null;
   discord: {
     /** Si en este entorno se puede vincular Discord (está configurado). */
     disponible: boolean;
@@ -137,8 +141,20 @@ export type DatosOferta = {
 export type OfertaStaff = DatosOferta & {
   /** "manual" (la metió el staff), "automatica" (leída de la página de empleo de la empresa) o "usuario" (la subió alguien desde la web). */
   origen: OrigenOferta;
-  /** Si la subió alguien desde la web: quién (null si borró su cuenta). */
-  autor: { id: string; nombre: string; email: string } | null;
+  /** Si la subió un recruiter desde la web: quién es (null si borró su cuenta). */
+  autor: {
+    id: string;
+    nombre: string;
+    email: string;
+    recruiter: {
+      cargo: import("./recruiters").CargoRecruiter;
+      empresa: string;
+      linkedin: string;
+      agencia: boolean;
+      emailEmpresa: boolean;
+      estado: import("./recruiters").EstadoRecruiter;
+    } | null;
+  } | null;
   /** Si es automática, de qué ATS viene. */
   fuenteAts: Ats | null;
   /** Si es automática, el texto original de la empresa. SOLO para el staff: no se publica. */

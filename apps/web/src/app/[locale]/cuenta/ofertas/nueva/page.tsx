@@ -13,8 +13,8 @@ import { VALORES_VACIOS } from "@/lib/formulario-oferta";
 export const metadata: Metadata = { robots: { index: false } };
 
 /**
- * Publicar una oferta: cualquiera con cuenta. Queda pendiente y la revisa el staff antes de salir.
- * Cada cuenta puede tener 3 a la vez (pendientes + publicadas).
+ * Publicar una oferta: solo recruiters (el resto va a registrarse, que es al momento). Queda pendiente
+ * y la revisa el staff antes de salir. Cada recruiter puede tener 3 a la vez (pendientes + publicadas).
  */
 export default function PaginaPublicar() {
   const t = useTranslations();
@@ -46,6 +46,9 @@ async function Formulario() {
   const cookie = cabeceras.get("cookie");
   const cuenta = await obtenerCuenta(cookie).catch(() => null);
   if (!cuenta || !cookie) redirect({ href: { pathname: "/entrar", query: { volver: "publicar" } }, locale });
+  // Sin ser recruiter, a registrarse (o, si está bloqueado, a ver por qué).
+  if (cuenta!.recruiter?.estado !== "activo") redirect({ href: "/cuenta/recruiter", locale });
+  const recruiter = cuenta!.recruiter!;
   const { limite, enMarcha } = await misOfertasEnApi(cookie!);
 
   if (enMarcha >= limite) {
@@ -60,6 +63,20 @@ async function Formulario() {
     );
   }
   // La oferta empieza con el país de la cuenta (si es de España o Latinoamérica).
-  const inicial = { ...VALORES_VACIOS, ...(cuenta!.ubicacion && { pais: cuenta!.ubicacion.pais }) };
-  return <FormularioOferta modo="usuario" empresas={[]} inicial={inicial} ofertaId={null} ahora={ahora.getTime()} />;
+  // Si no es agencia, la empresa es siempre la suya: viene puesta y no se cambia.
+  const inicial = {
+    ...VALORES_VACIOS,
+    ...(cuenta!.ubicacion && { pais: cuenta!.ubicacion.pais }),
+    ...(!recruiter.agencia && { empresa: { id: null, nombre: recruiter.empresa, web: "" } }),
+  };
+  return (
+    <FormularioOferta
+      modo="usuario"
+      empresas={[]}
+      inicial={inicial}
+      ofertaId={null}
+      ahora={ahora.getTime()}
+      empresaFija={recruiter.agencia ? null : recruiter.empresa}
+    />
+  );
 }
