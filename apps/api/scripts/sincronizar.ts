@@ -11,7 +11,7 @@
 import { readFileSync } from "node:fs";
 import { conectar } from "../src/db/cliente";
 import { descubrir, sembrarCandidatas, type EntradaCandidata } from "../src/servicios/descubrir";
-import { sincronizarTodas } from "../src/servicios/sincronizar";
+import { descartarPendientesViejas, sincronizarTodas } from "../src/servicios/sincronizar";
 
 const url = process.env.DATABASE_URL;
 if (!url) {
@@ -30,7 +30,11 @@ console.log(
     ` · ${d.sinOfertas} sin ofertas útiles · ${d.noExisten} sin página · ${d.errores} con error\n`,
 );
 
-// 2. Leer
+// 2. Descartar las pendientes que nadie ha revisado en 14 días (para que la cola no se desborde)
+const descartadas = await descartarPendientesViejas(db);
+if (descartadas) console.log(`Descartadas ${descartadas} automáticas que llevaban más de 14 días sin revisar.\n`);
+
+// 3. Leer
 const resultados = await sincronizarTodas(db);
 let errores = 0;
 for (const r of resultados) {

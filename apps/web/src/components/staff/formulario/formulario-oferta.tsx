@@ -100,7 +100,6 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
 
   const [v, ponerValores] = useState<ValoresOferta>(inicial);
   const [intentado, intentar] = useState(false);
-  const [intentoPublicar, intentarPublicar] = useState(false);
   const [erroresServidor, ponerErroresServidor] = useState<Record<string, string>>({});
   const [errorGeneral, ponerErrorGeneral] = useState<string | null>(null);
   const [comprobaciones, marcar] = useState<Comprobacion[]>([]);
@@ -130,11 +129,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     if (!v.sinSalario && !v.salarioMin.trim() && !v.salarioMax.trim()) e.salario = "falta";
     return e;
   }, [v]);
-  // Una automática sin autorización se publica con un resumen propio (el texto de la empresa no es nuestro).
-  const faltaResumen = !!original && !v.autorizada && !v.resumen.trim();
-  const visibles = intentado
-    ? { ...errores, ...(intentoPublicar && faltaResumen ? { resumen: "propio" } : {}), ...erroresServidor }
-    : erroresServidor;
+  const visibles = intentado ? { ...errores, ...erroresServidor } : erroresServidor;
   const mensajeError = (campo: string) => {
     const codigo = visibles[campo];
     if (!codigo) return undefined;
@@ -154,11 +149,10 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
 
   function enviar(publicar: boolean) {
     intentar(true);
-    intentarPublicar(publicar);
     ponerErrorGeneral(null);
     const listos =
       Object.keys(errores).length === 0 &&
-      (!publicar || (COMPROBACIONES.every((c) => comprobaciones.includes(c)) && !faltaResumen));
+      (!publicar || COMPROBACIONES.every((c) => comprobaciones.includes(c)));
     if (!listos) {
       requestAnimationFrame(() => alerta.current?.focus());
       return;
@@ -293,7 +287,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             )}
           </div>
           <AreaTexto
-            etiqueta={original && !v.autorizada ? t("form.resumenObligatorio") : t("form.resumen")}
+            etiqueta={t("form.resumen")}
             ayuda={t(original && !v.autorizada ? "form.resumenAyudaAutomatica" : "form.resumenAyuda", {
               max: LIMITES.resumen.max,
               quedan: LIMITES.resumen.max - v.resumen.length,

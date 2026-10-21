@@ -188,10 +188,8 @@ export async function publicarOferta(db: Db, id: string, staffId: string, marcad
   if (validarOferta(actual).errores) {
     throw new ErrorStaff("incompleta", "Faltan datos de la oferta: edítala y rellena los campos marcados.");
   }
-  // El texto original de la empresa no es nuestro: si no nos autoriza, se publica con un resumen propio.
-  if (actual.origen === "automatica" && !actual.autorizada && !actual.resumen?.trim()) {
-    throw new ErrorStaff("resumen", "Escribe un resumen con tus palabras antes de publicarla.");
-  }
+  // Una automática se puede publicar sin resumen: sale con sus datos (empresa, puesto, tecnologías,
+  // desde dónde, idiomas) y el enlace a la web de la empresa. El texto original nunca se publica.
   const ahora = new Date();
   await db
     .update(ofertas)

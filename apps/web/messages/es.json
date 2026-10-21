@@ -352,7 +352,7 @@
       "autorizada": "Autorizada · Google for Jobs",
       "automatica": "Automática · {fuente}",
       "original": "Texto original de la empresa · solo staff",
-      "originalAyuda": "No se publica: no es nuestro. Léelo para revisar los datos y escribir un resumen con tus palabras. Solo se publica entero si la empresa lo autoriza.",
+      "originalAyuda": "No se publica: no es nuestro. Léelo para comprobar los datos. Si quieres, escribe un resumen con tus palabras (es opcional). Solo se publica entero si la empresa lo autoriza.",
       "originalVacio": "La empresa no puso texto."
     },
     "comprobaciones": {
@@ -510,8 +510,7 @@
       "descartarBorrador": "Descartar",
       "autorizada": "La empresa nos autoriza a publicarla",
       "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella).",
-      "resumenObligatorio": "Resumen (obligatorio)",
-      "resumenAyudaAutomatica": "Con tus palabras, sin copiar el texto de la empresa: es lo que se publica. Quedan {quedan} caracteres.",
+      "resumenAyudaAutomatica": "Opcional. Si lo escribes, con tus palabras: el texto de la empresa no se publica. Quedan {quedan} caracteres.",
       "descripcionAutomatica": "Descripción (solo si la empresa lo autoriza)",
       "cualquierPais": "Cualquier país",
       "otroPais": "+ Otro país…",
@@ -626,7 +625,7 @@
     "filtros": {
       "atajos": "Atajos",
       "atajosNombres": {
-        "sin_resumen": "Sin resumen",
+        "sin_resumen": "Sin resumen (opcional)",
         "sin_zona": "Sin zona",
         "hoy": "Entraron hoy",
         "caducan": "Caducan esta semana",

@@ -37,6 +37,9 @@ export const POR_PAGINA_STAFF = 50;
 /** Motivo que se pone a las automáticas que se cierran solas porque ya no están en la web de la empresa. */
 export const MOTIVO_DESAPARECIDA = "Ya no está en la web de la empresa.";
 
+/** Motivo de las automáticas que se descartan solas por llevar 14 días pendientes sin revisar. */
+export const MOTIVO_SIN_REVISAR = "Sin revisar en 14 días: se ha descartado sola.";
+
 export type FiltrosStaff = {
   estado: EstadoOferta;
   /** Título o empresa. */

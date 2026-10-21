@@ -5,9 +5,12 @@ import {
   detectarTecnologias,
   LIMITES,
   MOTIVO_DESAPARECIDA,
+  MOTIVO_SIN_REVISAR,
+  REGIONES,
+  type Remoto,
   slugOferta,
 } from "@techtojob/shared";
-import { and, eq, gte, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertaIdiomas, ofertas } from "../db/esquema";
 import { ErrorAts, filtrar, leerAts, type OfertaFiltrada } from "./ats";
@@ -157,6 +160,21 @@ async function leerEmpresa(db: Db, empresa: Empresa, pedir: Pedir, ahora: Date) 
 
 export type Cupos = { total: number; reservas: Record<IdiomaCupo, number> };
 
+/** España y Latinoamérica: la mayor parte de la comunidad. */
+const NUESTRO_PUBLICO = new Set(["ES", ...REGIONES.latam]);
+
+/**
+ * Qué ofertas entran antes en el cupo:
+ * 0. las que se pueden hacer desde España o Latinoamérica (o desde cualquier país);
+ * 1. las que aún no dicen desde dónde (las rellena el staff);
+ * 2. las que son solo para otros sitios (EE. UU., Canadá, Reino Unido…): con lo que sobre.
+ */
+export function prioridad(remoto: Remoto | null | undefined): 0 | 1 | 2 {
+  if (!remoto) return 1;
+  if (remoto.mundo || remoto.paises.some((p) => NUESTRO_PUBLICO.has(p))) return 0;
+  return 2;
+}
+
 /**
  * Elige las que entran hoy.
  *
@@ -166,23 +184,25 @@ export type Cupos = { total: number; reservas: Record<IdiomaCupo, number> };
  * Dentro de cada idioma, una de cada empresa por turnos (para que una empresa grande
  * no se coma el cupo) y, dentro de cada empresa, las más nuevas primero.
  */
-export function elegir<T extends { empresa: { id: string }; oferta: { publicadaEn: Date | null }; idioma: IdiomaCupo }>(
-  candidatas: T[],
-  cupos: Cupos,
-): T[] {
+export function elegir<
+  T extends { empresa: { id: string }; oferta: { publicadaEn: Date | null; remoto?: Remoto | null }; idioma: IdiomaCupo },
+>(candidatas: T[], cupos: Cupos): T[] {
   const idiomas = Object.keys(cupos.reservas) as IdiomaCupo[];
-  // Una cola por idioma, ya en el orden en que entrarían: por turnos entre empresas, las más nuevas primero.
+  // Una cola por idioma, ya en el orden en que entrarían: primero las que se pueden hacer desde España
+  // o Latinoamérica; dentro de eso, por turnos entre empresas y las más nuevas primero.
   const colas = new Map<IdiomaCupo, T[]>();
   for (const idioma of idiomas) {
-    const porEmpresa = new Map<string, T[]>();
-    for (const c of candidatas.filter((c) => c.idioma === idioma)) {
-      porEmpresa.set(c.empresa.id, [...(porEmpresa.get(c.empresa.id) ?? []), c]);
-    }
-    const listas = [...porEmpresa.values()].map((l) =>
-      l.sort((a, b) => (b.oferta.publicadaEn?.getTime() ?? 0) - (a.oferta.publicadaEn?.getTime() ?? 0)),
-    );
     const cola: T[] = [];
-    while (listas.some((l) => l.length)) for (const l of listas) if (l.length) cola.push(l.shift()!);
+    for (const nivel of [0, 1, 2]) {
+      const porEmpresa = new Map<string, T[]>();
+      for (const c of candidatas.filter((c) => c.idioma === idioma && prioridad(c.oferta.remoto) === nivel)) {
+        porEmpresa.set(c.empresa.id, [...(porEmpresa.get(c.empresa.id) ?? []), c]);
+      }
+      const listas = [...porEmpresa.values()].map((l) =>
+        l.sort((a, b) => (b.oferta.publicadaEn?.getTime() ?? 0) - (a.oferta.publicadaEn?.getTime() ?? 0)),
+      );
+      while (listas.some((l) => l.length)) for (const l of listas) if (l.length) cola.push(l.shift()!);
+    }
     colas.set(idioma, cola);
   }
 
@@ -257,7 +277,46 @@ async function cuposRestantes(db: Db, ahora: Date, cupos: Cupos): Promise<Cupos>
   return { total: cupos.total - es - en, reservas: { es: cupos.reservas.es - es, en: cupos.reservas.en - en } };
 }
 
-/** Lee estas empresas (una detrás de otra, para no cargar a nadie) y crea las nuevas que quepan en el cupo. */
+/** Cuántas empresas se leen a la vez. */
+const A_LA_VEZ = 6;
+
+/** Como Promise.all, pero con `n` a la vez como mucho. Devuelve los resultados en el mismo orden. */
+export async function enParalelo<T, R>(lista: T[], n: number, hacer: (x: T) => Promise<R>): Promise<R[]> {
+  const resultados = new Array<R>(lista.length);
+  let siguiente = 0;
+  const trabajador = async () => {
+    while (siguiente < lista.length) {
+      const i = siguiente++;
+      resultados[i] = await hacer(lista[i]!);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(n, lista.length) }, trabajador));
+  return resultados;
+}
+
+/** Días que una automática puede estar pendiente sin que nadie la revise: después se descarta sola. */
+export const DIAS_SIN_REVISAR = 14;
+
+/**
+ * Descarta las automáticas que llevan más de 14 días pendientes: así la cola del staff nunca se
+ * desborda. Quedan como rechazadas (con su motivo), así que no vuelven a entrar. Devuelve cuántas.
+ */
+export async function descartarPendientesViejas(db: Db, ahora = new Date()): Promise<number> {
+  const descartadas = await db
+    .update(ofertas)
+    .set({ estado: "rechazada", motivoRechazo: MOTIVO_SIN_REVISAR, revisadaEn: ahora })
+    .where(
+      and(
+        eq(ofertas.estado, "pendiente"),
+        eq(ofertas.origen, "automatica"),
+        lt(ofertas.creadaEn, new Date(ahora.getTime() - DIAS_SIN_REVISAR * DIA)),
+      ),
+    )
+    .returning({ id: ofertas.id });
+  return descartadas.length;
+}
+
+/** Lee estas empresas y crea las nuevas que quepan en el cupo. */
 export async function sincronizarLista(
   db: Db,
   lista: Empresa[],
@@ -265,13 +324,10 @@ export async function sincronizarLista(
   ahora = new Date(),
   cupos: Cupos = CUPO_DIARIO,
 ): Promise<ResultadoEmpresa[]> {
-  const resultados: ResultadoEmpresa[] = [];
-  const candidatas: Candidata[] = [];
-  for (const empresa of lista) {
-    const leida = await leerEmpresa(db, empresa, pedir, ahora);
-    resultados.push(leida.resultado);
-    candidatas.push(...leida.candidatas);
-  }
+  // Varias empresas a la vez (pocas: casi todas están en el mismo puñado de servidores), en el mismo orden.
+  const leidas = await enParalelo(lista, A_LA_VEZ, (empresa) => leerEmpresa(db, empresa, pedir, ahora));
+  const resultados = leidas.map((l) => l.resultado);
+  const candidatas = leidas.flatMap((l) => l.candidatas);
   const elegidas = new Set(elegir(candidatas, await cuposRestantes(db, ahora, cupos)));
   for (const c of candidatas) {
     if (elegidas.has(c)) {

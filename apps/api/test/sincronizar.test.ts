@@ -358,7 +358,7 @@ describe("empresas y publicar", () => {
     expect(await configurarEmpresa(db, e.id, { paginaEmpleo: "" })).toMatchObject({ ats: null, sincronizar: false });
   });
 
-  it("una automática no se publica sin zona ni sin resumen propio (salvo que la empresa lo autorice)", async () => {
+  it("una automática no se publica sin zona; el resumen es opcional y el texto de la empresa nunca sale", async () => {
     const acme = await crearEmpresa(db, { nombre: "Acme", paginaEmpleo: "https://boards.greenhouse.io/acme" });
     await sincronizarEmpresa(db, (await db.select().from(empresas).where(eq(empresas.id, acme.id)))[0]!, falso({ [URL_GH]: greenhouse }));
     const todas = await db.select().from(ofertas).where(eq(ofertas.empresaId, acme.id));
@@ -368,18 +368,16 @@ describe("empresas y publicar", () => {
     const staff = "staff-1";
 
     await expect(publicarOferta(db, sre.id, staff, marcadas)).rejects.toMatchObject({ codigo: "incompleta" });
-    await expect(publicarOferta(db, backend.id, staff, marcadas)).rejects.toMatchObject({ codigo: "resumen" });
 
-    await db.update(ofertas).set({ resumen: "Backend de pagos con TypeScript, 100 % remoto desde España." }).where(eq(ofertas.id, backend.id));
+    // Sin resumen: se publica con sus datos y el enlace.
     await publicarOferta(db, backend.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, backend.id)))[0]!.estado).toBe("publicada");
-    // Lo público: el resumen propio, sin el texto de la empresa.
     const publica = await obtenerOferta(db, backend.id);
-    expect(publica).toMatchObject({ resumen: "Backend de pagos con TypeScript, 100 % remoto desde España.", descripcion: null });
+    expect(publica).toMatchObject({ resumen: null, descripcion: null, urlOriginal: "https://job-boards.greenhouse.io/acme/jobs/4001" });
     expect(JSON.stringify(publica)).not.toContain("payments platform");
 
-    // Con autorización de la empresa, no hace falta resumen.
-    await db.update(ofertas).set({ remotoPaises: ["ES", "PT"], autorizada: true }).where(eq(ofertas.id, sre.id));
+    // Con la zona rellena, la otra también.
+    await db.update(ofertas).set({ remotoPaises: ["ES", "PT"] }).where(eq(ofertas.id, sre.id));
     await publicarOferta(db, sre.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, sre.id)))[0]!.estado).toBe("publicada");
   });

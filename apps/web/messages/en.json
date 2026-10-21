@@ -352,7 +352,7 @@
       "autorizada": "Authorized · Google for Jobs",
       "automatica": "Automatic · {fuente}",
       "original": "Company's original text · staff only",
-      "originalAyuda": "Not published: it isn't ours. Read it to check the details and write a summary in your own words. It's only published in full if the company authorises it.",
+      "originalAyuda": "Not published: it isn't ours. Read it to check the details. If you like, write a summary in your own words (optional). It's only published in full if the company authorises it.",
       "originalVacio": "The company didn't include any text."
     },
     "comprobaciones": {
@@ -510,8 +510,7 @@
       "descartarBorrador": "Discard",
       "autorizada": "The company authorizes us to publish it",
       "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us).",
-      "resumenObligatorio": "Summary (required)",
-      "resumenAyudaAutomatica": "In your own words, without copying the company's text: this is what gets published. {quedan} characters left.",
+      "resumenAyudaAutomatica": "Optional. If you write one, use your own words: the company's text isn't published. {quedan} characters left.",
       "descripcionAutomatica": "Description (only if the company authorises it)",
       "cualquierPais": "Any country",
       "otroPais": "+ Another country…",
@@ -626,7 +625,7 @@
     "filtros": {
       "atajos": "Shortcuts",
       "atajosNombres": {
-        "sin_resumen": "No summary",
+        "sin_resumen": "No summary (optional)",
         "sin_zona": "No location",
         "hoy": "Came in today",
         "caducan": "Expire this week",
