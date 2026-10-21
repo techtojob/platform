@@ -15,6 +15,7 @@ import {
   SENIORITY,
   validarOferta,
   validarOfertaUsuario,
+  tieneTextoPublicable,
   type Comprobacion,
   type EmpresaStaff,
   type OfertaListado,
@@ -33,8 +34,7 @@ import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/
 import { SelectorEmpresa } from "./selector-empresa";
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorRemoto } from "./selector-remoto";
-import { CopiarTexto } from "@/components/staff/copiar-texto";
-import { dondeParaPrompt, promptConOferta } from "@/lib/prompt-ia";
+import { ResumirConIA } from "./resumir-con-ia";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
 /** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña (uno para el staff y otro para el resto). */
@@ -67,6 +67,9 @@ const SECCION_DE: Record<string, string> = {
   idioma: "seccion-oferta",
   resumen: "seccion-oferta",
   descripcion: "seccion-oferta",
+  responsabilidades: "seccion-oferta",
+  requisitos: "seccion-oferta",
+  textoIA: "seccion-oferta",
   area: "seccion-puesto",
   seniority: "seccion-puesto",
   tecnologias: "seccion-puesto",
@@ -154,6 +157,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     if (!v.sinSalario && !v.salarioMin.trim() && !v.salarioMax.trim()) e.salario = "falta";
     return e;
   }, [v, publico, declaracion]);
+  // Para publicar hace falta lo nuestro (resumen y responsabilidades, con la IA) o la descripción autorizada.
+  const lineas = (texto: string) => texto.split("\n").map((l) => l.trim()).filter(Boolean);
+  const faltaTexto =
+    !publico &&
+    !tieneTextoPublicable({ resumen: v.resumen, responsabilidades: lineas(v.responsabilidades), descripcion: v.descripcion, autorizada: v.autorizada });
   const visibles = intentado ? { ...errores, ...erroresServidor } : erroresServidor;
   const mensajeError = (campo: string) => {
     const codigo = visibles[campo];
@@ -177,7 +185,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     ponerErrorGeneral(null);
     const listos =
       Object.keys(errores).length === 0 &&
-      (!publicar || COMPROBACIONES.every((c) => comprobaciones.includes(c)));
+      (!publicar || (COMPROBACIONES.every((c) => comprobaciones.includes(c)) && !faltaTexto));
     if (!listos) {
       requestAnimationFrame(() => alerta.current?.focus());
       return;
@@ -281,25 +289,8 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             error={mensajeError("urlOriginal")}
             {...(publico && { publico, importar: importarComoUsuario })}
           />
-          {/* Resumir con IA: el prompt con lo que hay ahora en el formulario (el texto original, si es automática). */}
-          {!publico && (
-            <div className="flex flex-col gap-3 rounded-2xl border border-dashed border-borde-fuerte p-4">
-              <p className="text-sm font-bold">{t("prompt.enFormularioTitulo")}</p>
-              <p className="text-sm text-suave">{t("prompt.enFormularioAyuda")}</p>
-              <CopiarTexto
-                variante="secundario"
-                className="self-start"
-                etiqueta={t("prompt.copiarConOferta")}
-                texto={promptConOferta({
-                  titulo: v.titulo || "(sin título)",
-                  empresa: v.empresa?.nombre || "(sin empresa)",
-                  texto: original?.texto || v.descripcion || v.resumen,
-                  enlace: v.urlOriginal || "(sin enlace)",
-                  donde: dondeParaPrompt(v),
-                })}
-              />
-            </div>
-          )}
+          {/* Resumir con IA: copiar el prompt con la oferta y pegar aquí la respuesta (se reparte sola). */}
+          {!publico && <ResumirConIA valores={v} textoOriginal={original?.texto ?? null} onCambio={cambiar} />}
         </Seccion>
 
         <Seccion id="seccion-oferta" numero={2} titulo={t("form.seccionOferta")}>
@@ -375,7 +366,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
           </div>
           <AreaTexto
             etiqueta={t("form.resumen")}
-            ayuda={t(original && !v.autorizada ? "form.resumenAyudaAutomatica" : "form.resumenAyuda", {
+            ayuda={t("form.resumenAyuda", {
               max: LIMITES.resumen.max,
               quedan: LIMITES.resumen.max - v.resumen.length,
             })}
@@ -386,11 +377,30 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             error={mensajeError("resumen")}
           />
           <AreaTexto
-            etiqueta={original && !v.autorizada ? t("form.descripcionAutomatica") : t("form.descripcion")}
-            ayuda={t("form.descripcionAyuda")}
+            etiqueta={t("form.responsabilidades")}
+            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+            rows={4}
+            value={v.responsabilidades}
+            onChange={(e) => cambiar({ responsabilidades: e.target.value })}
+            error={mensajeError("responsabilidades")}
+          />
+          <AreaTexto
+            etiqueta={t("form.requisitos")}
+            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+            rows={4}
+            value={v.requisitos}
+            onChange={(e) => cambiar({ requisitos: e.target.value })}
+            error={mensajeError("requisitos")}
+          />
+          {/* El texto de la empresa: solo se publica si nos autoriza (las de recruiters lo están). */}
+          <AreaTexto
+            etiqueta={publico ? t("form.descripcionRecruiter") : t("form.descripcionEmpresa")}
+            ayuda={publico ? t("form.descripcionAyuda") : v.autorizada ? t("form.descripcionAutorizada") : t("form.descripcionBloqueada")}
             rows={8}
             maxLength={LIMITES.descripcion.max}
             value={v.descripcion}
+            disabled={!publico && !v.autorizada}
+            className={!publico && !v.autorizada ? "opacity-60" : undefined}
             onChange={(e) => cambiar({ descripcion: e.target.value })}
             error={mensajeError("descripcion")}
           />
@@ -603,10 +613,14 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                   />
                 ))}
               </fieldset>
-              <Boton type="button" tamano="lg" className="w-full" disabled={guardando || !todasMarcadas} onClick={() => enviar(true)}>
+              <Boton type="button" tamano="lg" className="w-full" disabled={guardando || !todasMarcadas || faltaTexto} onClick={() => enviar(true)}>
                 {guardando ? t("guardando") : t("form.crearYPublicar")}
               </Boton>
-              {!todasMarcadas && <p className="-mt-2 text-xs text-suave">{t("form.paraPublicar")}</p>}
+              {faltaTexto ? (
+                <p className="-mt-2 text-xs font-bold text-suave">{t("form.faltaTextoIA")}</p>
+              ) : (
+                !todasMarcadas && <p className="-mt-2 text-xs text-suave">{t("form.paraPublicar")}</p>
+              )}
               <Boton type="submit" variante="secundario" className="w-full" disabled={guardando}>
                 {t("form.guardarPendiente")}
               </Boton>

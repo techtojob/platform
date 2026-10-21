@@ -1,6 +1,7 @@
 import {
   COMPROBACIONES,
   esEmailDeLaEmpresa,
+  tieneTextoPublicable,
   nombreEmpresaComparable,
   slugEmpresa,
   slugOferta,
@@ -65,6 +66,8 @@ export function aStaff(
     titulo: o.titulo,
     resumen: o.resumen,
     descripcion: o.descripcion,
+    responsabilidades: o.responsabilidades,
+    requisitos: o.requisitos,
     idioma: o.idioma,
     urlOriginal: o.urlOriginal,
     area: o.area,
@@ -140,6 +143,8 @@ function columnasOferta(d: DatosOferta) {
     titulo: d.titulo,
     resumen: d.resumen,
     descripcion: d.descripcion,
+    responsabilidades: d.responsabilidades,
+    requisitos: d.requisitos,
     idioma: d.idioma,
     urlOriginal: d.urlOriginal,
     area: d.area,
@@ -220,8 +225,11 @@ export async function publicarOferta(db: Db, id: string, staffId: string, marcad
   }
   // Si la subió alguien desde la web, al publicarla (ya revisada) se aprende la página de empleo de la empresa.
   if (actual.origen === "usuario") await aprenderPaginaEmpleo(db, actual.empresaId, actual.urlOriginal);
-  // Una automática se puede publicar sin resumen: sale con sus datos (empresa, puesto, tecnologías,
-  // desde dónde, idiomas) y el enlace a la web de la empresa. El texto original nunca se publica.
+  // Hace falta texto nuestro (resumen y responsabilidades, con la IA) o, si la empresa nos autoriza,
+  // su descripción completa. El texto original de una automática nunca se publica.
+  if (!tieneTextoPublicable(actual)) {
+    throw new ErrorStaff("resumen", "Pega el resumen de la IA (resumen y responsabilidades) antes de publicarla.");
+  }
   const ahora = new Date();
   await db
     .update(ofertas)

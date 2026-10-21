@@ -136,7 +136,7 @@ describe("aprender de las ofertas del staff", () => {
   it("si el enlace es de Greenhouse, Lever o Ashby, la empresa se lee sola a partir de entonces", async () => {
     const e = await crearEmpresa(db, { nombre: "Delta" });
     await crearOferta(db, {
-      empresaId: e.id, titulo: "Data Engineer", resumen: null, descripcion: null, idioma: "es",
+      empresaId: e.id, titulo: "Data Engineer", resumen: null, descripcion: null, responsabilidades: [], requisitos: [], idioma: "es",
       urlOriginal: "https://jobs.lever.co/delta/123-abc", area: "datos", seniority: "mid", modalidad: "remoto",
       tecnologias: [], pais: null, ciudad: null, remotoMundo: false, remotoPaises: ["ES"], salarioMin: null, salarioMax: null, moneda: null,
       idiomasRequeridos: [{ idioma: "es", nivel: null }], autorizada: false,

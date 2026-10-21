@@ -11,3 +11,4 @@ export * from "./remoto";
 export * from "./filtros-staff";
 export * from "./subdivisiones";
 export * from "./recruiters";
+export * from "./respuesta-ia";

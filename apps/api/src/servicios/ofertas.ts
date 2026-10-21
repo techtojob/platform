@@ -202,7 +202,10 @@ export async function obtenerOferta(db: Db, id: string): Promise<OfertaDetalle |
   return {
     ...aListado(fila.oferta, fila.empresa, idiomas),
     empresa: fila.empresa,
-    descripcion: fila.oferta.descripcion,
+    // El texto de la empresa solo sale si nos autoriza; lo nuestro (responsabilidades, requisitos), siempre.
+    descripcion: fila.oferta.autorizada ? fila.oferta.descripcion : null,
+    responsabilidades: fila.oferta.responsabilidades,
+    requisitos: fila.oferta.requisitos,
     urlOriginal: fila.oferta.urlOriginal,
     autorizada: fila.oferta.autorizada,
     caducaEn: fila.oferta.caducaEn?.toISOString() ?? null,

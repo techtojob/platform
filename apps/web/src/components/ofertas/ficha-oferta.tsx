@@ -4,6 +4,7 @@ import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso, AvatarBlob, clasesBoton, Etiqueta } from "@/components/ui";
 import { ReportarOferta } from "./reportar-oferta";
+import { TextoOferta } from "./texto-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { CopiarEnlace } from "./copiar-enlace";
 import { useDondeRemoto, useLugarCorto, useSalario } from "./datos-oferta";
@@ -48,7 +49,6 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
     faltan.map((i) => nombreIdioma(i, locale, { enFrase: true })),
   );
   // Párrafos separados por una línea en blanco.
-  const parrafos = (oferta.descripcion ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
   const aplicar = (clase: string) => (
     <a href={oferta.urlOriginal} target="_blank" rel="noopener noreferrer" className={clase}>
@@ -163,15 +163,14 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
             </Aviso>
 
             <div className="rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta sm:p-10">
-              <div className="flex max-w-[68ch] flex-col gap-4 leading-relaxed" lang={oferta.idioma}>
-                {oferta.resumen && <p className="text-xl font-bold leading-snug tracking-tight">{oferta.resumen}</p>}
-                {parrafos.map((p, i) => (
-                  <p key={i} className="whitespace-pre-line text-suave">
-                    {p}
-                  </p>
-                ))}
-                {!oferta.resumen && parrafos.length === 0 && <p className="text-suave">{t("ofertas.sinDescripcion")}</p>}
-              </div>
+              <TextoOferta
+                resumen={oferta.resumen}
+                responsabilidades={oferta.responsabilidades}
+                requisitos={oferta.requisitos}
+                descripcion={oferta.descripcion}
+                idioma={oferta.idioma}
+                vacio={t("ofertas.sinDescripcion")}
+              />
             </div>
             <ReportarOferta id={oferta.id} recruiter={oferta.recruiter?.nombre ?? null} conSesion={conSesion} />
 

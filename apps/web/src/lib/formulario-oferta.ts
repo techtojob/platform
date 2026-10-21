@@ -12,6 +12,9 @@ export type ValoresOferta = {
   idioma: string;
   resumen: string;
   descripcion: string;
+  /** Un punto por línea (los escribe el staff con la IA). */
+  responsabilidades: string;
+  requisitos: string;
   area: string;
   seniority: string;
   modalidad: string;
@@ -40,6 +43,8 @@ export const VALORES_VACIOS: ValoresOferta = {
   idioma: "es",
   resumen: "",
   descripcion: "",
+  responsabilidades: "",
+  requisitos: "",
   area: "",
   seniority: "",
   modalidad: "",
@@ -64,6 +69,8 @@ export function valoresDeOferta(o: OfertaStaff): ValoresOferta {
     idioma: o.idioma,
     resumen: o.resumen ?? "",
     descripcion: o.descripcion ?? "",
+    responsabilidades: o.responsabilidades.join("\n"),
+    requisitos: o.requisitos.join("\n"),
     area: o.area,
     seniority: o.seniority,
     modalidad: o.modalidad,
@@ -96,7 +103,6 @@ export function aplicarImportada(v: ValoresOferta, d: OfertaImportada): { valore
   poner("titulo", d.titulo);
   if (d.empresa) poner("empresa", { id: d.empresa.id, nombre: d.empresa.nombre, web: d.empresa.web ?? "" });
   poner("idioma", d.idioma);
-  poner("resumen", d.resumen);
   poner("descripcion", d.descripcion);
   poner("area", d.area);
   poner("seniority", d.seniority);
@@ -136,6 +142,8 @@ export function datosParaApi(v: ValoresOferta, empresaId: string) {
     titulo: v.titulo,
     resumen: siHay(v.resumen),
     descripcion: siHay(v.descripcion),
+    responsabilidades: v.responsabilidades,
+    requisitos: v.requisitos,
     idioma: v.idioma,
     urlOriginal: v.urlOriginal.trim(),
     area: v.area,

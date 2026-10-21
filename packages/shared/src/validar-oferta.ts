@@ -20,6 +20,8 @@ export const LIMITES = {
   descripcion: { max: 8000 },
   ciudad: { max: 80 },
   tecnologias: { max: 12 },
+  /** Responsabilidades y requisitos: cuántos puntos y lo largo de cada uno. */
+  puntos: { max: 6, largo: 200 },
   idiomas: { max: 5 },
   salario: { max: 1_000_000 },
 } as const;
@@ -27,6 +29,24 @@ export const LIMITES = {
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));
 
 type Resultado = { datos: DatosOferta; errores?: undefined } | { datos?: undefined; errores: Record<string, string> };
+
+/** Una lista de puntos: sin viñetas al principio, sin vacíos ni repetidos. */
+function puntos(valor: unknown): string[] {
+  const lista = Array.isArray(valor) ? valor : typeof valor === "string" ? valor.split("\n") : [];
+  const limpios = lista
+    .filter((p): p is string => typeof p === "string")
+    .map((p) => p.replace(/^\s*(?:[•·▪◦*-]|\d+[.)])\s*/, "").trim())
+    .filter(Boolean);
+  return [...new Set(limpios)];
+}
+
+/**
+ * ¿Se puede publicar? Hace falta lo que escribe el staff con la IA (resumen y al menos una responsabilidad)
+ * o, si la empresa nos autoriza, su descripción completa.
+ */
+export function tieneTextoPublicable(d: Pick<DatosOferta, "resumen" | "responsabilidades" | "descripcion" | "autorizada">): boolean {
+  return (!!d.resumen?.trim() && d.responsabilidades.length > 0) || (d.autorizada && !!d.descripcion?.trim());
+}
 
 function texto(valor: unknown): string | null {
   if (typeof valor !== "string") return null;
@@ -70,6 +90,13 @@ export function validarOferta(entrada: unknown): Resultado {
 
   const descripcion = texto(e.descripcion);
   if (descripcion && descripcion.length > LIMITES.descripcion.max) errores.descripcion = "largo";
+
+  const responsabilidades = puntos(e.responsabilidades);
+  if (responsabilidades.length > LIMITES.puntos.max) errores.responsabilidades = "demasiados";
+  else if (responsabilidades.some((p) => p.length > LIMITES.puntos.largo)) errores.responsabilidades = "largo";
+  const requisitos = puntos(e.requisitos);
+  if (requisitos.length > LIMITES.puntos.max) errores.requisitos = "demasiados";
+  else if (requisitos.some((p) => p.length > LIMITES.puntos.largo)) errores.requisitos = "largo";
 
   const idioma = typeof e.idioma === "string" && esIdioma(e.idioma) ? e.idioma : null;
   if (!idioma) errores.idioma = "falta";
@@ -140,6 +167,8 @@ export function validarOferta(entrada: unknown): Resultado {
       titulo: titulo!,
       resumen,
       descripcion,
+      responsabilidades,
+      requisitos,
       idioma: idioma!,
       urlOriginal: urlOriginal!,
       area: area!,
@@ -194,6 +223,8 @@ export function validarOfertaUsuario(
     errores[base.datos.modalidad === "remoto" ? "remotoPaises" : "pais"] = "fuera";
   }
   if (e.declaracion !== true) errores.declaracion = "falta";
+  // Las de un recruiter cuentan como autorizadas: basta su descripción (o el resumen con responsabilidades).
+  if (base.datos && !tieneTextoPublicable({ ...base.datos, autorizada: true })) errores.descripcion = "falta";
 
   if (Object.keys(errores).length || !base.datos) return { errores };
   const { empresaId: _e, autorizada: _a, ...datos } = base.datos;

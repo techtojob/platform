@@ -148,7 +148,10 @@
         "no_existe": "This job is no longer published.",
         "otro": "It couldn't be sent. Please try again."
       }
-    }
+    },
+    "responsabilidades": "Responsibilities",
+    "requisitos": "Requirements",
+    "descripcionEmpresa": "The job, as written by the company"
   },
   "regiones": {
     "eu": "Europe",
@@ -472,7 +475,7 @@
       "pareceEstarEn": "It looks like it's in {idioma}.",
       "cambiarA": "Change to {idioma}",
       "resumen": "Summary (optional)",
-      "resumenAyuda": "One or two sentences: it's the first thing people read. {quedan} characters left.",
+      "resumenAyuda": "One or two sentences in your own words: it's the first thing people read. {quedan} characters left.",
       "descripcion": "Description (optional)",
       "descripcionAyuda": "Leave a blank line between paragraphs. We suggest the technologies that appear here below.",
       "area": "Area",
@@ -532,7 +535,10 @@
         "idiomasRequeridos": "Languages",
         "empresa": "Company",
         "empresaWeb": "Company website",
-        "declaracion": "Confirm"
+        "declaracion": "Confirm",
+        "responsabilidades": "Responsibilities",
+        "requisitos": "Requirements",
+        "textoIA": "AI summary"
       },
       "crearYPublicar": "Create and publish",
       "paraPublicar": "To publish now, tick the three checks.",
@@ -543,15 +549,21 @@
       "descartarBorrador": "Discard",
       "autorizada": "The company authorizes us to publish it",
       "autorizadaAyuda": "Only authorized offers appear in Google for Jobs, with the full description. Tick it if the company gave us permission (in writing, or because they sent it to us).",
-      "resumenAyudaAutomatica": "Optional. If you write one, use your own words: the company's text isn't published. {quedan} characters left.",
-      "descripcionAutomatica": "Description (only if the company authorises it)",
       "cualquierPais": "Any country",
       "otroPais": "+ Another country…",
       "paisesElegidos": "Where people can work from",
       "quitarSitio": "Remove {nombre}",
       "seVeraAsi": "It will look like this:",
       "empresaNombre": "Company",
-      "repetidaPublica": "This job is already on TechToJob: “{titulo}” at {empresa}."
+      "repetidaPublica": "This job is already on TechToJob: “{titulo}” at {empresa}.",
+      "responsabilidades": "Responsibilities",
+      "requisitos": "Requirements",
+      "puntosAyuda": "One point per line, {max} at most. In your own words (or the AI's), never copied from the job.",
+      "descripcionEmpresa": "The company's full description",
+      "descripcionRecruiter": "Job description",
+      "descripcionAutorizada": "It's published as is, because the company authorises us.",
+      "descripcionBloqueada": "Only published if the company authorises us: tick “The company authorises us to publish it” to write it.",
+      "faltaTextoIA": "To publish: paste the AI summary (summary and responsibilities), or tick that the company authorises us and add its description."
     },
     "errores": {
       "falta": "This is missing.",
@@ -588,7 +600,7 @@
         "no_encontrada": "This offer no longer exists.",
         "sin_permiso": "You no longer have access to the staff panel.",
         "desconocido": "It couldn't be done. Try again.",
-        "resumen": "Write a summary in your own words before publishing it.",
+        "resumen": "Paste the AI summary (summary and responsibilities) before publishing it.",
         "incompleta": "Some details are missing: edit the offer and fill in the marked fields (for example, where people can work from)."
       },
       "salario": {
@@ -610,6 +622,14 @@
       },
       "pais": {
         "fuera": "For now we only publish jobs in Spain or Latin America."
+      },
+      "responsabilidades": {
+        "demasiados": "6 points at most.",
+        "largo": "A point is too long (200 characters max)."
+      },
+      "requisitos": {
+        "demasiados": "6 points at most.",
+        "largo": "A point is too long (200 characters max)."
       }
     },
     "reportes": {
@@ -796,21 +816,27 @@
     "prompt": {
       "pestana": "AI prompt",
       "titulo": "Summarise jobs with AI",
-      "entradilla": "A prompt for ChatGPT or Claude: paste the job and it gives you the summary in the TechToJob format (role, where from, responsibilities…). The summary is always in Spanish.",
+      "entradilla": "A prompt for ChatGPT or Claude: paste the job and it gives you the summary (summary, responsibilities, requirements, level, languages and technologies) to paste into the job form. Always in Spanish.",
       "comoTitulo": "How to use it",
       "paso1": "Click “Copy prompt” and paste it into a new ChatGPT or Claude conversation.",
       "paso2": "The AI will reply “Pega aquí la oferta” (paste the job here).",
       "paso3": "Copy the job from the company's website (the text and the link) and paste it.",
-      "paso4": "Copy the summary. For the next one, paste it in the same conversation.",
+      "paso4": "Copy the whole answer and paste it into “Paste the AI's answer here” in the job form (new or edit). For the next job, keep going in the same conversation.",
       "consejo": "Tip: save it once as the instructions of a Claude Project (or a GPT in ChatGPT) so you don't have to paste it every time.",
-      "desdeLaFicha": "On each job's page in the panel there's “Copy prompt with this job”: it has the prompt and the job together, ready to paste.",
+      "desdeLaFicha": "Faster: in each job's form (new or edit) there's “Copy prompt with this job”, with the job already inside.",
       "copiar": "Copy prompt",
       "copiarConOferta": "Copy prompt with this job",
       "copiado": "Copied!",
       "noCopiado": "It couldn't be copied",
       "ver": "See the prompt",
       "enFormularioTitulo": "Summarise with AI",
-      "enFormularioAyuda": "Copy the prompt with this job, paste it into ChatGPT or Claude and use the result for the description (or to post it on Discord and social media). Fill in the link and, if you can, where it can be done from first."
+      "enFormularioAyuda": "1. Copy the prompt and paste it into ChatGPT or Claude. 2. Paste its answer here and click “Fill in”: the summary, responsibilities, requirements, level, languages and technologies are filled in. Fill in the link first (“Fill in from the link”).",
+      "paso1Boton": "1. Copy prompt with this job",
+      "paso2Etiqueta": "2. Paste the AI's answer here",
+      "repartir": "Fill in the job",
+      "repartido": "Filled in: {campos}. Check it below.",
+      "nadaQueRepartir": "We couldn't find the sections (RESUMEN:, RESPONSABILIDADES:…). Copy the AI's whole answer.",
+      "copiarParaRedes": "Copy for Discord / LinkedIn"
     }
   },
   "formulario": {

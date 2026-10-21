@@ -148,7 +148,10 @@
         "no_existe": "Esta oferta ya no está publicada.",
         "otro": "No se ha podido enviar. Inténtalo de nuevo."
       }
-    }
+    },
+    "responsabilidades": "Responsabilidades",
+    "requisitos": "Requisitos",
+    "descripcionEmpresa": "La oferta, tal cual la escribe la empresa"
   },
   "regiones": {
     "eu": "Europa",
@@ -472,7 +475,7 @@
       "pareceEstarEn": "Parece que está en {idioma}.",
       "cambiarA": "Cambiar a {idioma}",
       "resumen": "Resumen (opcional)",
-      "resumenAyuda": "Una o dos frases: es lo primero que se lee. Quedan {quedan} caracteres.",
+      "resumenAyuda": "Una o dos frases con tus palabras: es lo primero que se lee. Quedan {quedan} caracteres.",
       "descripcion": "Descripción (opcional)",
       "descripcionAyuda": "Deja una línea en blanco entre párrafos. Las tecnologías que aparezcan aquí te las proponemos abajo.",
       "area": "Área",
@@ -532,7 +535,10 @@
         "idiomasRequeridos": "Idiomas",
         "empresa": "Empresa",
         "empresaWeb": "Web de la empresa",
-        "declaracion": "Confirmar"
+        "declaracion": "Confirmar",
+        "responsabilidades": "Responsabilidades",
+        "requisitos": "Requisitos",
+        "textoIA": "Resumen de la IA"
       },
       "crearYPublicar": "Crear y publicar",
       "paraPublicar": "Para publicar ya, marca las tres comprobaciones.",
@@ -543,15 +549,21 @@
       "descartarBorrador": "Descartar",
       "autorizada": "La empresa nos autoriza a publicarla",
       "autorizadaAyuda": "Solo las autorizadas salen en Google for Jobs, con la descripción completa. Márcala si la empresa nos ha dado permiso (por escrito, o porque nos la ha enviado ella).",
-      "resumenAyudaAutomatica": "Opcional. Si lo escribes, con tus palabras: el texto de la empresa no se publica. Quedan {quedan} caracteres.",
-      "descripcionAutomatica": "Descripción (solo si la empresa lo autoriza)",
       "cualquierPais": "Cualquier país",
       "otroPais": "+ Otro país…",
       "paisesElegidos": "Desde dónde se puede trabajar",
       "quitarSitio": "Quitar {nombre}",
       "seVeraAsi": "Se verá así:",
       "empresaNombre": "Empresa",
-      "repetidaPublica": "Esta oferta ya está en TechToJob: «{titulo}» de {empresa}."
+      "repetidaPublica": "Esta oferta ya está en TechToJob: «{titulo}» de {empresa}.",
+      "responsabilidades": "Responsabilidades",
+      "requisitos": "Requisitos",
+      "puntosAyuda": "Un punto por línea, como mucho {max}. Con tus palabras (o las de la IA), nunca copiados de la oferta.",
+      "descripcionEmpresa": "Descripción completa de la empresa",
+      "descripcionRecruiter": "Descripción de la oferta",
+      "descripcionAutorizada": "Se publica tal cual, porque la empresa nos autoriza.",
+      "descripcionBloqueada": "Solo se publica si la empresa nos autoriza: marca «La empresa nos autoriza a publicarla» para poder escribirla.",
+      "faltaTextoIA": "Para publicar: pega el resumen de la IA (resumen y responsabilidades), o marca que la empresa nos autoriza y pon su descripción."
     },
     "errores": {
       "falta": "Falta este dato.",
@@ -588,7 +600,7 @@
         "no_encontrada": "Esta oferta ya no existe.",
         "sin_permiso": "Ya no tienes acceso al panel de staff.",
         "desconocido": "No se ha podido hacer. Inténtalo de nuevo.",
-        "resumen": "Escribe un resumen con tus palabras antes de publicarla.",
+        "resumen": "Pega el resumen de la IA (resumen y responsabilidades) antes de publicarla.",
         "incompleta": "Faltan datos: edita la oferta y rellena los campos marcados (por ejemplo, desde dónde se puede trabajar)."
       },
       "salario": {
@@ -610,6 +622,14 @@
       },
       "pais": {
         "fuera": "Por ahora solo publicamos ofertas en España o Latinoamérica."
+      },
+      "responsabilidades": {
+        "demasiados": "Como mucho 6 puntos.",
+        "largo": "Algún punto es demasiado largo (máximo 200 caracteres)."
+      },
+      "requisitos": {
+        "demasiados": "Como mucho 6 puntos.",
+        "largo": "Algún punto es demasiado largo (máximo 200 caracteres)."
       }
     },
     "reportes": {
@@ -796,21 +816,27 @@
     "prompt": {
       "pestana": "Prompt IA",
       "titulo": "Resumir ofertas con IA",
-      "entradilla": "Un prompt para ChatGPT o Claude: le pegas la oferta y te devuelve el resumen con el formato de TechToJob (puesto, desde dónde, responsabilidades…).",
+      "entradilla": "Un prompt para ChatGPT o Claude: le pegas la oferta y te devuelve el resumen (resumen, responsabilidades, requisitos, nivel, idiomas y tecnologías) para pegarlo en el formulario de la oferta.",
       "comoTitulo": "Cómo se usa",
       "paso1": "Pulsa «Copiar prompt» y pégalo en una conversación nueva de ChatGPT o Claude.",
       "paso2": "La IA te contestará «Pega aquí la oferta».",
       "paso3": "Copia la oferta desde la web de la empresa (el texto y el enlace) y pégala.",
-      "paso4": "Copia el resumen. Para la siguiente, pégala en la misma conversación.",
+      "paso4": "Copia la respuesta entera y pégala en «Pega aquí la respuesta de la IA», en el formulario de la oferta (nueva o editar). Para la siguiente oferta, sigue en la misma conversación.",
       "consejo": "Consejo: guárdalo una vez como instrucciones de un Proyecto en Claude (o un GPT en ChatGPT) y así no tienes que pegarlo cada vez.",
-      "desdeLaFicha": "En la ficha de cada oferta del panel tienes «Copiar prompt con esta oferta»: lleva el prompt y la oferta juntos, listo para pegar.",
+      "desdeLaFicha": "Más rápido: en el formulario de cada oferta (nueva o editar) tienes «Copiar prompt con esta oferta», con la oferta ya dentro.",
       "copiar": "Copiar prompt",
       "copiarConOferta": "Copiar prompt con esta oferta",
       "copiado": "¡Copiado!",
       "noCopiado": "No se ha podido copiar",
       "ver": "Ver el prompt",
       "enFormularioTitulo": "Resumir con IA",
-      "enFormularioAyuda": "Copia el prompt con esta oferta, pégalo en ChatGPT o Claude y usa el resultado para la descripción (o para publicarla en Discord y redes). Rellena antes el enlace y, si puedes, desde dónde se puede trabajar."
+      "enFormularioAyuda": "1. Copia el prompt y pégalo en ChatGPT o Claude. 2. Pega aquí su respuesta y pulsa «Repartir»: se rellenan solos el resumen, las responsabilidades, los requisitos, el nivel, los idiomas y las tecnologías. Rellena antes el enlace («Rellenar desde el enlace»).",
+      "paso1Boton": "1. Copiar prompt con esta oferta",
+      "paso2Etiqueta": "2. Pega aquí la respuesta de la IA",
+      "repartir": "Repartir en la oferta",
+      "repartido": "Rellenado: {campos}. Revísalo abajo.",
+      "nadaQueRepartir": "No encontramos los apartados (RESUMEN:, RESPONSABILIDADES:…). Copia la respuesta entera de la IA.",
+      "copiarParaRedes": "Copiar para Discord / LinkedIn"
     }
   },
   "formulario": {

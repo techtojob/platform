@@ -8,8 +8,10 @@ import { AccionesOferta } from "@/components/staff/acciones-oferta";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarBlob, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { CopiarTexto } from "@/components/staff/copiar-texto";
-import { dondeParaPrompt, promptConOferta } from "@/lib/prompt-ia";
-import { Link } from "@/i18n/navigation";
+import { promptConOferta, textoParaRedes } from "@/lib/prompt-ia";
+import { TextoOferta } from "@/components/ofertas/texto-oferta";
+import { LANDING_URL } from "@/lib/sitio";
+import { getPathname, Link } from "@/i18n/navigation";
 import { exigirStaff, obtenerOfertaStaff, siguienteStaff } from "@/lib/api-staff";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { slugDeOferta } from "@/lib/ofertas";
@@ -165,8 +167,21 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
                 titulo: oferta.titulo,
                 empresa: oferta.empresa.nombre,
                 texto: oferta.descripcionOriginal || oferta.descripcion || oferta.resumen,
-                enlace: oferta.urlOriginal,
-                donde: dondeParaPrompt(oferta),
+              })}
+            />
+            {/* Para Discord, LinkedIn…: con los datos de la ficha, sin IA. Enlaza a la oferta en la bolsa si ya está publicada. */}
+            <CopiarTexto
+              variante="secundario"
+              className="w-full"
+              etiqueta={t("staff.prompt.copiarParaRedes")}
+              texto={textoParaRedes({
+                ...oferta,
+                empresa: oferta.empresa.nombre,
+                nombresTecnologias: (id) => nombresTecnologias.get(id) ?? id,
+                enlace:
+                  oferta.estado === "publicada"
+                    ? `${LANDING_URL}${getPathname({ href: { pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } }, locale: "es" })}`
+                    : oferta.urlOriginal,
               })}
             />
             {oferta.estado === "publicada" && !caducada && (
@@ -191,8 +206,6 @@ function VistaPrevia({ oferta }: { oferta: OfertaStaff }) {
   const salarioListado = oferta.moneda ? { min: oferta.salarioMin, max: oferta.salarioMax, moneda: oferta.moneda } : null;
   const lugar = useLugarCorto(oferta as never);
   const salario = useSalario({ salario: salarioListado } as never);
-  const parrafos = (oferta.descripcion ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-
   const datos: Array<[string, React.ReactNode]> = [
     [t("staff.form.area"), t(`areas.${oferta.area}`)],
     [t("staff.form.seniority"), t(`seniority.${oferta.seniority}`)],
@@ -235,14 +248,16 @@ function VistaPrevia({ oferta }: { oferta: OfertaStaff }) {
           </div>
         )}
       </dl>
-      <div className="flex max-w-[68ch] flex-col gap-4 border-t border-borde pt-6 leading-relaxed" lang={oferta.idioma}>
-        {oferta.resumen && <p className="text-xl font-bold leading-snug tracking-tight">{oferta.resumen}</p>}
-        {parrafos.map((p, i) => (
-          <p key={i} className="whitespace-pre-line text-suave">
-            {p}
-          </p>
-        ))}
-        {!oferta.resumen && parrafos.length === 0 && <p className="text-suave">{t("staff.detalle.sinDescripcion")}</p>}
+      <div className="border-t border-borde pt-6">
+        {/* Exactamente lo que se publica: la descripción de la empresa, solo si nos autoriza. */}
+        <TextoOferta
+          resumen={oferta.resumen}
+          responsabilidades={oferta.responsabilidades}
+          requisitos={oferta.requisitos}
+          descripcion={oferta.autorizada ? oferta.descripcion : null}
+          idioma={oferta.idioma}
+          vacio={t("staff.detalle.sinDescripcion")}
+        />
       </div>
     </Tarjeta>
   );

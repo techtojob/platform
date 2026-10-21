@@ -358,7 +358,7 @@ describe("empresas y publicar", () => {
     expect(await configurarEmpresa(db, e.id, { paginaEmpleo: "" })).toMatchObject({ ats: null, sincronizar: false });
   });
 
-  it("una automática no se publica sin zona; el resumen es opcional y el texto de la empresa nunca sale", async () => {
+  it("una automática no se publica sin zona ni sin el resumen de la IA; el texto de la empresa nunca sale", async () => {
     const acme = await crearEmpresa(db, { nombre: "Acme", paginaEmpleo: "https://boards.greenhouse.io/acme" });
     await sincronizarEmpresa(db, (await db.select().from(empresas).where(eq(empresas.id, acme.id)))[0]!, falso({ [URL_GH]: greenhouse }));
     const todas = await db.select().from(ofertas).where(eq(ofertas.empresaId, acme.id));
@@ -369,15 +369,27 @@ describe("empresas y publicar", () => {
 
     await expect(publicarOferta(db, sre.id, staff, marcadas)).rejects.toMatchObject({ codigo: "incompleta" });
 
-    // Sin resumen: se publica con sus datos y el enlace.
+    // Sin resumen de la IA no se publica (no está autorizada: su texto no cuenta).
+    await expect(publicarOferta(db, backend.id, staff, marcadas)).rejects.toMatchObject({ codigo: "resumen" });
+    await db.update(ofertas).set({ resumen: "Backend para pagos." }).where(eq(ofertas.id, backend.id));
+    await expect(publicarOferta(db, backend.id, staff, marcadas)).rejects.toMatchObject({ codigo: "resumen" });
+    await db.update(ofertas).set({ responsabilidades: ["Construir la plataforma de pagos"] }).where(eq(ofertas.id, backend.id));
     await publicarOferta(db, backend.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, backend.id)))[0]!.estado).toBe("publicada");
     const publica = await obtenerOferta(db, backend.id);
-    expect(publica).toMatchObject({ resumen: null, descripcion: null, urlOriginal: "https://job-boards.greenhouse.io/acme/jobs/4001" });
+    expect(publica).toMatchObject({
+      resumen: "Backend para pagos.",
+      responsabilidades: ["Construir la plataforma de pagos"],
+      descripcion: null,
+      urlOriginal: "https://job-boards.greenhouse.io/acme/jobs/4001",
+    });
     expect(JSON.stringify(publica)).not.toContain("payments platform");
 
-    // Con la zona rellena, la otra también.
-    await db.update(ofertas).set({ remotoPaises: ["ES", "PT"] }).where(eq(ofertas.id, sre.id));
+    // Con la zona y el resumen de la IA, la otra también.
+    await db
+      .update(ofertas)
+      .set({ remotoPaises: ["ES", "PT"], resumen: "SRE para Kubernetes.", responsabilidades: ["Mantener los clústeres"] })
+      .where(eq(ofertas.id, sre.id));
     await publicarOferta(db, sre.id, staff, marcadas);
     expect((await db.select().from(ofertas).where(eq(ofertas.id, sre.id)))[0]!.estado).toBe("publicada");
   });
