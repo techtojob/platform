@@ -206,7 +206,9 @@
       "errorDescargar": "We couldn't prepare your data. Try again.",
       "errorConfirmacion": "The email doesn't match your account's.",
       "errorBorrar": "The account couldn't be deleted. Try again or write to contacto@techtojob.com."
-    }
+    },
+    "dondeVives": "Where you live",
+    "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here."
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -841,6 +843,7 @@
       "titulo": "What data we store",
       "items": [
         "<b>Your account:</b> the name, email and photo Google or GitHub give us when you log in. They handle your password: we never see it.",
+        "<b>Where you live:</b> the country and region (autonomous community, state or province) you enter the first time you sign in, to show you the offers you can do from there. You can change it in My account.",
         "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
         "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
@@ -925,5 +928,28 @@
     "solo": "{lugar} only",
     "mas": "{count} more",
     "salvo": "{region} except {paises}"
+  },
+  "ubicacion": {
+    "titulo": "Where do you work from?",
+    "entradilla": "Tell us once and we'll show you the offers you can do from there. You can change it any time in My account, and in the offers list you can look at another country's.",
+    "pais": "Country",
+    "eligePais": "Choose your country",
+    "cerca": "Spain and Latin America",
+    "otros": "Other countries",
+    "region": {
+      "ES": "Autonomous community",
+      "estado": "State",
+      "otro": "Province, department or region"
+    },
+    "eligeRegion": "Choose one",
+    "continuar": "Continue",
+    "guardar": "Save",
+    "guardando": "Saving…",
+    "guardado": "Saved.",
+    "errores": {
+      "pais": "Choose your country.",
+      "region": "Choose your community, state or province.",
+      "desconocido": "Couldn't save. Please try again."
+    }
   }
 }

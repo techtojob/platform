@@ -77,7 +77,12 @@ export type Cuenta = {
   esStaff: boolean;
   /** Con qué puede entrar o qué tiene vinculado: "google", "github", "discord". */
   proveedores: string[];
-  /** País de su perfil de talento (ISO), si tiene: para enseñarle las ofertas que puede hacer desde allí. */
+  /**
+   * Dónde vive (lo pide al completar la cuenta): país (ISO) y región (comunidad autónoma, estado…;
+   * null si su país no la pide). null si aún no lo ha puesto: la web le pide que lo ponga.
+   */
+  ubicacion: { pais: string; region: string | null } | null;
+  /** País para enseñarle las ofertas que puede hacer desde allí: el de su cuenta o, si no, el de su perfil. */
   pais: string | null;
   discord: {
     /** Si en este entorno se puede vincular Discord (está configurado). */
@@ -291,7 +296,7 @@ export type DatosPerfil = {
 /** Respuesta de GET /cuenta/perfil: el perfil (o null si aún no lo ha creado) y sugerencias para crearlo. */
 export type MiPerfil = {
   perfil: (DatosPerfil & { actualizadoEn: string }) | null;
-  sugerencias: { alias: string; nombre: string; imagen: string | null };
+  sugerencias: { alias: string; nombre: string; imagen: string | null; pais: string | null };
 };
 
 /** Un reporte de perfil para el staff. */

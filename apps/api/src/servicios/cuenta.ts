@@ -19,6 +19,7 @@ export async function datosCuenta(
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, usuario.id)).limit(1),
     db.select({ pais: perfiles.pais }).from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
   ]);
+  const [ubicacion] = await db.select({ pais: usuarios.pais, region: usuarios.region }).from(usuarios).where(eq(usuarios.id, usuario.id)).limit(1);
   const discord = vinculadas.find((c) => c.proveedor === "discord");
 
   // Si desvinculó Discord, lo que sabíamos de su Discord ya no vale.
@@ -29,7 +30,8 @@ export async function datosCuenta(
     usuario: { id: usuario.id, nombre: usuario.name, email: usuario.email, imagen: usuario.image ?? null },
     esStaff: opciones.esStaff,
     proveedores: vinculadas.map((c) => c.proveedor),
-    pais: perfil?.pais ?? null,
+    ubicacion: ubicacion?.pais ? { pais: ubicacion.pais, region: ubicacion.region } : null,
+    pais: ubicacion?.pais ?? perfil?.pais ?? null,
     discord: {
       disponible: opciones.discordDisponible,
       vinculado: !!discord,
@@ -74,7 +76,15 @@ export async function exportarDatos(db: Db, userId: string) {
   return {
     exportadoEn: new Date().toISOString(),
     cuenta: usuario
-      ? { nombre: usuario.name, email: usuario.email, emailVerificado: usuario.emailVerified, foto: usuario.image, creadaEn: usuario.createdAt }
+      ? {
+          nombre: usuario.name,
+          email: usuario.email,
+          emailVerificado: usuario.emailVerified,
+          foto: usuario.image,
+          pais: usuario.pais,
+          region: usuario.region,
+          creadaEn: usuario.createdAt,
+        }
       : null,
     formasDeEntrar: proveedores,
     discord: discord ? { id: discord.discordId, nombre: discord.nombre, enServidor: discord.enServidor, roles: discord.roles, comprobadoEn: discord.comprobadoEn } : null,
@@ -83,4 +93,9 @@ export async function exportarDatos(db: Db, userId: string) {
     reportesQueHiciste: reportesHechos,
     sesiones: sesionesActivas,
   };
+}
+
+/** Guarda el país y la región de la cuenta (ver validarUbicacion). */
+export async function guardarUbicacion(db: Db, userId: string, ubicacion: { pais: string; region: string | null }) {
+  await db.update(usuarios).set({ pais: ubicacion.pais, region: ubicacion.region }).where(eq(usuarios.id, userId));
 }

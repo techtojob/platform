@@ -206,7 +206,9 @@
       "errorDescargar": "No se han podido preparar tus datos. Inténtalo de nuevo.",
       "errorConfirmacion": "El email no coincide con el de tu cuenta.",
       "errorBorrar": "No se ha podido borrar la cuenta. Inténtalo de nuevo o escríbenos a contacto@techtojob.com."
-    }
+    },
+    "dondeVives": "Dónde vives",
+    "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí."
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -841,6 +843,7 @@
       "titulo": "Qué datos guardamos",
       "items": [
         "<b>Tu cuenta:</b> el nombre, el email y la foto que nos da Google o GitHub cuando entras. Tu contraseña la gestionan ellos: nunca la vemos.",
+        "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
         "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
@@ -925,5 +928,28 @@
     "solo": "Solo {lugar}",
     "mas": "{count} más",
     "salvo": "{region} salvo {paises}"
+  },
+  "ubicacion": {
+    "titulo": "¿Desde dónde trabajas?",
+    "entradilla": "Dínoslo una vez y te enseñaremos las ofertas que puedes hacer desde allí. Lo puedes cambiar cuando quieras en Mi cuenta, y en el listado de ofertas puedes mirar las de otro país.",
+    "pais": "País",
+    "eligePais": "Elige tu país",
+    "cerca": "España y Latinoamérica",
+    "otros": "Otros países",
+    "region": {
+      "ES": "Comunidad autónoma",
+      "estado": "Estado",
+      "otro": "Provincia, departamento o región"
+    },
+    "eligeRegion": "Elige una",
+    "continuar": "Continuar",
+    "guardar": "Guardar",
+    "guardando": "Guardando…",
+    "guardado": "Guardado.",
+    "errores": {
+      "pais": "Elige tu país.",
+      "region": "Elige tu comunidad, estado o provincia.",
+      "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
+    }
   }
 }

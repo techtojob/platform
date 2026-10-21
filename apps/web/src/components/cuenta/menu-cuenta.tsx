@@ -4,6 +4,7 @@ import { clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { obtenerCuenta } from "@/lib/api";
 import { DesplegableCuenta } from "./desplegable-cuenta";
+import { ExigirUbicacion } from "./exigir-ubicacion";
 
 /** Cabecera: "Entrar" o, con sesión, el menú de la cuenta (Mi perfil, Mi cuenta, Panel de staff, Cerrar sesión). */
 export async function MenuCuenta() {
@@ -23,7 +24,13 @@ export async function MenuCuenta() {
       </Link>
     );
   }
-  return <DesplegableCuenta nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} esStaff={cuenta.esStaff} />;
+  return (
+    <>
+      {/* Sin país todavía: a completar la cuenta. */}
+      {!cuenta.ubicacion && <ExigirUbicacion />}
+      <DesplegableCuenta nombre={cuenta.usuario.nombre} imagen={cuenta.usuario.imagen} esStaff={cuenta.esStaff} />
+    </>
+  );
 }
 
 /** Lo que se ve mientras se mira si hay sesión: un hueco del mismo tamaño, para que nada salte. */

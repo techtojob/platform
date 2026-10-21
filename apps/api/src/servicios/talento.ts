@@ -227,7 +227,10 @@ export async function obtenerPerfil(db: Db, alias: string, visitante: Visitante)
 
 /** "Mi perfil": el que tiene (o null) y sugerencias para crearlo. */
 export async function miPerfil(db: Db, usuario: { id: string; name: string; image?: string | null }): Promise<MiPerfil> {
-  const [p] = await db.select().from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1);
+  const [[p], [cuenta]] = await Promise.all([
+    db.select().from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
+    db.select({ pais: usuarios.pais }).from(usuarios).where(eq(usuarios.id, usuario.id)).limit(1),
+  ]);
   let alias = aliasDesde(usuario.name) || "perfil";
   if (alias.length < 3) alias = `${alias}-ttj`;
   // Si el alias ya está cogido, se le añade un número.
@@ -260,7 +263,8 @@ export async function miPerfil(db: Db, usuario: { id: string; name: string; imag
           actualizadoEn: p.actualizadaEn.toISOString(),
         }
       : null,
-    sugerencias: { alias: sugerido, nombre: usuario.name, imagen: usuario.image ?? null },
+    // Al crear el perfil, el país ya viene puesto: el de su cuenta.
+    sugerencias: { alias: sugerido, nombre: usuario.name, imagen: usuario.image ?? null, pais: cuenta?.pais ?? null },
   };
 }
 

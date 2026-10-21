@@ -4,9 +4,9 @@ import type { Entorno } from "../app";
 import { configDiscord } from "../auth";
 import { cuentas } from "../db/esquema";
 import type { Db } from "../db/cliente";
-import { borrarCuenta, datosCuenta, exportarDatos } from "../servicios/cuenta";
+import { borrarCuenta, datosCuenta, exportarDatos, guardarUbicacion } from "../servicios/cuenta";
 import { esStaff } from "../servicios/staff";
-import { validarPerfil } from "@techtojob/shared";
+import { PAISES, validarPerfil, validarUbicacion } from "@techtojob/shared";
 import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicios/talento";
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
@@ -19,6 +19,7 @@ import { actualizarEstadoDiscord } from "../servicios/discord";
  * GET  /cuenta/perfil              → mi perfil de talento (o null) y sugerencias para crearlo.
  * PUT  /cuenta/perfil              → crearlo o guardarlo.
  * DELETE /cuenta/perfil            → borrarlo.
+ * PUT  /cuenta/ubicacion           { pais, region } → dónde vive (obligatorio al completar la cuenta).
  * GET  /cuenta/datos               → todo lo que guardamos de la persona, en JSON.
  * DELETE /cuenta                   { confirmacion: <su email> } → borra la cuenta y todo lo suyo.
  */
@@ -51,6 +52,15 @@ export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
   .route("/perfil", rutasPerfilPropio)
   .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
+  .put("/ubicacion", async (c) => {
+    const r = validarUbicacion(await c.req.json().catch(() => ({})), PAISES);
+    if ("error" in r) {
+      const mensaje = r.error === "pais" ? "Elige tu país." : "Elige tu comunidad, estado o provincia.";
+      return c.json({ error: { codigo: "datos_invalidos", mensaje, campos: { [r.error]: "falta" } } }, 400);
+    }
+    await guardarUbicacion(c.var.db, c.var.usuario.id, r);
+    return c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario)));
+  })
   .get("/datos", async (c) => {
     c.header("content-disposition", 'attachment; filename="mis-datos-techtojob.json"');
     c.header("cache-control", "no-store");

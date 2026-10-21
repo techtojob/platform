@@ -33,7 +33,8 @@ export function valoresIniciales(mio: MiPerfil, idiomaWeb: string): ValoresPerfi
       area: "",
       seniority: "",
       ciudad: "",
-      pais: idiomaWeb === "es" ? "ES" : "",
+      // El de su cuenta (lo puso al entrar por primera vez).
+      pais: mio.sugerencias.pais ?? (idiomaWeb === "es" ? "ES" : ""),
       modalidades: [],
       disponibilidad: "",
       tecnologias: [],

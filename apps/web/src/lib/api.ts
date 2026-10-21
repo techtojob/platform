@@ -96,6 +96,15 @@ export function comprobarDiscordEnApi(cookie: string): Promise<Cuenta> {
   return pedir<Cuenta>("/cuenta/discord/comprobar", { method: "POST", headers: { cookie } });
 }
 
+/** Dónde vive: país y región (comunidad autónoma, estado, provincia…). */
+export function guardarUbicacionEnApi(cookie: string, pais: string, region: string | null): Promise<Cuenta> {
+  return pedir<Cuenta>("/cuenta/ubicacion", {
+    method: "PUT",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ pais, region }),
+  });
+}
+
 /** ¿Lleva la cookie de sesión de Better Auth? Si no, ni se pregunta al API. */
 export function tieneCookieDeSesion(cookie: string): boolean {
   return /(^|;\s*)(__Secure-)?better-auth\.session_token=/.test(cookie);

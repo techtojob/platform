@@ -70,6 +70,37 @@ describe("Mi cuenta", () => {
   });
 });
 
+describe("dónde vive (país y región)", () => {
+  const poner = (body: unknown) =>
+    pedir("/cuenta/ubicacion", { method: "PUT", headers: { ...Object.fromEntries(cabecerasLucia), "content-type": "application/json" }, body: JSON.stringify(body) });
+
+  it("al principio no lo ha puesto", async () => {
+    const cuenta = (await (await pedir("/cuenta", { headers: cabecerasLucia })).json()) as { ubicacion: unknown };
+    expect(cuenta.ubicacion).toBeNull();
+  });
+
+  it("España y Latinoamérica piden región; otros países, no", async () => {
+    expect((await poner({ pais: "ES" })).status).toBe(400);
+    expect((await poner({ pais: "ES", region: "jalisco" })).status).toBe(400); // no es de España
+    expect((await poner({ pais: "XX" })).status).toBe(400);
+    const r = await poner({ pais: "es", region: "canarias" });
+    expect(r.status).toBe(200);
+    expect(await r.json()).toMatchObject({ ubicacion: { pais: "ES", region: "canarias" }, pais: "ES" });
+    expect(await (await poner({ pais: "MX", region: "jalisco" })).json()).toMatchObject({ ubicacion: { pais: "MX", region: "jalisco" } });
+    expect(await (await poner({ pais: "DE", region: "lo-que-sea" })).json()).toMatchObject({ ubicacion: { pais: "DE", region: null } });
+  });
+
+  it("al crear el perfil de talento, el país ya viene puesto", async () => {
+    await poner({ pais: "CO", region: "antioquia" });
+    const mio = (await (await pedir("/cuenta/perfil", { headers: cabecerasLucia })).json()) as { sugerencias: { pais: string } };
+    expect(mio.sugerencias.pais).toBe("CO");
+  });
+
+  it("sin sesión, no", async () => {
+    expect((await pedir("/cuenta/ubicacion", { method: "PUT", body: "{}" })).status).toBe(401);
+  });
+});
+
 describe("Discord", () => {
   const config = { tokenBot: "t", servidorId: "s" };
 

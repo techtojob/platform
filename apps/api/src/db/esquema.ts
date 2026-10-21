@@ -185,6 +185,9 @@ export const usuarios = pgTable("usuarios", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verificado").notNull().default(false),
   image: text("imagen"),
+  /** País (ISO) y región (comunidad autónoma, estado, provincia…) que pone al completar la cuenta. */
+  pais: text("pais"),
+  region: text("region"),
   createdAt: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("actualizado_en", { withTimezone: true })
     .notNull()

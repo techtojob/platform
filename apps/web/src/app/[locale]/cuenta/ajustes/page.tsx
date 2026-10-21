@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Avatar } from "@/components/cuenta/avatar";
 import { CerrarSesion } from "@/components/cuenta/cerrar-sesion";
+import { FormularioUbicacion } from "@/components/cuenta/formulario-ubicacion";
 import { SeccionDiscord } from "@/components/cuenta/seccion-discord";
 import { TusDatos } from "@/components/cuenta/tus-datos";
 import { Portada } from "@/components/sitio/portada";
@@ -51,6 +52,13 @@ async function Contenido() {
           <p className="truncate text-lg font-bold">{usuario.nombre}</p>
           <p className="truncate text-suave">{usuario.email}</p>
         </div>
+      </Tarjeta>
+
+      {/* Dónde vive: decide qué ofertas se le enseñan por defecto */}
+      <Tarjeta className="flex flex-col gap-3 p-5">
+        <h2 className="text-titulo-3 font-bold">{t("dondeVives")}</h2>
+        <p className="text-sm text-suave">{t("dondeVivesAyuda")}</p>
+        <FormularioUbicacion inicial={cuenta!.ubicacion} alGuardar="aviso" />
       </Tarjeta>
 
       <Tarjeta className="flex flex-col gap-3 p-5">
