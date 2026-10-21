@@ -792,6 +792,23 @@
         "no_recruiter": "Only recruiters can post jobs."
       },
       "empresaFija": "This is the company on your recruiter account. If you need to post for another one, contact us."
+    },
+    "prompt": {
+      "pestana": "AI prompt",
+      "titulo": "Summarise jobs with AI",
+      "entradilla": "A prompt for ChatGPT or Claude: paste the job and it gives you the summary in the TechToJob format (role, where from, responsibilities…). The summary is always in Spanish.",
+      "comoTitulo": "How to use it",
+      "paso1": "Click “Copy prompt” and paste it into a new ChatGPT or Claude conversation.",
+      "paso2": "The AI will reply “Pega aquí la oferta” (paste the job here).",
+      "paso3": "Copy the job from the company's website (the text and the link) and paste it.",
+      "paso4": "Copy the summary. For the next one, paste it in the same conversation.",
+      "consejo": "Tip: save it once as the instructions of a Claude Project (or a GPT in ChatGPT) so you don't have to paste it every time.",
+      "desdeLaFicha": "On each job's page in the panel there's “Copy prompt with this job”: it has the prompt and the job together, ready to paste.",
+      "copiar": "Copy prompt",
+      "copiarConOferta": "Copy prompt with this job",
+      "copiado": "Copied!",
+      "noCopiado": "It couldn't be copied",
+      "ver": "See the prompt"
     }
   },
   "formulario": {

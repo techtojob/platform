@@ -82,6 +82,9 @@ async function Contenido({ searchParams }: Pick<Props, "searchParams">) {
         <Link href="/staff/recruiters" className={chip(false)}>
           {t("recruiters.pestana")}
         </Link>
+        <Link href="/staff/prompt" className={chip(false)}>
+          {t("prompt.pestana")}
+        </Link>
         <Link href="/staff/reportes" className={chip(false)}>
           {t("reportes.pestana")}
           {cuenta(false, lista.reportes, true)}

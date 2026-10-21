@@ -792,6 +792,23 @@
         "no_recruiter": "Solo los recruiters pueden publicar ofertas."
       },
       "empresaFija": "Es la empresa de tu cuenta de recruiter. Si necesitas publicar para otra, escríbenos."
+    },
+    "prompt": {
+      "pestana": "Prompt IA",
+      "titulo": "Resumir ofertas con IA",
+      "entradilla": "Un prompt para ChatGPT o Claude: le pegas la oferta y te devuelve el resumen con el formato de TechToJob (puesto, desde dónde, responsabilidades…).",
+      "comoTitulo": "Cómo se usa",
+      "paso1": "Pulsa «Copiar prompt» y pégalo en una conversación nueva de ChatGPT o Claude.",
+      "paso2": "La IA te contestará «Pega aquí la oferta».",
+      "paso3": "Copia la oferta desde la web de la empresa (el texto y el enlace) y pégala.",
+      "paso4": "Copia el resumen. Para la siguiente, pégala en la misma conversación.",
+      "consejo": "Consejo: guárdalo una vez como instrucciones de un Proyecto en Claude (o un GPT en ChatGPT) y así no tienes que pegarlo cada vez.",
+      "desdeLaFicha": "En la ficha de cada oferta del panel tienes «Copiar prompt con esta oferta»: lleva el prompt y la oferta juntos, listo para pegar.",
+      "copiar": "Copiar prompt",
+      "copiarConOferta": "Copiar prompt con esta oferta",
+      "copiado": "¡Copiado!",
+      "noCopiado": "No se ha podido copiar",
+      "ver": "Ver el prompt"
     }
   },
   "formulario": {

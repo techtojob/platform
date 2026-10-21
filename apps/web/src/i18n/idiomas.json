@@ -25,6 +25,7 @@
         "/staff/reportes": "/staff/reportes",
         "/staff/empresas": "/staff/empresas",
         "/staff/recruiters": "/staff/recruiters",
+        "/staff/prompt": "/staff/prompt",
         "/componentes": "/componentes"
       }
     },
@@ -52,6 +53,7 @@
         "/staff/reportes": "/staff/reports",
         "/staff/empresas": "/staff/companies",
         "/staff/recruiters": "/staff/recruiters",
+        "/staff/prompt": "/staff/prompt",
         "/componentes": "/components"
       }
     }
