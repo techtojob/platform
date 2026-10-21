@@ -393,6 +393,30 @@ export const recruiters = pgTable(
   (t) => [index("recruiters_estado_idx").on(t.estado, t.creadaEn)],
 );
 
+/**
+ * Reportes de ofertas y de recruiters (los de perfiles van en reportes_perfil). Hay que haber iniciado sesión
+ * y cada persona reporta cada cosa una vez. Una fila es de una oferta o de un recruiter (la otra columna, vacía).
+ */
+export const reportes = pgTable(
+  "reportes",
+  {
+    id: text("id").primaryKey(),
+    ofertaId: text("oferta_id").references(() => ofertas.id, { onDelete: "cascade" }),
+    recruiterId: text("recruiter_id").references(() => recruiters.userId, { onDelete: "cascade" }),
+    reportadoPor: text("reportado_por")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    motivo: text("motivo").notNull(),
+    estado: text("estado").$type<"pendiente" | "revisado">().notNull().default("pendiente"),
+    creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("reportes_oferta_unico_idx").on(t.ofertaId, t.reportadoPor),
+    uniqueIndex("reportes_recruiter_unico_idx").on(t.recruiterId, t.reportadoPor),
+    index("reportes_estado_idx").on(t.estado, t.creadoEn),
+  ],
+);
+
 export type Empresa = typeof empresas.$inferSelect;
 export type Oferta = typeof ofertas.$inferSelect;
 export type NuevaOferta = typeof ofertas.$inferInsert;

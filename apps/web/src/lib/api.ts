@@ -198,6 +198,15 @@ export function reportarPerfilEnApi(cookie: string, alias: string, motivo: strin
   });
 }
 
+/** Reportar una oferta o a quien la publicó ("recruiter"). */
+export function reportarOfertaEnApi(cookie: string, id: string, motivo: string, sobre: "oferta" | "recruiter"): Promise<{ ok: true }> {
+  return pedir(`/ofertas/${encodeURIComponent(id)}/reportar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ motivo, sobre }),
+  });
+}
+
 /** Solo manda la cookie si es de sesión (si no, el API la ignoraría igual). */
 function conCookie(cookie: string | null): Record<string, string> {
   return cookie && tieneCookieDeSesion(cookie) ? { cookie } : {};

@@ -67,7 +67,7 @@ export type ListaStaff = {
   cuentas: Partial<Record<EstadoOferta, number>>;
   /** Cuántas hay con cada atajo de esta pestaña (sin los demás filtros). */
   atajos: Partial<Record<AtajoStaff, number>>;
-  /** Reportes de perfiles sin revisar. */
+  /** Reportes sin revisar (perfiles, ofertas y recruiters). */
   reportes: number;
 };
 

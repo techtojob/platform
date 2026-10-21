@@ -68,7 +68,8 @@ export function crearApp(opciones: Opciones = {}) {
   });
 
   app.route("/salud", rutasSalud);
-  app.use("/ofertas", conDb).use("/ofertas/*", conDb).route("/ofertas", rutasOfertas);
+  // Reportar una oferta necesita sesión; el resto de /ofertas es público.
+  app.use("/ofertas", conDb).use("/ofertas/*", conDb).use("/ofertas/:id/reportar", conAuth).route("/ofertas", rutasOfertas);
   app.use(`${RUTA_AUTH}/*`, conDb, conAuth).on(["GET", "POST"], `${RUTA_AUTH}/*`, (c) => c.var.auth.handler(c.req.raw));
   app.use("/cuenta", conDb, conAuth).use("/cuenta/*", conDb, conAuth).route("/cuenta", rutasCuenta);
   app.use("/staff/*", conDb, conAuth).route("/staff", rutasStaff);

@@ -126,7 +126,29 @@
     "desdeDonde": "Where from",
     "puedesDesde": "You can work from {pais}",
     "noDesde": "Heads up: this offer can't be done from {pais}.",
-    "publicarLlamada": "Are you a recruiter? <enlace>Post your jobs for free</enlace>: we review each one before it goes live."
+    "publicarLlamada": "Are you a recruiter? <enlace>Post your jobs for free</enlace>: we review each one before it goes live.",
+    "reportar": {
+      "boton": "Report",
+      "titulo": "Report",
+      "sobre": "What do you want to report?",
+      "laOferta": "The job",
+      "elRecruiter": "Whoever posted it ({nombre})",
+      "motivoOferta": "What's wrong? (fake job, broken link, no longer available, discriminatory…)",
+      "motivoRecruiter": "What's wrong? (pretends to be the company, spam, inappropriate behaviour…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. Staff will review it.",
+      "entraAntes": "You need to log in to report.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own job.",
+        "no_existe": "This job is no longer published.",
+        "otro": "It couldn't be sent. Please try again."
+      }
+    }
   },
   "regiones": {
     "eu": "Europe",
@@ -592,14 +614,27 @@
     },
     "reportes": {
       "pestana": "Reports",
-      "titulo": "Reported profiles",
-      "entradilla": "Review each report: if the profile is fine, dismiss it; if not, hide it (only its owner will see it).",
+      "titulo": "Reports",
+      "entradilla": "What the community has reported. If it's fine, dismiss it; if not, hide the profile, close the job or block the recruiter.",
       "vacio": "No pending reports.",
       "verPerfil": "See profile",
       "descartar": "It's fine, dismiss",
       "ocultar": "Hide profile",
       "reportado": "Reported {tiempo}",
-      "visibilidad": "Now: {visibilidad}"
+      "visibilidad": "Now: {visibilidad}",
+      "de": {
+        "perfiles": "Profiles",
+        "ofertas": "Jobs",
+        "recruiters": "Recruiters"
+      },
+      "verOferta": "See job",
+      "verEnPanel": "Open in the panel",
+      "cerrarOferta": "Close the job",
+      "bloquear": "Block the recruiter",
+      "cancelar": "Cancel",
+      "motivoBloqueo": "Why they're blocked",
+      "motivoBloqueoAyuda": "The person will see it. Their pending jobs are discarded.",
+      "error": "It couldn't be done. Please try again."
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -914,7 +949,7 @@
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
         "<b>If you sign up as a recruiter:</b> your role, your company, its website, your LinkedIn and anything you tell us, so staff can review your jobs. Your name, role and company show on the jobs you post.",
         "<b>The jobs you post, if you do:</b> what you write in the form and that you posted them. Staff see your name and email so they can review them.",
-        "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
+        "<b>The reports you make:</b> which profile, job or recruiter you report and why. We don't tell them who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
         "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
         "<b>If you're staff:</b> which offers you've reviewed."

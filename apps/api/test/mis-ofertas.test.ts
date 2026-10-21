@@ -288,6 +288,48 @@ describe("subir ofertas (recruiters)", () => {
     await db.update(empresas).set({ bloqueada: false }).where(eq(empresas.nombre, "Nube Canaria"));
   });
 
+  it("reportar una oferta o a quien la publicó (con sesión, una vez, nunca la propia)", async () => {
+    const publicada = (await db.select().from(ofertas).where(eq(ofertas.autorId, idAna))).find((o) => o.estado === "publicada")!;
+    await db.update(ofertas).set({ caducaEn: new Date(Date.now() + 86_400_000) }).where(eq(ofertas.id, publicada.id));
+    const reportar = (h: Headers | null, body: unknown) => pedir(`/ofertas/${publicada.id}/reportar`, h, { method: "POST", body });
+    expect((await reportar(null, { motivo: "Oferta falsa, no existe." })).status).toBe(401);
+    expect((await reportar(bea, { motivo: "no" })).status).toBe(400);
+    expect((await reportar(ana, { motivo: "Me reporto a mí misma." })).status).toBe(400);
+    expect((await reportar(bea, { motivo: "El enlace no funciona." })).status).toBe(200);
+    expect((await reportar(bea, { motivo: "Otra vez lo mismo." })).status).toBe(200); // no se duplica
+    expect((await reportar(bea, { motivo: "Se hace pasar por la empresa.", sobre: "recruiter" })).status).toBe(200);
+    expect((await pedir("/ofertas/no-existe/reportar", bea, { method: "POST", body: { motivo: "No existe esta oferta." } })).status).toBe(404);
+
+    expect(await (await pedir("/staff/reportes/resumen", pablo)).json()).toEqual({ perfiles: 0, ofertas: 1, recruiters: 1 });
+    expect(((await (await pedir("/staff/ofertas", pablo)).json()) as { reportes: number }).reportes).toBe(2);
+    expect((await pedir("/staff/reportes-ofertas", bea)).status).toBe(403);
+    const deOfertas = (await (await pedir("/staff/reportes-ofertas", pablo)).json()) as Array<{ id: string; motivo: string; oferta: { id: string; empresa: string } }>;
+    expect(deOfertas).toHaveLength(1);
+    expect(deOfertas[0]).toMatchObject({ motivo: "El enlace no funciona.", oferta: { id: publicada.id, empresa: "Nube Canaria" } });
+    const deRecruiters = (await (await pedir("/staff/reportes-recruiters", pablo)).json()) as Array<{ id: string; recruiter: { nombre: string; estado: string } }>;
+    expect(deRecruiters[0]).toMatchObject({ recruiter: { nombre: "Ana", estado: "activo" } });
+
+    // Descartar el de la oferta; el del recruiter se queda para el siguiente test.
+    expect((await pedir(`/staff/reportes-ofertas/${deOfertas[0]!.id}/descartar`, pablo, { method: "POST" })).status).toBe(200);
+    expect(await (await pedir("/staff/reportes/resumen", pablo)).json()).toMatchObject({ ofertas: 0, recruiters: 1 });
+    // Cerrar la oferta desde un reporte: deja de salir.
+    await db.update(ofertas).set({ estado: "publicada" }).where(eq(ofertas.id, publicada.id));
+    await pedir(`/ofertas/${publicada.id}/reportar`, pablo, { method: "POST", body: { motivo: "Ya no está disponible." } });
+    const [otro] = (await (await pedir("/staff/reportes-ofertas", pablo)).json()) as Array<{ id: string }>;
+    expect((await pedir(`/staff/reportes-ofertas/${otro!.id}/cerrar`, pablo, { method: "POST" })).status).toBe(200);
+    expect((await db.select().from(ofertas).where(eq(ofertas.id, publicada.id)))[0]!.estado).toBe("cerrada");
+    await db.update(ofertas).set({ estado: "publicada" }).where(eq(ofertas.id, publicada.id));
+  });
+
+  it("bloquear desde un reporte de recruiter (con motivo)", async () => {
+    const [rep] = (await (await pedir("/staff/reportes-recruiters", pablo)).json()) as Array<{ id: string }>;
+    expect((await pedir(`/staff/reportes-recruiters/${rep!.id}/bloquear`, pablo, { method: "POST", body: {} })).status).toBe(400);
+    expect((await pedir(`/staff/reportes-recruiters/${rep!.id}/bloquear`, pablo, { method: "POST", body: { motivo: "Se hace pasar por otra empresa." } })).status).toBe(200);
+    expect(await (await pedir("/cuenta/recruiter", ana)).json()).toMatchObject({ estado: "bloqueado" });
+    expect(await (await pedir("/staff/reportes/resumen", pablo)).json()).toMatchObject({ recruiters: 0 });
+    await pedir(`/staff/recruiters/${idAna}/desbloquear`, pablo, { method: "POST" });
+  });
+
   it("bloquearlo: sus pendientes se descartan, ya no publica ni cambia sus datos y la bolsa no dice quién es", async () => {
     const nueva = (await (await pedir("/cuenta/ofertas", ana, { method: "POST", body: oferta() })).json()) as { id: string };
     const publicada = (await db.select().from(ofertas).where(eq(ofertas.autorId, idAna))).find((o) => o.estado === "publicada");

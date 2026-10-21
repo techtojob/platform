@@ -354,6 +354,25 @@ export type MiPerfil = {
 };
 
 /** Un reporte de perfil para el staff. */
+/** Un reporte de una oferta, para el staff (GET /staff/reportes-ofertas). */
+export type ReporteOferta = {
+  id: string;
+  oferta: { id: string; slug: string; titulo: string; empresa: string; estado: EstadoOferta };
+  motivo: string;
+  creadoEn: string;
+};
+
+/** Un reporte de un recruiter, para el staff (GET /staff/reportes-recruiters). */
+export type ReporteRecruiter = {
+  id: string;
+  recruiter: { id: string; nombre: string; email: string; empresa: string; estado: import("./recruiters").EstadoRecruiter };
+  motivo: string;
+  creadoEn: string;
+};
+
+/** Cuántos reportes hay sin revisar de cada cosa (para las pestañas del panel). */
+export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number };
+
 export type ReportePerfil = {
   id: string;
   perfil: { alias: string; nombre: string; titular: string; visibilidad: VisibilidadPerfil };

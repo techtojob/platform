@@ -3,6 +3,8 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Entorno } from "../app";
 import { listarOfertas, mapaOfertas, obtenerOferta } from "../servicios/ofertas";
+import { ErrorReporte, reportarOferta } from "../servicios/reportes";
+import { conSesion } from "./sesion";
 
 const idsTecnologias = new Set<string>(TECNOLOGIAS.map((t) => t.id));
 
@@ -61,6 +63,20 @@ export const rutasOfertas = new Hono<Entorno>().get("/", async (c) => {
   /** GET /ofertas/mapa → las ofertas visibles, para el mapa del sitio. */
   .get("/mapa", async (c) => c.json(await mapaOfertas(c.var.db)))
   /** GET /ofertas/:id → la oferta entera, o 404 si no existe o aún no está publicada. */
+  /** POST /ofertas/:id/reportar { motivo, sobre: "oferta" | "recruiter" } (con sesión): la oferta o quien la publicó. */
+  .post("/:id/reportar", conSesion, async (c) => {
+    const cuerpo = (await c.req.json().catch(() => ({}))) as { motivo?: unknown; sobre?: unknown };
+    try {
+      await reportarOferta(c.var.db, c.req.param("id"), c.var.usuario.id, cuerpo.motivo, cuerpo.sobre);
+      return c.json({ ok: true });
+    } catch (e) {
+      if (e instanceof ErrorReporte) {
+        const http = { no_existe: 404, motivo: 400, propio: 400, sin_recruiter: 400 } as const;
+        return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, http[e.codigo]);
+      }
+      throw e;
+    }
+  })
   .get("/:id", async (c) => {
     const oferta = await obtenerOferta(c.var.db, c.req.param("id"));
     if (!oferta) {

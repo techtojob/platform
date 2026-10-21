@@ -10,7 +10,10 @@ import {
   type OfertaImportada,
   type OfertaRepetida,
   type OfertaStaff,
+  type ReporteOferta,
   type ReportePerfil,
+  type ReporteRecruiter,
+  type ResumenReportes,
   type ResumenCandidatas,
   type SiguienteStaff,
 } from "@techtojob/shared";
@@ -142,5 +145,31 @@ export async function accionRecruiterEnApi(userId: string, { accion, ...datos }:
   await pedir<{ ok: true }>(
     `/staff/recruiters/${encodeURIComponent(userId)}/${accion}`,
     await conCookie({ method: "POST", body: JSON.stringify(datos) }),
+  );
+}
+
+/* ── Reportes de ofertas y de recruiters ── */
+
+export async function resumenReportes(): Promise<ResumenReportes> {
+  return pedir<ResumenReportes>("/staff/reportes/resumen", await conCookie());
+}
+
+export async function listarReportesOfertas(): Promise<ReporteOferta[]> {
+  return pedir<ReporteOferta[]>("/staff/reportes-ofertas", await conCookie());
+}
+
+export async function listarReportesRecruiters(): Promise<ReporteRecruiter[]> {
+  return pedir<ReporteRecruiter[]>("/staff/reportes-recruiters", await conCookie());
+}
+
+export type AccionReporte =
+  | { de: "ofertas"; accion: "descartar" | "cerrar" }
+  | { de: "recruiters"; accion: "descartar" }
+  | { de: "recruiters"; accion: "bloquear"; motivo: string };
+
+export async function resolverReporteEnApiDe(id: string, a: AccionReporte): Promise<void> {
+  await pedir<{ ok: true }>(
+    `/staff/reportes-${a.de}/${encodeURIComponent(id)}/${a.accion}`,
+    await conCookie({ method: "POST", body: JSON.stringify("motivo" in a ? { motivo: a.motivo } : {}) }),
   );
 }

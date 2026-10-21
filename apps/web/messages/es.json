@@ -126,7 +126,29 @@
     "desdeDonde": "Desde dónde",
     "puedesDesde": "Puedes trabajar desde {pais}",
     "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}.",
-    "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga."
+    "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga.",
+    "reportar": {
+      "boton": "Reportar",
+      "titulo": "Reportar",
+      "sobre": "¿Qué quieres reportar?",
+      "laOferta": "La oferta",
+      "elRecruiter": "A quien la publicó ({nombre})",
+      "motivoOferta": "¿Qué pasa? (oferta falsa, el enlace no funciona, ya no está disponible, discriminatoria…)",
+      "motivoRecruiter": "¿Qué pasa? (se hace pasar por la empresa, spam, trato inadecuado…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propia oferta.",
+        "no_existe": "Esta oferta ya no está publicada.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    }
   },
   "regiones": {
     "eu": "Europa",
@@ -592,14 +614,27 @@
     },
     "reportes": {
       "pestana": "Reportes",
-      "titulo": "Perfiles reportados",
-      "entradilla": "Revisa cada reporte: si el perfil está bien, descártalo; si no, ocúltalo (solo lo verá su dueño).",
+      "titulo": "Reportes",
+      "entradilla": "Lo que ha reportado la comunidad. Si está bien, descártalo; si no, oculta el perfil, cierra la oferta o bloquea al recruiter.",
       "vacio": "No hay reportes pendientes.",
       "verPerfil": "Ver perfil",
       "descartar": "Está bien, descartar",
       "ocultar": "Ocultar perfil",
       "reportado": "Reportado {tiempo}",
-      "visibilidad": "Ahora: {visibilidad}"
+      "visibilidad": "Ahora: {visibilidad}",
+      "de": {
+        "perfiles": "Perfiles",
+        "ofertas": "Ofertas",
+        "recruiters": "Recruiters"
+      },
+      "verOferta": "Ver oferta",
+      "verEnPanel": "Abrir en el panel",
+      "cerrarOferta": "Cerrar la oferta",
+      "bloquear": "Bloquear al recruiter",
+      "cancelar": "Cancelar",
+      "motivoBloqueo": "Por qué se bloquea",
+      "motivoBloqueoAyuda": "Lo verá la persona. Sus ofertas pendientes se descartan.",
+      "error": "No se ha podido hacer. Inténtalo de nuevo."
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -914,7 +949,7 @@
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
         "<b>Si te registras como recruiter:</b> tu cargo, tu empresa, su web, tu LinkedIn y lo que nos cuentes, para que el staff revise tus ofertas. Tu nombre, tu cargo y tu empresa salen en las ofertas que publiques.",
         "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
-        "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
+        "<b>Los reportes que haces:</b> qué perfil, oferta o recruiter reportas y por qué. A quien reportas no le decimos quién ha sido.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
         "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
         "<b>Si eres del staff:</b> qué ofertas has revisado."

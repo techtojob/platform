@@ -1,7 +1,7 @@
 import type { Cuenta } from "@techtojob/shared";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, recruiters, reportesPerfil, sesiones, usuarios } from "../db/esquema";
+import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
 import { resumenRecruiter } from "./recruiters";
 
@@ -65,7 +65,7 @@ export async function borrarCuenta(db: Db, userId: string) {
  * Sin tokens ni datos internos de seguridad.
  */
 export async function exportarDatos(db: Db, userId: string) {
-  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas, [recruiter]] = await Promise.all([
+  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas, [recruiter], otrosReportes] = await Promise.all([
     db.select().from(usuarios).where(eq(usuarios.id, userId)).limit(1),
     db.select({ proveedor: cuentas.providerId, creadaEn: cuentas.createdAt }).from(cuentas).where(eq(cuentas.userId, userId)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1),
@@ -82,6 +82,10 @@ export async function exportarDatos(db: Db, userId: string) {
       .from(ofertas)
       .where(eq(ofertas.autorId, userId)),
     db.select().from(recruiters).where(eq(recruiters.userId, userId)).limit(1),
+    db
+      .select({ oferta: reportes.ofertaId, recruiter: reportes.recruiterId, motivo: reportes.motivo, creadoEn: reportes.creadoEn })
+      .from(reportes)
+      .where(eq(reportes.reportadoPor, userId)),
   ]);
   return {
     exportadoEn: new Date().toISOString(),
@@ -100,7 +104,10 @@ export async function exportarDatos(db: Db, userId: string) {
     discord: discord ? { id: discord.discordId, nombre: discord.nombre, enServidor: discord.enServidor, roles: discord.roles, comprobadoEn: discord.comprobadoEn } : null,
     perfilDeTalento: perfil ? (({ userId: _u, ...resto }) => resto)(perfil) : null,
     emblemas: susEmblemas.map(({ tipo, nombre, otorgadoEn, caducaEn }) => ({ tipo, nombre, otorgadoEn, caducaEn })),
-    reportesQueHiciste: reportesHechos,
+    reportesQueHiciste: [
+      ...reportesHechos.map((r) => ({ de: "perfil", ...r })),
+      ...otrosReportes.map((r) => ({ de: r.oferta ? "oferta" : "recruiter", motivo: r.motivo, creadoEn: r.creadoEn })),
+    ],
     sesiones: sesionesActivas,
     ofertasQueSubiste: ofertasSubidas,
     recruiter: recruiter

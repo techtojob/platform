@@ -19,6 +19,14 @@ import { buscarRepetida, importarOferta } from "../servicios/importar";
 import { listarStaff, rechazarVarias, siguienteStaff } from "../servicios/lista-staff";
 import { listarReportes, resolverReporte } from "../servicios/talento";
 import {
+  ErrorReporte,
+  listarReportesOfertas,
+  listarReportesRecruiters,
+  resolverReporteOferta,
+  resolverReporteRecruiter,
+  resumenReportes,
+} from "../servicios/reportes";
+import {
   bloquearRecruiter,
   desbloquearRecruiter,
   ErrorRecruiter,
@@ -52,6 +60,9 @@ import { conSesion, soloStaff } from "./sesion";
  * GET  /staff/repetida?url=&sin=          → si ya hay una oferta con ese enlace
  * GET  /staff/reportes                    → reportes de perfiles sin revisar
  * POST /staff/reportes/:id/descartar · /ocultar
+ * GET  /staff/reportes/resumen            → cuántos reportes sin revisar hay de perfiles, ofertas y recruiters
+ * GET  /staff/reportes-ofertas · POST /staff/reportes-ofertas/:id/descartar · /cerrar
+ * GET  /staff/reportes-recruiters · POST /staff/reportes-recruiters/:id/descartar · /bloquear { motivo }
  * GET  /staff/recruiters?estado=activo|bloqueado → recruiters (se registran solos; el staff revisa sus ofertas)
  * POST /staff/recruiters/:userId/bloquear { motivo } · /desbloquear · /agencia { agencia }
  */
@@ -75,6 +86,12 @@ function responderError(c: Context<Entorno>, error: unknown) {
   throw error;
 }
 
+function responderErrorReporte(c: Context<Entorno>, e: unknown) {
+  if (e instanceof ErrorReporte) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, e.codigo === "no_existe" ? 404 : 400);
+  if (e instanceof ErrorRecruiter) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, e.codigo === "motivo" ? 400 : 409);
+  throw e;
+}
+
 async function cuerpo(c: Context<Entorno>): Promise<Record<string, unknown>> {
   try {
     const json = await c.req.json();
@@ -90,8 +107,8 @@ const invalida = (c: Context<Entorno>, errores: Record<string, string>) =>
 export const rutasStaff = new Hono<Entorno>()
   .use(conSesion, soloStaff)
   .get("/ofertas", async (c) => {
-    const [lista, reportes] = await Promise.all([listarStaff(c.var.db, leerFiltrosStaff(c.req.query())), listarReportes(c.var.db)]);
-    return c.json({ ...lista, reportes: reportes.length } satisfies ListaStaff);
+    const [lista, reportes] = await Promise.all([listarStaff(c.var.db, leerFiltrosStaff(c.req.query())), resumenReportes(c.var.db)]);
+    return c.json({ ...lista, reportes: reportes.perfiles + reportes.ofertas + reportes.recruiters } satisfies ListaStaff);
   })
   .get("/ofertas/siguiente", async (c) => {
     const q = c.req.query();
@@ -167,6 +184,26 @@ export const rutasStaff = new Hono<Entorno>()
     return c.json({ repetida: await buscarRepetida(c.var.db, url, c.req.query("sin")) });
   })
   .get("/reportes", async (c) => c.json(await listarReportes(c.var.db)))
+  .get("/reportes/resumen", async (c) => c.json(await resumenReportes(c.var.db)))
+  .get("/reportes-ofertas", async (c) => c.json(await listarReportesOfertas(c.var.db)))
+  .get("/reportes-recruiters", async (c) => c.json(await listarReportesRecruiters(c.var.db)))
+  .post("/reportes-ofertas/:id/:accion{descartar|cerrar}", async (c) => {
+    try {
+      await resolverReporteOferta(c.var.db, c.req.param("id"), c.var.usuario.id, c.req.param("accion") as "descartar" | "cerrar");
+      return c.json({ ok: true });
+    } catch (e) {
+      return responderErrorReporte(c, e);
+    }
+  })
+  .post("/reportes-recruiters/:id/:accion{descartar|bloquear}", async (c) => {
+    try {
+      const accion = c.req.param("accion") as "descartar" | "bloquear";
+      await resolverReporteRecruiter(c.var.db, c.req.param("id"), c.var.usuario.id, accion, (await cuerpo(c)).motivo);
+      return c.json({ ok: true });
+    } catch (e) {
+      return responderErrorReporte(c, e);
+    }
+  })
   .post("/reportes/:id/:accion{descartar|ocultar}", async (c) => {
     try {
       await resolverReporte(c.var.db, c.req.param("id"), c.req.param("accion") as "descartar" | "ocultar");
