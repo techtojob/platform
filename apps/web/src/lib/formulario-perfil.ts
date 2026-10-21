@@ -1,4 +1,4 @@
-import type { DatosPerfil, MiPerfil } from "@techtojob/shared";
+import type { DatosPerfil, FotoPerfil, MiPerfil } from "@techtojob/shared";
 
 /** Lo que hay escrito en "Mi perfil" (texto tal cual; "" si está vacío). */
 export type ValoresPerfil = {
@@ -7,7 +7,9 @@ export type ValoresPerfil = {
   titular: string;
   sobreMi: string;
   area: string;
-  seniority: string;
+  /** "" mientras no lo elija; "0"…"16" (16 = más de 15). */
+  anosExperiencia: string;
+  lidera: boolean;
   ciudad: string;
   pais: string;
   modalidades: string[];
@@ -17,7 +19,7 @@ export type ValoresPerfil = {
   linkedin: string;
   github: string;
   portfolio: string;
-  mostrarFoto: boolean;
+  foto: FotoPerfil;
   visibilidad: string;
 };
 
@@ -31,7 +33,8 @@ export function valoresIniciales(mio: MiPerfil, idiomaWeb: string): ValoresPerfi
       titular: "",
       sobreMi: "",
       area: "",
-      seniority: "",
+      anosExperiencia: "",
+      lidera: false,
       ciudad: "",
       // El de su cuenta (lo puso al entrar por primera vez).
       pais: mio.sugerencias.pais ?? (idiomaWeb === "es" ? "ES" : ""),
@@ -42,12 +45,16 @@ export function valoresIniciales(mio: MiPerfil, idiomaWeb: string): ValoresPerfi
       linkedin: "",
       github: "",
       portfolio: "",
-      mostrarFoto: false,
+      // Por defecto, la de la cuenta con la que entró (Google si la tiene; si no, GitHub).
+      foto: mio.fotos.google ? "google" : mio.fotos.github ? "github" : "ninguna",
       visibilidad: "registrados",
     };
   }
+  const resto: Partial<typeof p> = { ...p };
+  delete resto.seniority; // no se edita: sale de los años
   return {
-    ...p,
+    ...(resto as Omit<typeof p, "seniority">),
+    anosExperiencia: p.anosExperiencia == null ? "" : String(p.anosExperiencia),
     sobreMi: p.sobreMi ?? "",
     ciudad: p.ciudad ?? "",
     pais: p.pais ?? "",
@@ -59,10 +66,11 @@ export function valoresIniciales(mio: MiPerfil, idiomaWeb: string): ValoresPerfi
 }
 
 /** Lo que se manda al API (que lo vuelve a comprobar todo). */
-export function perfilParaApi(v: ValoresPerfil): Record<keyof DatosPerfil, unknown> {
+export function perfilParaApi(v: ValoresPerfil): Record<Exclude<keyof DatosPerfil, "seniority">, unknown> {
   const siHay = (s: string) => s.trim() || null;
   return {
     ...v,
+    anosExperiencia: v.anosExperiencia === "" ? null : Number(v.anosExperiencia),
     alias: v.alias.trim().toLowerCase(),
     sobreMi: siHay(v.sobreMi),
     ciudad: siHay(v.ciudad),

@@ -8,7 +8,11 @@ import {
   LIMITES_PERFIL,
   MODALIDADES,
   PAISES,
-  SENIORITY,
+  fotoElegida,
+  MAXIMO_ANOS_EXPERIENCIA,
+  nivelPorExperiencia,
+  type Disponibilidad,
+  type FotosCuenta,
   validarPerfil,
   VISIBILIDAD_PERFIL,
   type PerfilListado,
@@ -20,6 +24,7 @@ import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 import { Boton, Campo, Casilla, clasesBoton } from "@/components/ui";
+import { ElegirFoto } from "./elegir-foto";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { limpiarAlias, perfilParaApi, type ValoresPerfil } from "@/lib/formulario-perfil";
@@ -27,7 +32,7 @@ import { TarjetaPerfil } from "./tarjeta-perfil";
 
 const SECCION_DE: Record<string, string> = {
   alias: "seccion-tu", nombre: "seccion-tu", titular: "seccion-tu",
-  sobreMi: "seccion-sobre", area: "seccion-haces", seniority: "seccion-haces", tecnologias: "seccion-haces",
+  sobreMi: "seccion-sobre", area: "seccion-haces", anosExperiencia: "seccion-haces", tecnologias: "seccion-haces",
   ciudad: "seccion-donde", pais: "seccion-donde", modalidades: "seccion-donde", disponibilidad: "seccion-donde",
   idiomas: "seccion-idiomas", linkedin: "seccion-enlaces", github: "seccion-enlaces", portfolio: "seccion-enlaces",
   visibilidad: "seccion-visibilidad",
@@ -37,8 +42,8 @@ type Props = {
   inicial: ValoresPerfil;
   /** El perfil guardado (null si aún no hay): para "ver cómo queda" y "borrar". */
   guardado: { alias: string; actualizadoEn: string } | null;
-  /** Foto de Google o GitHub de la cuenta, para la opción de mostrarla. */
-  imagenCuenta: string | null;
+  /** Las fotos de sus cuentas de Google y GitHub, para elegir cuál enseñar. */
+  fotos: FotosCuenta;
   verificado: boolean;
   dominio: string;
 };
@@ -47,7 +52,7 @@ type Props = {
  * "Mi perfil": lo que la gente verá en Talento. Todo en una página; a la derecha,
  * cómo queda la tarjeta en el buscador, lo que falta, guardar y ver el perfil.
  */
-export function FormularioPerfil({ inicial, guardado: guardadoInicial, imagenCuenta, verificado, dominio }: Props) {
+export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, verificado, dominio }: Props) {
   const t = useTranslations("miPerfil");
   const tr = useTranslations();
   const locale = useLocale();
@@ -117,9 +122,10 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, imagenCue
     alias: v.alias || "tu-alias",
     nombre: v.nombre || t("vistaNombre"),
     titular: v.titular || t("vistaTitular"),
-    imagen: v.mostrarFoto ? imagenCuenta : null,
+    imagen: fotoElegida(v.foto, fotos),
     area: (v.area || "desarrollo") as PerfilListado["area"],
-    seniority: (v.seniority || "junior") as PerfilListado["seniority"],
+    seniority: v.anosExperiencia === "" ? "junior" : nivelPorExperiencia(Number(v.anosExperiencia), v.lidera),
+    anosExperiencia: v.anosExperiencia === "" ? null : Number(v.anosExperiencia),
     ciudad: v.ciudad || null,
     pais: v.pais || null,
     modalidades: v.modalidades as PerfilListado["modalidades"],
@@ -166,11 +172,13 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, imagenCue
             onChange={(e) => cambiar({ titular: e.target.value })}
             error={mensaje("titular")}
           />
-          {imagenCuenta ? (
-            <Casilla etiqueta={t("mostrarFoto")} checked={v.mostrarFoto} onChange={(e) => cambiar({ mostrarFoto: e.target.checked })} />
-          ) : (
-            <p className="text-sm text-suave">{t("sinFoto")}</p>
-          )}
+          <ElegirFoto
+            valor={v.foto}
+            fotos={fotos}
+            nombre={v.nombre}
+            disponibilidad={(v.disponibilidad || "no-busca") as Disponibilidad}
+            onCambio={(foto) => cambiar({ foto })}
+          />
         </Seccion>
 
         <Seccion id="seccion-sobre" numero={2} titulo={t("seccionSobre")}>
@@ -187,7 +195,36 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, imagenCue
 
         <Seccion id="seccion-haces" numero={3} titulo={t("seccionHaces")}>
           <BotonesOpcion nombre="area" etiqueta={t("area")} opciones={AREAS.map((a) => ({ valor: a, texto: tr(`areas.${a}`) }))} valor={v.area} onCambio={(area) => cambiar({ area })} error={mensaje("area")} />
-          <BotonesOpcion nombre="seniority" etiqueta={t("seniority")} opciones={SENIORITY.map((s) => ({ valor: s, texto: tr(`seniority.${s}`) }))} valor={v.seniority} onCambio={(seniority) => cambiar({ seniority })} error={mensaje("seniority")} />
+          {/* El nivel no se elige: sale de los años de experiencia (y de si ha liderado). */}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="anos-experiencia" className="text-sm font-bold">
+                {t("anos")}
+              </label>
+              <select
+                id="anos-experiencia"
+                value={v.anosExperiencia}
+                onChange={(e) => cambiar({ anosExperiencia: e.target.value })}
+                aria-invalid={mensaje("anosExperiencia") ? true : undefined}
+                className={cn(clasesControl, "min-h-12 rounded-control px-5 sm:max-w-xs")}
+              >
+                <option value="">{t("anosElige")}</option>
+                {Array.from({ length: MAXIMO_ANOS_EXPERIENCIA + 1 }, (_, n) => (
+                  <option key={n} value={String(n)}>
+                    {t("anosOpcion", { anos: n })}
+                  </option>
+                ))}
+              </select>
+              <p className="text-sm text-suave">{t("anosAyuda")}</p>
+              <TextoError>{mensaje("anosExperiencia")}</TextoError>
+            </div>
+            <Casilla etiqueta={t("lidera")} checked={v.lidera} onChange={(e) => cambiar({ lidera: e.target.checked })} />
+            {v.anosExperiencia !== "" && (
+              <p className="text-sm font-bold" aria-live="polite">
+                {t("nivelCalculado", { nivel: tr(`seniority.${nivelPorExperiencia(Number(v.anosExperiencia), v.lidera)}`) })}
+              </p>
+            )}
+          </div>
           <SelectorTecnologias
             elegidas={v.tecnologias}
             onCambio={(tecnologias) => cambiar({ tecnologias })}

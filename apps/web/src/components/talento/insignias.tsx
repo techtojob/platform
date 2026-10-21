@@ -17,8 +17,8 @@ export function Verificado({ conTexto = false, className }: { conTexto?: boolean
 }
 
 const TONOS: Record<Disponibilidad, string> = {
-  buscando: "bg-acento text-ink",
-  abierto: "bg-postit text-ink",
+  buscando: "bg-disponible text-ink",
+  abierto: "bg-abierto text-ink",
   freelance: "border border-acento text-enlace",
   "no-busca": "bg-chip text-suave",
 };

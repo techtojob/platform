@@ -1,9 +1,10 @@
-import type { Cuenta } from "@techtojob/shared";
+import { fotoElegida, type Cuenta } from "@techtojob/shared";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
 import { resumenRecruiter } from "./recruiters";
+import { fotosDe } from "./fotos";
 
 export type { Cuenta } from "@techtojob/shared";
 
@@ -18,7 +19,7 @@ export async function datosCuenta(
   const [vinculadas, [estado], [perfil], recruiter] = await Promise.all([
     db.select({ id: cuentas.id, proveedor: cuentas.providerId, idExterno: cuentas.accountId }).from(cuentas).where(eq(cuentas.userId, usuario.id)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, usuario.id)).limit(1),
-    db.select({ pais: perfiles.pais }).from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
+    db.select({ pais: perfiles.pais, foto: perfiles.foto }).from(perfiles).where(eq(perfiles.userId, usuario.id)).limit(1),
     resumenRecruiter(db, usuario.id),
   ]);
   const [ubicacion] = await db.select({ pais: usuarios.pais, region: usuarios.region }).from(usuarios).where(eq(usuarios.id, usuario.id)).limit(1);
@@ -29,7 +30,13 @@ export async function datosCuenta(
   if (estado && !vigente) await borrarEstadoDiscord(db, usuario.id);
 
   return {
-    usuario: { id: usuario.id, nombre: usuario.name, email: usuario.email, imagen: usuario.image ?? null },
+    // Con perfil de talento, la foto que eligió allí (Google, GitHub o ninguna); si no, la de la cuenta.
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.name,
+      email: usuario.email,
+      imagen: perfil ? fotoElegida(perfil.foto, (await fotosDe(db, [usuario.id])).get(usuario.id)!) : (usuario.image ?? null),
+    },
     esStaff: opciones.esStaff,
     proveedores: vinculadas.map((c) => c.proveedor),
     ubicacion: ubicacion?.pais ? { pais: ubicacion.pais, region: ubicacion.region } : null,

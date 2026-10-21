@@ -21,7 +21,7 @@ export function TarjetaPerfil({ perfil, enlace = true }: { perfil: PerfilListado
   const contenido = (
     <>
       <div className="flex items-start gap-4">
-        <AvatarPerfil nombre={perfil.nombre} imagen={perfil.imagen} tamano={56} />
+        <AvatarPerfil nombre={perfil.nombre} imagen={perfil.imagen} disponibilidad={perfil.disponibilidad} tamano={60} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="text-titulo-3 font-bold group-hover:text-enlace group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4">
@@ -35,7 +35,11 @@ export function TarjetaPerfil({ perfil, enlace = true }: { perfil: PerfilListado
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
         <EtiquetaDisponibilidad disponibilidad={perfil.disponibilidad} />
-        <Etiqueta tono="borde">{t(`seniority.${perfil.seniority}`)}</Etiqueta>
+        <Etiqueta tono="borde">
+          {perfil.anosExperiencia
+            ? t("talento.nivelConAnos", { nivel: t(`seniority.${perfil.seniority}`), anos: perfil.anosExperiencia })
+            : t(`seniority.${perfil.seniority}`)}
+        </Etiqueta>
         <Etiqueta tono="borde">{t(`areas.${perfil.area}`)}</Etiqueta>
       </div>
       {perfil.tecnologias.length > 0 && (

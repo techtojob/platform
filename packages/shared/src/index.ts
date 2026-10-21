@@ -12,3 +12,4 @@ export * from "./filtros-staff";
 export * from "./subdivisiones";
 export * from "./recruiters";
 export * from "./respuesta-ia";
+export * from "./experiencia";

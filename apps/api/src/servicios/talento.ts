@@ -1,4 +1,7 @@
+import { fotosDe } from "./fotos";
 import {
+  fotoElegida,
+  type FotosCuenta,
   aliasDesde,
   buscarTecnologia,
   type Area,
@@ -102,8 +105,8 @@ function condiciones(f: FiltrosTalento, sinPais = false): SQL[] {
 
 /** Emblemas y verificación de varios usuarios de una vez. */
 async function extras(db: Db, ids: string[]) {
-  if (!ids.length) return { emblemasDe: () => [] as Emblema[], verificado: () => false };
-  const [fundadores, ganados, discord] = await Promise.all([
+  if (!ids.length) return { emblemasDe: () => [] as Emblema[], verificado: () => false, fotosDe: () => ({ google: null, github: null }) };
+  const [fundadores, ganados, discord, fotos] = await Promise.all([
     db
       .select({ id: usuarios.id, creadoEn: usuarios.createdAt })
       .from(usuarios)
@@ -115,6 +118,7 @@ async function extras(db: Db, ids: string[]) {
       .where(and(inArray(emblemas.userId, ids), or(isNull(emblemas.caducaEn), gt(emblemas.caducaEn, sql`now()`))))
       .orderBy(desc(emblemas.otorgadoEn)),
     db.select({ id: estadoDiscord.userId }).from(estadoDiscord).where(and(inArray(estadoDiscord.userId, ids), eq(estadoDiscord.enServidor, true))),
+    fotosDe(db, ids),
   ]);
   const fundador = new Map(fundadores.map((f) => [f.id, f.creadoEn]));
   const verificados = new Set(discord.map((d) => d.id));
@@ -124,6 +128,7 @@ async function extras(db: Db, ids: string[]) {
       ...(fundador.has(id) ? [{ tipo: "fundador" as const, nombre: null, fecha: fundador.get(id)!.toISOString() }] : []),
     ],
     verificado: (id: string) => verificados.has(id),
+    fotosDe: (id: string): FotosCuenta => fotos.get(id) ?? { google: null, github: null },
   };
 }
 
@@ -135,9 +140,10 @@ function aListado(f: Fila, x: Awaited<ReturnType<typeof extras>>): PerfilListado
     alias: p.alias,
     nombre: p.nombre,
     titular: p.titular,
-    imagen: p.mostrarFoto ? f.imagen : null,
+    imagen: fotoElegida(p.foto, x.fotosDe(p.userId)),
     area: p.area,
     seniority: p.seniority,
+    anosExperiencia: p.anosExperiencia,
     ciudad: p.ciudad,
     pais: p.pais,
     modalidades: p.modalidades,
@@ -248,6 +254,9 @@ export async function miPerfil(db: Db, usuario: { id: string; name: string; imag
           titular: p.titular,
           sobreMi: p.sobreMi,
           area: p.area,
+          // Perfiles de antes de pedir los años: se queda vacío hasta que los ponga (el formulario lo pide).
+          anosExperiencia: p.anosExperiencia ?? (null as unknown as number),
+          lidera: p.lidera,
           seniority: p.seniority,
           ciudad: p.ciudad,
           pais: p.pais,
@@ -258,13 +267,14 @@ export async function miPerfil(db: Db, usuario: { id: string; name: string; imag
           linkedin: p.linkedin,
           github: p.github,
           portfolio: p.portfolio,
-          mostrarFoto: p.mostrarFoto,
+          foto: p.foto,
           visibilidad: p.visibilidad,
           actualizadoEn: p.actualizadaEn.toISOString(),
         }
       : null,
     // Al crear el perfil, el país ya viene puesto: el de su cuenta.
     sugerencias: { alias: sugerido, nombre: usuario.name, imagen: usuario.image ?? null, pais: cuenta?.pais ?? null },
+    fotos: (await fotosDe(db, [usuario.id])).get(usuario.id)!,
   };
 }
 
