@@ -73,7 +73,7 @@ describe("validarOfertaUsuario", () => {
   it("pide la empresa, la declaración y que se pueda hacer desde España o Latinoamérica", () => {
     expect(validarOfertaUsuario(oferta()).errores).toBeUndefined();
     expect(validarOfertaUsuario(oferta({ empresa: { nombre: "" } })).errores).toMatchObject({ empresa: "falta" });
-    expect(validarOfertaUsuario(oferta({ empresa: { nombre: "Nube", web: "nube" } })).errores).toMatchObject({ empresaWeb: "url" });
+    expect(validarOfertaUsuario(oferta({ empresa: { nombre: "Nube", web: "nube con espacios" } })).errores).toMatchObject({ empresaWeb: "url" });
     expect(validarOfertaUsuario(oferta({ declaracion: false })).errores).toMatchObject({ declaracion: "falta" });
     expect(validarOfertaUsuario(oferta({ remotoPaises: ["US", "CA"] })).errores).toMatchObject({ remotoPaises: "fuera" });
     expect(validarOfertaUsuario(oferta({ remotoPaises: [], remotoMundo: true })).errores).toBeUndefined();
@@ -105,7 +105,12 @@ describe("validar la solicitud de recruiter", () => {
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "" })).errores).toMatchObject({ linkedin: "falta" });
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://linkedin.com.evil.example/in/x" })).errores).toMatchObject({ linkedin: "linkedin" });
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://es.linkedin.com/in/ana" })).errores).toBeUndefined();
-    expect(validarSolicitudRecruiter(solicitud({ web: "nube" })).errores).toMatchObject({ web: "url" });
+    // Sin https:// (como se copia a mano): se pone solo.
+    expect(validarSolicitudRecruiter(solicitud({ linkedin: "www.linkedin.com/in/pablo-pio-ramos", web: "nube.example.com" })).datos).toMatchObject({
+      linkedin: "https://www.linkedin.com/in/pablo-pio-ramos",
+      web: "https://nube.example.com",
+    });
+    expect(validarSolicitudRecruiter(solicitud({ web: "nube con espacios" })).errores).toMatchObject({ web: "url" });
   });
 
   it("email de la empresa: mismo dominio que la web, nunca uno gratuito", () => {

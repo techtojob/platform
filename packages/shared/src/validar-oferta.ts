@@ -2,6 +2,7 @@ import type { DatosOferta, DatosOfertaUsuario } from "./contratos";
 import { MONEDAS } from "./contratos";
 import { PAISES } from "./paises";
 import { ordenarPaises, PAISES_PUBLICO } from "./remoto";
+import { conProtocolo } from "./recruiters";
 import { esIdioma, NIVELES_IDIOMA } from "./idiomas";
 import { AREAS, MODALIDADES, SENIORITY } from "./listas";
 import { TECNOLOGIAS } from "./tecnologias";
@@ -214,7 +215,7 @@ export function validarOfertaUsuario(
   if (!nombre) errores.empresa = "falta";
   else if (nombre.length < 2) errores.empresa = "corto";
   else if (nombre.length > 80) errores.empresa = "largo";
-  const web = texto(empresa.web);
+  const web = conProtocolo(texto(empresa.web));
   if (web && (!esUrlWeb(web) || web.length > 200)) errores.empresaWeb = "url";
 
   const base = validarOferta({ ...e, empresaId: "la-de-la-oferta", autorizada: false });
