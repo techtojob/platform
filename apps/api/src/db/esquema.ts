@@ -105,8 +105,14 @@ export const ofertas = pgTable(
     titulo: text("titulo").notNull(),
     /** Resumen de 3–4 líneas que escribe el staff, en el idioma de la oferta. */
     resumen: text("resumen"),
-    /** La oferta completa (tareas, requisitos…), en texto. Párrafos separados por una línea en blanco. */
+    /**
+     * La oferta completa, tal cual la escribe la empresa. SOLO se publica si `autorizada`
+     * (la empresa nos deja). Párrafos separados por una línea en blanco.
+     */
     descripcion: text("descripcion"),
+    /** Lo que escribe el staff (con la IA): siempre se publica. Puntos cortos. */
+    responsabilidades: text("responsabilidades").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
+    requisitos: text("requisitos").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
     /** Idioma en que está escrita la oferta. */
     idioma: text("idioma").$type<Idioma>().notNull(),
     /** Enlace a la oferta en la web de la empresa: a donde se manda a la gente. */

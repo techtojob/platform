@@ -116,7 +116,9 @@ export async function subirOferta(db: Db, userId: string, d: DatosOfertaUsuario)
     empresaId = empresa.id;
   }
   const { empresa: _e, ...resto } = d;
-  return crearOferta(db, { ...resto, empresaId, autorizada: false }, { autorId: userId });
+  // La sube alguien de la empresa que dice tener permiso: cuenta como autorizada (sale su descripción
+  // y va a Google for Jobs). El staff lo puede desmarcar al revisarla.
+  return crearOferta(db, { ...resto, empresaId, autorizada: true }, { autorId: userId });
 }
 
 /**

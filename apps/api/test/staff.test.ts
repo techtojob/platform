@@ -57,6 +57,7 @@ const nueva = {
   empresaId: "emp-teide",
   titulo: "QA Tester Junior",
   resumen: "Pruebas manuales y automáticas.",
+  responsabilidades: ["Probar la web antes de cada versión"],
   idioma: "es",
   urlOriginal: "https://teide.example.com/empleo/qa",
   area: "desarrollo",

@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+import { ofertas } from "../src/db/esquema";
 import { beforeAll, describe, expect, it } from "vitest";
 import { crearApp } from "../src/app";
 import type { Db } from "../src/db/cliente";
@@ -170,7 +172,12 @@ describe("paginación", () => {
 });
 
 describe("una oferta entera", () => {
-  it("trae la descripción, el enlace para aplicar y la web de la empresa", async () => {
+  it("trae el enlace para aplicar y la web de la empresa; la descripción, solo si la empresa nos autoriza", async () => {
+    await db.update(ofertas).set({ autorizada: false, responsabilidades: ["Mantener pipelines"] }).where(eq(ofertas.id, "p3v8d2xe"));
+    const sin = await obtenerOferta(db, "p3v8d2xe");
+    expect(sin?.descripcion).toBeNull();
+    expect(sin?.responsabilidades).toEqual(["Mantener pipelines"]);
+    await db.update(ofertas).set({ autorizada: true }).where(eq(ofertas.id, "p3v8d2xe"));
     const o = await obtenerOferta(db, "p3v8d2xe");
     expect(o?.titulo).toBe("Junior Data Engineer");
     expect(o?.descripcion).toContain("Python");

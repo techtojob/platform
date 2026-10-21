@@ -32,7 +32,11 @@ export type OfertaListado = {
 
 /** Una oferta entera (GET /ofertas/:id): lo del listado y además el texto completo y el enlace para aplicar. */
 export type OfertaDetalle = OfertaListado & {
+  /** El texto de la empresa: solo viene si la empresa nos autoriza (si no, null). */
   descripcion: string | null;
+  /** Lo que escribe el staff (con la IA). */
+  responsabilidades: string[];
+  requisitos: string[];
   /** A donde se manda a la gente para aplicar: la oferta en la web de la empresa. */
   urlOriginal: string;
   empresa: OfertaListado["empresa"] & { web: string | null };
@@ -115,8 +119,13 @@ export type Moneda = (typeof MONEDAS)[number];
 export type DatosOferta = {
   empresaId: string;
   titulo: string;
+  /** Lo escribe el staff (con la IA): 1–2 frases. Sale en el listado y en la oferta. */
   resumen: string | null;
+  /** El texto de la empresa: solo se publica si `autorizada`. */
   descripcion: string | null;
+  /** Lo escribe el staff (con la IA): siempre se publica. */
+  responsabilidades: string[];
+  requisitos: string[];
   /** Idioma en que está escrita. */
   idioma: Idioma;
   urlOriginal: string;

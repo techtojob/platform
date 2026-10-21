@@ -186,7 +186,7 @@ describe("subir ofertas (recruiters)", () => {
     expect(r.status).toBe(201);
     const { id } = (await r.json()) as { id: string };
     const [o] = await db.select().from(ofertas).where(eq(ofertas.id, id));
-    expect(o).toMatchObject({ estado: "pendiente", origen: "usuario", autorId: idAna, autorizada: false });
+    expect(o).toMatchObject({ estado: "pendiente", origen: "usuario", autorId: idAna, autorizada: true });
     const [e] = await db.select().from(empresas).where(eq(empresas.id, o!.empresaId));
     expect(e).toMatchObject({ nombre: "Nube Canaria", ats: null, sincronizar: false });
 
