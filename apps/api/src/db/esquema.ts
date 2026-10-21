@@ -140,6 +140,8 @@ export const ofertas = pgTable(
     /** La empresa nos autoriza a publicarla. Solo esas llevan los datos para Google for Jobs. */
     autorizada: boolean("autorizada").notNull().default(false),
     estado: text("estado").$type<EstadoOferta>().notNull().default("pendiente"),
+    /** Ofertas que sube cualquiera desde la web (origen "usuario"): quién la subió. */
+    autorId: text("autor_id").references(() => usuarios.id, { onDelete: "set null" }),
     motivoRechazo: text("motivo_rechazo"),
     /** Quién del staff la revisó y cuándo. */
     revisadaPor: text("revisada_por"),
@@ -154,6 +156,7 @@ export const ofertas = pgTable(
     index("ofertas_tecnologias_idx").using("gin", t.tecnologias),
     index("ofertas_remoto_paises_idx").using("gin", t.remotoPaises),
     uniqueIndex("ofertas_externas_idx").on(t.empresaId, t.fuenteAts, t.idExterno),
+    index("ofertas_autor_idx").on(t.autorId),
   ],
 );
 

@@ -85,6 +85,7 @@ export function BarraFiltrosStaff({ filtros }: { filtros: FiltrosStaff }) {
         >
           <option value="">{t("staff.filtros.todos")}</option>
           <option value="manual">{t("staff.filtros.manual")}</option>
+          <option value="usuario">{t("staff.filtros.usuario")}</option>
           <option value="automatica">{t("staff.filtros.automatica")}</option>
           {ATS.map((a) => (
             <option key={a} value={`automatica:${a}`}>

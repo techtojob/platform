@@ -12,6 +12,12 @@ import { obtenerCuenta } from "@/lib/api";
 
 export const metadata: Metadata = { robots: { index: false } };
 
+/** ?volver=… → a dónde ir después de entrar. */
+const VOLVER: Record<string, "/cuenta/ofertas" | "/cuenta/ofertas/nueva"> = {
+  ofertas: "/cuenta/ofertas",
+  publicar: "/cuenta/ofertas/nueva",
+};
+
 /** Errores que puede devolver el inicio de sesión (?error=…) y su texto. */
 const ERRORES = ["discord_solo_vincular", "account_not_linked", "access_denied"] as const;
 
@@ -42,15 +48,17 @@ export default function PaginaEntrar({ searchParams }: PageProps<"/[locale]/entr
 }
 
 async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/entrar">, "searchParams">) {
-  const [t, locale, cabeceras, { error }] = await Promise.all([
+  const [t, locale, cabeceras, { error, volver }] = await Promise.all([
     getTranslations("entrar"),
     getLocale(),
     headers(),
     searchParams,
   ]);
-  // Si ya ha entrado, a su cuenta.
+  // A dónde volver después de entrar: solo a sitios conocidos (nunca a una dirección que venga de fuera).
+  const destino = VOLVER[typeof volver === "string" ? volver : ""] ?? "/cuenta/ajustes";
+  // Si ya ha entrado, a donde iba.
   if (await obtenerCuenta(cabeceras.get("cookie")).catch(() => null)) {
-    redirect({ href: "/cuenta/ajustes", locale });
+    redirect({ href: destino, locale });
   }
 
   const codigo = typeof error === "string" ? error : undefined;
@@ -64,7 +72,7 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/entrar">, "
         </Aviso>
       )}
       <BotonesEntrar
-        volverA={getPathname({ href: "/cuenta/ajustes", locale: locale as Locale })}
+        volverA={getPathname({ href: destino, locale: locale as Locale })}
         siFalla={getPathname({ href: "/entrar", locale: locale as Locale })}
       />
       <p className="text-sm text-suave lg:hidden">{t("privacidad")}</p>

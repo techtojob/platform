@@ -11,8 +11,10 @@ import {
   MODALIDADES,
   MONEDAS,
   PAISES,
+  PAISES_PUBLICO,
   SENIORITY,
   validarOferta,
+  validarOfertaUsuario,
   type Comprobacion,
   type EmpresaStaff,
   type OfertaListado,
@@ -20,10 +22,11 @@ import {
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { guardarOferta } from "@/app/[locale]/staff/acciones";
+import { importarComoUsuario, subirOferta } from "@/app/[locale]/cuenta/ofertas/acciones";
 import { FilaOferta } from "@/components/ofertas/fila-oferta";
 import { Boton, Campo, Casilla } from "@/components/ui";
 import { cn } from "@/lib/cn";
-import { datosParaApi, VALORES_VACIOS, type ValoresOferta } from "@/lib/formulario-oferta";
+import { datosParaApi, datosUsuarioParaApi, VALORES_VACIOS, type ValoresOferta } from "@/lib/formulario-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { PasoEnlace } from "./paso-enlace";
 import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/components/formulario/piezas";
@@ -32,20 +35,20 @@ import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorRemoto } from "./selector-remoto";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
-/** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña. */
-const CLAVE_BORRADOR = "ttj-staff-borrador-oferta";
+/** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña (uno para el staff y otro para el resto). */
+const CLAVES_BORRADOR = { staff: "ttj-staff-borrador-oferta", usuario: "ttj-borrador-oferta" } as const;
 const sinSuscripcion = () => () => {};
-function leerBorrador(): string | null {
+function leerBorrador(clave: string): string | null {
   try {
-    return localStorage.getItem(CLAVE_BORRADOR);
+    return localStorage.getItem(clave);
   } catch {
     return null;
   }
 }
-function guardarBorrador(valor: string | null) {
+function guardarBorrador(clave: string, valor: string | null) {
   try {
-    if (valor === null) localStorage.removeItem(CLAVE_BORRADOR);
-    else localStorage.setItem(CLAVE_BORRADOR, valor);
+    if (valor === null) localStorage.removeItem(clave);
+    else localStorage.setItem(clave, valor);
   } catch {
     /* sin almacenamiento (ventana privada…): no pasa nada */
   }
@@ -55,6 +58,9 @@ function guardarBorrador(valor: string | null) {
 const SECCION_DE: Record<string, string> = {
   urlOriginal: "seccion-enlace",
   empresaId: "seccion-oferta",
+  empresa: "seccion-oferta",
+  empresaWeb: "seccion-oferta",
+  declaracion: "seccion-enviar",
   titulo: "seccion-oferta",
   idioma: "seccion-oferta",
   resumen: "seccion-oferta",
@@ -84,6 +90,12 @@ type Props = {
    * Solo lo ve el staff: para publicarla hace falta un resumen propio, salvo que la empresa lo autorice.
    */
   original?: { texto: string | null } | null;
+  /**
+   * "staff" (por defecto): elige la empresa, puede publicar al momento.
+   * "usuario": la sube cualquiera con su cuenta. Escribe la empresa, solo España y Latinoamérica,
+   * marca que es real y la manda a revisar.
+   */
+  modo?: "staff" | "usuario";
 };
 
 /**
@@ -91,7 +103,9 @@ type Props = {
  * enlace → la oferta → el puesto → dónde → salario → idiomas. A la derecha (abajo en el móvil),
  * la vista previa en el listado, lo que falta y los botones para guardar o publicar.
  */
-export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null }: Props) {
+export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff" }: Props) {
+  const publico = modo === "usuario";
+  const claveBorrador = CLAVES_BORRADOR[modo];
   const t = useTranslations("staff");
   const tr = useTranslations();
   const locale = useLocale();
@@ -103,6 +117,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
   const [erroresServidor, ponerErroresServidor] = useState<Record<string, string>>({});
   const [errorGeneral, ponerErrorGeneral] = useState<string | null>(null);
   const [comprobaciones, marcar] = useState<Comprobacion[]>([]);
+  const [declaracion, declarar] = useState(false);
   const [descartado, descartar] = useState(false);
   const [guardando, empezar] = useTransition();
   const alerta = useRef<HTMLParagraphElement>(null);
@@ -114,21 +129,26 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
 
   // Borrador: lo escrito en una oferta nueva se guarda en este navegador, por si se cierra la pestaña.
   // Al volver, se ofrece seguir con él (no se pone solo: igual se quiere empezar otra).
-  const borrador = useSyncExternalStore(sinSuscripcion, leerBorrador, () => null);
+  const borrador = useSyncExternalStore(sinSuscripcion, () => leerBorrador(claveBorrador), () => null);
   const vacio = JSON.stringify(v) === JSON.stringify(VALORES_VACIOS);
   useEffect(() => {
     if (!nueva || vacio) return;
-    const temporizador = setTimeout(() => guardarBorrador(JSON.stringify(v)), 400);
+    const temporizador = setTimeout(() => guardarBorrador(claveBorrador, JSON.stringify(v)), 400);
     return () => clearTimeout(temporizador);
-  }, [v, nueva, vacio]);
+  }, [v, nueva, vacio, claveBorrador]);
 
   // Lo que falta o está mal, con las mismas reglas que el API.
   const errores = useMemo(() => {
+    if (publico) {
+      const e: Record<string, string> = { ...validarOfertaUsuario(datosUsuarioParaApi(v, declaracion)).errores };
+      if (!v.sinSalario && !v.salarioMin.trim() && !v.salarioMax.trim()) e.salario = "falta";
+      return e;
+    }
     const e: Record<string, string> = { ...validarOferta(datosParaApi(v, v.empresa?.id ?? "nueva")).errores };
     if (!v.empresa) e.empresaId = "falta";
     if (!v.sinSalario && !v.salarioMin.trim() && !v.salarioMax.trim()) e.salario = "falta";
     return e;
-  }, [v]);
+  }, [v, publico, declaracion]);
   const visibles = intentado ? { ...errores, ...erroresServidor } : erroresServidor;
   const mensajeError = (campo: string) => {
     const codigo = visibles[campo];
@@ -158,9 +178,9 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
       return;
     }
     empezar(async () => {
-      // Si sale bien, el servidor lleva a la oferta; el borrador ya no hace falta.
-      if (nueva) guardarBorrador(null);
-      const r = await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
+      // Si sale bien, el servidor lleva a la oferta (o a "Mis ofertas"); el borrador ya no hace falta.
+      if (nueva) guardarBorrador(claveBorrador, null);
+      const r = publico ? await subirOferta(v, declaracion, locale) : await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
       if (r?.errores) ponerErroresServidor(r.errores);
       if (r?.error) ponerErrorGeneral(r.error);
       if (r?.errores || r?.error) requestAnimationFrame(() => alerta.current?.focus());
@@ -192,10 +212,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
 
   const paises = useMemo(() => {
     const nombres = new Intl.DisplayNames([locale], { type: "region" });
-    return PAISES.map((c) => ({ codigo: c, nombre: nombres.of(c) ?? c })).sort((a, b) =>
+    // Quien sube una oferta solo puede elegir España o Latinoamérica: es lo que publica la bolsa.
+    return (publico ? PAISES_PUBLICO : PAISES).map((c) => ({ codigo: c, nombre: nombres.of(c) ?? c })).sort((a, b) =>
       a.codigo === "ES" ? -1 : b.codigo === "ES" ? 1 : a.nombre.localeCompare(b.nombre, locale),
     );
-  }, [locale]);
+  }, [locale, publico]);
 
   const cifra = (n: number | null) => (n == null ? null : format.number(n, { style: "currency", currency: v.moneda, maximumFractionDigits: 0 }));
   const lecturaSalario = [cifra(salarioMin), cifra(salarioMax)].filter(Boolean).join(" – ");
@@ -221,7 +242,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                   try {
                     ponerValores({ ...VALORES_VACIOS, ...(JSON.parse(borrador) as Partial<ValoresOferta>) });
                   } catch {
-                    guardarBorrador(null);
+                    guardarBorrador(claveBorrador, null);
                   }
                 }}
                 className="min-h-10 rounded-full bg-ink px-4 text-white hover:bg-acento hover:text-ink"
@@ -231,7 +252,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
               <button
                 type="button"
                 onClick={() => {
-                  guardarBorrador(null);
+                  guardarBorrador(claveBorrador, null);
                   descartar(true);
                 }}
                 className="min-h-10 rounded-full px-3 underline hover:bg-ink/10"
@@ -243,15 +264,46 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
         )}
 
         <Seccion id="seccion-enlace" numero={1} titulo={t("form.seccionEnlace")} ayuda={nueva ? t("form.seccionEnlaceAyuda") : undefined}>
-          <PasoEnlace valores={v} onCambio={(n) => { ponerValores(n); ponerErroresServidor({}); }} ofertaId={ofertaId} error={mensajeError("urlOriginal")} />
+          <PasoEnlace
+            valores={v}
+            onCambio={(n) => { ponerValores(n); ponerErroresServidor({}); }}
+            ofertaId={ofertaId}
+            error={mensajeError("urlOriginal")}
+            {...(publico && { publico, importar: importarComoUsuario })}
+          />
         </Seccion>
 
         <Seccion id="seccion-oferta" numero={2} titulo={t("form.seccionOferta")}>
-          <SelectorEmpresa empresas={empresas} valor={v.empresa} onCambio={(empresa) => cambiar({ empresa })} error={mensajeError("empresaId")} />
-          <div className="flex flex-col gap-1 rounded-2xl border border-borde p-3">
-            <Casilla etiqueta={t("form.autorizada")} checked={v.autorizada} onChange={(e) => cambiar({ autorizada: e.target.checked })} />
-            <p className="pl-8 text-sm text-suave">{t("form.autorizadaAyuda")}</p>
-          </div>
+          {publico ? (
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Campo
+                etiqueta={t("form.empresaNombre")}
+                value={v.empresa?.nombre ?? ""}
+                maxLength={80}
+                autoComplete="organization"
+                onChange={(e) => cambiar({ empresa: { id: null, nombre: e.target.value, web: v.empresa?.web ?? "" } })}
+                error={mensajeError("empresa")}
+              />
+              <Campo
+                etiqueta={t("form.empresaWeb")}
+                type="url"
+                inputMode="url"
+                placeholder="https://"
+                value={v.empresa?.web ?? ""}
+                maxLength={200}
+                onChange={(e) => cambiar({ empresa: { id: null, nombre: v.empresa?.nombre ?? "", web: e.target.value } })}
+                error={mensajeError("empresaWeb")}
+              />
+            </div>
+          ) : (
+            <>
+              <SelectorEmpresa empresas={empresas} valor={v.empresa} onCambio={(empresa) => cambiar({ empresa })} error={mensajeError("empresaId")} />
+              <div className="flex flex-col gap-1 rounded-2xl border border-borde p-3">
+                <Casilla etiqueta={t("form.autorizada")} checked={v.autorizada} onChange={(e) => cambiar({ autorizada: e.target.checked })} />
+                <p className="pl-8 text-sm text-suave">{t("form.autorizadaAyuda")}</p>
+              </div>
+            </>
+          )}
           <Campo
             etiqueta={t("form.titulo")}
             value={v.titulo}
@@ -458,14 +510,18 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 rounded-tarjeta border border-borde bg-tarjeta p-5 shadow-tarjeta">
+        <div id="seccion-enviar" className="flex flex-col gap-4 rounded-tarjeta border border-borde bg-tarjeta p-5 shadow-tarjeta">
           <p
             ref={alerta}
             tabIndex={-1}
             role={intentado && (faltan.length > 0 || errorGeneral) ? "alert" : undefined}
             className={cn("text-sm font-bold outline-none", faltan.length ? (intentado ? "text-peligro" : "text-texto") : "text-enlace")}
           >
-            {errorGeneral ? t("errorGeneral") : faltan.length ? t("form.faltan", { count: faltan.length }) : t("form.listo")}
+            {errorGeneral
+              ? publico && t.has(`publicar.errores.${errorGeneral}` as never)
+                ? t(`publicar.errores.${errorGeneral}` as never)
+                : t("errorGeneral")
+              : faltan.length ? t("form.faltan", { count: faltan.length }) : t("form.listo")}
           </p>
           {faltan.length > 0 && (
             <ul className="flex flex-wrap gap-1.5">
@@ -482,7 +538,23 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             </ul>
           )}
 
-          {nueva ? (
+          {publico ? (
+            <>
+              <div className="flex flex-col gap-1 border-t border-borde pt-4">
+                <Casilla
+                  etiqueta={t("publicar.declaracion")}
+                  checked={declaracion}
+                  onChange={(e) => declarar(e.target.checked)}
+                  className="items-start py-1 [&>input]:mt-0.5"
+                />
+                <TextoError>{mensajeError("declaracion")}</TextoError>
+              </div>
+              <Boton type="submit" tamano="lg" className="w-full" disabled={guardando}>
+                {guardando ? t("guardando") : t("publicar.enviar")}
+              </Boton>
+              <p className="-mt-2 text-xs text-suave">{t("publicar.enviarAyuda")}</p>
+            </>
+          ) : nueva ? (
             <>
               <fieldset className="flex flex-col gap-1 border-t border-borde pt-4">
                 <legend className="mb-1 pt-4 text-xs font-bold uppercase tracking-[0.12em] text-suave">{t("acciones.antesDePublicar")}</legend>

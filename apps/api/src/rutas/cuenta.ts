@@ -10,6 +10,7 @@ import { PAISES, validarPerfil, validarUbicacion } from "@techtojob/shared";
 import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicios/talento";
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
+import { rutasMisOfertas } from "./mis-ofertas";
 
 /**
  * "Mi cuenta". Necesita sesión iniciada (la cookie la manda la web).
@@ -19,6 +20,7 @@ import { actualizarEstadoDiscord } from "../servicios/discord";
  * GET  /cuenta/perfil              → mi perfil de talento (o null) y sugerencias para crearlo.
  * PUT  /cuenta/perfil              → crearlo o guardarlo.
  * DELETE /cuenta/perfil            → borrarlo.
+ * /cuenta/ofertas/…               → las ofertas que subo yo (ver rutas/mis-ofertas.ts).
  * PUT  /cuenta/ubicacion           { pais, region } → dónde vive (obligatorio al completar la cuenta).
  * GET  /cuenta/datos               → todo lo que guardamos de la persona, en JSON.
  * DELETE /cuenta                   { confirmacion: <su email> } → borra la cuenta y todo lo suyo.
@@ -51,6 +53,7 @@ export const rutasPerfilPropio = new Hono<Entorno>()
 export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
   .route("/perfil", rutasPerfilPropio)
+  .route("/ofertas", rutasMisOfertas)
   .get("/", async (c) => c.json(await datosCuenta(c.var.db, c.var.usuario, await opciones(c.var.db, c.env, c.var.usuario))))
   .put("/ubicacion", async (c) => {
     const r = validarUbicacion(await c.req.json().catch(() => ({})), PAISES);

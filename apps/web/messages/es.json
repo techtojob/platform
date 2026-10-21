@@ -125,7 +125,8 @@
     "verTodasPaises": "Verlas igualmente",
     "desdeDonde": "Desde dónde",
     "puedesDesde": "Puedes trabajar desde {pais}",
-    "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}."
+    "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}.",
+    "publicarLlamada": "¿Contratas? <enlace>Publica tu oferta gratis</enlace>: la revisamos y sale en la bolsa."
   },
   "regiones": {
     "eu": "Europa",
@@ -189,6 +190,7 @@
     "perfilEditar": "Editar mi perfil",
     "perfilVer": "Ver mi perfil",
     "miPerfil": "Mi perfil",
+    "misOfertas": "Mis ofertas",
     "menu": "Menú de la cuenta de {nombre}",
     "panelStaff": "Panel de staff",
     "datos": {
@@ -343,7 +345,8 @@
       "revisada": "Revisada {tiempo}",
       "yaNoSale": "Ya no sale en la bolsa",
       "motivo": "Motivo: {motivo}",
-      "automatica": "Automática"
+      "automatica": "Automática",
+      "usuario": "De usuario"
     },
     "detalle": {
       "publicada": "Publicada {tiempo}",
@@ -355,7 +358,9 @@
       "automatica": "Automática · {fuente}",
       "original": "Texto original de la empresa · solo staff",
       "originalAyuda": "No se publica: no es nuestro. Léelo para comprobar los datos. Si quieres, escribe un resumen con tus palabras (es opcional). Solo se publica entero si la empresa lo autoriza.",
-      "originalVacio": "La empresa no puso texto."
+      "originalVacio": "La empresa no puso texto.",
+      "subidaPor": "Subida por {nombre} ({email})",
+      "subidaPorBorrada": "Subida por alguien que ya borró su cuenta"
     },
     "comprobaciones": {
       "empresa": "La empresa existe y es quien dice ser",
@@ -501,7 +506,10 @@
         "ciudad": "Ciudad o país",
         "pais": "País",
         "salario": "Salario",
-        "idiomasRequeridos": "Idiomas"
+        "idiomasRequeridos": "Idiomas",
+        "empresa": "Empresa",
+        "empresaWeb": "Web de la empresa",
+        "declaracion": "Confirmar"
       },
       "crearYPublicar": "Crear y publicar",
       "paraPublicar": "Para publicar ya, marca las tres comprobaciones.",
@@ -518,7 +526,9 @@
       "otroPais": "+ Otro país…",
       "paisesElegidos": "Desde dónde se puede trabajar",
       "quitarSitio": "Quitar {nombre}",
-      "seVeraAsi": "Se verá así:"
+      "seVeraAsi": "Se verá así:",
+      "empresaNombre": "Empresa",
+      "repetidaPublica": "Esta oferta ya está en TechToJob: «{titulo}» de {empresa}."
     },
     "errores": {
       "falta": "Falta este dato.",
@@ -566,7 +576,17 @@
       },
       "remotoPaises": {
         "falta": "Elige desde dónde se puede trabajar en remoto: cualquier país o al menos uno.",
-        "codigo": "Hay un país que no conocemos."
+        "codigo": "Hay un país que no conocemos.",
+        "fuera": "Por ahora solo publicamos ofertas que se puedan hacer desde España o Latinoamérica: elige alguno de esos países (o cualquier país)."
+      },
+      "empresa": {
+        "falta": "Escribe el nombre de la empresa."
+      },
+      "declaracion": {
+        "falta": "Marca la casilla para confirmar que es real y tienes permiso."
+      },
+      "pais": {
+        "fuera": "Por ahora solo publicamos ofertas en España o Latinoamérica."
       }
     },
     "reportes": {
@@ -643,6 +663,7 @@
       },
       "origen": "Origen",
       "manual": "Manual",
+      "usuario": "Subidas por usuarios",
       "automatica": "Automática (todas)",
       "automaticaDe": "Automática · {fuente}",
       "desde": "Se puede hacer desde",
@@ -691,6 +712,17 @@
         "rechazar": "Rechazada. Esta es la siguiente."
       },
       "fin": "¡Listo! No quedan más con estos filtros."
+    },
+    "publicar": {
+      "declaracion": "La oferta es real y tengo permiso para publicarla (soy de la empresa o me lo han pedido).",
+      "enviar": "Enviar para revisar",
+      "enviarAyuda": "La revisa el staff antes de que salga. Puedes tener 3 ofertas a la vez.",
+      "errores": {
+        "limite": "Ya tienes 3 ofertas en marcha. Retira una para subir otra.",
+        "repetida": "Esta oferta ya está en TechToJob.",
+        "empresa": "Esa empresa nos ha pedido que no publiquemos sus ofertas.",
+        "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar."
+      }
     }
   },
   "formulario": {
@@ -846,6 +878,7 @@
         "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
+        "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
         "<b>Los reportes que haces:</b> qué perfil reportas y por qué. La persona reportada no sabe quién la ha reportado.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
         "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
@@ -875,7 +908,8 @@
       "items": [
         "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
         "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
-        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada."
+        "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada.",
+        "<b>Las ofertas que subes:</b> las que aún no se han revisado se borran si borras tu cuenta; las publicadas se quedan en la bolsa sin tu nombre."
       ]
     },
     "derechos": {
@@ -951,5 +985,37 @@
       "region": "Elige tu comunidad, estado o provincia.",
       "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
     }
+  },
+  "misOfertas": {
+    "titulo": "Mis ofertas",
+    "entradilla": "Las ofertas que has subido. Antes de salir en la bolsa las revisa el staff.",
+    "enviada": "¡Oferta enviada! La revisamos y, si está bien, sale en la bolsa. Aquí verás en qué estado está.",
+    "enMarcha": "{enMarcha} de {limite} en marcha",
+    "quedan": "{count, plural, one {Puedes subir # más.} other {Puedes subir # más.}}",
+    "sinHueco": "Retira una o espera a que caduque (las publicadas duran 45 días) para subir otra.",
+    "sinHuecoTitulo": "Ya tienes {limite} ofertas en marcha",
+    "publicar": "Publicar una oferta",
+    "publicarTitulo": "Publicar una oferta",
+    "publicarEntradilla": "Gratis. Pega el enlace y rellenamos lo que podamos. El staff la revisa antes de que salga en la bolsa. Solo ofertas que se puedan hacer desde España o Latinoamérica.",
+    "verMias": "Ver mis ofertas",
+    "vacio": "Aún no has subido ninguna oferta.",
+    "estados": {
+      "pendiente": "Pendiente de revisar",
+      "publicada": "Publicada",
+      "rechazada": "No publicada",
+      "caducada": "Caducada",
+      "retirada": "Retirada"
+    },
+    "hasta": "Sale en la bolsa hasta el {fecha}.",
+    "pendienteAyuda": "Enviada el {fecha}. La revisamos lo antes posible.",
+    "enviadaEl": "Enviada el {fecha}.",
+    "motivo": "Por qué no se ha publicado:",
+    "retirar": "Retirar",
+    "retirarPendiente": "¿Retirarla? Se borra y no se publicará.",
+    "retirarPublicada": "¿Retirarla? Dejará de salir en la bolsa.",
+    "siRetirar": "Sí, retirarla",
+    "retirando": "Retirando…",
+    "cancelar": "Cancelar",
+    "errorRetirar": "No se ha podido retirar. Inténtalo de nuevo."
   }
 }

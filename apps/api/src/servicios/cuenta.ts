@@ -1,5 +1,5 @@
 import type { Cuenta } from "@techtojob/shared";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
@@ -52,6 +52,8 @@ export async function datosCuenta(
  */
 export async function borrarCuenta(db: Db, userId: string) {
   await db.update(ofertas).set({ revisadaPor: null }).where(eq(ofertas.revisadaPor, userId));
+  // Las ofertas que subió y nadie ha revisado aún se borran; las ya publicadas se quedan, sin autor.
+  await db.delete(ofertas).where(and(eq(ofertas.autorId, userId), eq(ofertas.estado, "pendiente")));
   await db.delete(usuarios).where(eq(usuarios.id, userId));
 }
 
@@ -60,7 +62,7 @@ export async function borrarCuenta(db: Db, userId: string) {
  * Sin tokens ni datos internos de seguridad.
  */
 export async function exportarDatos(db: Db, userId: string) {
-  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas] = await Promise.all([
+  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas] = await Promise.all([
     db.select().from(usuarios).where(eq(usuarios.id, userId)).limit(1),
     db.select({ proveedor: cuentas.providerId, creadaEn: cuentas.createdAt }).from(cuentas).where(eq(cuentas.userId, userId)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1),
@@ -72,6 +74,10 @@ export async function exportarDatos(db: Db, userId: string) {
       .innerJoin(perfiles, eq(perfiles.userId, reportesPerfil.perfilUserId))
       .where(eq(reportesPerfil.reportadoPor, userId)),
     db.select({ creadaEn: sesiones.createdAt, caducaEn: sesiones.expiresAt, ip: sesiones.ipAddress, navegador: sesiones.userAgent }).from(sesiones).where(eq(sesiones.userId, userId)),
+    db
+      .select({ titulo: ofertas.titulo, enlace: ofertas.urlOriginal, estado: ofertas.estado, creadaEn: ofertas.creadaEn, publicadaEn: ofertas.publicadaEn })
+      .from(ofertas)
+      .where(eq(ofertas.autorId, userId)),
   ]);
   return {
     exportadoEn: new Date().toISOString(),
@@ -92,6 +98,7 @@ export async function exportarDatos(db: Db, userId: string) {
     emblemas: susEmblemas.map(({ tipo, nombre, otorgadoEn, caducaEn }) => ({ tipo, nombre, otorgadoEn, caducaEn })),
     reportesQueHiciste: reportesHechos,
     sesiones: sesionesActivas,
+    ofertasQueSubiste: ofertasSubidas,
   };
 }
 

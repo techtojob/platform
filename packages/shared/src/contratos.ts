@@ -135,8 +135,10 @@ export type DatosOferta = {
 
 /** Una oferta vista por el staff: todo, en cualquier estado. */
 export type OfertaStaff = DatosOferta & {
-  /** "manual" (la metió el staff) o "automatica" (leída de la página de empleo de la empresa). */
+  /** "manual" (la metió el staff), "automatica" (leída de la página de empleo de la empresa) o "usuario" (la subió alguien desde la web). */
   origen: OrigenOferta;
+  /** Si la subió alguien desde la web: quién (null si borró su cuenta). */
+  autor: { id: string; nombre: string; email: string } | null;
   /** Si es automática, de qué ATS viene. */
   fuenteAts: Ats | null;
   /** Si es automática, el texto original de la empresa. SOLO para el staff: no se publica. */
@@ -151,6 +153,42 @@ export type OfertaStaff = DatosOferta & {
   publicadaEn: string | null;
   caducaEn: string | null;
   revisadaEn: string | null;
+};
+
+/* ── Ofertas que sube cualquiera ──────────────────────────────── */
+
+/** Cuántas ofertas puede tener una cuenta a la vez (pendientes de revisar + publicadas sin caducar). */
+export const LIMITE_OFERTAS_USUARIO = 3;
+
+/**
+ * Lo que manda quien sube una oferta (POST /mis-ofertas): como la del staff, pero la empresa
+ * se escribe (nombre y web) en vez de elegirse, y no puede marcar "autorizada".
+ */
+export type DatosOfertaUsuario = Omit<DatosOferta, "empresaId" | "autorizada"> & {
+  empresa: { nombre: string; web: string | null };
+};
+
+/** Una oferta en "Mis ofertas". */
+export type MiOferta = {
+  id: string;
+  slug: string;
+  titulo: string;
+  empresa: string;
+  /** "caducada": estaba publicada y ya pasó su fecha. "retirada": la quitó quien la subió. */
+  estado: "pendiente" | "publicada" | "rechazada" | "caducada" | "retirada";
+  motivoRechazo: string | null;
+  /** Fechas ISO. */
+  creadaEn: string;
+  publicadaEn: string | null;
+  caducaEn: string | null;
+};
+
+/** GET /mis-ofertas */
+export type MisOfertas = {
+  ofertas: MiOferta[];
+  limite: number;
+  /** Las que cuentan para el límite (pendientes + publicadas sin caducar). */
+  enMarcha: number;
 };
 
 /** Lo que el staff marca antes de publicar: lo que promete el post-it del listado. */

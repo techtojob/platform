@@ -13,7 +13,7 @@ import {
 } from "@techtojob/shared";
 import { and, asc, count, eq, isNull, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertaIdiomas, ofertas, type Oferta } from "../db/esquema";
+import { empresas, ofertaIdiomas, ofertas, usuarios, type Oferta } from "../db/esquema";
 
 /**
  * Lo que hace el staff con las ofertas: crear, editar, publicar (con comprobaciones),
@@ -53,6 +53,7 @@ export function aStaff(
   o: Oferta,
   empresa: OfertaStaff["empresa"],
   idiomas: Array<{ ofertaId: string; idioma: OfertaStaff["idioma"]; nivel: OfertaStaff["idiomasRequeridos"][number]["nivel"] }>,
+  autor: OfertaStaff["autor"] = null,
 ): OfertaStaff {
   return {
     id: o.id,
@@ -77,6 +78,7 @@ export function aStaff(
     moneda: o.moneda as OfertaStaff["moneda"],
     autorizada: o.autorizada,
     origen: o.origen,
+    autor: autor?.id ? autor : null,
     fuenteAts: o.fuenteAts,
     descripcionOriginal: o.descripcionOriginal,
     idiomasRequeridos: idiomas.filter((i) => i.ofertaId === o.id).map(({ idioma, nivel }) => ({ idioma, nivel })),
@@ -90,17 +92,20 @@ export function aStaff(
 }
 
 export const columnasEmpresa = { id: empresas.id, nombre: empresas.nombre, slug: empresas.slug, web: empresas.web };
+/** Quién subió la oferta (solo las de origen "usuario"; con leftJoin a usuarios). */
+export const columnasAutor = { id: usuarios.id, nombre: usuarios.name, email: usuarios.email };
 
 export async function obtenerOfertaStaff(db: Db, id: string): Promise<OfertaStaff | null> {
   const [fila] = await db
-    .select({ oferta: ofertas, empresa: columnasEmpresa })
+    .select({ oferta: ofertas, empresa: columnasEmpresa, autor: columnasAutor })
     .from(ofertas)
     .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+    .leftJoin(usuarios, eq(usuarios.id, ofertas.autorId))
     .where(eq(ofertas.id, id))
     .limit(1);
   if (!fila) return null;
   const idiomas = await db.select().from(ofertaIdiomas).where(eq(ofertaIdiomas.ofertaId, id));
-  return aStaff(fila.oferta, fila.empresa, idiomas);
+  return aStaff(fila.oferta, fila.empresa, idiomas, fila.autor);
 }
 
 async function empresaDe(db: Db, empresaId: string) {
@@ -150,16 +155,21 @@ async function aprenderPaginaEmpleo(db: Db, empresaId: string, urlOriginal: stri
     .where(and(eq(empresas.id, empresaId), isNull(empresas.ats), eq(empresas.bloqueada, false)));
 }
 
-/** Crea una oferta pendiente de revisar. Devuelve su id. */
-export async function crearOferta(db: Db, d: DatosOferta): Promise<string> {
+/**
+ * Crea una oferta pendiente de revisar. Devuelve su id.
+ * `autorId`: la sube alguien desde la web (origen "usuario"). Entonces no se aprende la página de empleo
+ * de la empresa (lo haría el staff al publicarla): cualquiera podría poner un enlace que no es suyo.
+ */
+export async function crearOferta(db: Db, d: DatosOferta, { autorId }: { autorId?: string } = {}): Promise<string> {
   const empresa = await empresaDe(db, d.empresaId);
-  await aprenderPaginaEmpleo(db, empresa.id, d.urlOriginal);
+  if (!autorId) await aprenderPaginaEmpleo(db, empresa.id, d.urlOriginal);
   const id = nuevoId();
   await db.insert(ofertas).values({
     id,
     slug: slugOferta(d.titulo, empresa.slug),
     ...columnasOferta(d),
-    origen: "manual",
+    origen: autorId ? "usuario" : "manual",
+    autorId: autorId ?? null,
     estado: "pendiente",
   });
   await guardarIdiomas(db, id, d);
@@ -188,6 +198,8 @@ export async function publicarOferta(db: Db, id: string, staffId: string, marcad
   if (validarOferta(actual).errores) {
     throw new ErrorStaff("incompleta", "Faltan datos de la oferta: edítala y rellena los campos marcados.");
   }
+  // Si la subió alguien desde la web, al publicarla (ya revisada) se aprende la página de empleo de la empresa.
+  if (actual.origen === "usuario") await aprenderPaginaEmpleo(db, actual.empresaId, actual.urlOriginal);
   // Una automática se puede publicar sin resumen: sale con sus datos (empresa, puesto, tecnologías,
   // desde dónde, idiomas) y el enlace a la web de la empresa. El texto original nunca se publica.
   const ahora = new Date();

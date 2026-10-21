@@ -153,3 +153,15 @@ export function datosParaApi(v: ValoresOferta, empresaId: string) {
     autorizada: v.autorizada,
   };
 }
+
+/** Lo que se manda al API cuando sube la oferta cualquiera (POST /cuenta/ofertas): la empresa va escrita. */
+export function datosUsuarioParaApi(v: ValoresOferta, declaracion: boolean) {
+  const resto: Partial<ReturnType<typeof datosParaApi>> = datosParaApi(v, "");
+  delete resto.empresaId;
+  delete resto.autorizada;
+  return {
+    ...resto,
+    empresa: { nombre: v.empresa?.nombre.trim() ?? "", web: v.empresa?.web.trim() || null },
+    declaracion,
+  };
+}

@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -102,6 +102,32 @@ export function guardarUbicacionEnApi(cookie: string, pais: string, region: stri
     method: "PUT",
     headers: { cookie, "content-type": "application/json" },
     body: JSON.stringify({ pais, region }),
+  });
+}
+
+/* ── Ofertas que sube cualquiera con su cuenta ── */
+
+export function misOfertasEnApi(cookie: string): Promise<MisOfertas> {
+  return pedir<MisOfertas>("/cuenta/ofertas", { headers: { cookie } });
+}
+
+export function subirOfertaEnApi(cookie: string, datos: unknown): Promise<{ id: string }> {
+  return pedir<{ id: string }>("/cuenta/ofertas", {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
+
+export function retirarOfertaEnApi(cookie: string, id: string): Promise<MisOfertas> {
+  return pedir<MisOfertas>(`/cuenta/ofertas/${encodeURIComponent(id)}/retirar`, { method: "POST", headers: { cookie } });
+}
+
+export function importarComoUsuarioEnApi(cookie: string, url: string): Promise<OfertaImportada> {
+  return pedir<OfertaImportada>("/cuenta/ofertas/importar", {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ url }),
   });
 }
 

@@ -11,7 +11,7 @@ const clasesOpcion = "flex min-h-11 w-full items-center rounded-xl px-3 text-lef
 
 /**
  * Menú de la cuenta en la cabecera (igual en el móvil y en el ordenador):
- * Mi perfil, Mi cuenta, Panel de staff (solo staff) y Cerrar sesión.
+ * Mi perfil, Mis ofertas, Mi cuenta, Panel de staff (solo staff) y Cerrar sesión.
  */
 export function DesplegableCuenta({ nombre, imagen, esStaff }: { nombre: string; imagen: string | null; esStaff: boolean }) {
   const t = useTranslations("cuenta");
@@ -48,6 +48,9 @@ export function DesplegableCuenta({ nombre, imagen, esStaff }: { nombre: string;
         <nav aria-label={t("miCuenta")} className="flex flex-col">
           <Link href="/cuenta/perfil" className={clasesOpcion}>
             {t("miPerfil")}
+          </Link>
+          <Link href="/cuenta/ofertas" className={clasesOpcion}>
+            {t("misOfertas")}
           </Link>
           <Link href="/cuenta/ajustes" className={clasesOpcion}>
             {t("miCuenta")}

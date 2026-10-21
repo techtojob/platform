@@ -106,6 +106,13 @@ async function Contenido({ params, searchParams }: Pick<Props, "params" | "searc
                 {t(`staff.cadena.hecho.${hecho}`)}
               </p>
             )}
+            {oferta.origen === "usuario" && (
+              <p className="rounded-tarjeta bg-postit px-5 py-3 text-sm font-bold text-ink">
+                {oferta.autor
+                  ? t("staff.detalle.subidaPor", { nombre: oferta.autor.nombre, email: oferta.autor.email })
+                  : t("staff.detalle.subidaPorBorrada")}
+              </p>
+            )}
             {(oferta.estado === "rechazada" || oferta.estado === "cerrada") && oferta.motivoRechazo && (
               <p className="rounded-tarjeta border border-peligro bg-tarjeta p-5 font-bold">
                 {t("staff.lista.motivo", { motivo: oferta.motivoRechazo })}

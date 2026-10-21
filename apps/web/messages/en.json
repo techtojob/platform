@@ -125,7 +125,8 @@
     "verTodasPaises": "Show them anyway",
     "desdeDonde": "Where from",
     "puedesDesde": "You can work from {pais}",
-    "noDesde": "Heads up: this offer can't be done from {pais}."
+    "noDesde": "Heads up: this offer can't be done from {pais}.",
+    "publicarLlamada": "Hiring? <enlace>Post your job for free</enlace>: we review it and it goes on the board."
   },
   "regiones": {
     "eu": "Europe",
@@ -189,6 +190,7 @@
     "perfilEditar": "Edit my profile",
     "perfilVer": "See my profile",
     "miPerfil": "My profile",
+    "misOfertas": "My jobs",
     "menu": "Account menu for {nombre}",
     "panelStaff": "Staff panel",
     "datos": {
@@ -343,7 +345,8 @@
       "revisada": "Reviewed {tiempo}",
       "yaNoSale": "No longer on the job board",
       "motivo": "Reason: {motivo}",
-      "automatica": "Automatic"
+      "automatica": "Automatic",
+      "usuario": "From a user"
     },
     "detalle": {
       "publicada": "Published {tiempo}",
@@ -355,7 +358,9 @@
       "automatica": "Automatic · {fuente}",
       "original": "Company's original text · staff only",
       "originalAyuda": "Not published: it isn't ours. Read it to check the details. If you like, write a summary in your own words (optional). It's only published in full if the company authorises it.",
-      "originalVacio": "The company didn't include any text."
+      "originalVacio": "The company didn't include any text.",
+      "subidaPor": "Posted by {nombre} ({email})",
+      "subidaPorBorrada": "Posted by someone who has deleted their account"
     },
     "comprobaciones": {
       "empresa": "The company exists and is who it says it is",
@@ -501,7 +506,10 @@
         "ciudad": "City or country",
         "pais": "Country",
         "salario": "Salary",
-        "idiomasRequeridos": "Languages"
+        "idiomasRequeridos": "Languages",
+        "empresa": "Company",
+        "empresaWeb": "Company website",
+        "declaracion": "Confirm"
       },
       "crearYPublicar": "Create and publish",
       "paraPublicar": "To publish now, tick the three checks.",
@@ -518,7 +526,9 @@
       "otroPais": "+ Another country…",
       "paisesElegidos": "Where people can work from",
       "quitarSitio": "Remove {nombre}",
-      "seVeraAsi": "It will look like this:"
+      "seVeraAsi": "It will look like this:",
+      "empresaNombre": "Company",
+      "repetidaPublica": "This job is already on TechToJob: “{titulo}” at {empresa}."
     },
     "errores": {
       "falta": "This is missing.",
@@ -566,7 +576,17 @@
       },
       "remotoPaises": {
         "falta": "Choose where people can work from: any country or at least one.",
-        "codigo": "There's a country we don't recognise."
+        "codigo": "There's a country we don't recognise.",
+        "fuera": "For now we only publish jobs that can be done from Spain or Latin America: pick one of those countries (or any country)."
+      },
+      "empresa": {
+        "falta": "Write the company name."
+      },
+      "declaracion": {
+        "falta": "Tick the box to confirm it's real and you're allowed to post it."
+      },
+      "pais": {
+        "fuera": "For now we only publish jobs in Spain or Latin America."
       }
     },
     "reportes": {
@@ -643,6 +663,7 @@
       },
       "origen": "Source",
       "manual": "Manual",
+      "usuario": "Posted by users",
       "automatica": "Automatic (all)",
       "automaticaDe": "Automatic · {fuente}",
       "desde": "Can be done from",
@@ -691,6 +712,17 @@
         "rechazar": "Rejected. Here's the next one."
       },
       "fin": "Done! No more with these filters."
+    },
+    "publicar": {
+      "declaracion": "The job is real and I'm allowed to post it (I work at the company or they asked me to).",
+      "enviar": "Send for review",
+      "enviarAyuda": "Staff review it before it goes live. You can have 3 jobs at a time.",
+      "errores": {
+        "limite": "You already have 3 active jobs. Withdraw one to post another.",
+        "repetida": "This job is already on TechToJob.",
+        "empresa": "That company has asked us not to publish its jobs.",
+        "sin_sesion": "Your session has expired. Please log in again."
+      }
     }
   },
   "formulario": {
@@ -846,6 +878,7 @@
         "<b>Where you live:</b> the country and region (autonomous community, state or province) you enter the first time you sign in, to show you the offers you can do from there. You can change it in My account.",
         "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
+        "<b>The jobs you post, if you do:</b> what you write in the form and that you posted them. Staff see your name and email so they can review them.",
         "<b>The reports you make:</b> which profile you report and why. The reported person doesn't know who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
         "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
@@ -875,7 +908,8 @@
       "items": [
         "<b>Your account and profile:</b> until you delete them.",
         "<b>Your sessions:</b> they expire after 30 days without use.",
-        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted."
+        "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted.",
+        "<b>The jobs you post:</b> those not yet reviewed are deleted if you delete your account; published ones stay on the board without your name."
       ]
     },
     "derechos": {
@@ -951,5 +985,37 @@
       "region": "Choose your community, state or province.",
       "desconocido": "Couldn't save. Please try again."
     }
+  },
+  "misOfertas": {
+    "titulo": "My jobs",
+    "entradilla": "The jobs you have posted. Staff review them before they go on the board.",
+    "enviada": "Job sent! We'll review it and, if it's fine, it goes on the board. You can see its status here.",
+    "enMarcha": "{enMarcha} of {limite} active",
+    "quedan": "{count, plural, one {You can post # more.} other {You can post # more.}}",
+    "sinHueco": "Withdraw one or wait for it to expire (published jobs last 45 days) to post another.",
+    "sinHuecoTitulo": "You already have {limite} active jobs",
+    "publicar": "Post a job",
+    "publicarTitulo": "Post a job",
+    "publicarEntradilla": "Free. Paste the link and we'll fill in what we can. Staff review it before it goes on the board. Only jobs that can be done from Spain or Latin America.",
+    "verMias": "See my jobs",
+    "vacio": "You haven't posted any jobs yet.",
+    "estados": {
+      "pendiente": "Pending review",
+      "publicada": "Published",
+      "rechazada": "Not published",
+      "caducada": "Expired",
+      "retirada": "Withdrawn"
+    },
+    "hasta": "On the board until {fecha}.",
+    "pendienteAyuda": "Sent on {fecha}. We'll review it as soon as possible.",
+    "enviadaEl": "Sent on {fecha}.",
+    "motivo": "Why it wasn't published:",
+    "retirar": "Withdraw",
+    "retirarPendiente": "Withdraw it? It will be deleted and won't be published.",
+    "retirarPublicada": "Withdraw it? It will stop showing on the board.",
+    "siRetirar": "Yes, withdraw it",
+    "retirando": "Withdrawing…",
+    "cancelar": "Cancel",
+    "errorRetirar": "It couldn't be withdrawn. Please try again."
   }
 }
