@@ -7,11 +7,12 @@
 //      (o desde cualquier país) y el resto para Latinoamérica.
 //
 // Uso: pnpm --filter api ofertas:sincronizar   → rama dev (DATABASE_URL de .dev.vars)
+//      pnpm --filter api ofertas:sincronizar --cupo 40   → solo para probar: deja entrar 40 hoy (30 % para España)
 // En producción lo lanza cada día .github/workflows/ofertas.yml (DATABASE_URL de los secretos de GitHub).
 import { readFileSync } from "node:fs";
 import { conectar } from "../src/db/cliente";
 import { descubrir, sembrarCandidatas, type EntradaCandidata } from "../src/servicios/descubrir";
-import { descartarPendientesViejas, sincronizarTodas } from "../src/servicios/sincronizar";
+import { CUPO_DIARIO, descartarPendientesViejas, sincronizarTodas } from "../src/servicios/sincronizar";
 
 const url = process.env.DATABASE_URL;
 if (!url) {
@@ -19,6 +20,12 @@ if (!url) {
   process.exit(1);
 }
 const db = conectar(url);
+
+// --cupo N: para probar en la rama dev con más ofertas que las 10 de cada día.
+const i = process.argv.indexOf("--cupo");
+const total = i > 0 ? Number(process.argv[i + 1]) : NaN;
+const cupos = Number.isInteger(total) && total > 0 ? { total, espana: Math.round(total * 0.3) } : CUPO_DIARIO;
+if (cupos !== CUPO_DIARIO) console.log(`Cupo de prueba: ${cupos.total} (${cupos.espana} para España).\n`);
 
 // 1. Descubrir
 const lista = JSON.parse(readFileSync(new URL("../datos/empresas-candidatas.json", import.meta.url), "utf8")) as EntradaCandidata[];
@@ -35,7 +42,7 @@ const descartadas = await descartarPendientesViejas(db);
 if (descartadas) console.log(`Descartadas ${descartadas} automáticas que llevaban más de 14 días sin revisar.\n`);
 
 // 3. Leer
-const resultados = await sincronizarTodas(db);
+const resultados = await sincronizarTodas(db, fetch, new Date(), cupos);
 let errores = 0;
 for (const r of resultados) {
   if (r.error) {
