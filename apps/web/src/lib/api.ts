@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiOfertaEntera, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -129,6 +129,22 @@ export function subirOfertaEnApi(cookie: string, datos: unknown): Promise<{ id: 
     headers: { cookie, "content-type": "application/json" },
     body: JSON.stringify(datos),
   });
+}
+
+export function obtenerMiOfertaEnApi(cookie: string, id: string): Promise<MiOfertaEntera> {
+  return pedir<MiOfertaEntera>(`/cuenta/ofertas/${encodeURIComponent(id)}`, { headers: { cookie } });
+}
+
+export function editarMiOfertaEnApi(cookie: string, id: string, datos: unknown): Promise<{ estado: "pendiente" | "publicada" }> {
+  return pedir(`/cuenta/ofertas/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
+
+export function volverAPublicarEnApi(cookie: string, id: string): Promise<{ id: string }> {
+  return pedir(`/cuenta/ofertas/${encodeURIComponent(id)}/volver-a-publicar`, { method: "POST", headers: { cookie } });
 }
 
 export function retirarOfertaEnApi(cookie: string, id: string): Promise<MisOfertas> {

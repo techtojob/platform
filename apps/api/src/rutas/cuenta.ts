@@ -66,7 +66,13 @@ export const rutasCuenta = new Hono<Entorno>()
     try {
       return c.json(await registrarRecruiter(c.var.db, c.var.usuario, r.datos));
     } catch (e) {
-      if (e instanceof ErrorRecruiter) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, 409);
+      if (e instanceof ErrorRecruiter) {
+        // Cambiar de empresa con ofertas en marcha: se marca en el campo "empresa" del formulario.
+        if (e.codigo === "ofertas_en_marcha") {
+          return c.json({ error: { codigo: "datos_invalidos", mensaje: e.message, campos: { empresa: "ofertas_en_marcha" } } }, 409);
+        }
+        return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, 409);
+      }
       throw e;
     }
   })

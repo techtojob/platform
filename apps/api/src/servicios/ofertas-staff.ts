@@ -102,6 +102,7 @@ export function aStaff(
     publicadaEn: o.publicadaEn?.toISOString() ?? null,
     caducaEn: o.caducaEn?.toISOString() ?? null,
     revisadaEn: o.revisadaEn?.toISOString() ?? null,
+    editadaEn: o.editadaEn?.toISOString() ?? null,
   };
 }
 
@@ -137,7 +138,7 @@ async function empresaDe(db: Db, empresaId: string) {
   return empresa;
 }
 
-function columnasOferta(d: DatosOferta) {
+export function columnasOferta(d: DatosOferta) {
   return {
     empresaId: d.empresaId,
     titulo: d.titulo,
@@ -162,7 +163,7 @@ function columnasOferta(d: DatosOferta) {
   };
 }
 
-async function guardarIdiomas(db: Db, ofertaId: string, d: DatosOferta) {
+export async function guardarIdiomas(db: Db, ofertaId: string, d: Pick<DatosOferta, "idiomasRequeridos">) {
   await db.delete(ofertaIdiomas).where(eq(ofertaIdiomas.ofertaId, ofertaId));
   await db.insert(ofertaIdiomas).values(d.idiomasRequeridos.map((i) => ({ ofertaId, idioma: i.idioma, nivel: i.nivel })));
 }
@@ -208,7 +209,7 @@ export async function editarOferta(db: Db, id: string, d: DatosOferta) {
   await aprenderPaginaEmpleo(db, empresa.id, d.urlOriginal);
   await db
     .update(ofertas)
-    .set({ ...columnasOferta(d), slug: slugOferta(d.titulo, empresa.slug) })
+    .set({ ...columnasOferta(d), slug: slugOferta(d.titulo, empresa.slug), editadaEn: null })
     .where(eq(ofertas.id, id));
   await guardarIdiomas(db, id, d);
 }
@@ -240,6 +241,7 @@ export async function publicarOferta(db: Db, id: string, staffId: string, marcad
       publicadaEn: actual.publicadaEn ? new Date(actual.publicadaEn) : ahora,
       revisadaPor: staffId,
       revisadaEn: ahora,
+      editadaEn: null,
       caducaEn: new Date(ahora.getTime() + DIAS_PUBLICADA * UN_DIA),
     })
     .where(eq(ofertas.id, id));
@@ -264,6 +266,13 @@ export async function cerrarOferta(db: Db, id: string, staffId: string) {
     .update(ofertas)
     .set({ estado: "cerrada", revisadaPor: staffId, revisadaEn: new Date() })
     .where(eq(ofertas.id, id));
+}
+
+/** El staff ha vuelto a mirar una oferta publicada que cambió su recruiter: deja de salir en "Editadas". */
+export async function marcarRevisada(db: Db, id: string, staffId: string) {
+  const actual = await obtenerOfertaStaff(db, id);
+  if (!actual) throw new ErrorStaff("no_encontrada", "Esa oferta no existe.");
+  await db.update(ofertas).set({ editadaEn: null, revisadaPor: staffId, revisadaEn: new Date() }).where(eq(ofertas.id, id));
 }
 
 /** 45 días más desde hoy (o desde que caducaba, si aún no había caducado). */

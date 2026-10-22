@@ -1,9 +1,18 @@
-import { LIMITE_OFERTAS_USUARIO, type DatosOfertaUsuario, type MiOferta, type MisOfertas, type OfertaImportada } from "@techtojob/shared";
+import {
+  enlaceComparable,
+  LIMITE_OFERTAS_USUARIO,
+  slugOferta,
+  type DatosOfertaUsuario,
+  type MiOferta,
+  type MiOfertaEntera,
+  type MisOfertas,
+  type OfertaImportada,
+} from "@techtojob/shared";
 import { and, desc, eq, gt, isNull, or, sql } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { empresas, ofertas } from "../db/esquema";
+import { empresas, ofertaIdiomas, ofertas } from "../db/esquema";
 import { buscarRepetida, importarOferta, type Pedir } from "./importar";
-import { crearEmpresa, crearOferta } from "./ofertas-staff";
+import { columnasOferta, crearEmpresa, crearOferta, guardarIdiomas, nuevoId } from "./ofertas-staff";
 import { enlazarEmpresa, recruiterActivo } from "./recruiters";
 
 /**
@@ -138,6 +147,125 @@ export async function retirarOferta(db: Db, userId: string, id: string) {
   }
   if (o.estado !== "publicada") throw new ErrorMisOfertas("estado", "Esa oferta ya no está en marcha.");
   await db.update(ofertas).set({ estado: "cerrada", motivoRechazo: MOTIVO_RETIRADA }).where(eq(ofertas.id, id));
+}
+
+/** Una oferta mía entera (para editarla o volver a publicarla). */
+export async function obtenerMiOferta(db: Db, userId: string, id: string, ahora = new Date()): Promise<MiOfertaEntera> {
+  const [fila] = await db
+    .select({ o: ofertas, empresa: { nombre: empresas.nombre, web: empresas.web } })
+    .from(ofertas)
+    .innerJoin(empresas, eq(empresas.id, ofertas.empresaId))
+    .where(and(eq(ofertas.id, id), eq(ofertas.autorId, userId)))
+    .limit(1);
+  if (!fila) throw new ErrorMisOfertas("no_encontrada", "Esa oferta no existe.");
+  const { o } = fila;
+  const idiomas = await db.select().from(ofertaIdiomas).where(eq(ofertaIdiomas.ofertaId, id));
+  return {
+    id: o.id,
+    estado: estadoParaAutor(o, ahora),
+    empresa: fila.empresa,
+    titulo: o.titulo,
+    resumen: o.resumen,
+    descripcion: o.descripcion,
+    responsabilidades: o.responsabilidades,
+    requisitos: o.requisitos,
+    idioma: o.idioma,
+    urlOriginal: o.urlOriginal,
+    area: o.area,
+    seniority: o.seniority,
+    modalidad: o.modalidad,
+    tecnologias: o.tecnologias,
+    pais: o.pais,
+    ciudad: o.ciudad,
+    remotoMundo: o.remotoMundo,
+    remotoPaises: o.remotoPaises,
+    salarioMin: o.salarioMin,
+    salarioMax: o.salarioMax,
+    moneda: o.moneda as MiOfertaEntera["moneda"],
+    idiomasRequeridos: idiomas.map(({ idioma, nivel }) => ({ idioma, nivel })),
+  };
+}
+
+/** La empresa de una oferta de este recruiter: la suya (o, si es agencia, la que escribe). */
+async function empresaDelRecruiter(db: Db, userId: string, recruiter: Awaited<ReturnType<typeof exigirRecruiter>>, d: DatosOfertaUsuario) {
+  if (recruiter.agencia) {
+    const empresa = await crearEmpresa(db, { nombre: d.empresa.nombre, web: d.empresa.web });
+    if (empresa.bloqueada) throw new ErrorMisOfertas("empresa", "Esa empresa nos ha pedido que no publiquemos sus ofertas.");
+    return empresa.id;
+  }
+  const [enlazada] = recruiter.empresaId
+    ? await db.select({ id: empresas.id, bloqueada: empresas.bloqueada }).from(empresas).where(eq(empresas.id, recruiter.empresaId))
+    : [];
+  const empresa = enlazada ?? (await crearEmpresa(db, { nombre: recruiter.empresaNombre, web: recruiter.empresaWeb }));
+  if (empresa.bloqueada) throw new ErrorMisOfertas("empresa", "Esa empresa nos ha pedido que no publiquemos sus ofertas.");
+  if (!enlazada) await enlazarEmpresa(db, userId, empresa.id);
+  return empresa.id;
+}
+
+/**
+ * Editar una oferta mía que está en marcha.
+ * - Pendiente: se cambia y sigue pendiente.
+ * - Publicada: sigue publicada con los cambios, y el staff la vuelve a mirar (atajo "Editadas").
+ *   Si cambia el enlace, vuelve a revisión (pendiente): el enlace es a donde se manda a la gente.
+ * Devuelve el estado en que queda.
+ */
+export async function editarMiOferta(db: Db, userId: string, id: string, d: DatosOfertaUsuario, ahora = new Date()) {
+  const recruiter = await exigirRecruiter(db, userId);
+  const [actual] = await db.select().from(ofertas).where(and(eq(ofertas.id, id), eq(ofertas.autorId, userId))).limit(1);
+  if (!actual) throw new ErrorMisOfertas("no_encontrada", "Esa oferta no existe.");
+  const estado = estadoParaAutor(actual, ahora);
+  if (estado !== "pendiente" && estado !== "publicada") throw new ErrorMisOfertas("estado", "Esa oferta ya no está en marcha: vuelve a publicarla.");
+  const cambiaEnlace = enlaceComparable(actual.urlOriginal) !== enlaceComparable(d.urlOriginal);
+  if (cambiaEnlace) {
+    const repetida = await buscarRepetida(db, d.urlOriginal, id);
+    if (repetida && repetida.estado !== "rechazada" && repetida.estado !== "cerrada") {
+      throw new ErrorMisOfertas("repetida", "Esa oferta ya está en TechToJob.");
+    }
+  }
+  const empresaId = recruiter.agencia ? await empresaDelRecruiter(db, userId, recruiter, d) : actual.empresaId;
+  const [empresa] = await db.select({ slug: empresas.slug }).from(empresas).where(eq(empresas.id, empresaId));
+  const { empresa: _e, ...resto } = d;
+  const vuelveARevision = estado === "publicada" && cambiaEnlace;
+  await db
+    .update(ofertas)
+    .set({
+      ...columnasOferta({ ...resto, empresaId, autorizada: actual.autorizada }),
+      slug: slugOferta(d.titulo, empresa!.slug),
+      ...(vuelveARevision ? { estado: "pendiente" as const, editadaEn: null } : estado === "publicada" ? { editadaEn: ahora } : {}),
+    })
+    .where(eq(ofertas.id, id));
+  await guardarIdiomas(db, id, d);
+  return vuelveARevision ? "pendiente" : estado;
+}
+
+/**
+ * Volver a publicar una oferta mía que ya no está en marcha (caducada, retirada o no publicada):
+ * se crea una copia pendiente de revisar (cuenta para el límite). Devuelve el id de la copia.
+ */
+export async function volverAPublicar(db: Db, userId: string, id: string, ahora = new Date()): Promise<string> {
+  const recruiter = await exigirRecruiter(db, userId);
+  const vieja = await obtenerMiOferta(db, userId, id, ahora);
+  if (vieja.estado === "pendiente" || vieja.estado === "publicada") throw new ErrorMisOfertas("estado", "Esa oferta sigue en marcha.");
+  if ((await contarEnMarcha(db, userId, ahora)) >= LIMITE_OFERTAS_USUARIO) {
+    throw new ErrorMisOfertas("limite", `Puedes tener ${LIMITE_OFERTAS_USUARIO} ofertas a la vez. Retira una o espera a que caduque.`);
+  }
+  const [actual] = await db.select().from(ofertas).where(eq(ofertas.id, id));
+  const d: DatosOfertaUsuario = { ...vieja, empresa: vieja.empresa };
+  // La empresa: la de ahora del recruiter (si cambió de trabajo, la nueva); una agencia, la de la oferta.
+  const empresaId = recruiter.agencia ? actual!.empresaId : await empresaDelRecruiter(db, userId, recruiter, d);
+  const [empresa] = await db.select({ slug: empresas.slug }).from(empresas).where(eq(empresas.id, empresaId));
+  const { empresa: _e, id: _i, estado: _s, ...resto } = vieja;
+  const nueva = nuevoId();
+  await db.insert(ofertas).values({
+    id: nueva,
+    slug: slugOferta(vieja.titulo, empresa!.slug),
+    ...columnasOferta({ ...resto, empresaId, autorizada: actual!.autorizada }),
+    origen: "usuario",
+    autorId: userId,
+    estado: "pendiente",
+  });
+  await guardarIdiomas(db, nueva, vieja);
+  return nueva;
 }
 
 /**

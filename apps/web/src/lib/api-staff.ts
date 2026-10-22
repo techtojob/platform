@@ -97,7 +97,8 @@ export type AccionStaff =
   | { accion: "publicar"; comprobaciones: Comprobacion[] }
   | { accion: "rechazar"; motivo: string }
   | { accion: "cerrar" }
-  | { accion: "alargar" };
+  | { accion: "alargar" }
+  | { accion: "revisada" };
 
 export async function accionOferta(id: string, { accion, ...datos }: AccionStaff): Promise<OfertaStaff> {
   return pedir<OfertaStaff>(

@@ -22,7 +22,7 @@ import { empresas, ofertas, recruiters, usuarios } from "../db/esquema";
 
 export class ErrorRecruiter extends Error {
   constructor(
-    public readonly codigo: "no_encontrado" | "estado" | "motivo",
+    public readonly codigo: "no_encontrado" | "estado" | "motivo" | "ofertas_en_marcha",
     mensaje: string,
   ) {
     super(mensaje);
@@ -86,6 +86,14 @@ export async function registrarRecruiter(db: Db, usuario: { id: string; email: s
   const actual = await filaRecruiter(db, usuario.id);
   if (actual?.estado === "bloqueado") throw new ErrorRecruiter("estado", "Tu cuenta de recruiter está bloqueada.");
   const mismaEmpresa = actual && nombreEmpresaComparable(actual.empresaNombre) === nombreEmpresaComparable(d.empresa);
+  // Cambiar de empresa con ofertas en marcha no: saldrían con la empresa nueva sin serlo.
+  if (actual && !mismaEmpresa && !actual.agencia) {
+    const [{ n }] = await db
+      .select({ n: count() })
+      .from(ofertas)
+      .where(and(eq(ofertas.autorId, usuario.id), sql`(${ofertas.estado} = 'pendiente' or (${ofertas.estado} = 'publicada' and (${ofertas.caducaEn} is null or ${ofertas.caducaEn} > now())))`));
+    if (Number(n) > 0) throw new ErrorRecruiter("ofertas_en_marcha", "Para cambiar de empresa, retira antes tus ofertas en marcha.");
+  }
   const valores = {
     cargo: d.cargo,
     empresaNombre: d.empresa,

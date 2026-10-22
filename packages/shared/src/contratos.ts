@@ -178,6 +178,8 @@ export type OfertaStaff = DatosOferta & {
   publicadaEn: string | null;
   caducaEn: string | null;
   revisadaEn: string | null;
+  /** Si un recruiter la cambió estando publicada (y el staff aún no lo ha mirado): cuándo. */
+  editadaEn: string | null;
 };
 
 /* ── Ofertas que sube cualquiera ──────────────────────────────── */
@@ -206,6 +208,13 @@ export type MiOferta = {
   creadaEn: string;
   publicadaEn: string | null;
   caducaEn: string | null;
+};
+
+/** GET /cuenta/ofertas/:id: una oferta mía entera, para editarla o volver a publicarla. */
+export type MiOfertaEntera = Omit<DatosOfertaUsuario, "empresa"> & {
+  id: string;
+  empresa: { nombre: string; web: string | null };
+  estado: MiOferta["estado"];
 };
 
 /** GET /mis-ofertas */

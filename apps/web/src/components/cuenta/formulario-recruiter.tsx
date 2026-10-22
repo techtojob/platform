@@ -6,6 +6,7 @@ import { useState, useTransition, type FormEvent } from "react";
 import { solicitarRecruiter } from "@/app/[locale]/cuenta/recruiter/acciones";
 import { AreaTexto, BotonesOpcion } from "@/components/formulario/piezas";
 import { Boton, Campo } from "@/components/ui";
+import { enlacesContacto } from "@/components/ui/contacto";
 import { useRouter } from "@/i18n/navigation";
 
 type Valores = { cargo: string; empresa: string; web: string; linkedin: string; mensaje: string };
@@ -104,6 +105,7 @@ export function FormularioRecruiter({ inicial }: { inicial: MiRecruiter | null }
         error={error("mensaje")}
       />
       <p className="text-sm text-suave">{t("publico")}</p>
+      <p className="text-sm text-suave">{t.rich("variasEmpresas", enlacesContacto)}</p>
       {errorGeneral && (
         <p role="alert" className="text-sm font-semibold text-peligro">
           {t("errorGeneral")}

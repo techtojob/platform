@@ -10,6 +10,7 @@ import {
   editarOferta,
   ErrorStaff,
   listarEmpresas,
+  marcarRevisada,
   obtenerOfertaStaff,
   publicarOferta,
   rechazarOferta,
@@ -52,6 +53,7 @@ import { conSesion, soloStaff } from "./sesion";
  * POST /staff/ofertas/:id/rechazar       { motivo }
  * POST /staff/ofertas/:id/cerrar
  * POST /staff/ofertas/:id/alargar        → 45 días más
+ * POST /staff/ofertas/:id/revisada       → ya se ha mirado lo que cambió su recruiter (sale de "Editadas")
  * GET  /staff/empresas · POST /staff/empresas { nombre, web?, paginaEmpleo? }
  * PATCH /staff/empresas/:id { paginaEmpleo?, sincronizar?, bloqueada? }
  * GET  /staff/candidatas                  → empresas por descubrir, por estado
@@ -148,7 +150,7 @@ export const rutasStaff = new Hono<Entorno>()
       return responderError(c, e);
     }
   })
-  .post("/ofertas/:id/:accion{publicar|rechazar|cerrar|alargar}", async (c) => {
+  .post("/ofertas/:id/:accion{publicar|rechazar|cerrar|alargar|revisada}", async (c) => {
     const id = c.req.param("id");
     const staffId = c.var.usuario.id;
     const datos = await cuerpo(c);
@@ -165,6 +167,9 @@ export const rutasStaff = new Hono<Entorno>()
           break;
         case "alargar":
           await alargarOferta(c.var.db, id);
+          break;
+        case "revisada":
+          await marcarRevisada(c.var.db, id, staffId);
           break;
       }
       return c.json(await obtenerOfertaStaff(c.var.db, id));
@@ -232,7 +237,7 @@ export const rutasStaff = new Hono<Entorno>()
       return c.json({ ok: true });
     } catch (e) {
       if (e instanceof ErrorRecruiter) {
-        const http = { no_encontrado: 404, estado: 409, motivo: 400 } as const;
+        const http = { no_encontrado: 404, estado: 409, motivo: 400, ofertas_en_marcha: 409 } as const;
         return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, http[e.codigo]);
       }
       throw e;

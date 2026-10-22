@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { RetirarOferta } from "@/components/cuenta/retirar-oferta";
+import { VolverAPublicar } from "@/components/cuenta/volver-a-publicar";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link, redirect } from "@/i18n/navigation";
@@ -44,7 +45,7 @@ export default function PaginaMisOfertas({ searchParams }: PageProps<"/[locale]/
 }
 
 async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ofertas">, "searchParams">) {
-  const [t, format, locale, cabeceras, { enviada }] = await Promise.all([
+  const [t, format, locale, cabeceras, { enviada, editada }] = await Promise.all([
     getTranslations("misOfertas"),
     getFormatter(),
     getLocale(),
@@ -66,6 +67,11 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ofer
       {enviada === "1" && (
         <Aviso role="status" chincheta={false} giro="">
           <p className="font-bold">{t("enviada")}</p>
+        </Aviso>
+      )}
+      {(editada === "publicada" || editada === "pendiente") && (
+        <Aviso role="status" chincheta={false} giro="">
+          <p className="font-bold">{editada === "publicada" ? t("editadaPublicada") : t("editadaPendiente")}</p>
         </Aviso>
       )}
 
@@ -127,7 +133,17 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ofer
                     <span className="font-bold">{t("motivo")}</span> {o.motivoRechazo}
                   </p>
                 )}
-                {(o.estado === "pendiente" || o.estado === "publicada") && <RetirarOferta id={o.id} publicada={o.estado === "publicada"} />}
+                {(o.estado === "pendiente" || o.estado === "publicada") && (
+                  <div className="flex flex-wrap items-start gap-2">
+                    {esRecruiter && (
+                      <Link href={{ pathname: "/cuenta/ofertas/[id]/editar", params: { id: o.id } }} className={clasesBoton({ variante: "secundario" })}>
+                        {t("editar")}
+                      </Link>
+                    )}
+                    <RetirarOferta id={o.id} publicada={o.estado === "publicada"} />
+                  </div>
+                )}
+                {esRecruiter && quedan > 0 && (o.estado === "caducada" || o.estado === "retirada" || o.estado === "rechazada") && <VolverAPublicar id={o.id} />}
               </Tarjeta>
             </li>
           ))}

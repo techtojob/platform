@@ -7,7 +7,9 @@ import type { EstadoAccion } from "@/app/[locale]/staff/acciones";
 import { Aviso, Boton, Casilla } from "@/components/ui";
 
 type Props = {
-  oferta: Pick<OfertaStaff, "estado" | "urlOriginal">;
+  oferta: Pick<OfertaStaff, "estado" | "urlOriginal" | "editadaEn">;
+  /** "hace 2 horas": cuándo la cambió su recruiter (si está en "Editadas"). */
+  editadaHace?: string | null;
   accion: (previo: EstadoAccion, formulario: FormData) => Promise<EstadoAccion>;
 };
 
@@ -17,7 +19,7 @@ type Props = {
  * - pendiente: rechazar con un motivo;
  * - publicada: alargar 45 días o cerrar.
  */
-export function AccionesOferta({ oferta, accion }: Props) {
+export function AccionesOferta({ oferta, accion, editadaHace = null }: Props) {
   const t = useTranslations("staff");
   const [estado, enviar, enviando] = useActionState(accion, {});
   const [marcadas, marcar] = useState<string[]>([]);
@@ -38,6 +40,15 @@ export function AccionesOferta({ oferta, accion }: Props) {
     return (
       <div className="flex flex-col gap-4 rounded-tarjeta bg-acento p-6 text-ink shadow-tarjeta">
         <p className="text-xl font-bold">{t("acciones.publicadaTitulo")}</p>
+        {/* La cambió su recruiter estando publicada: el staff la mira y la marca como revisada. */}
+        {oferta.editadaEn && (
+          <form action={enviar} className="flex flex-col gap-2 rounded-2xl bg-postit p-4" aria-busy={enviando}>
+            <p className="text-sm font-bold">{t("detalle.editada", { tiempo: editadaHace ?? "" })}</p>
+            <Boton type="submit" name="accion" value="revisada" variante="sobrePostit" className="w-full" disabled={enviando}>
+              {t("detalle.marcarRevisada")}
+            </Boton>
+          </form>
+        )}
         <form action={enviar} className="flex flex-col gap-3" aria-busy={enviando}>
           <Boton type="submit" name="accion" value="alargar" variante="sobrePostit" className="w-full" disabled={enviando}>
             {t("acciones.alargar")}

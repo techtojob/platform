@@ -1,4 +1,4 @@
-import { leerCantidad, type OfertaImportada, type OfertaStaff } from "@techtojob/shared";
+import { leerCantidad, type MiOfertaEntera, type OfertaImportada, type OfertaStaff } from "@techtojob/shared";
 
 /**
  * Lo que hay en el formulario de una oferta del staff, tal cual se escribe.
@@ -60,6 +60,12 @@ export const VALORES_VACIOS: ValoresOferta = {
   pide: [{ idioma: "es", nivel: "" }],
   autorizada: false,
 };
+
+/** Una oferta de un recruiter, para editarla. */
+export function valoresDeMiOferta(o: MiOfertaEntera): ValoresOferta {
+  const v = valoresDeOferta({ ...o, empresa: { id: "", nombre: o.empresa.nombre, slug: "", web: o.empresa.web }, autorizada: true } as never);
+  return { ...v, empresa: { id: null, nombre: o.empresa.nombre, web: o.empresa.web ?? "" } };
+}
 
 export function valoresDeOferta(o: OfertaStaff): ValoresOferta {
   return {

@@ -73,7 +73,7 @@ describe("validarOfertaUsuario", () => {
   it("pide la empresa, la declaración y que se pueda hacer desde España o Latinoamérica", () => {
     expect(validarOfertaUsuario(oferta()).errores).toBeUndefined();
     expect(validarOfertaUsuario(oferta({ empresa: { nombre: "" } })).errores).toMatchObject({ empresa: "falta" });
-    expect(validarOfertaUsuario(oferta({ empresa: { nombre: "Nube", web: "nube" } })).errores).toMatchObject({ empresaWeb: "url" });
+    expect(validarOfertaUsuario(oferta({ empresa: { nombre: "Nube", web: "nube con espacios" } })).errores).toMatchObject({ empresaWeb: "url" });
     expect(validarOfertaUsuario(oferta({ declaracion: false })).errores).toMatchObject({ declaracion: "falta" });
     expect(validarOfertaUsuario(oferta({ remotoPaises: ["US", "CA"] })).errores).toMatchObject({ remotoPaises: "fuera" });
     expect(validarOfertaUsuario(oferta({ remotoPaises: [], remotoMundo: true })).errores).toBeUndefined();
@@ -105,7 +105,12 @@ describe("validar la solicitud de recruiter", () => {
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "" })).errores).toMatchObject({ linkedin: "falta" });
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://linkedin.com.evil.example/in/x" })).errores).toMatchObject({ linkedin: "linkedin" });
     expect(validarSolicitudRecruiter(solicitud({ linkedin: "https://es.linkedin.com/in/ana" })).errores).toBeUndefined();
-    expect(validarSolicitudRecruiter(solicitud({ web: "nube" })).errores).toMatchObject({ web: "url" });
+    // Sin https:// (como se copia a mano): se pone solo.
+    expect(validarSolicitudRecruiter(solicitud({ linkedin: "www.linkedin.com/in/pablo-pio-ramos", web: "nube.example.com" })).datos).toMatchObject({
+      linkedin: "https://www.linkedin.com/in/pablo-pio-ramos",
+      web: "https://nube.example.com",
+    });
+    expect(validarSolicitudRecruiter(solicitud({ web: "nube con espacios" })).errores).toMatchObject({ web: "url" });
   });
 
   it("email de la empresa: mismo dominio que la web, nunca uno gratuito", () => {
@@ -286,6 +291,56 @@ describe("subir ofertas (recruiters)", () => {
     expect(r.status).toBe(400);
     expect(((await r.json()) as { error: { codigo: string } }).error.codigo).toBe("empresa");
     await db.update(empresas).set({ bloqueada: false }).where(eq(empresas.nombre, "Nube Canaria"));
+  });
+
+  it("editar: pendiente sigue pendiente; publicada sigue publicada y sale en 'Editadas'; cambiar el enlace la manda a revisión", async () => {
+    const editar = (id: string, cambios: Record<string, unknown>) => pedir(`/cuenta/ofertas/${id}`, ana, { method: "PUT", body: { ...oferta(), ...cambios } });
+    const publicada = (await db.select().from(ofertas).where(eq(ofertas.autorId, idAna))).find((o) => o.estado === "publicada")!;
+    await db.update(ofertas).set({ caducaEn: new Date(Date.now() + 86_400_000), editadaEn: null }).where(eq(ofertas.id, publicada.id));
+    const entera = (await (await pedir(`/cuenta/ofertas/${publicada.id}`, ana)).json()) as { titulo: string; urlOriginal: string; estado: string };
+    expect(entera).toMatchObject({ estado: "publicada", urlOriginal: publicada.urlOriginal });
+    // Bea no puede verla ni editarla.
+    expect((await pedir(`/cuenta/ofertas/${publicada.id}`, bea)).status).toBe(404);
+    expect((await pedir(`/cuenta/ofertas/${publicada.id}`, bea, { method: "PUT", body: oferta() })).status).toBe(404);
+
+    // Errata en el título: sigue publicada y el staff la ve en "Editadas".
+    const r = await editar(publicada.id, { titulo: "Backend Developer (Node.js)", urlOriginal: publicada.urlOriginal });
+    expect(await r.json()).toEqual({ estado: "publicada" });
+    const [tras] = await db.select().from(ofertas).where(eq(ofertas.id, publicada.id));
+    expect(tras).toMatchObject({ estado: "publicada", titulo: "Backend Developer (Node.js)" });
+    expect(tras!.editadaEn).not.toBeNull();
+    const editadas = (await (await pedir("/staff/ofertas?estado=publicada&atajo=editadas", pablo)).json()) as { ofertas: Array<{ id: string }> };
+    expect(editadas.ofertas.map((o) => o.id)).toContain(publicada.id);
+    // El staff la mira: sale de "Editadas".
+    expect((await pedir(`/staff/ofertas/${publicada.id}/revisada`, pablo, { method: "POST" })).status).toBe(200);
+    expect((await db.select().from(ofertas).where(eq(ofertas.id, publicada.id)))[0]!.editadaEn).toBeNull();
+
+    // Cambiar el enlace: vuelve a revisión.
+    expect(await (await editar(publicada.id, { urlOriginal: "https://nubecanaria.example.com/empleo/otra" })).json()).toEqual({ estado: "pendiente" });
+    expect((await db.select().from(ofertas).where(eq(ofertas.id, publicada.id)))[0]!.estado).toBe("pendiente");
+    await db.update(ofertas).set({ estado: "publicada", urlOriginal: publicada.urlOriginal }).where(eq(ofertas.id, publicada.id));
+  });
+
+  it("no se puede cambiar de empresa en el perfil con ofertas en marcha", async () => {
+    const r = await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud({ empresa: "Otra Empresa" }) });
+    expect(r.status).toBe(409);
+    expect(((await r.json()) as { error: { campos: Record<string, string> } }).error.campos).toEqual({ empresa: "ofertas_en_marcha" });
+    // Cambiar otros datos (misma empresa), sí.
+    expect((await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud({ cargo: "rrhh" }) })).status).toBe(200);
+    await pedir("/cuenta/recruiter", ana, { method: "PUT", body: solicitud() });
+  });
+
+  it("volver a publicar una no publicada: copia pendiente (cuenta para el límite)", async () => {
+    const { ofertas: mias, enMarcha } = await misOfertas(ana);
+    const rechazada = mias.find((o) => o.estado === "rechazada")!;
+    expect((await pedir(`/cuenta/ofertas/${mias.find((o) => o.estado === "publicada")!.id}/volver-a-publicar`, ana, { method: "POST" })).status).toBe(409);
+    const r = await pedir(`/cuenta/ofertas/${rechazada.id}/volver-a-publicar`, ana, { method: "POST" });
+    expect(r.status).toBe(201);
+    const { id } = (await r.json()) as { id: string };
+    const [copia] = await db.select().from(ofertas).where(eq(ofertas.id, id));
+    expect(copia).toMatchObject({ estado: "pendiente", origen: "usuario", autorId: idAna, titulo: rechazada.titulo });
+    expect((await misOfertas(ana)).enMarcha).toBe(enMarcha + 1);
+    await pedir(`/cuenta/ofertas/${id}/retirar`, ana, { method: "POST" });
   });
 
   it("reportar una oferta o a quien la publicó (con sesión, una vez, nunca la propia)", async () => {

@@ -10,13 +10,13 @@ import { PAISES } from "./paises";
  */
 
 /** Atajos de un clic: lo que más se busca al revisar. */
-export const ATAJOS_STAFF = ["sin_resumen", "sin_zona", "hoy", "caducan", "desaparecidas"] as const;
+export const ATAJOS_STAFF = ["sin_resumen", "sin_zona", "hoy", "editadas", "caducan", "desaparecidas"] as const;
 export type AtajoStaff = (typeof ATAJOS_STAFF)[number];
 
 /** Qué atajos tienen sentido en cada pestaña. */
 export const ATAJOS_POR_ESTADO: Record<EstadoOferta, AtajoStaff[]> = {
   pendiente: ["sin_resumen", "sin_zona", "hoy"],
-  publicada: ["caducan", "hoy"],
+  publicada: ["editadas", "caducan", "hoy"],
   rechazada: ["hoy"],
   cerrada: ["desaparecidas"],
 };

@@ -23,7 +23,7 @@ import {
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { guardarOferta } from "@/app/[locale]/staff/acciones";
-import { importarComoUsuario, subirOferta } from "@/app/[locale]/cuenta/ofertas/acciones";
+import { editarMiOferta, importarComoUsuario, subirOferta } from "@/app/[locale]/cuenta/ofertas/acciones";
 import { FilaOferta } from "@/components/ofertas/fila-oferta";
 import { Boton, Campo, Casilla } from "@/components/ui";
 import { cn } from "@/lib/cn";
@@ -35,6 +35,7 @@ import { SelectorEmpresa } from "./selector-empresa";
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorRemoto } from "./selector-remoto";
 import { ResumirConIA } from "./resumir-con-ia";
+import { enlacesContacto } from "@/components/ui/contacto";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
 
 /** Donde se guarda el borrador de una oferta nueva, por si se cierra la pestaña (uno para el staff y otro para el resto). */
@@ -103,6 +104,8 @@ type Props = {
   modo?: "staff" | "usuario";
   /** Modo "usuario": la empresa del recruiter (no se puede cambiar). null: es agencia y la escribe. */
   empresaFija?: string | null;
+  /** Modo "usuario" al editar una suya: en qué estado está (para explicar qué pasa al guardar). */
+  estadoMio?: "pendiente" | "publicada";
 };
 
 /**
@@ -110,7 +113,7 @@ type Props = {
  * enlace → la oferta → el puesto → dónde → salario → idiomas. A la derecha (abajo en el móvil),
  * la vista previa en el listado, lo que falta y los botones para guardar o publicar.
  */
-export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff", empresaFija = null }: Props) {
+export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original = null, modo = "staff", empresaFija = null, estadoMio }: Props) {
   const publico = modo === "usuario";
   const claveBorrador = CLAVES_BORRADOR[modo];
   const t = useTranslations("staff");
@@ -193,7 +196,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
     empezar(async () => {
       // Si sale bien, el servidor lleva a la oferta (o a "Mis ofertas"); el borrador ya no hace falta.
       if (nueva) guardarBorrador(claveBorrador, null);
-      const r = publico ? await subirOferta(v, declaracion, locale) : await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
+      const r = publico
+        ? ofertaId
+          ? await editarMiOferta(ofertaId, v, declaracion, locale)
+          : await subirOferta(v, declaracion, locale)
+        : await guardarOferta(ofertaId, v, publicar ? comprobaciones : null, locale);
       if (r?.errores) ponerErroresServidor(r.errores);
       if (r?.error) ponerErrorGeneral(r.error);
       if (r?.errores || r?.error) requestAnimationFrame(() => alerta.current?.focus());
@@ -298,7 +305,7 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
             <div className="flex flex-col gap-1 rounded-2xl border border-borde p-4">
               <p className="text-sm font-bold">{t("form.empresaNombre")}</p>
               <p className="text-lg font-bold">{empresaFija}</p>
-              <p className="text-sm text-suave">{t("publicar.empresaFija")}</p>
+              <p className="text-sm text-suave">{t.rich("publicar.empresaFija", enlacesContacto)}</p>
             </div>
           ) : publico ? (
             <div className="grid gap-5 sm:grid-cols-2">
@@ -364,38 +371,43 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
               <p className="text-sm text-suave">{t("form.idiomaAyuda")}</p>
             )}
           </div>
-          <AreaTexto
-            etiqueta={t("form.resumen")}
-            ayuda={t("form.resumenAyuda", {
-              max: LIMITES.resumen.max,
-              quedan: LIMITES.resumen.max - v.resumen.length,
-            })}
-            rows={2}
-            maxLength={LIMITES.resumen.max}
-            value={v.resumen}
-            onChange={(e) => cambiar({ resumen: e.target.value })}
-            error={mensajeError("resumen")}
-          />
-          <AreaTexto
-            etiqueta={t("form.responsabilidades")}
-            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
-            rows={4}
-            value={v.responsabilidades}
-            onChange={(e) => cambiar({ responsabilidades: e.target.value })}
-            error={mensajeError("responsabilidades")}
-          />
-          <AreaTexto
-            etiqueta={t("form.requisitos")}
-            ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
-            rows={4}
-            value={v.requisitos}
-            onChange={(e) => cambiar({ requisitos: e.target.value })}
-            error={mensajeError("requisitos")}
-          />
+          {/* Lo que escribe el staff con la IA. Un recruiter no lo necesita: su descripción se publica tal cual. */}
+          {!publico && (
+            <>
+            <AreaTexto
+              etiqueta={t("form.resumen")}
+              ayuda={t("form.resumenAyuda", {
+                max: LIMITES.resumen.max,
+                quedan: LIMITES.resumen.max - v.resumen.length,
+              })}
+              rows={2}
+              maxLength={LIMITES.resumen.max}
+              value={v.resumen}
+              onChange={(e) => cambiar({ resumen: e.target.value })}
+              error={mensajeError("resumen")}
+            />
+            <AreaTexto
+              etiqueta={t("form.responsabilidades")}
+              ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+              rows={4}
+              value={v.responsabilidades}
+              onChange={(e) => cambiar({ responsabilidades: e.target.value })}
+              error={mensajeError("responsabilidades")}
+            />
+            <AreaTexto
+              etiqueta={t("form.requisitos")}
+              ayuda={t("form.puntosAyuda", { max: LIMITES.puntos.max })}
+              rows={4}
+              value={v.requisitos}
+              onChange={(e) => cambiar({ requisitos: e.target.value })}
+              error={mensajeError("requisitos")}
+            />
+            </>
+          )}
           {/* El texto de la empresa: solo se publica si nos autoriza (las de recruiters lo están). */}
           <AreaTexto
             etiqueta={publico ? t("form.descripcionRecruiter") : t("form.descripcionEmpresa")}
-            ayuda={publico ? t("form.descripcionAyuda") : v.autorizada ? t("form.descripcionAutorizada") : t("form.descripcionBloqueada")}
+            ayuda={publico ? t("form.descripcionRecruiterAyuda") : v.autorizada ? t("form.descripcionAutorizada") : t("form.descripcionBloqueada")}
             rows={8}
             maxLength={LIMITES.descripcion.max}
             value={v.descripcion}
@@ -595,9 +607,11 @@ export function FormularioOferta({ empresas, inicial, ofertaId, ahora, original 
                 <TextoError>{mensajeError("declaracion")}</TextoError>
               </div>
               <Boton type="submit" tamano="lg" className="w-full" disabled={guardando}>
-                {guardando ? t("guardando") : t("publicar.enviar")}
+                {guardando ? t("guardando") : nueva ? t("publicar.enviar") : t("guardarCambios")}
               </Boton>
-              <p className="-mt-2 text-xs text-suave">{t("publicar.enviarAyuda")}</p>
+              <p className="-mt-2 text-xs text-suave">
+                {nueva ? t("publicar.enviarAyuda") : estadoMio === "publicada" ? t("publicar.editarPublicada") : t("publicar.editarPendiente")}
+              </p>
             </>
           ) : nueva ? (
             <>

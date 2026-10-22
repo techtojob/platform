@@ -88,6 +88,15 @@ function texto(valor: unknown): string | null {
   return limpio ? limpio : null;
 }
 
+/**
+ * "www.linkedin.com/in/ana" o "linkedin.com/in/ana" → "https://www.linkedin.com/in/ana".
+ * Casi nadie escribe el https:// al copiar un enlace a mano.
+ */
+export function conProtocolo(valor: string | null): string | null {
+  if (!valor) return valor;
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(valor) ? valor : `https://${valor.replace(/^\/+/, "")}`;
+}
+
 function esUrl(valor: string): URL | null {
   try {
     const u = new URL(valor);
@@ -112,10 +121,10 @@ export function validarSolicitudRecruiter(
   else if (empresa.length < 2) errores.empresa = "corto";
   else if (empresa.length > LIMITES_RECRUITER.empresa) errores.empresa = "largo";
 
-  const web = texto(e.web);
+  const web = conProtocolo(texto(e.web));
   if (web && (!esUrl(web) || web.length > LIMITES_RECRUITER.web)) errores.web = "url";
 
-  const linkedin = texto(e.linkedin);
+  const linkedin = conProtocolo(texto(e.linkedin));
   const urlLinkedin = linkedin ? esUrl(linkedin) : null;
   if (!linkedin) errores.linkedin = "falta";
   else if (!urlLinkedin || !/(^|\.)linkedin\.com$/i.test(urlLinkedin.hostname) || linkedin.length > LIMITES_RECRUITER.linkedin) {

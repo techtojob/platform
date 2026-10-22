@@ -386,7 +386,9 @@
       "originalAyuda": "No se publica: no es nuestro. Léelo para comprobar los datos. Si quieres, escribe un resumen con tus palabras (es opcional). Solo se publica entero si la empresa lo autoriza.",
       "originalVacio": "La empresa no puso texto.",
       "subidaPor": "Subida por {nombre} ({email})",
-      "subidaPorBorrada": "Subida por alguien que ya borró su cuenta"
+      "subidaPorBorrada": "Subida por alguien que ya borró su cuenta",
+      "editada": "Su recruiter la cambió {tiempo}. Échale un vistazo.",
+      "marcarRevisada": "Ya la he revisado"
     },
     "comprobaciones": {
       "empresa": "La empresa existe y es quien dice ser",
@@ -414,7 +416,8 @@
       "publicar": "Publicada. Saldrá en la bolsa 45 días.",
       "rechazar": "Rechazada.",
       "cerrar": "Cerrada. Ya no sale en la bolsa.",
-      "alargar": "Alargada 45 días más."
+      "alargar": "Alargada 45 días más.",
+      "revisada": "Marcada como revisada."
     },
     "form": {
       "seccionEnlace": "El enlace",
@@ -563,7 +566,8 @@
       "descripcionRecruiter": "Descripción de la oferta",
       "descripcionAutorizada": "Se publica tal cual, porque la empresa nos autoriza.",
       "descripcionBloqueada": "Solo se publica si la empresa nos autoriza: marca «La empresa nos autoriza a publicarla» para poder escribirla.",
-      "faltaTextoIA": "Para publicar: pega el resumen de la IA (resumen y responsabilidades), o marca que la empresa nos autoriza y pon su descripción."
+      "faltaTextoIA": "Para publicar: pega el resumen de la IA (resumen y responsabilidades), o marca que la empresa nos autoriza y pon su descripción.",
+      "descripcionRecruiterAyuda": "Obligatoria. Se publica tal cual: copia la oferta entera (tareas, requisitos, qué ofrecéis). Deja una línea en blanco entre párrafos."
     },
     "errores": {
       "falta": "Falta este dato.",
@@ -734,9 +738,10 @@
     "filtros": {
       "atajos": "Atajos",
       "atajosNombres": {
-        "sin_resumen": "Sin resumen (opcional)",
+        "sin_resumen": "Sin resumen de la IA",
         "sin_zona": "Sin zona",
         "hoy": "Entraron hoy",
+        "editadas": "Editadas por su recruiter",
         "caducan": "Caducan esta semana",
         "desaparecidas": "Ya no están en la web de la empresa"
       },
@@ -811,7 +816,9 @@
         "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
         "no_recruiter": "Solo los recruiters pueden publicar ofertas."
       },
-      "empresaFija": "Es la empresa de tu cuenta de recruiter. Si necesitas publicar para otra, escríbenos."
+      "empresaFija": "Es la empresa de tu cuenta de recruiter. ¿Necesitas publicar para otra? Escríbenos a <correo>contacto@techtojob.com</correo> o <ticket>crea un ticket en el Discord</ticket>.",
+      "editarPublicada": "Seguirá publicada con los cambios. Si cambias el enlace, volverá a revisión antes de salir.",
+      "editarPendiente": "Sigue pendiente de revisar."
     },
     "prompt": {
       "pestana": "Prompt IA",
@@ -1132,7 +1139,15 @@
     "retirando": "Retirando…",
     "cancelar": "Cancelar",
     "errorRetirar": "No se ha podido retirar. Inténtalo de nuevo.",
-    "noRecruiter": "Tu cuenta de recruiter está bloqueada: no puedes publicar más ofertas. <enlace>Ver por qué</enlace>"
+    "noRecruiter": "Tu cuenta de recruiter está bloqueada: no puedes publicar más ofertas. <enlace>Ver por qué</enlace>",
+    "editar": "Editar",
+    "editarTitulo": "Editar la oferta",
+    "noSeEdita": "Esta oferta ya no está en marcha. Vuelve a publicarla desde «Mis ofertas».",
+    "copiaCreada": "Hemos creado una copia nueva (pendiente de revisar). Revisa los datos, actualiza lo que haya cambiado y guarda.",
+    "editadaPublicada": "Cambios guardados: la oferta sigue publicada. El staff le echará un vistazo.",
+    "editadaPendiente": "Cambios guardados. La oferta está pendiente de revisar (si cambiaste el enlace, la volvemos a revisar antes de publicarla).",
+    "volverAPublicar": "Volver a publicar",
+    "copiando": "Copiando…"
   },
   "recruiter": {
     "titulo": "Recruiter",
@@ -1157,7 +1172,7 @@
     "linkedinAyuda": "El staff lo mira al revisar tus ofertas.",
     "mensaje": "Algo más (opcional)",
     "mensajeAyuda": "Por ejemplo, qué perfiles buscáis.",
-    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques. ¿Eres de una agencia o headhunter? Cuéntalo en «Algo más» y te dejamos publicar para varias empresas.",
+    "publico": "Tu nombre, tu cargo y tu empresa saldrán en las ofertas que publiques.",
     "enviar": "Registrarme y publicar una oferta",
     "enviando": "Guardando…",
     "errorGeneral": "No se ha podido guardar. Inténtalo de nuevo.",
@@ -1174,7 +1189,8 @@
         "falta": "Elige tu cargo."
       },
       "empresa": {
-        "falta": "Escribe el nombre de la empresa."
+        "falta": "Escribe el nombre de la empresa.",
+        "ofertas_en_marcha": "Para cambiar de empresa, retira antes tus ofertas en marcha."
       },
       "linkedin": {
         "falta": "Pega el enlace a tu perfil de LinkedIn.",
@@ -1188,6 +1204,7 @@
     "activoAyuda": "Puedes publicar ofertas de tu empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
     "activoAgencia": "Como agencia, puedes publicar ofertas de cualquier empresa: hasta 3 a la vez. Las revisamos antes de que salgan.",
     "bloqueado": "Tu cuenta de recruiter está bloqueada: no puedes publicar ofertas.",
-    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord."
+    "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord.",
+    "variasEmpresas": "¿Necesitas publicar ofertas de más de una empresa (agencia o headhunter)? Escríbenos a <correo>contacto@techtojob.com</correo> o <ticket>crea un ticket en el Discord</ticket>."
   }
 }
