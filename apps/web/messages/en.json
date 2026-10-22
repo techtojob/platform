@@ -264,7 +264,13 @@
     "talento": "Talent",
     "principal": "Job board menu",
     "abrir": "Open menu",
-    "proyectos": "Projects"
+    "proyectos": "Projects",
+    "torneos": "Tournaments",
+    "mas": "More",
+    "noticias": "News",
+    "paraEmpresas": "For companies",
+    "quienesSomos": "About us",
+    "discord": "Discord"
   },
   "pie": {
     "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",

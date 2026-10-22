@@ -264,7 +264,13 @@
     "talento": "Talento",
     "principal": "Menú de la bolsa",
     "abrir": "Abrir menú",
-    "proyectos": "Proyectos"
+    "proyectos": "Proyectos",
+    "torneos": "Torneos",
+    "mas": "Más",
+    "noticias": "Noticias",
+    "paraEmpresas": "Para empresas",
+    "quienesSomos": "Quiénes somos",
+    "discord": "Discord"
   },
   "pie": {
     "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",
