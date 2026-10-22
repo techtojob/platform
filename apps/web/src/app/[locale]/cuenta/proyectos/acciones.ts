@@ -1,9 +1,9 @@
 "use server";
 
-import { validarProyecto } from "@techtojob/shared";
+import { validarPortfolio, validarProyecto } from "@techtojob/shared";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { borrarProyectoEnApi, ErrorDeApi, fijarProyectoEnApi, guardarProyectoEnApi } from "@/lib/api";
+import { borrarPortfolioEnApi, borrarProyectoEnApi, ErrorDeApi, fijarProyectoEnApi, guardarPortfolioEnApi, guardarProyectoEnApi } from "@/lib/api";
 
 export type ResultadoProyecto = { errores?: Record<string, string>; error?: string; id?: string };
 
@@ -47,6 +47,36 @@ export async function fijarProyecto(id: string, fijado: boolean): Promise<string
   if (!cookie) return "sin_sesion";
   try {
     await fijarProyectoEnApi(cookie, id, fijado);
+    recargar();
+    return null;
+  } catch (error) {
+    return error instanceof ErrorDeApi ? error.codigo : "desconocido";
+  }
+}
+
+export type ResultadoPortfolio = { errores?: Record<string, string>; error?: string; ok?: true };
+
+/** Pone o cambia mi portfolio (y si quiero "Tu portfolio a juicio"). */
+export async function guardarPortfolio(valores: unknown): Promise<ResultadoPortfolio> {
+  const comprobado = validarPortfolio(valores);
+  if (comprobado.errores) return { errores: comprobado.errores };
+  const cookie = (await headers()).get("cookie");
+  if (!cookie) return { error: "sin_sesion" };
+  try {
+    await guardarPortfolioEnApi(cookie, comprobado.datos);
+    recargar();
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof ErrorDeApi && Object.keys(error.campos).length) return { errores: error.campos };
+    return { error: error instanceof ErrorDeApi ? error.codigo : "desconocido" };
+  }
+}
+
+export async function borrarPortfolio(): Promise<string | null> {
+  const cookie = (await headers()).get("cookie");
+  if (!cookie) return "sin_sesion";
+  try {
+    await borrarPortfolioEnApi(cookie);
     recargar();
     return null;
   } catch (error) {

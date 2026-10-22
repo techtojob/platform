@@ -3,6 +3,7 @@ import { and, asc, count, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { empresas, ofertas, recruiters, reportes, reportesPerfil, usuarios } from "../db/esquema";
 import { bloquearRecruiter } from "./recruiters";
+import { contarReportesPortfolios } from "./portfolios";
 import { contarReportesProyectos } from "./proyectos";
 
 /**
@@ -76,13 +77,14 @@ export async function listarReportesRecruiters(db: Db): Promise<ReporteRecruiter
 }
 
 export async function resumenReportes(db: Db): Promise<ResumenReportes> {
-  const [[perfiles], [deOfertas], [deRecruiters], deProyectos] = await Promise.all([
+  const [[perfiles], [deOfertas], [deRecruiters], deProyectos, dePortfolios] = await Promise.all([
     db.select({ n: count() }).from(reportesPerfil).where(eq(reportesPerfil.estado, "pendiente")),
     db.select({ n: count() }).from(reportes).innerJoin(ofertas, eq(ofertas.id, reportes.ofertaId)).where(eq(reportes.estado, "pendiente")),
     db.select({ n: count() }).from(reportes).innerJoin(recruiters, eq(recruiters.userId, reportes.recruiterId)).where(eq(reportes.estado, "pendiente")),
     contarReportesProyectos(db),
+    contarReportesPortfolios(db),
   ]);
-  return { perfiles: Number(perfiles!.n), ofertas: Number(deOfertas!.n), recruiters: Number(deRecruiters!.n), proyectos: deProyectos };
+  return { perfiles: Number(perfiles!.n), ofertas: Number(deOfertas!.n), recruiters: Number(deRecruiters!.n), proyectos: deProyectos, portfolios: dePortfolios };
 }
 
 async function reporte(db: Db, id: string) {

@@ -1,5 +1,6 @@
 import type { Disponibilidad, Emblema } from "@techtojob/shared";
 import { useFormatter, useTranslations } from "next-intl";
+import { IconoJuicio } from "@/components/proyectos/tarjeta-portfolio";
 import { cn } from "@/lib/cn";
 
 /** "Verificado": tiene su Discord vinculado y está en el servidor de TechToJob. */
@@ -43,6 +44,7 @@ function IconoEmblema({ tipo }: { tipo: Emblema["tipo"] }) {
       </svg>
     );
   }
+  if (tipo === "juicio") return <IconoJuicio />;
   if (tipo === "quiz") {
     return (
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">

@@ -309,7 +309,8 @@
     "emblemas": {
       "fundador": "Miembro fundador",
       "torneo": "Ganador de un torneo",
-      "quiz": "Top del quiz"
+      "quiz": "Top del quiz",
+      "juicio": "Tu portfolio a juicio"
     },
     "soloRegistradosTitulo": "Perfil solo para registrados",
     "soloRegistradosTexto": "Esta persona ha elegido que su perfil solo lo vean usuarios registrados. Entra con Google o GitHub para verlo.",
@@ -338,17 +339,20 @@
       }
     },
     "nivelConAnos": "{nivel} · {anos, plural, one {# año} =16 {+15 años} other {# años}}",
-    "megustaProyectos": "{count, plural, one {# me gusta} other {# me gusta}} en sus proyectos",
+    "megustaProyectos": "{count, plural, one {# me gusta} other {# me gusta}} en sus proyectos y portfolio",
     "proyectos": "{count, plural, =0 {Proyectos} one {Proyecto} other {Proyectos (#)}}",
     "gestionarProyectos": "Gestionar mis proyectos",
-    "subirProyecto": "Sube tu primer proyecto"
+    "subirProyecto": "Sube tu primer proyecto",
+    "portfolioTitulo": "Portfolio",
+    "cambiarPortfolio": "Cambiar mi portfolio",
+    "ponerPortfolio": "Pon tu portfolio"
   },
   "proyectos": {
     "titulo": "Proyectos",
     "portadaTitulo": "Lo que construye la <resaltado>comunidad</resaltado>",
-    "entradilla": "Proyectos de la gente de TechToJob: repositorios, demos y lo que estén haciendo. Dale me gusta a los que te gusten.",
+    "entradilla": "Proyectos y portfolios de la gente de TechToJob: repositorios, demos y webs personales. Dale me gusta a los que te gusten.",
     "postitTitulo": "¿Has hecho algo chulo?",
-    "postitTexto": "Súbelo: sale aquí y en tu perfil, y quien busca talento lo ve. Cada mes destacamos los que más gustan.",
+    "postitTexto": "Sube tu proyecto del mes y tu portfolio: salen aquí y en tu perfil, y quien busca talento los ve. Cada mes destacamos los que más gustan.",
     "subir": "Subir un proyecto",
     "error": "No se han podido cargar los proyectos. Inténtalo en un momento.",
     "tituloSeccion": "{count, plural, =0 {Ningún proyecto} one {# proyecto} other {# proyectos}}",
@@ -423,7 +427,51 @@
     "editar": "Editar",
     "tecnologias": "Hecho con",
     "autor": "Autor",
-    "verPerfil": "Ver su perfil"
+    "verPerfil": "Ver su perfil",
+    "buscadorEjemploPortfolios": "Busca por nombre, puesto o web…",
+    "vistas": {
+      "titulo": "Qué ver",
+      "proyectos": "Proyectos",
+      "portfolios": "Portfolios"
+    }
+  },
+  "portfolios": {
+    "tituloSeccion": "{count, plural, =0 {Ningún portfolio} one {# portfolio} other {# portfolios}}",
+    "verPortfolios": "{count, plural, =0 {Ningún portfolio} one {Ver # portfolio} other {Ver # portfolios}}",
+    "soloJuicio": "Pasaron por Tu portfolio a juicio",
+    "vacio": "Todavía no hay portfolios. ¡Pon el tuyo!",
+    "oculto": "Oculto",
+    "abreOtraWeb": "(se abre en otra pestaña)",
+    "revisado": "Tu portfolio a juicio · {fecha}",
+    "verVideo": "Ver el vídeo",
+    "enPeriodo": "{count} {periodo}",
+    "megusta": {
+      "tuyo": "Es tu portfolio: no puedes darle me gusta",
+      "cuantos": "{count, plural, one {# me gusta} other {# me gusta}}",
+      "conTexto": "{count, plural, =0 {Me gusta} other {Me gusta · #}}",
+      "entra": "{count, plural, one {# me gusta} other {# me gusta}}. Entra para dar el tuyo",
+      "dar": "Me gusta ({count})",
+      "quitar": "Quitar me gusta ({count})",
+      "error": "No se ha podido guardar tu me gusta. Inténtalo de nuevo.",
+      "entraTexto": "Entra para darle me gusta."
+    },
+    "reportar": {
+      "boton": "Reportar portfolio",
+      "titulo": "Reportar este portfolio",
+      "motivo": "¿Qué pasa? (no es suyo, spam, contenido ofensivo, enlace peligroso…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar un portfolio tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propio portfolio.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    }
   },
   "staff": {
     "titulo": "Panel de staff",
@@ -740,7 +788,8 @@
         "perfiles": "Perfiles",
         "ofertas": "Ofertas",
         "recruiters": "Recruiters",
-        "proyectos": "Proyectos"
+        "proyectos": "Proyectos",
+        "portfolios": "Portfolios"
       },
       "verOferta": "Ver oferta",
       "verEnPanel": "Abrir en el panel",
@@ -752,7 +801,9 @@
       "error": "No se ha podido hacer. Inténtalo de nuevo.",
       "ocultarProyecto": "Ocultar el proyecto",
       "verProyecto": "Ver proyecto",
-      "oculto": "Oculto"
+      "oculto": "Oculto",
+      "ocultarPortfolio": "Ocultar el portfolio",
+      "verPortfolio": "Abrir el portfolio"
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -938,6 +989,27 @@
       "repartido": "Rellenado: {campos}. Revísalo abajo.",
       "nadaQueRepartir": "No encontramos los apartados (RESUMEN:, RESPONSABILIDADES:…). Copia la respuesta entera de la IA.",
       "copiarParaRedes": "Copiar para Discord / LinkedIn"
+    },
+    "juicio": {
+      "pestana": "Portfolio a juicio",
+      "titulo": "Tu portfolio a juicio",
+      "entradilla": "Portfolios que han pedido revisión en el directo de los viernes. Elegid los que queráis; al revisarlo, apuntad el día y el vídeo y su autor recibe el emblema.",
+      "pendientes": "{count, plural, =0 {Nadie esperando} one {# esperando} other {# esperando}}",
+      "vacio": "Ahora mismo nadie ha pedido revisión.",
+      "revisados": "Ya revisados",
+      "pedido": "Lo pidió el {fecha}",
+      "revisado": "Revisado el {fecha}",
+      "megusta": "{count, plural, one {# me gusta} other {# me gusta}}",
+      "fecha": "Día del directo",
+      "video": "Vídeo (YouTube, Twitch, TikTok…; se puede poner después)",
+      "marcar": "Marcar como revisado",
+      "guardar": "Guardar",
+      "errores": {
+        "fecha": "Pon el día del directo (hoy o antes).",
+        "video": "El vídeo tiene que ser de YouTube, Twitch, TikTok, Instagram o LinkedIn.",
+        "no_existe": "Este portfolio ya no existe.",
+        "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
+      }
     }
   },
   "formulario": {
@@ -1116,10 +1188,11 @@
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
         "<b>Tus proyectos, si los subes:</b> lo que escribes (nombre, descripción, tecnologías, enlaces) y cuáles fijas. Salen en Proyectos y en tu perfil, con la misma visibilidad que tu perfil.",
-        "<b>Tus me gusta:</b> a qué proyectos les das me gusta y cuándo. Los demás solo ven cuántos tiene cada proyecto, nunca quién se los ha dado.",
+        "<b>Tu portfolio, si lo pones:</b> la dirección, la frase que escribas, la imagen que tu web ofrece para compartir y si pides «Tu portfolio a juicio» (y, si se revisa, la fecha y el vídeo del directo).",
+        "<b>Tus me gusta:</b> a qué proyectos y portfolios les das me gusta y cuándo. Los demás solo ven cuántos tiene cada proyecto, nunca quién se los ha dado.",
         "<b>Si te registras como recruiter:</b> tu cargo, tu empresa, su web, tu LinkedIn y lo que nos cuentes, para que el staff revise tus ofertas. Tu nombre, tu cargo y tu empresa salen en las ofertas que publiques.",
         "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
-        "<b>Los reportes que haces:</b> qué perfil, oferta, recruiter o proyecto reportas y por qué. A quien reportas no le decimos quién ha sido.",
+        "<b>Los reportes que haces:</b> qué perfil, oferta, recruiter, proyecto o portfolio reportas y por qué. A quien reportas no le decimos quién ha sido.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
         "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
         "<b>Si eres del staff:</b> qué ofertas has revisado."
@@ -1147,7 +1220,7 @@
       "titulo": "Cuánto tiempo",
       "items": [
         "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
-        "<b>Tus proyectos y tus me gusta:</b> hasta que los borres; se borran también si borras tu perfil o tu cuenta.",
+        "<b>Tus proyectos, tu portfolio y tus me gusta:</b> hasta que los borres; se borran también si borras tu perfil o tu cuenta.",
         "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
         "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada.",
         "<b>Las ofertas que subes:</b> las que aún no se han revisado se borran si borras tu cuenta; las publicadas se quedan en la bolsa sin tu nombre."
@@ -1270,7 +1343,7 @@
   },
   "misProyectos": {
     "titulo": "Mis proyectos",
-    "entradilla": "Lo que subes sale en Proyectos y en tu perfil. Fija hasta 3 para que salgan los primeros.",
+    "entradilla": "Tu portfolio y tus proyectos salen en Proyectos y en tu perfil. Puedes subir un proyecto al mes: sube el mejor.",
     "nuevo": "Subir un proyecto",
     "nuevoEntradilla": "Cuenta qué es, con qué lo has hecho y dónde verlo. Con el repositorio de GitHub, la portada sale sola.",
     "editarTitulo": "Editar el proyecto",
@@ -1301,7 +1374,8 @@
       "sin_verificar": "Antes tienes que verificar tu cuenta (Discord vinculado y en el servidor).",
       "no_existe": "Este proyecto ya no existe.",
       "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
-      "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+      "desconocido": "No se ha podido hacer. Inténtalo de nuevo.",
+      "este_mes": "Ya has subido tu proyecto de este mes. El día 1 podrás subir otro."
     },
     "formulario": {
       "titulo": "Nombre del proyecto",
@@ -1353,6 +1427,43 @@
         "video": {
           "url": "No parece un enlace."
         }
+      }
+    },
+    "proyectosTitulo": "Tus proyectos",
+    "yaEsteMes": "Ya has subido tu proyecto de este mes. El {fecha} podrás subir otro (editar los que tienes no cuenta).",
+    "portfolio": {
+      "titulo": "Tu portfolio",
+      "entradilla": "Tu web personal: sale en Proyectos › Portfolios y en tu perfil. Puedes cambiarlo cuando quieras.",
+      "url": "Dirección de tu portfolio",
+      "urlAyuda": "Si tu web tiene imagen para compartir (og:image), la usamos de portada.",
+      "descripcion": "Una frase (opcional)",
+      "descripcionAyuda": "Qué vas a encontrar en él. {usados}/{max}",
+      "juicio": {
+        "titulo": "Tu portfolio a juicio",
+        "texto": "Los viernes revisamos portfolios en directo y te damos ideas para mejorarlo. Al pasar por él, ganas el emblema.",
+        "quiero": "Quiero que revisen mi portfolio en un directo",
+        "pedido": "Lo pediste el {fecha}. El staff elige cuáles revisa cada viernes.",
+        "revisado": "Revisado en el directo del {fecha}.",
+        "verVideo": "Ver el vídeo"
+      },
+      "poner": "Poner mi portfolio",
+      "guardar": "Guardar cambios",
+      "puesto": "¡Portfolio puesto! Ya sale en Proyectos y en tu perfil.",
+      "guardado": "Cambios guardados.",
+      "borrar": "Quitar mi portfolio",
+      "borrarSeguro": "Sí, quitarlo",
+      "cancelar": "Cancelar",
+      "borrado": "Portfolio quitado.",
+      "errores": {
+        "url": {
+          "falta": "Pon la dirección de tu portfolio.",
+          "url": "No parece una dirección (por ejemplo, tu-nombre.dev)."
+        },
+        "descripcion": "Muy largo: como mucho 300 caracteres.",
+        "sin_perfil": "Antes tienes que crear tu perfil de talento.",
+        "sin_verificar": "Antes tienes que verificar tu cuenta (Discord vinculado y en el servidor).",
+        "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
+        "desconocido": "No se ha podido guardar. Inténtalo de nuevo."
       }
     }
   },

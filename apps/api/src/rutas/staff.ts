@@ -1,4 +1,7 @@
+import { validarVideoJuicio } from "@techtojob/shared";
+import { ErrorPortfolio, listarJuicio, listarReportesPortfolios, marcarJuicio, resolverReportePortfolio } from "../servicios/portfolios";
 import { ErrorProyecto, listarReportesProyectos, resolverReporteProyecto } from "../servicios/proyectos";
+import { responderPortfolio } from "./portfolios";
 import { leerFiltrosStaff, validarOferta, type ListaStaff } from "@techtojob/shared";
 import { Hono, type Context } from "hono";
 import type { Entorno } from "../app";
@@ -67,6 +70,9 @@ import { conSesion, soloStaff } from "./sesion";
  * GET  /staff/reportes-ofertas · POST /staff/reportes-ofertas/:id/descartar · /cerrar
  * GET  /staff/reportes-recruiters · POST /staff/reportes-recruiters/:id/descartar · /bloquear { motivo }
  * GET  /staff/reportes-proyectos · POST /staff/reportes-proyectos/:id/descartar · /ocultar
+ * GET  /staff/reportes-portfolios · POST /staff/reportes-portfolios/:id/descartar · /ocultar
+ * GET  /staff/juicio                → "Tu portfolio a juicio": { pendientes, revisados }
+ * POST /staff/juicio/:alias { fecha: "2026-10-23", video } → revisado (y emblema)
  * GET  /staff/recruiters?estado=activo|bloqueado → recruiters (se registran solos; el staff revisa sus ofertas)
  * POST /staff/recruiters/:userId/bloquear { motivo } · /desbloquear · /agencia { agencia }
  */
@@ -195,6 +201,28 @@ export const rutasStaff = new Hono<Entorno>()
   .get("/reportes-ofertas", async (c) => c.json(await listarReportesOfertas(c.var.db)))
   .get("/reportes-recruiters", async (c) => c.json(await listarReportesRecruiters(c.var.db)))
   .get("/reportes-proyectos", async (c) => c.json(await listarReportesProyectos(c.var.db)))
+  .get("/reportes-portfolios", async (c) => c.json(await listarReportesPortfolios(c.var.db)))
+  .post("/reportes-portfolios/:id/:accion{descartar|ocultar}", async (c) => {
+    try {
+      await resolverReportePortfolio(c.var.db, c.req.param("id"), c.req.param("accion") as "descartar" | "ocultar");
+      return c.json({ ok: true });
+    } catch (e) {
+      return responderPortfolio(c, e);
+    }
+  })
+  .get("/juicio", async (c) => c.json(await listarJuicio(c.var.db)))
+  .post("/juicio/:alias", async (c) => {
+    const datos = (await c.req.json().catch(() => ({}))) as Record<string, unknown>;
+    const video = validarVideoJuicio(datos.video);
+    if (video === "mal") return c.json({ error: { codigo: "video", mensaje: "El vídeo tiene que ser un enlace de YouTube, Twitch, TikTok, Instagram o LinkedIn." } }, 400);
+    try {
+      await marcarJuicio(c.var.db, c.req.param("alias"), c.var.usuario.id, datos.fecha, video);
+      return c.json(await listarJuicio(c.var.db));
+    } catch (e) {
+      if (e instanceof ErrorPortfolio) return responderPortfolio(c, e);
+      throw e;
+    }
+  })
   .post("/reportes-proyectos/:id/:accion{descartar|ocultar}", async (c) => {
     try {
       await resolverReporteProyecto(c.var.db, c.req.param("id"), c.req.param("accion") as "descartar" | "ocultar");

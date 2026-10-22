@@ -55,6 +55,9 @@ const pedir = async (ruta: string, quien: string | null, init: { method?: string
   return { status: r.status, json: (await r.json().catch(() => null)) as never as Record<string, unknown> & { proyectos: Array<Record<string, unknown>> } };
 };
 
+/** Lo pasa al mes pasado: así la misma persona puede subir otro (uno al mes). */
+const alMesPasado = (id: unknown) => db.update(proyectos).set({ creadaEn: new Date(Date.now() - 35 * 86_400_000) }).where(eq(proyectos.id, id as string));
+
 const proyecto = (cambios: Record<string, unknown> = {}) => ({
   titulo: "Lakehouse de vivienda vacacional",
   descripcion: "Pipeline con PySpark que limpia y cruza datos de vivienda vacacional en Canarias.",
@@ -102,8 +105,12 @@ describe("subir proyectos", () => {
     const r = await pedir("/cuenta/proyectos", "ana", { method: "POST", body: proyecto() });
     expect(r.status).toBe(201);
     ids.lakehouse = r.json.id as unknown as string;
+    // Uno al mes.
+    expect((await pedir("/cuenta/proyectos", "ana", { method: "POST", body: proyecto({ titulo: "Otro" }) })).json).toMatchObject({ error: { codigo: "este_mes" } });
+    await alMesPasado(ids.lakehouse);
     ids.web = (await pedir("/cuenta/proyectos", "ana", { method: "POST", body: proyecto({ titulo: "Mi portfolio web", area: "desarrollo", repo: "", demo: "https://ana.dev" }) })).json
       .id as unknown as string;
+    await alMesPasado(ids.web);
     ids.bot = (await pedir("/cuenta/proyectos", "bea", { method: "POST", body: proyecto({ titulo: "Bot de Discord", area: "desarrollo", repo: "https://github.com/bea/bot" }) })).json
       .id as unknown as string;
     const lista = await pedir("/proyectos?orden=nuevos", null);
@@ -172,6 +179,7 @@ describe("me gusta", () => {
   it("como mucho 3 fijados", async () => {
     for (const n of [1, 2, 3]) {
       const { json } = await pedir("/cuenta/proyectos", "ana", { method: "POST", body: proyecto({ titulo: `Extra ${n}`, repo: `https://github.com/ana/extra-${n}` }) });
+      await alMesPasado(json.id);
       const r = await pedir(`/cuenta/proyectos/${json.id}/fijar`, "ana", { method: "POST", body: { fijado: true } });
       expect(r.status).toBe(n < 3 ? 200 : 409);
     }

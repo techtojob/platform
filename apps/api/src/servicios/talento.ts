@@ -1,4 +1,5 @@
 import { fotosDe } from "./fotos";
+import { megustaPortfoliosDe, portfolioDe } from "./portfolios";
 import { megustaDe, proyectosDe } from "./proyectos";
 import {
   fotoElegida,
@@ -20,7 +21,7 @@ import {
 } from "@techtojob/shared";
 import { and, arrayOverlaps, asc, count, desc, eq, exists, gt, ilike, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { emblemas, estadoDiscord, perfiles, proyectos, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
+import { emblemas, estadoDiscord, perfiles, portfolios, proyectos, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
 
 /**
  * Talento: perfiles de la comunidad. Quién ve qué:
@@ -107,7 +108,7 @@ function condiciones(f: FiltrosTalento, sinPais = false): SQL[] {
 /** Emblemas y verificación de varios usuarios de una vez. */
 async function extras(db: Db, ids: string[]) {
   if (!ids.length) return { emblemasDe: () => [] as Emblema[], verificado: () => false, fotosDe: () => ({ google: null, github: null }), megustaDe: () => 0 };
-  const [fundadores, ganados, discord, fotos, megusta] = await Promise.all([
+  const [fundadores, ganados, discord, fotos, megusta, megustaPortfolio] = await Promise.all([
     db
       .select({ id: usuarios.id, creadoEn: usuarios.createdAt })
       .from(usuarios)
@@ -121,6 +122,7 @@ async function extras(db: Db, ids: string[]) {
     db.select({ id: estadoDiscord.userId }).from(estadoDiscord).where(and(inArray(estadoDiscord.userId, ids), eq(estadoDiscord.enServidor, true))),
     fotosDe(db, ids),
     megustaDe(db, ids),
+    megustaPortfoliosDe(db, ids),
   ]);
   const fundador = new Map(fundadores.map((f) => [f.id, f.creadoEn]));
   const verificados = new Set(discord.map((d) => d.id));
@@ -131,7 +133,8 @@ async function extras(db: Db, ids: string[]) {
     ],
     verificado: (id: string) => verificados.has(id),
     fotosDe: (id: string): FotosCuenta => fotos.get(id) ?? { google: null, github: null },
-    megustaDe: (id: string) => megusta.get(id) ?? 0,
+    // Los de sus proyectos y los de su portfolio.
+    megustaDe: (id: string) => (megusta.get(id) ?? 0) + (megustaPortfolio.get(id) ?? 0),
   };
 }
 
@@ -233,6 +236,7 @@ export async function obtenerPerfil(db: Db, alias: string, visitante: Visitante)
     visibilidad: p.visibilidad,
     esMio,
     proyectos: await proyectosDe(db, p.userId, visitante),
+    portfolio: await portfolioDe(db, p.userId, visitante),
   };
 }
 
@@ -306,9 +310,10 @@ export async function guardarPerfil(db: Db, userId: string, d: DatosPerfil) {
     .onConflictDoUpdate({ target: perfiles.userId, set: valores });
 }
 
-/** Borra el perfil y, con él, sus proyectos (sin perfil no se ven en ningún sitio). */
+/** Borra el perfil y, con él, sus proyectos y su portfolio (sin perfil no se ven en ningún sitio). */
 export async function borrarPerfil(db: Db, userId: string) {
   await db.delete(proyectos).where(eq(proyectos.userId, userId));
+  await db.delete(portfolios).where(eq(portfolios.userId, userId));
   await db.delete(perfiles).where(eq(perfiles.userId, userId));
 }
 

@@ -48,7 +48,8 @@ function ConDireccion() {
     e.preventDefault();
     clearTimeout(espera.current);
     const limpio = texto.trim();
-    const tecnologia = limpio ? buscarTecnologia(limpio) : undefined;
+    // En proyectos, una tecnología se convierte en filtro (los portfolios no tienen).
+    const tecnologia = limpio && filtros.ver !== "portfolios" ? buscarTecnologia(limpio) : undefined;
     if (tecnologia) {
       setTexto("");
       ir("", tecnologia.id);
@@ -58,7 +59,7 @@ function ConDireccion() {
   return (
     <Caja
       texto={texto}
-      ejemplo={t("buscadorEjemplo")}
+      ejemplo={filtros.ver === "portfolios" ? t("buscadorEjemploPortfolios") : t("buscadorEjemplo")}
       refCaja={caja}
       pendiente={pendiente}
       onEnviar={alEnviar}

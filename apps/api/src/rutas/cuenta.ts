@@ -11,6 +11,7 @@ import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicio
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
 import { rutasMisOfertas } from "./mis-ofertas";
+import { rutasMiPortfolio } from "./portfolios";
 import { rutasMisProyectos } from "./proyectos";
 import { ErrorRecruiter, miRecruiter, registrarRecruiter } from "../servicios/recruiters";
 
@@ -62,6 +63,7 @@ export const rutasCuenta = new Hono<Entorno>()
   .route("/perfil", rutasPerfilPropio)
   .route("/ofertas", rutasMisOfertas)
   .route("/proyectos", rutasMisProyectos)
+  .route("/portfolio", rutasMiPortfolio)
   .get("/recruiter", async (c) => c.json(await miRecruiter(c.var.db, c.var.usuario)))
   .put("/recruiter", async (c) => {
     const r = validarSolicitudRecruiter(await c.req.json().catch(() => ({})));

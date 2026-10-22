@@ -23,7 +23,7 @@ async function visitante(c: Context<Entorno>): Promise<Visitante> {
   return { id: sesion.user.id, esStaff: await esStaff(c.var.db, c.env, sesion.user) };
 }
 
-const ESTADOS_HTTP = { no_existe: 404, sin_perfil: 403, sin_verificar: 403, propio: 400, fijados: 409, demasiados: 409, motivo: 400 } as const;
+const ESTADOS_HTTP = { no_existe: 404, sin_perfil: 403, sin_verificar: 403, propio: 400, fijados: 409, demasiados: 409, este_mes: 409, motivo: 400 } as const;
 function responder(c: Context<Entorno>, e: unknown) {
   if (e instanceof ErrorProyecto) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, ESTADOS_HTTP[e.codigo]);
   throw e;

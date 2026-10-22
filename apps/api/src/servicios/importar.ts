@@ -67,7 +67,7 @@ const MAXIMO_SALTOS = 5;
  * Lee la página. Las redirecciones se siguen a mano para comprobar cada dirección:
  * si no, una web pública podría mandar a una interna.
  */
-async function leerPagina(url: URL, pedir: Pedir): Promise<string | null> {
+export async function leerPagina(url: URL, pedir: Pedir): Promise<string | null> {
   let actual = url;
   try {
     for (let salto = 0; salto <= MAXIMO_SALTOS; salto++) {
@@ -162,7 +162,7 @@ export function buscarJobPosting(html: string): Json | null {
   return null;
 }
 
-function meta(html: string, nombre: string): string | undefined {
+export function meta(html: string, nombre: string): string | undefined {
   const r = new RegExp(`<meta[^>]+(?:property|name)\\s*=\\s*["']${nombre}["'][^>]*>`, "i").exec(html);
   const contenido = r && /content\s*=\s*["']([^"']*)["']/i.exec(r[0]);
   return texto(contenido?.[1]);

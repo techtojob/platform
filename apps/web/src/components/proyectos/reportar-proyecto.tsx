@@ -7,8 +7,8 @@ import { Boton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 
 /** "Reportar proyecto": abre un cuadro para contar qué pasa. Hay que haber iniciado sesión. */
-export function ReportarProyecto({ id, conSesion }: { id: string; conSesion: boolean }) {
-  const t = useTranslations("proyectos.reportar");
+export function ReportarProyecto({ id, conSesion, tipo = "proyecto" }: { id: string; conSesion: boolean; tipo?: "proyecto" | "portfolio" }) {
+  const t = useTranslations(tipo === "portfolio" ? "portfolios.reportar" : "proyectos.reportar");
   const cuadro = useRef<HTMLDialogElement>(null);
   const [motivo, ponerMotivo] = useState("");
   const [estado, ponerEstado] = useState<"listo" | "hecho" | string>("listo");
@@ -16,7 +16,7 @@ export function ReportarProyecto({ id, conSesion }: { id: string; conSesion: boo
 
   function enviar() {
     empezar(async () => {
-      const error = await reportarProyecto(id, motivo);
+      const error = await reportarProyecto({ tipo, id }, motivo);
       ponerEstado(error ?? "hecho");
     });
   }

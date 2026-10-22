@@ -10,7 +10,9 @@ import {
   type OfertaImportada,
   type OfertaRepetida,
   type OfertaStaff,
+  type PortfolioJuicioStaff,
   type ReporteOferta,
+  type ReportePortfolio,
   type ReporteProyecto,
   type ReportePerfil,
   type ReporteRecruiter,
@@ -168,9 +170,25 @@ export async function listarReportesProyectos(): Promise<ReporteProyecto[]> {
   return pedir<ReporteProyecto[]>("/staff/reportes-proyectos", await conCookie());
 }
 
+export async function listarReportesPortfolios(): Promise<ReportePortfolio[]> {
+  return pedir<ReportePortfolio[]>("/staff/reportes-portfolios", await conCookie());
+}
+
+/* ── Tu portfolio a juicio ── */
+
+export type ListaJuicio = { pendientes: PortfolioJuicioStaff[]; revisados: PortfolioJuicioStaff[] };
+
+export async function listarJuicio(): Promise<ListaJuicio> {
+  return pedir<ListaJuicio>("/staff/juicio", await conCookie());
+}
+
+export async function marcarJuicioEnApi(alias: string, fecha: string, video: string): Promise<ListaJuicio> {
+  return pedir<ListaJuicio>(`/staff/juicio/${encodeURIComponent(alias)}`, await conCookie({ method: "POST", body: JSON.stringify({ fecha, video }) }));
+}
+
 export type AccionReporte =
   | { de: "ofertas"; accion: "descartar" | "cerrar" }
-  | { de: "proyectos"; accion: "descartar" | "ocultar" }
+  | { de: "proyectos" | "portfolios"; accion: "descartar" | "ocultar" }
   | { de: "recruiters"; accion: "descartar" }
   | { de: "recruiters"; accion: "bloquear"; motivo: string };
 

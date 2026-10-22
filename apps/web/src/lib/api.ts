@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiOfertaEntera, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ProyectoListado, ResultadoProyectos, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiOfertaEntera, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, PortfolioListado, ProyectoListado, ResultadoPortfolios, ResultadoProyectos, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -279,4 +279,34 @@ export function fijarProyectoEnApi(cookie: string, id: string, fijado: boolean):
     headers: { cookie, "content-type": "application/json" },
     body: JSON.stringify({ fijado }),
   });
+}
+
+/* ───────────── Portfolios ───────────── */
+
+export function obtenerPortfolios(parametros: Record<string, string>, cookie: string | null): Promise<ResultadoPortfolios> {
+  return pedir<ResultadoPortfolios>(`/portfolios?${new URLSearchParams(parametros)}`, { headers: conCookie(cookie) });
+}
+
+export function megustaPortfolioEnApi(cookie: string, alias: string, dar: boolean): Promise<{ megusta: number; meGusta: boolean }> {
+  return pedir(`/portfolios/${encodeURIComponent(alias)}/megusta`, { method: dar ? "POST" : "DELETE", headers: { cookie } });
+}
+
+export function reportarPortfolioEnApi(cookie: string, alias: string, motivo: string): Promise<{ ok: true }> {
+  return pedir(`/portfolios/${encodeURIComponent(alias)}/reportar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ motivo }),
+  });
+}
+
+export function miPortfolioEnApi(cookie: string): Promise<PortfolioListado | null> {
+  return pedir<PortfolioListado | null>("/cuenta/portfolio", { headers: { cookie } });
+}
+
+export function guardarPortfolioEnApi(cookie: string, datos: unknown): Promise<PortfolioListado> {
+  return pedir<PortfolioListado>("/cuenta/portfolio", { method: "PUT", headers: { cookie, "content-type": "application/json" }, body: JSON.stringify(datos) });
+}
+
+export function borrarPortfolioEnApi(cookie: string): Promise<{ ok: true }> {
+  return pedir("/cuenta/portfolio", { method: "DELETE", headers: { cookie } });
 }

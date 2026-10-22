@@ -9,6 +9,8 @@ import { Portada } from "@/components/sitio/portada";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { useLugarPerfil } from "@/components/talento/datos-perfil";
 import { Emblemas, EtiquetaDisponibilidad, Verificado } from "@/components/talento/insignias";
+import { ReportarProyecto } from "@/components/proyectos/reportar-proyecto";
+import { TarjetaPortfolio } from "@/components/proyectos/tarjeta-portfolio";
 import { TarjetaProyecto } from "@/components/proyectos/tarjeta-proyecto";
 import { ReportarPerfil } from "@/components/talento/reportar-perfil";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
@@ -156,6 +158,31 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
                 </ul>
               </div>
             </Tarjeta>
+
+            {(perfil.portfolio || perfil.esMio) && (
+              <section aria-labelledby="titulo-portfolio" className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <h2 id="titulo-portfolio" className="text-titulo-3 font-bold">
+                    {t("talento.portfolioTitulo")}
+                  </h2>
+                  {perfil.esMio && (
+                    <Link href="/cuenta/proyectos" className="font-bold text-enlace underline">
+                      {perfil.portfolio ? t("talento.cambiarPortfolio") : t("talento.ponerPortfolio")}
+                    </Link>
+                  )}
+                </div>
+                {perfil.portfolio && (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <TarjetaPortfolio portfolio={perfil.portfolio} conSesion={conSesion} sinAutor />
+                    {!perfil.esMio && (
+                      <div className="self-end">
+                        <ReportarProyecto tipo="portfolio" id={perfil.alias} conSesion={conSesion} />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
 
             {(perfil.proyectos.length > 0 || perfil.esMio) && (
               <section aria-labelledby="titulo-proyectos" className="flex flex-col gap-4">

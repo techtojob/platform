@@ -141,6 +141,13 @@
       "when": 1792627971095,
       "tag": "0019_proyectos",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792664272679,
+      "tag": "0020_portfolios",
+      "breakpoints": true
     }
   ]
 }
