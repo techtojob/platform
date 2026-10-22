@@ -319,6 +319,8 @@ export type PerfilListado = {
   tecnologias: string[];
   /** Tiene su Discord vinculado y está en el servidor de TechToJob. */
   verificado: boolean;
+  /** Me gusta que han recibido sus proyectos (se gana con trabajo, no con amigos). */
+  megusta: number;
   emblemas: Emblema[];
   /** Fecha ISO de la última vez que lo tocó. */
   actualizadoEn: string;
@@ -332,6 +334,8 @@ export type PerfilPublico = PerfilListado & {
   visibilidad: VisibilidadPerfil;
   /** Es el perfil de quien lo está mirando. */
   esMio: boolean;
+  /** Sus proyectos: primero los fijados, luego los más nuevos. */
+  proyectos: import("./proyectos").ProyectoListado[];
 };
 
 /** Respuesta de GET /talento. */
@@ -398,8 +402,16 @@ export type ReporteRecruiter = {
   creadoEn: string;
 };
 
+/** Un reporte de un proyecto, para el staff (GET /staff/reportes-proyectos). */
+export type ReporteProyecto = {
+  id: string;
+  proyecto: { id: string; slug: string; titulo: string; oculto: boolean; autor: { alias: string; nombre: string } };
+  motivo: string;
+  creadoEn: string;
+};
+
 /** Cuántos reportes hay sin revisar de cada cosa (para las pestañas del panel). */
-export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number };
+export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number; proyectos: number };
 
 export type ReportePerfil = {
   id: string;

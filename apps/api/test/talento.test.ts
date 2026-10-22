@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { testUtils } from "better-auth/plugins";
 import { beforeAll, describe, expect, it } from "vitest";
 import { crearApp } from "../src/app";
+import { estadoDiscord } from "../src/db/esquema";
 import { opcionesAuth } from "../src/auth";
 import type { Db } from "../src/db/cliente";
 import { crearDbPrueba } from "./db";
@@ -17,16 +18,22 @@ const env = {
 let db: Db;
 let lucia: Headers;
 let pablo: Headers;
+let sinVerificar: Headers;
 const anonimo = new Headers();
 
 beforeAll(async () => {
   db = await crearDbPrueba();
   const auth = betterAuth({ ...opcionesAuth(db, env), user: {}, plugins: [testUtils()] });
   const t = (await auth.$context).test;
-  const entrar = async (email: string, name: string) =>
-    (await t.login({ userId: (await t.saveUser(t.createUser({ email, name }))).id })).headers;
+  // Verificadas (Discord vinculado y en el servidor): para crear perfil hace falta.
+  const entrar = async (email: string, name: string, verificada = true) => {
+    const u = await t.saveUser(t.createUser({ email, name }));
+    if (verificada) await db.insert(estadoDiscord).values({ userId: u.id, discordId: `d-${u.id}`, nombre: name, enServidor: true, roles: [] });
+    return (await t.login({ userId: u.id })).headers;
+  };
   lucia = await entrar("lucia@example.com", "Lucía Martín");
   pablo = await entrar("pablo@example.com", "Pablo");
+  sinVerificar = await entrar("nuevo@example.com", "Nuevo", false);
 });
 
 const pedir = async (ruta: string, headers: Headers, init: { method?: string; body?: unknown } = {}) => {
@@ -114,6 +121,12 @@ const miPerfil = {
 };
 
 describe("mi perfil", () => {
+  it("para crear el perfil hay que estar verificado", async () => {
+    const r = await pedir("/cuenta/perfil", sinVerificar, { method: "PUT", body: { ...miPerfil, alias: "nuevo-dev" } });
+    expect(r.status).toBe(403);
+    expect((r.json as { error: { codigo: string } }).error.codigo).toBe("sin_verificar");
+  });
+
   it("el nivel no se elige: sale de los años de experiencia (y de si lidera)", async () => {
     const { nivelPorExperiencia, validarPerfil } = await import("@techtojob/shared");
     expect([0, 1, 2, 3, 5, 6, 16].map((n) => nivelPorExperiencia(n, false))).toEqual(["sin-experiencia", "junior", "junior", "mid", "mid", "senior", "senior"]);

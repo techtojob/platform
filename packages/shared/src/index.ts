@@ -13,3 +13,4 @@ export * from "./subdivisiones";
 export * from "./recruiters";
 export * from "./respuesta-ia";
 export * from "./experiencia";
+export * from "./proyectos";

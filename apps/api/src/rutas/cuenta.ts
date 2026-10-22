@@ -11,6 +11,7 @@ import { borrarPerfil, ErrorTalento, guardarPerfil, miPerfil } from "../servicio
 import { conSesion } from "./sesion";
 import { actualizarEstadoDiscord } from "../servicios/discord";
 import { rutasMisOfertas } from "./mis-ofertas";
+import { rutasMisProyectos } from "./proyectos";
 import { ErrorRecruiter, miRecruiter, registrarRecruiter } from "../servicios/recruiters";
 
 /**
@@ -44,6 +45,9 @@ export const rutasPerfilPropio = new Hono<Entorno>()
       if (e instanceof ErrorTalento && e.codigo === "alias_ocupado") {
         return c.json({ error: { codigo: "datos_invalidos", mensaje: e.message, campos: { alias: "ocupado" } } }, 400);
       }
+      if (e instanceof ErrorTalento && e.codigo === "sin_verificar") {
+        return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, 403);
+      }
       throw e;
     }
     return c.json(await miPerfil(c.var.db, c.var.usuario));
@@ -57,6 +61,7 @@ export const rutasCuenta = new Hono<Entorno>()
   .use(conSesion)
   .route("/perfil", rutasPerfilPropio)
   .route("/ofertas", rutasMisOfertas)
+  .route("/proyectos", rutasMisProyectos)
   .get("/recruiter", async (c) => c.json(await miRecruiter(c.var.db, c.var.usuario)))
   .put("/recruiter", async (c) => {
     const r = validarSolicitudRecruiter(await c.req.json().catch(() => ({})));

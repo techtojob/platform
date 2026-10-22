@@ -1,7 +1,7 @@
 import { fotoElegida, type Cuenta } from "@techtojob/shared";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { cuentas, emblemas, estadoDiscord, ofertas, perfiles, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
+import { cuentas, emblemas, estadoDiscord, megustaProyectos, ofertas, perfiles, proyectos, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
 import { borrarEstadoDiscord } from "./discord";
 import { resumenRecruiter } from "./recruiters";
 import { fotosDe } from "./fotos";
@@ -72,7 +72,7 @@ export async function borrarCuenta(db: Db, userId: string) {
  * Sin tokens ni datos internos de seguridad.
  */
 export async function exportarDatos(db: Db, userId: string) {
-  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas, [recruiter], otrosReportes] = await Promise.all([
+  const [[usuario], proveedores, [discord], [perfil], susEmblemas, reportesHechos, sesionesActivas, ofertasSubidas, [recruiter], otrosReportes, susProyectos, susMegusta] = await Promise.all([
     db.select().from(usuarios).where(eq(usuarios.id, userId)).limit(1),
     db.select({ proveedor: cuentas.providerId, creadaEn: cuentas.createdAt }).from(cuentas).where(eq(cuentas.userId, userId)),
     db.select().from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1),
@@ -93,6 +93,8 @@ export async function exportarDatos(db: Db, userId: string) {
       .select({ oferta: reportes.ofertaId, recruiter: reportes.recruiterId, motivo: reportes.motivo, creadoEn: reportes.creadoEn })
       .from(reportes)
       .where(eq(reportes.reportadoPor, userId)),
+    db.select().from(proyectos).where(eq(proyectos.userId, userId)),
+    db.select({ proyecto: megustaProyectos.proyectoId, fecha: megustaProyectos.creadoEn }).from(megustaProyectos).where(eq(megustaProyectos.userId, userId)),
   ]);
   return {
     exportadoEn: new Date().toISOString(),
@@ -113,10 +115,12 @@ export async function exportarDatos(db: Db, userId: string) {
     emblemas: susEmblemas.map(({ tipo, nombre, otorgadoEn, caducaEn }) => ({ tipo, nombre, otorgadoEn, caducaEn })),
     reportesQueHiciste: [
       ...reportesHechos.map((r) => ({ de: "perfil", ...r })),
-      ...otrosReportes.map((r) => ({ de: r.oferta ? "oferta" : "recruiter", motivo: r.motivo, creadoEn: r.creadoEn })),
+      ...otrosReportes.map((r) => ({ de: r.oferta ? "oferta" : r.recruiter ? "recruiter" : "proyecto", motivo: r.motivo, creadoEn: r.creadoEn })),
     ],
     sesiones: sesionesActivas,
     ofertasQueSubiste: ofertasSubidas,
+    proyectos: susProyectos.map(({ userId: _u, ...p }) => p),
+    meGustaQueDiste: susMegusta,
     recruiter: recruiter
       ? (({ cargo, empresaNombre, empresaWeb, linkedin, mensaje, estado, agencia, motivo, creadaEn }) => ({
           cargo, empresa: empresaNombre, web: empresaWeb, linkedin, mensaje, estado, agencia, motivo, registradoEn: creadaEn,

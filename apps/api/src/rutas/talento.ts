@@ -16,7 +16,7 @@ async function visitante(c: Context<Entorno>): Promise<Visitante> {
   return { id: sesion.user.id, esStaff: await esStaff(c.var.db, c.env, sesion.user) };
 }
 
-const ESTADOS_HTTP = { no_existe: 404, solo_registrados: 401, motivo: 400, propio: 400, alias_ocupado: 409, reporte: 404 } as const;
+const ESTADOS_HTTP = { no_existe: 404, solo_registrados: 401, motivo: 400, propio: 400, alias_ocupado: 409, reporte: 404, sin_verificar: 403 } as const;
 export function responderErrorTalento(c: Context<Entorno>, e: unknown) {
   if (e instanceof ErrorTalento) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, ESTADOS_HTTP[e.codigo]);
   throw e;
