@@ -80,7 +80,7 @@ type PerfilPrueba = Omit<typeof perfiles.$inferInsert, "userId"> & { id: string;
 const PERFILES_PRUEBA: PerfilPrueba[] = [
   {
     id: "usr-prueba-1", email: "nayra@example.com", alias: "nayra-dev", nombre: "Nayra Hernández",
-    titular: "Desarrolladora frontend junior", area: "desarrollo", seniority: "junior",
+    titular: "Desarrolladora frontend junior", area: "desarrollo", seniority: "junior", anosExperiencia: 1,
     sobreMi: "Terminé el DAW este año y llevo seis meses haciendo webs con React y TypeScript. Me encanta cuidar la accesibilidad y los detalles de diseño.\n\nGané el torneo de landing de TechToJob.",
     ciudad: "La Laguna", pais: "ES", modalidades: ["remoto", "hibrido"], disponibilidad: "buscando",
     tecnologias: ["react", "typescript", "nextjs", "tailwind"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "b2" }],
@@ -88,7 +88,7 @@ const PERFILES_PRUEBA: PerfilPrueba[] = [
   },
   {
     id: "usr-prueba-2", email: "diego@example.com", alias: "diego-datos", nombre: "Diego Morales",
-    titular: "Data engineer con PySpark y Airflow", area: "datos", seniority: "mid",
+    titular: "Data engineer con PySpark y Airflow", area: "datos", seniority: "mid", anosExperiencia: 4,
     sobreMi: "Tres años construyendo pipelines de datos en una consultora. Busco un equipo de producto donde los datos importen.",
     ciudad: "Bogotá", pais: "CO", modalidades: ["remoto"], disponibilidad: "abierto",
     tecnologias: ["python", "spark", "airflow", "sql", "aws"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "c1" }],
@@ -96,21 +96,21 @@ const PERFILES_PRUEBA: PerfilPrueba[] = [
   },
   {
     id: "usr-prueba-3", email: "laura@example.com", alias: "laura-sec", nombre: "Laura Pérez",
-    titular: "Analista de ciberseguridad (SOC N1)", area: "ciberseguridad", seniority: "junior",
+    titular: "Analista de ciberseguridad (SOC N1)", area: "ciberseguridad", seniority: "junior", anosExperiencia: 1,
     ciudad: "Madrid", pais: "ES", modalidades: ["hibrido", "presencial"], disponibilidad: "buscando",
     tecnologias: ["siem", "linux", "python"], idiomas: [{ idioma: "es", nivel: "nativo" }, { idioma: "en", nivel: "b1" }],
     visibilidad: "registrados",
   },
   {
     id: "usr-prueba-4", email: "joao@example.com", alias: "joao-cloud", nombre: "João Silva",
-    titular: "Senior DevOps · Kubernetes y Terraform", area: "infra-devops", seniority: "senior",
+    titular: "Senior DevOps · Kubernetes y Terraform", area: "infra-devops", seniority: "senior", anosExperiencia: 9,
     ciudad: "Lisboa", pais: "PT", modalidades: ["remoto"], disponibilidad: "freelance",
     tecnologias: ["kubernetes", "terraform", "aws", "docker", "go"], idiomas: [{ idioma: "pt", nivel: "nativo" }, { idioma: "en", nivel: "c1" }, { idioma: "es", nivel: "b2" }],
     github: "https://github.com/ejemplo", visibilidad: "registrados", verificado: true,
   },
   {
     id: "usr-prueba-5", email: "marta@example.com", alias: "marta-ux", nombre: "Marta Ruiz",
-    titular: "Diseñadora de producto UX/UI", area: "producto-diseno", seniority: "mid",
+    titular: "Diseñadora de producto UX/UI", area: "producto-diseno", seniority: "mid", anosExperiencia: 4,
     ciudad: "Valencia", pais: "ES", modalidades: ["hibrido"], disponibilidad: "no-busca",
     tecnologias: ["figma"], idiomas: [{ idioma: "es", nivel: "nativo" }],
     visibilidad: "oculto",

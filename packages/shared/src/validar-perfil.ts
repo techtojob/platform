@@ -1,6 +1,7 @@
+import { FOTOS_PERFIL, MAXIMO_ANOS_EXPERIENCIA, nivelPorExperiencia } from "./experiencia";
 import type { DatosPerfil } from "./contratos";
 import { esIdioma, NIVELES_IDIOMA } from "./idiomas";
-import { AREAS, DISPONIBILIDAD, MODALIDADES, SENIORITY, VISIBILIDAD_PERFIL } from "./listas";
+import { AREAS, DISPONIBILIDAD, MODALIDADES, VISIBILIDAD_PERFIL } from "./listas";
 import { TECNOLOGIAS } from "./tecnologias";
 
 /**
@@ -96,8 +97,12 @@ export function validarPerfil(entrada: unknown): Resultado {
 
   const area = de(AREAS, e.area);
   if (!area) errores.area = "falta";
-  const seniority = de(SENIORITY, e.seniority);
-  if (!seniority) errores.seniority = "falta";
+  // El nivel no se elige: sale de los años de experiencia (y de si ha liderado).
+  const anos = typeof e.anosExperiencia === "number" ? e.anosExperiencia : Number.parseInt(String(e.anosExperiencia ?? ""), 10);
+  const anosExperiencia = Number.isInteger(anos) && anos >= 0 && anos <= MAXIMO_ANOS_EXPERIENCIA ? anos : null;
+  if (anosExperiencia === null) errores.anosExperiencia = "falta";
+  const lidera = e.lidera === true;
+  const foto = de(FOTOS_PERFIL, e.foto) ?? "ninguna";
   const disponibilidad = de(DISPONIBILIDAD, e.disponibilidad);
   if (!disponibilidad) errores.disponibilidad = "falta";
   const visibilidad = de(VISIBILIDAD_PERFIL, e.visibilidad);
@@ -154,7 +159,9 @@ export function validarPerfil(entrada: unknown): Resultado {
       titular: titular!,
       sobreMi,
       area: area!,
-      seniority: seniority!,
+      anosExperiencia: anosExperiencia!,
+      lidera,
+      seniority: nivelPorExperiencia(anosExperiencia!, lidera),
       ciudad,
       pais,
       modalidades,
@@ -164,7 +171,7 @@ export function validarPerfil(entrada: unknown): Resultado {
       linkedin,
       github,
       portfolio,
-      mostrarFoto: e.mostrarFoto === true,
+      foto,
       visibilidad: visibilidad!,
     },
   };

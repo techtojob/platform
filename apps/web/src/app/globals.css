@@ -58,6 +58,8 @@
   --color-sobre-acento: #2f3436; /* texto encima del acento */
   --color-postit: #e4d7bf;      /* post-its: avisos importantes */
   --color-ink: #2f3436;         /* texto encima del post-it */
+  --color-disponible: #63cf8f;  /* "Buscando trabajo": anillo de la foto y su etiqueta */
+  --color-abierto: #e9b650;     /* "Abierto a ofertas": anillo de la foto y su etiqueta */
 
   --shadow-tarjeta: var(--sombra);
 

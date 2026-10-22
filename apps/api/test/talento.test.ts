@@ -99,7 +99,7 @@ const miPerfil = {
   titular: "Backend developer junior",
   sobreMi: "Me gusta Node.js",
   area: "desarrollo",
-  seniority: "junior",
+  anosExperiencia: 1,
   ciudad: "Las Palmas",
   pais: "ES",
   modalidades: ["remoto"],
@@ -109,11 +109,21 @@ const miPerfil = {
   linkedin: "linkedin.com/in/lucia",
   github: "",
   portfolio: "",
-  mostrarFoto: false,
+  foto: "ninguna",
   visibilidad: "publico",
 };
 
 describe("mi perfil", () => {
+  it("el nivel no se elige: sale de los años de experiencia (y de si lidera)", async () => {
+    const { nivelPorExperiencia, validarPerfil } = await import("@techtojob/shared");
+    expect([0, 1, 2, 3, 5, 6, 16].map((n) => nivelPorExperiencia(n, false))).toEqual(["sin-experiencia", "junior", "junior", "mid", "mid", "senior", "senior"]);
+    expect(nivelPorExperiencia(6, true)).toBe("lead");
+    expect(nivelPorExperiencia(4, true)).toBe("mid");
+    expect(validarPerfil({ ...miPerfil, anosExperiencia: 4, seniority: "lead" }).datos).toMatchObject({ anosExperiencia: 4, seniority: "mid" });
+    expect(validarPerfil({ ...miPerfil, anosExperiencia: undefined }).errores).toMatchObject({ anosExperiencia: "falta" });
+    expect(validarPerfil({ ...miPerfil, anosExperiencia: 99 }).errores).toMatchObject({ anosExperiencia: "falta" });
+  });
+
   it("sin perfil, propone alias y nombre", async () => {
     const r = await pedir("/cuenta/perfil", lucia);
     expect(r.json).toMatchObject({ perfil: null, sugerencias: { alias: "lucia-martin", nombre: "Lucía Martín" } });

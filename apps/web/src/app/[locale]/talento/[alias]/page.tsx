@@ -82,14 +82,18 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
     <>
       <Portada
         migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("talento.titulo"), href: "/talento" }, { texto: perfil.nombre }]}
-        antesDelTitulo={<AvatarPerfil nombre={perfil.nombre} imagen={perfil.imagen} tamano={88} className="mb-2" />}
+        antesDelTitulo={<AvatarPerfil nombre={perfil.nombre} imagen={perfil.imagen} disponibilidad={perfil.disponibilidad} tamano={96} className="mb-2" />}
         titulo={perfil.nombre}
         entradilla={perfil.titular}
         compacta
       >
         <p className="mt-6 flex flex-wrap items-center gap-2">
           <EtiquetaDisponibilidad disponibilidad={perfil.disponibilidad} className="py-2" />
-          <Etiqueta tono="borde" className="py-2">{t(`seniority.${perfil.seniority}`)}</Etiqueta>
+          <Etiqueta tono="borde" className="py-2">
+            {perfil.anosExperiencia
+              ? t("talento.nivelConAnos", { nivel: t(`seniority.${perfil.seniority}`), anos: perfil.anosExperiencia })
+              : t(`seniority.${perfil.seniority}`)}
+          </Etiqueta>
           <Etiqueta tono="borde" className="py-2">{t(`areas.${perfil.area}`)}</Etiqueta>
           {perfil.verificado && <Verificado conTexto className="ml-1" />}
         </p>

@@ -304,10 +304,13 @@ export type PerfilListado = {
   alias: string;
   nombre: string;
   titular: string;
-  /** Foto de Google o GitHub, solo si la persona quiere mostrarla. */
+  /** Foto de Google o GitHub (la que elija), o null si prefiere no mostrarla. */
   imagen: string | null;
   area: Area;
+  /** Calculado a partir de los años de experiencia (ver experiencia.ts). */
   seniority: Seniority;
+  /** Años trabajando en tech (16 = más de 15). null en perfiles de antes de pedirlo. */
+  anosExperiencia: number | null;
   ciudad: string | null;
   pais: string | null;
   /** Modalidades que prefiere (puede ser más de una). */
@@ -350,6 +353,11 @@ export type DatosPerfil = {
   titular: string;
   sobreMi: string | null;
   area: Area;
+  /** Años trabajando en tech (0 = ninguno todavía; 16 = más de 15). */
+  anosExperiencia: number;
+  /** Ha liderado un equipo o un proyecto técnico (con 6+ años, el nivel es Lead). */
+  lidera: boolean;
+  /** Calculado con nivelPorExperiencia: no lo elige la persona. */
   seniority: Seniority;
   ciudad: string | null;
   pais: string | null;
@@ -360,8 +368,8 @@ export type DatosPerfil = {
   linkedin: string | null;
   github: string | null;
   portfolio: string | null;
-  /** Mostrar la foto de Google o GitHub (si no, un avatar con la inicial). */
-  mostrarFoto: boolean;
+  /** Qué foto mostrar: la de Google, la de GitHub o ninguna (un avatar con la inicial). */
+  foto: import("./experiencia").FotoPerfil;
   visibilidad: VisibilidadPerfil;
 };
 
@@ -369,6 +377,8 @@ export type DatosPerfil = {
 export type MiPerfil = {
   perfil: (DatosPerfil & { actualizadoEn: string }) | null;
   sugerencias: { alias: string; nombre: string; imagen: string | null; pais: string | null };
+  /** Las fotos que tiene en sus cuentas, para elegir. */
+  fotos: import("./experiencia").FotosCuenta;
 };
 
 /** Un reporte de perfil para el staff. */

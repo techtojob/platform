@@ -333,7 +333,8 @@
         "propio": "You can't report your own profile.",
         "otro": "It couldn't be sent. Try again."
       }
-    }
+    },
+    "nivelConAnos": "{nivel} · {anos, plural, one {# year} =16 {15+ years} other {# years}}"
   },
   "staff": {
     "titulo": "Staff panel",
@@ -876,14 +877,11 @@
     "titular": "Headline",
     "titularAyuda": "One line saying what you do.",
     "titularEjemplo": "Junior frontend developer",
-    "mostrarFoto": "Show my Google or GitHub photo (otherwise, a community avatar)",
-    "sinFoto": "Your account has no photo: a community avatar will be shown.",
     "seccionSobre": "About you",
     "sobreMi": "About me (optional)",
     "sobreMiAyuda": "What you do, what you like, what you're looking for. We suggest the technologies you mention below. {quedan} characters left.",
     "seccionHaces": "What you do",
     "area": "Area",
-    "seniority": "Level",
     "tecnologias": "Your stack",
     "tecnologiasAyuda": "What you work with. {max} at most.",
     "seccionDonde": "Availability and where",
@@ -926,7 +924,8 @@
       "linkedin": "LinkedIn",
       "github": "GitHub",
       "portfolio": "Portfolio",
-      "visibilidad": "Visibility"
+      "visibilidad": "Visibility",
+      "anosExperiencia": "Years of experience"
     },
     "crear": "Create my profile",
     "guardar": "Save changes",
@@ -967,8 +966,24 @@
       },
       "portfolio": {
         "url": "It must be a web address."
+      },
+      "anosExperiencia": {
+        "falta": "Choose how many years of experience you have."
       }
-    }
+    },
+    "foto": {
+      "titulo": "Photo",
+      "google": "Google photo",
+      "github": "GitHub photo",
+      "ninguna": "No photo",
+      "ayuda": "The border colour changes with your availability: green if you're looking for a job, amber if you're open to offers."
+    },
+    "anos": "Years of experience working in tech",
+    "anosElige": "Choose…",
+    "anosOpcion": "{anos, plural, =0 {None yet} one {# year (or less)} =16 {More than 15 years} other {# years}}",
+    "anosAyuda": "Working, not studying. An internship counts as half a year (round down). Your level comes from this.",
+    "lidera": "I've led a team or a technical project",
+    "nivelCalculado": "Your level: {nivel}"
   },
   "errorPagina": {
     "etiqueta": "Error",

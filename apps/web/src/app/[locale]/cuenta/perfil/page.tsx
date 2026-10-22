@@ -46,7 +46,7 @@ async function Formulario() {
     <FormularioPerfil
       inicial={valoresIniciales(mio, locale)}
       guardado={mio.perfil ? { alias: mio.perfil.alias, actualizadoEn: mio.perfil.actualizadoEn } : null}
-      imagenCuenta={cuenta!.usuario.imagen}
+      fotos={mio.fotos}
       verificado={cuenta!.discord.vinculado && cuenta!.discord.enServidor}
       dominio={dominio}
     />

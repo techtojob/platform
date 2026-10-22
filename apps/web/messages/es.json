@@ -333,7 +333,8 @@
         "propio": "No puedes reportar tu propio perfil.",
         "otro": "No se ha podido enviar. Inténtalo de nuevo."
       }
-    }
+    },
+    "nivelConAnos": "{nivel} · {anos, plural, one {# año} =16 {+15 años} other {# años}}"
   },
   "staff": {
     "titulo": "Panel de staff",
@@ -876,14 +877,11 @@
     "titular": "Titular",
     "titularAyuda": "Una línea que diga qué haces.",
     "titularEjemplo": "Desarrolladora frontend junior",
-    "mostrarFoto": "Mostrar mi foto de Google o GitHub (si no, un avatar de la comunidad)",
-    "sinFoto": "Tu cuenta no tiene foto: saldrá un avatar de la comunidad.",
     "seccionSobre": "Sobre ti",
     "sobreMi": "Sobre mí (opcional)",
     "sobreMiAyuda": "Qué haces, qué te gusta, qué buscas. Las tecnologías que nombres te las proponemos abajo. Quedan {quedan} caracteres.",
     "seccionHaces": "Lo que haces",
     "area": "Área",
-    "seniority": "Nivel",
     "tecnologias": "Tu stack",
     "tecnologiasAyuda": "Con lo que trabajas. Como mucho {max}.",
     "seccionDonde": "Disponibilidad y dónde",
@@ -926,7 +924,8 @@
       "linkedin": "LinkedIn",
       "github": "GitHub",
       "portfolio": "Portfolio",
-      "visibilidad": "Visibilidad"
+      "visibilidad": "Visibilidad",
+      "anosExperiencia": "Años de experiencia"
     },
     "crear": "Crear mi perfil",
     "guardar": "Guardar cambios",
@@ -967,8 +966,24 @@
       },
       "portfolio": {
         "url": "Tiene que ser una dirección web."
+      },
+      "anosExperiencia": {
+        "falta": "Elige cuántos años de experiencia tienes."
       }
-    }
+    },
+    "foto": {
+      "titulo": "Foto",
+      "google": "Foto de Google",
+      "github": "Foto de GitHub",
+      "ninguna": "Sin foto",
+      "ayuda": "El color del borde cambia según tu disponibilidad: verde si buscas trabajo, ámbar si estás abierto a ofertas."
+    },
+    "anos": "Años de experiencia trabajando en tech",
+    "anosElige": "Elige…",
+    "anosOpcion": "{anos, plural, =0 {Ninguno todavía} one {# año (o menos)} =16 {Más de 15 años} other {# años}}",
+    "anosAyuda": "Trabajando, no estudiando. Unas prácticas cuentan como medio año (redondea hacia abajo). Tu nivel sale de aquí.",
+    "lidera": "He liderado un equipo o un proyecto técnico",
+    "nivelCalculado": "Tu nivel: {nivel}"
   },
   "errorPagina": {
     "etiqueta": "Error",

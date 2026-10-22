@@ -11,7 +11,7 @@ import type {
   TipoEmblema,
   VisibilidadPerfil,
 } from "@techtojob/shared";
-import type { CargoRecruiter, EstadoRecruiter } from "@techtojob/shared";
+import type { CargoRecruiter, EstadoRecruiter, FotoPerfil } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -309,7 +309,11 @@ export const perfiles = pgTable(
     titular: text("titular").notNull(),
     sobreMi: text("sobre_mi"),
     area: text("area").$type<Area>().notNull(),
+    /** Calculado con nivelPorExperiencia (años + lidera): no lo elige la persona. */
     seniority: text("seniority").$type<Seniority>().notNull(),
+    /** Años trabajando en tech (16 = más de 15). null: perfil de antes de pedirlo. */
+    anosExperiencia: integer("anos_experiencia"),
+    lidera: boolean("lidera").notNull().default(false),
     ciudad: text("ciudad"),
     pais: text("pais"),
     /** Modalidades que prefiere: ["remoto", "hibrido"]. */
@@ -321,7 +325,10 @@ export const perfiles = pgTable(
     github: text("github"),
     portfolio: text("portfolio"),
     /** Si enseña la foto de Google o GitHub. Si no, un avatar con la inicial. */
+    /** Ya no se usa (ver `foto`); se queda para no perder el dato de antes. */
     mostrarFoto: boolean("mostrar_foto").notNull().default(false),
+    /** Qué foto enseña: la de Google, la de GitHub o ninguna (avatar con la inicial). */
+    foto: text("foto").$type<FotoPerfil>().notNull().default("ninguna"),
     visibilidad: text("visibilidad").$type<VisibilidadPerfil>().notNull().default("registrados"),
     ...fechas,
   },
