@@ -1,4 +1,5 @@
 import { fotosDe } from "./fotos";
+import { comprobarLimiteReportes } from "./limites";
 import { megustaPortfoliosDe, portfolioDe } from "./portfolios";
 import { megustaDe, proyectosDe } from "./proyectos";
 import {
@@ -319,6 +320,7 @@ export async function borrarPerfil(db: Db, userId: string) {
 
 /** Reportar un perfil. Una vez por persona; el propio no. */
 export async function reportarPerfil(db: Db, alias: string, userId: string, motivo: unknown) {
+  await comprobarLimiteReportes(db, userId);
   const texto = typeof motivo === "string" ? motivo.trim() : "";
   if (texto.length < 5 || texto.length > 500) throw new ErrorTalento("motivo", "Cuéntanos qué pasa (de 5 a 500 caracteres).");
   const [p] = await db.select({ id: perfiles.userId }).from(perfiles).where(eq(perfiles.alias, alias.toLowerCase())).limit(1);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useOptimistic, useState, useTransition } from "react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { darMegusta } from "@/app/[locale]/proyectos/acciones";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
@@ -29,7 +29,13 @@ export function BotonMegusta({ id, tipo = "proyecto", megusta: inicialMegusta, m
   const [real, ponerReal] = useState({ megusta: inicialMegusta, meGusta: inicialMeGusta });
   const [estado, ponerOptimista] = useOptimistic(real);
   const [, empezar] = useTransition();
-  const [error, ponerError] = useState(false);
+  // Si no se ha podido: "sin_verificar" (hay que verificar el Discord), "limite" (demasiados seguidos) u otro.
+  const [error, ponerError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => ponerError(null), 7000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   const clases = cn(
     "relative z-10 inline-flex shrink-0 items-center gap-1.5 rounded-full border font-bold tabular-nums transition-colors",
@@ -77,26 +83,38 @@ export function BotonMegusta({ id, tipo = "proyecto", megusta: inicialMegusta, m
 
   function pulsar() {
     const dar = !estado.meGusta;
-    ponerError(false);
+    ponerError(null);
     empezar(async () => {
       ponerOptimista({ megusta: estado.megusta + (dar ? 1 : -1), meGusta: dar });
       const r = await darMegusta({ tipo, id }, dar);
-      if ("error" in r) ponerError(true);
+      if ("error" in r) ponerError(r.error);
       else ponerReal(r);
     });
   }
 
   return (
-    <>
+    <span className={cn("relative z-10", grande ? "flex w-full" : "inline-flex")}>
       <button type="button" onClick={pulsar} aria-pressed={estado.meGusta} aria-label={t(estado.meGusta ? "quitar" : "dar", { count: estado.megusta })} className={clases}>
         {corazon}
         {numero}
       </button>
+      {/* Aviso visible junto al corazón (y leído por el lector de pantalla). */}
       {error && (
-        <span role="alert" className="sr-only">
-          {t("error")}
+        <span role="alert" className="absolute bottom-[calc(100%+0.5rem)] right-0 z-20 w-64 rounded-2xl border border-borde bg-ventana p-3 text-left text-sm font-bold text-texto shadow-tarjeta">
+          {error === "sin_verificar" ? (
+            <>
+              {t("sinVerificar")}{" "}
+              <Link href="/cuenta/ajustes" className="text-enlace underline">
+                {t("verificar")}
+              </Link>
+            </>
+          ) : error === "limite" ? (
+            t("limite")
+          ) : (
+            t("error")
+          )}
         </span>
       )}
-    </>
+    </span>
   );
 }

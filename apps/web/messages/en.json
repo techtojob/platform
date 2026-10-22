@@ -357,7 +357,10 @@
       "quitar": "Unlike ({count})",
       "error": "Your like couldn't be saved. Try again.",
       "entraTexto": "Log in to like it.",
-      "conTexto": "{count, plural, =0 {Like} other {Like · #}}"
+      "conTexto": "{count, plural, =0 {Like} other {Like · #}}",
+      "sinVerificar": "To like you need to be verified: link your Discord and join the server.",
+      "verificar": "Verify me",
+      "limite": "You've liked a lot in a short time. Wait a little."
     },
     "enlaces": {
       "repo": "See the code",
@@ -397,7 +400,10 @@
       "dar": "Like ({count})",
       "quitar": "Unlike ({count})",
       "error": "Your like couldn't be saved. Try again.",
-      "entraTexto": "Log in to like it."
+      "entraTexto": "Log in to like it.",
+      "sinVerificar": "To like you need to be verified: link your Discord and join the server.",
+      "verificar": "Verify me",
+      "limite": "You've liked a lot in a short time. Wait a little."
     }
   },
   "staff": {
@@ -1138,7 +1144,7 @@
       "titulo": "Who else processes them",
       "items": [
         "<b>Neon</b>: the database, on servers in Frankfurt (European Union).",
-        "<b>Cloudflare</b>: hosts and protects the website. Its network is worldwide; data leaving the EU is covered by GDPR safeguards (standard contractual clauses).",
+        "<b>Cloudflare</b>: hosts and protects the website and counts visits anonymously (Cloudflare Web Analytics, no cookies or cross-site tracking). Its network is worldwide; data leaving the EU is covered by GDPR safeguards (standard contractual clauses).",
         "<b>Google, GitHub and Discord</b>: only when you log in or link your account with them."
       ],
       "empresas": "Companies don't receive your data: they see your profile like any visitor, according to the visibility you choose. When you apply to an offer you go to the company's website, where their own privacy policy applies."
@@ -1517,7 +1523,8 @@
       "motivo": "Tell us what's wrong (5 to 500 characters).",
       "propio": "You can't report something of your own.",
       "no_existe": "It no longer exists.",
-      "otro": "It couldn't be sent. Try again."
+      "otro": "It couldn't be sent. Try again.",
+      "limite": "You've sent a lot of reports today. Thanks: the staff is already on it. You can send more tomorrow."
     },
     "menu": {
       "abrir": "More options",

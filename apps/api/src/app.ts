@@ -1,4 +1,5 @@
 import { rutasPortfolios } from "./rutas/portfolios";
+import { ErrorLimite } from "./servicios/limites";
 import { rutasProyectos } from "./rutas/proyectos";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -82,6 +83,8 @@ export function crearApp(opciones: Opciones = {}) {
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));
   app.onError((err, c) => {
+    // Se ha pasado de un límite de uso (reportes, me gusta…): ver servicios/limites.ts.
+    if (err instanceof ErrorLimite) return c.json({ error: { codigo: err.codigo, mensaje: err.message } }, 429);
     if (err instanceof HTTPException) {
       return c.json({ error: { codigo: "peticion_invalida", mensaje: err.message } }, err.status);
     }

@@ -15,6 +15,7 @@ import { and, arrayOverlaps, asc, count, desc, eq, ilike, inArray, or, sql, type
 import type { Db } from "../db/cliente";
 import { estadoDiscord, megustaProyectos, perfiles, proyectos, reportes, usuarios } from "../db/esquema";
 import { fotosDe } from "./fotos";
+import { comprobarLimiteMegusta, comprobarLimiteReportes } from "./limites";
 import { nuevoId } from "./ofertas-staff";
 import type { Visitante } from "./talento";
 import { fotoElegida } from "@techtojob/shared";
@@ -22,8 +23,9 @@ import { fotoElegida } from "@techtojob/shared";
 /**
  * Proyectos de la comunidad y sus me gusta.
  * - Subir: hace falta perfil de talento y estar verificado (Discord vinculado y en el servidor).
- * - Me gusta: con sesión, uno por persona, nunca al propio. Los de cuentas con menos de
- *   DIAS_PARA_CONTAR_MEGUSTA días no cuentan (ni en el número ni en los rankings), contra trampas.
+ * - Me gusta: con sesión y verificado (Discord vinculado y en el servidor), uno por persona, nunca al propio.
+ *   Solo cuentan los de gente verificada con una cuenta de más de DIAS_PARA_CONTAR_MEGUSTA días
+ *   (ni en el número ni en los rankings), contra trampas. Si alguien deja el servidor, sus me gusta dejan de contar.
  * - Se ven si el perfil de su autor se ve (público, o "solo registrados" con sesión) y no está oculto por el staff.
  */
 
@@ -44,6 +46,7 @@ function megustaQueCuentanProyecto(desde?: SQL, hasta?: SQL) {
     select count(*) from ${megustaProyectos} m join ${usuarios} u on u.id = m.usuario_id
     where m.proyecto_id = "proyectos"."id"
       and u.creado_en <= now() - make_interval(days => ${DIAS_PARA_CONTAR_MEGUSTA})
+      and exists (select 1 from estado_discord d where d.usuario_id = m.usuario_id and d.en_servidor = true)
       ${desde ? sql`and m.creado_en >= ${desde}` : sql``}
       ${hasta ? sql`and m.creado_en < ${hasta}` : sql``}
   )`;
@@ -228,15 +231,24 @@ export async function fijarProyecto(db: Db, userId: string, id: string, fijado: 
 export async function megusta(db: Db, id: string, visitante: NonNullable<Visitante>, dar: boolean) {
   const p = await obtenerProyecto(db, id, visitante);
   if (p.esMio) throw new ErrorProyecto("propio", "No puedes dar me gusta a tu propio proyecto.");
+  if (dar) await comprobarYa(db, visitante.id);
   if (dar) await db.insert(megustaProyectos).values({ proyectoId: id, userId: visitante.id }).onConflictDoNothing();
   else await db.delete(megustaProyectos).where(and(eq(megustaProyectos.proyectoId, id), eq(megustaProyectos.userId, visitante.id)));
   const ahora = await obtenerProyecto(db, id, visitante);
   return { megusta: ahora.megusta, meGusta: ahora.meGusta };
 }
 
+/** Para dar me gusta hay que estar verificado, y sin pasarse del límite por hora. */
+export async function comprobarYa(db: Db, userId: string) {
+  const [{ ok }] = await db.select({ ok: verificado(userId) }).from(usuarios).where(eq(usuarios.id, userId));
+  if (!ok) throw new ErrorProyecto("sin_verificar", "Para dar me gusta tienes que estar verificado (Discord vinculado y en el servidor).");
+  await comprobarLimiteMegusta(db, userId);
+}
+
 /* ── Reportes ── */
 
 export async function reportarProyecto(db: Db, id: string, visitante: NonNullable<Visitante>, motivo: unknown) {
+  await comprobarLimiteReportes(db, visitante.id);
   const texto = typeof motivo === "string" ? motivo.trim() : "";
   if (texto.length < 5 || texto.length > 500) throw new ErrorProyecto("motivo", "Cuéntanos qué pasa (de 5 a 500 caracteres).");
   const p = await obtenerProyecto(db, id, visitante);
