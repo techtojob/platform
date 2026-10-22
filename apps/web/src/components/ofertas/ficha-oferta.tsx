@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { Portada } from "@/components/sitio/portada";
 import { Aviso, AvatarBlob, clasesBoton, Etiqueta } from "@/components/ui";
-import { ReportarOferta } from "./reportar-oferta";
+import { Reportar } from "@/components/reportar/reportar";
 import { TextoOferta } from "./texto-oferta";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { CopiarEnlace } from "./copiar-enlace";
@@ -172,7 +172,11 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
                 vacio={t("ofertas.sinDescripcion")}
               />
             </div>
-            <ReportarOferta id={oferta.id} recruiter={oferta.recruiter?.nombre ?? null} conSesion={conSesion} />
+            <Reportar
+              className="self-start"
+              conSesion={conSesion}
+              cosas={[{ tipo: "oferta", id: oferta.id }, ...(oferta.recruiter ? [{ tipo: "recruiter" as const, id: oferta.id, nombre: oferta.recruiter.nombre }] : [])]}
+            />
 
             {parecidas.length > 0 && (
               <section aria-labelledby="parecidas" className="flex flex-col gap-4">
@@ -182,7 +186,7 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
                 <ul className="flex flex-col gap-3">
                   {parecidas.map((o) => (
                     <li key={o.id}>
-                      <FilaOferta oferta={o} ahora={ahora} />
+                      <FilaOferta oferta={o} ahora={ahora} menu={{ conSesion }} />
                     </li>
                   ))}
                 </ul>

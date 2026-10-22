@@ -9,10 +9,9 @@ import { Portada } from "@/components/sitio/portada";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { useLugarPerfil } from "@/components/talento/datos-perfil";
 import { Emblemas, EtiquetaDisponibilidad, Verificado } from "@/components/talento/insignias";
-import { ReportarProyecto } from "@/components/proyectos/reportar-proyecto";
 import { TarjetaPortfolio } from "@/components/proyectos/tarjeta-portfolio";
 import { TarjetaProyecto } from "@/components/proyectos/tarjeta-proyecto";
-import { ReportarPerfil } from "@/components/talento/reportar-perfil";
+import { Reportar } from "@/components/reportar/reportar";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { obtenerPerfilPublico, tieneCookieDeSesion } from "@/lib/api";
@@ -176,7 +175,7 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
                     <TarjetaPortfolio portfolio={perfil.portfolio} conSesion={conSesion} sinAutor />
                     {!perfil.esMio && (
                       <div className="self-end">
-                        <ReportarProyecto tipo="portfolio" id={perfil.alias} conSesion={conSesion} />
+                        <Reportar cosas={[{ tipo: "portfolio", id: perfil.alias }]} conSesion={conSesion} />
                       </div>
                     )}
                   </div>
@@ -238,7 +237,7 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
                 <Emblemas emblemas={perfil.emblemas} detalle />
               </section>
             )}
-            {!perfil.esMio && <ReportarPerfil alias={perfil.alias} conSesion={conSesion} />}
+            {!perfil.esMio && <Reportar className="self-start" cosas={[{ tipo: "perfil", id: perfil.alias }]} conSesion={conSesion} />}
           </aside>
         </div>
       </section>
