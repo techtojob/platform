@@ -5,6 +5,7 @@ import { empresas, ofertas, recruiters, reportes, reportesPerfil, usuarios } fro
 import { bloquearRecruiter } from "./recruiters";
 import { contarReportesPortfolios } from "./portfolios";
 import { contarReportesProyectos } from "./proyectos";
+import { comprobarLimiteReportes } from "./limites";
 
 /**
  * Reportes de ofertas y de recruiters (los de perfiles están en talento.ts). Hay que haber iniciado sesión
@@ -33,6 +34,7 @@ function leerMotivo(motivo: unknown): string {
  * `sobre`: "oferta" (por defecto) o "recruiter".
  */
 export async function reportarOferta(db: Db, ofertaId: string, userId: string, motivo: unknown, sobre: unknown) {
+  await comprobarLimiteReportes(db, userId);
   const texto = leerMotivo(motivo);
   const [o] = await db
     .select({ id: ofertas.id, autorId: ofertas.autorId, recruiter: recruiters.userId })

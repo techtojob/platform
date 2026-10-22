@@ -17,7 +17,8 @@ import type { Db } from "../db/cliente";
 import { emblemas, megustaPortfolios, perfiles, portfolios, reportes, usuarios } from "../db/esquema";
 import { fotosDe } from "./fotos";
 import { leerPagina, meta, type Pedir } from "./importar";
-import { inicioMes, perfilVisible, verificado } from "./proyectos";
+import { comprobarLimiteReportes } from "./limites";
+import { comprobarYa, ErrorProyecto, inicioMes, perfilVisible, verificado } from "./proyectos";
 import type { Visitante } from "./talento";
 
 /**
@@ -42,6 +43,7 @@ function megustaQueCuentan(desde?: SQL, hasta?: SQL) {
     select count(*) from ${megustaPortfolios} m join ${usuarios} u on u.id = m.usuario_id
     where m.portfolio_id = "portfolios"."usuario_id"
       and u.creado_en <= now() - make_interval(days => ${DIAS_PARA_CONTAR_MEGUSTA})
+      and exists (select 1 from estado_discord d where d.usuario_id = m.usuario_id and d.en_servidor = true)
       ${desde ? sql`and m.creado_en >= ${desde}` : sql``}
       ${hasta ? sql`and m.creado_en < ${hasta}` : sql``}
   )`;
@@ -235,6 +237,14 @@ export async function megustaPortfolio(db: Db, alias: string, visitante: NonNull
   const f = await filaPorAlias(db, alias);
   if (!f || !puedeVer(f, visitante)) throw new ErrorPortfolio("no_existe", "Este portfolio no existe.");
   if (f.p.userId === visitante.id) throw new ErrorPortfolio("propio", "No puedes dar me gusta a tu propio portfolio.");
+  if (dar) {
+    try {
+      await comprobarYa(db, visitante.id);
+    } catch (e) {
+      if (e instanceof ErrorProyecto && e.codigo === "sin_verificar") throw new ErrorPortfolio("sin_verificar", e.message);
+      throw e;
+    }
+  }
   if (dar) await db.insert(megustaPortfolios).values({ portfolioId: f.p.userId, userId: visitante.id }).onConflictDoNothing();
   else await db.delete(megustaPortfolios).where(and(eq(megustaPortfolios.portfolioId, f.p.userId), eq(megustaPortfolios.userId, visitante.id)));
   const ahora = await obtenerPortfolio(db, alias, visitante);
@@ -244,6 +254,7 @@ export async function megustaPortfolio(db: Db, alias: string, visitante: NonNull
 /* ── Reportes ── */
 
 export async function reportarPortfolio(db: Db, alias: string, visitante: NonNullable<Visitante>, motivo: unknown) {
+  await comprobarLimiteReportes(db, visitante.id);
   const texto = typeof motivo === "string" ? motivo.trim() : "";
   if (texto.length < 5 || texto.length > 500) throw new ErrorPortfolio("motivo", "Cuéntanos qué pasa (de 5 a 500 caracteres).");
   const f = await filaPorAlias(db, alias);

@@ -144,6 +144,14 @@ describe("me gusta", () => {
     await pedir(`/proyectos/${ids.bot}/megusta`, "ana", { method: "POST" });
   });
 
+  it("hay que estar verificado para dar me gusta, y si deja el servidor deja de contar", async () => {
+    expect((await pedir(`/proyectos/${ids.bot}/megusta`, "dani", { method: "POST" })).json).toMatchObject({ error: { codigo: "sin_verificar" } });
+    // Uno que se dio estando verificado y luego dejó el servidor: no cuenta.
+    await db.insert(megustaProyectos).values({ proyectoId: ids.bot!, userId: ids.dani! });
+    expect((await pedir(`/proyectos/${ids.bot}`, null)).json).toMatchObject({ megusta: 1 });
+    await db.delete(megustaProyectos).where(eq(megustaProyectos.userId, ids.dani!));
+  });
+
   it("los de una cuenta recién creada no cuentan (contra trampas)", async () => {
     const r = await pedir(`/proyectos/${ids.bot}/megusta`, "eva", { method: "POST" });
     expect(r.json).toEqual({ megusta: 1, meGusta: true });

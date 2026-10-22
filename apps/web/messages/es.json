@@ -372,7 +372,10 @@
       "quitar": "Quitar me gusta ({count})",
       "error": "No se ha podido guardar tu me gusta. Inténtalo de nuevo.",
       "entraTexto": "Entra para darle me gusta.",
-      "conTexto": "{count, plural, =0 {Me gusta} other {Me gusta · #}}"
+      "conTexto": "{count, plural, =0 {Me gusta} other {Me gusta · #}}",
+      "sinVerificar": "Para dar me gusta tienes que estar verificado: vincula tu Discord y entra en el servidor.",
+      "verificar": "Verificarme",
+      "limite": "Has dado muchos me gusta seguidos. Espera un rato."
     },
     "enlaces": {
       "repo": "Ver el código",
@@ -412,7 +415,10 @@
       "dar": "Me gusta ({count})",
       "quitar": "Quitar me gusta ({count})",
       "error": "No se ha podido guardar tu me gusta. Inténtalo de nuevo.",
-      "entraTexto": "Entra para darle me gusta."
+      "entraTexto": "Entra para darle me gusta.",
+      "sinVerificar": "Para dar me gusta tienes que estar verificado: vincula tu Discord y entra en el servidor.",
+      "verificar": "Verificarme",
+      "limite": "Has dado muchos me gusta seguidos. Espera un rato."
     }
   },
   "staff": {
@@ -1153,7 +1159,7 @@
       "titulo": "Quién más los trata",
       "items": [
         "<b>Neon</b>: la base de datos, en servidores de Frankfurt (Unión Europea).",
-        "<b>Cloudflare</b>: aloja la web y la protege. Su red está en todo el mundo; los datos que salen de la UE van con las garantías del RGPD (cláusulas contractuales tipo).",
+        "<b>Cloudflare</b>: aloja la web, la protege y cuenta las visitas de forma anónima (Cloudflare Web Analytics, sin cookies ni seguimiento entre webs). Su red está en todo el mundo; los datos que salen de la UE van con las garantías del RGPD (cláusulas contractuales tipo).",
         "<b>Google, GitHub y Discord</b>: solo cuando tú entras o vinculas tu cuenta con ellos."
       ],
       "empresas": "Las empresas no reciben tus datos: ven tu perfil como cualquier visitante, según la visibilidad que elijas. Al aplicar a una oferta vas a la web de la empresa, y ahí manda su propia política de privacidad."
@@ -1532,7 +1538,8 @@
       "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
       "propio": "No puedes reportar algo tuyo.",
       "no_existe": "Ya no existe.",
-      "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      "otro": "No se ha podido enviar. Inténtalo de nuevo.",
+      "limite": "Has enviado muchos reportes hoy. Gracias: el staff ya los está mirando. Mañana podrás enviar más."
     },
     "menu": {
       "abrir": "Más opciones",
