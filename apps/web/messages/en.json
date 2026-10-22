@@ -266,11 +266,20 @@
     "abrir": "Open menu",
     "proyectos": "Projects",
     "torneos": "Tournaments",
-    "mas": "More",
     "noticias": "News",
     "paraEmpresas": "For companies",
     "quienesSomos": "About us",
-    "discord": "Discord"
+    "discord": "Discord",
+    "grupoEmpleo": "Jobs",
+    "grupoComunidad": "Community",
+    "queEs": "What is TechToJob?",
+    "ayuda": {
+      "queEs": "The Discord community and how it works",
+      "torneos": "Challenges to gain real experience",
+      "noticias": "The latest from the community",
+      "paraEmpresas": "Post jobs and find talent",
+      "quienesSomos": "Who's behind it"
+    }
   },
   "pie": {
     "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",
