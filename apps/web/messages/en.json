@@ -309,7 +309,8 @@
     "emblemas": {
       "fundador": "Founding member",
       "torneo": "Tournament winner",
-      "quiz": "Quiz top player"
+      "quiz": "Quiz top player",
+      "juicio": "Portfolio review"
     },
     "soloRegistradosTitulo": "Profile for registered users only",
     "soloRegistradosTexto": "This person chose to show their profile only to registered users. Log in with Google or GitHub to see it.",
@@ -338,17 +339,20 @@
       }
     },
     "nivelConAnos": "{nivel} · {anos, plural, one {# year} =16 {15+ years} other {# years}}",
-    "megustaProyectos": "{count, plural, one {# like} other {# likes}} on their projects",
+    "megustaProyectos": "{count, plural, one {# like} other {# likes}} on their projects and portfolio",
     "proyectos": "{count, plural, =0 {Projects} one {Project} other {Projects (#)}}",
     "gestionarProyectos": "Manage my projects",
-    "subirProyecto": "Share your first project"
+    "subirProyecto": "Share your first project",
+    "portfolioTitulo": "Portfolio",
+    "cambiarPortfolio": "Change my portfolio",
+    "ponerPortfolio": "Add your portfolio"
   },
   "proyectos": {
     "titulo": "Projects",
     "portadaTitulo": "What the <resaltado>community</resaltado> builds",
-    "entradilla": "Projects by TechToJob people: repositories, demos and works in progress. Like the ones you enjoy.",
+    "entradilla": "Projects and portfolios by TechToJob people: repositories, demos and personal websites. Like the ones you enjoy.",
     "postitTitulo": "Built something cool?",
-    "postitTexto": "Share it: it shows up here and on your profile, where people hiring can see it. Every month we feature the most liked.",
+    "postitTexto": "Share your project of the month and your portfolio: they show up here and on your profile, where people hiring can see them. Every month we feature the most liked.",
     "subir": "Share a project",
     "error": "Projects couldn't be loaded. Try again in a moment.",
     "tituloSeccion": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
@@ -423,7 +427,51 @@
     "editar": "Edit",
     "tecnologias": "Built with",
     "autor": "Author",
-    "verPerfil": "See their profile"
+    "verPerfil": "See their profile",
+    "buscadorEjemploPortfolios": "Search by name, role or website…",
+    "vistas": {
+      "titulo": "What to see",
+      "proyectos": "Projects",
+      "portfolios": "Portfolios"
+    }
+  },
+  "portfolios": {
+    "tituloSeccion": "{count, plural, =0 {No portfolios} one {# portfolio} other {# portfolios}}",
+    "verPortfolios": "{count, plural, =0 {No portfolios} one {See # portfolio} other {See # portfolios}}",
+    "soloJuicio": "Reviewed in Portfolio review",
+    "vacio": "No portfolios yet. Add yours!",
+    "oculto": "Hidden",
+    "abreOtraWeb": "(opens in a new tab)",
+    "revisado": "Portfolio review · {fecha}",
+    "verVideo": "Watch the video",
+    "enPeriodo": "{count} {periodo}",
+    "megusta": {
+      "tuyo": "It's your portfolio: you can't like it",
+      "cuantos": "{count, plural, one {# like} other {# likes}}",
+      "conTexto": "{count, plural, =0 {Like} other {Like · #}}",
+      "entra": "{count, plural, one {# like} other {# likes}}. Log in to add yours",
+      "dar": "Like ({count})",
+      "quitar": "Unlike ({count})",
+      "error": "Your like couldn't be saved. Try again.",
+      "entraTexto": "Log in to like it."
+    },
+    "reportar": {
+      "boton": "Report portfolio",
+      "titulo": "Report this portfolio",
+      "motivo": "What's wrong? (not theirs, spam, offensive content, dangerous link…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. The staff will review it.",
+      "entraAntes": "You need to be logged in to report a portfolio.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own portfolio.",
+        "otro": "It couldn't be sent. Try again."
+      }
+    }
   },
   "staff": {
     "titulo": "Staff panel",
@@ -740,7 +788,8 @@
         "perfiles": "Profiles",
         "ofertas": "Jobs",
         "recruiters": "Recruiters",
-        "proyectos": "Projects"
+        "proyectos": "Projects",
+        "portfolios": "Portfolios"
       },
       "verOferta": "See job",
       "verEnPanel": "Open in the panel",
@@ -752,7 +801,9 @@
       "error": "It couldn't be done. Please try again.",
       "ocultarProyecto": "Hide the project",
       "verProyecto": "View project",
-      "oculto": "Hidden"
+      "oculto": "Hidden",
+      "ocultarPortfolio": "Hide the portfolio",
+      "verPortfolio": "Open the portfolio"
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -938,6 +989,27 @@
       "repartido": "Filled in: {campos}. Check it below.",
       "nadaQueRepartir": "We couldn't find the sections (RESUMEN:, RESPONSABILIDADES:…). Copy the AI's whole answer.",
       "copiarParaRedes": "Copy for Discord / LinkedIn"
+    },
+    "juicio": {
+      "pestana": "Portfolio review",
+      "titulo": "Portfolio review",
+      "entradilla": "Portfolios that asked to be reviewed on the Friday live stream. Pick whichever you want; once reviewed, add the date and the video and the author gets the badge.",
+      "pendientes": "{count, plural, =0 {Nobody waiting} one {# waiting} other {# waiting}}",
+      "vacio": "Nobody has asked for a review right now.",
+      "revisados": "Already reviewed",
+      "pedido": "Asked on {fecha}",
+      "revisado": "Reviewed on {fecha}",
+      "megusta": "{count, plural, one {# like} other {# likes}}",
+      "fecha": "Live stream date",
+      "video": "Video (YouTube, Twitch, TikTok…; can be added later)",
+      "marcar": "Mark as reviewed",
+      "guardar": "Save",
+      "errores": {
+        "fecha": "Add the live stream date (today or earlier).",
+        "video": "The video must be on YouTube, Twitch, TikTok, Instagram or LinkedIn.",
+        "no_existe": "This portfolio no longer exists.",
+        "desconocido": "It couldn't be saved. Try again."
+      }
     }
   },
   "formulario": {
@@ -1116,10 +1188,11 @@
         "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
         "<b>Your projects, if you share them:</b> what you write (name, description, technologies, links) and which ones you pin. They show up in Projects and on your profile, with the same visibility as your profile.",
-        "<b>Your likes:</b> which projects you like and when. Others only see how many likes each project has, never who gave them.",
+        "<b>Your portfolio, if you add it:</b> the address, the sentence you write, the image your website offers for sharing and whether you ask for a Portfolio review (and, if it's reviewed, the date and video of the live stream).",
+        "<b>Your likes:</b> which projects and portfolios you like and when. Others only see how many likes each project has, never who gave them.",
         "<b>If you sign up as a recruiter:</b> your role, your company, its website, your LinkedIn and anything you tell us, so staff can review your jobs. Your name, role and company show on the jobs you post.",
         "<b>The jobs you post, if you do:</b> what you write in the form and that you posted them. Staff see your name and email so they can review them.",
-        "<b>The reports you make:</b> which profile, job, recruiter or project you report and why. We don't tell them who reported them.",
+        "<b>The reports you make:</b> which profile, job, recruiter, project or portfolio you report and why. We don't tell them who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
         "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
         "<b>If you're staff:</b> which offers you've reviewed."
@@ -1147,7 +1220,7 @@
       "titulo": "How long",
       "items": [
         "<b>Your account and profile:</b> until you delete them.",
-        "<b>Your projects and likes:</b> until you delete them; they're also deleted if you delete your profile or your account.",
+        "<b>Your projects, portfolio and likes:</b> until you delete them; they're also deleted if you delete your profile or your account.",
         "<b>Your sessions:</b> they expire after 30 days without use.",
         "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted.",
         "<b>The jobs you post:</b> those not yet reviewed are deleted if you delete your account; published ones stay on the board without your name."
@@ -1270,7 +1343,7 @@
   },
   "misProyectos": {
     "titulo": "My projects",
-    "entradilla": "What you share shows up in Projects and on your profile. Pin up to 3 to show them first.",
+    "entradilla": "Your portfolio and projects show up in Projects and on your profile. You can share one project a month: share your best.",
     "nuevo": "Share a project",
     "nuevoEntradilla": "Say what it is, what you built it with and where to see it. With a GitHub repository, the cover is automatic.",
     "editarTitulo": "Edit the project",
@@ -1301,7 +1374,8 @@
       "sin_verificar": "You need to verify your account first (Discord linked and in the server).",
       "no_existe": "This project no longer exists.",
       "sin_sesion": "Your session has expired. Log in again.",
-      "desconocido": "It couldn't be done. Try again."
+      "desconocido": "It couldn't be done. Try again.",
+      "este_mes": "You've already shared this month's project. On the 1st you can share another."
     },
     "formulario": {
       "titulo": "Project name",
@@ -1353,6 +1427,43 @@
         "video": {
           "url": "That doesn't look like a link."
         }
+      }
+    },
+    "proyectosTitulo": "Your projects",
+    "yaEsteMes": "You've already shared this month's project. On {fecha} you can share another (editing the ones you have doesn't count).",
+    "portfolio": {
+      "titulo": "Your portfolio",
+      "entradilla": "Your personal website: it shows up in Projects › Portfolios and on your profile. You can change it whenever you want.",
+      "url": "Your portfolio's address",
+      "urlAyuda": "If your website has a sharing image (og:image), we use it as the cover.",
+      "descripcion": "One sentence (optional)",
+      "descripcionAyuda": "What people will find in it. {usados}/{max}",
+      "juicio": {
+        "titulo": "Portfolio review",
+        "texto": "On Fridays we review portfolios live and give you ideas to improve them. Once yours is reviewed, you get the badge.",
+        "quiero": "I want my portfolio reviewed on a live stream",
+        "pedido": "You asked on {fecha}. The staff picks which ones to review each Friday.",
+        "revisado": "Reviewed on the live stream of {fecha}.",
+        "verVideo": "Watch the video"
+      },
+      "poner": "Add my portfolio",
+      "guardar": "Save changes",
+      "puesto": "Portfolio added! It now shows up in Projects and on your profile.",
+      "guardado": "Changes saved.",
+      "borrar": "Remove my portfolio",
+      "borrarSeguro": "Yes, remove it",
+      "cancelar": "Cancel",
+      "borrado": "Portfolio removed.",
+      "errores": {
+        "url": {
+          "falta": "Add your portfolio's address.",
+          "url": "That doesn't look like an address (for example, your-name.dev)."
+        },
+        "descripcion": "Too long: 300 characters at most.",
+        "sin_perfil": "You need to create your talent profile first.",
+        "sin_verificar": "You need to verify your account first (Discord linked and in the server).",
+        "sin_sesion": "Your session has expired. Log in again.",
+        "desconocido": "It couldn't be saved. Try again."
       }
     }
   },

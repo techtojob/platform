@@ -6,7 +6,8 @@ import { Suspense } from "react";
 import { FormularioProyecto } from "@/components/proyectos/formulario-proyecto";
 import { Portada } from "@/components/sitio/portada";
 import { redirect } from "@/i18n/navigation";
-import { obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
+import { LIMITES_PROYECTO, mesDe } from "@techtojob/shared";
+import { misProyectosEnApi, obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
 import { PROYECTO_VACIO } from "@/lib/formulario-proyecto";
 
 export const metadata: Metadata = { robots: { index: false } };
@@ -41,5 +42,8 @@ async function Formulario() {
   const { perfil } = await obtenerMiPerfil(cookie!);
   // Sin perfil o sin verificar: la lista de "Mis proyectos" explica qué falta.
   if (!perfil || !(cuenta!.discord.vinculado && cuenta!.discord.enServidor)) redirect({ href: "/cuenta/proyectos", locale });
+  // Ya ha subido el de este mes: la lista dice cuándo podrá subir otro.
+  const mes = mesDe(new Date());
+  if ((await misProyectosEnApi(cookie!)).filter((p) => mesDe(new Date(p.creadoEn)) === mes).length >= LIMITES_PROYECTO.porMes) redirect({ href: "/cuenta/proyectos", locale });
   return <FormularioProyecto inicial={{ ...PROYECTO_VACIO, area: perfil!.area }} />;
 }

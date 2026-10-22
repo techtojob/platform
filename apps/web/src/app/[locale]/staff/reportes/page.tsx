@@ -6,11 +6,11 @@ import { BotonesReporte } from "@/components/staff/botones-reporte";
 import { BotonesReporteDe } from "@/components/staff/botones-reporte-de";
 import { Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { exigirStaff, listarReportes, listarReportesOfertas, listarReportesProyectos, listarReportesRecruiters, resumenReportes } from "@/lib/api-staff";
+import { exigirStaff, listarReportes, listarReportesOfertas, listarReportesPortfolios, listarReportesProyectos, listarReportesRecruiters, resumenReportes } from "@/lib/api-staff";
 import { cn } from "@/lib/cn";
 import { slugDeOferta } from "@/lib/ofertas";
 
-const PESTANAS = ["perfiles", "ofertas", "recruiters", "proyectos"] as const;
+const PESTANAS = ["perfiles", "ofertas", "recruiters", "proyectos", "portfolios"] as const;
 type Pestana = (typeof PESTANAS)[number];
 
 /** Reportes de la comunidad: perfiles, ofertas, recruiters y proyectos, para que el staff los revise. */
@@ -97,6 +97,44 @@ async function Lista({ searchParams }: Pick<PageProps<"/[locale]/staff/reportes"
                       {r.oferta.estado !== "publicada" && <Etiqueta tono="borde">{t(`staff.estados.${r.oferta.estado}`)}</Etiqueta>}
                     </span>
                     <BotonesReporteDe id={r.id} de="ofertas" />
+                  </div>
+                </Tarjeta>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  if (pestana === "portfolios") {
+    const reportes = await listarReportesPortfolios();
+    return (
+      <div className="flex flex-col gap-6">
+        {pestanas}
+        {!reportes.length ? vacio : (
+          <ul className="flex flex-col gap-3">
+            {reportes.map((r) => (
+              <li key={r.id}>
+                <Tarjeta className="flex flex-col gap-3 p-5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="text-lg font-bold">
+                      {r.portfolio.nombre} <span className="text-sm font-normal text-suave">· {r.portfolio.url}</span>
+                    </p>
+                    <p className="text-sm text-suave">{cuando(r.creadoEn)}</p>
+                  </div>
+                  <blockquote className="rounded-2xl bg-postit px-4 py-3 font-bold text-ink">{r.motivo}</blockquote>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="flex flex-wrap items-center gap-3">
+                      <a href={r.portfolio.url} target="_blank" rel="noopener noreferrer nofollow" className="font-bold text-enlace underline">
+                        {t("staff.reportes.verPortfolio")}
+                      </a>
+                      <Link href={{ pathname: "/talento/[alias]", params: { alias: r.portfolio.alias } }} className="font-bold text-enlace underline">
+                        {t("staff.reportes.verPerfil")}
+                      </Link>
+                      {r.portfolio.oculto && <Etiqueta tono="borde">{t("staff.reportes.oculto")}</Etiqueta>}
+                    </span>
+                    <BotonesReporteDe id={r.id} de="portfolios" bloqueado={r.portfolio.oculto} />
                   </div>
                 </Tarjeta>
               </li>

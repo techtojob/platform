@@ -1,17 +1,17 @@
 "use client";
 
-import { ORDENES_PROYECTOS, type FiltrosProyectos } from "@techtojob/shared";
+import { ORDENES_PROYECTOS } from "@techtojob/shared";
 import { useFormatter, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
-import { aParametrosProyectos, cambiarProyectos } from "@/lib/filtros-proyectos";
+import { aParametrosProyectos, cambiarProyectos, type FiltrosVista } from "@/lib/filtros-proyectos";
 import { cn } from "@/lib/cn";
 
 /**
  * Cómo se ordenan: Este mes (con el desplegable para ver meses pasados), Tendencia (7 días),
  * De siempre y Nuevos.
  */
-export function ElegirOrden({ filtros, mesActual, meses }: { filtros: FiltrosProyectos; mesActual: string; meses: string[] }) {
+export function ElegirOrden({ filtros, mesActual, meses }: { filtros: FiltrosVista; mesActual: string; meses: string[] }) {
   const t = useTranslations("proyectos.ordenes");
   const format = useFormatter();
   const router = useRouter();

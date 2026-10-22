@@ -32,6 +32,7 @@
         "/staff/empresas": "/staff/empresas",
         "/staff/recruiters": "/staff/recruiters",
         "/staff/prompt": "/staff/prompt",
+        "/staff/juicio": "/staff/juicio",
         "/componentes": "/componentes"
       }
     },
@@ -66,6 +67,7 @@
         "/staff/empresas": "/staff/companies",
         "/staff/recruiters": "/staff/recruiters",
         "/staff/prompt": "/staff/prompt",
+        "/staff/juicio": "/staff/portfolio-review",
         "/componentes": "/components"
       }
     }

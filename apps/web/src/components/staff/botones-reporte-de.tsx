@@ -11,7 +11,7 @@ import { useRouter } from "@/i18n/navigation";
  * Reporte de oferta: descartar o cerrar la oferta. De proyecto: descartar u ocultarlo.
  * De recruiter: descartar o bloquearlo (con motivo).
  */
-export function BotonesReporteDe({ id, de, bloqueado = false }: { id: string; de: "ofertas" | "recruiters" | "proyectos"; bloqueado?: boolean }) {
+export function BotonesReporteDe({ id, de, bloqueado = false }: { id: string; de: "ofertas" | "recruiters" | "proyectos" | "portfolios"; bloqueado?: boolean }) {
   const t = useTranslations("staff.reportes");
   const router = useRouter();
   const [bloqueando, empezarBloqueo] = useState(false);
@@ -55,10 +55,10 @@ export function BotonesReporteDe({ id, de, bloqueado = false }: { id: string; de
             <Boton type="button" variante="peligro" disabled={ocupado} onClick={() => hacer({ de: "ofertas", accion: "cerrar" })}>
               {t("cerrarOferta")}
             </Boton>
-          ) : de === "proyectos" ? (
+          ) : de === "proyectos" || de === "portfolios" ? (
             !bloqueado && (
-              <Boton type="button" variante="peligro" disabled={ocupado} onClick={() => hacer({ de: "proyectos", accion: "ocultar" })}>
-                {t("ocultarProyecto")}
+              <Boton type="button" variante="peligro" disabled={ocupado} onClick={() => hacer({ de, accion: "ocultar" })}>
+                {de === "proyectos" ? t("ocultarProyecto") : t("ocultarPortfolio")}
               </Boton>
             )
           ) : (

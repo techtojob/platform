@@ -7,7 +7,9 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 
 type Props = {
+  /** El id del proyecto, o el alias del autor si es un portfolio. */
   id: string;
+  tipo?: "proyecto" | "portfolio";
   megusta: number;
   meGusta: boolean;
   conSesion: boolean;
@@ -22,8 +24,8 @@ type Props = {
  * El corazón de un proyecto: se marca al momento (sin esperar al servidor) y, si algo falla,
  * vuelve a como estaba. Sin sesión lleva a "Entrar".
  */
-export function BotonMegusta({ id, megusta: inicialMegusta, meGusta: inicialMeGusta, conSesion, esMio, grande = false, className }: Props) {
-  const t = useTranslations("proyectos.megusta");
+export function BotonMegusta({ id, tipo = "proyecto", megusta: inicialMegusta, meGusta: inicialMeGusta, conSesion, esMio, grande = false, className }: Props) {
+  const t = useTranslations(tipo === "portfolio" ? "portfolios.megusta" : "proyectos.megusta");
   const [real, ponerReal] = useState({ megusta: inicialMegusta, meGusta: inicialMeGusta });
   const [estado, ponerOptimista] = useOptimistic(real);
   const [, empezar] = useTransition();
@@ -78,7 +80,7 @@ export function BotonMegusta({ id, megusta: inicialMegusta, meGusta: inicialMeGu
     ponerError(false);
     empezar(async () => {
       ponerOptimista({ megusta: estado.megusta + (dar ? 1 : -1), meGusta: dar });
-      const r = await darMegusta(id, dar);
+      const r = await darMegusta({ tipo, id }, dar);
       if ("error" in r) ponerError(true);
       else ponerReal(r);
     });
