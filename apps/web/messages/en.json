@@ -226,7 +226,7 @@
       "descargando": "Preparing…",
       "borrar": "Delete my account",
       "borrarTitulo": "Delete your account",
-      "borrarTexto": "Your account, talent profile, badges, linked Discord and the reports you've made will be deleted. It can't be undone. You can sign up again whenever you want, but you'll start from scratch.",
+      "borrarTexto": "Your account, talent profile, projects and likes, badges, linked Discord and the reports you've made will be deleted. It can't be undone. You can sign up again whenever you want, but you'll start from scratch.",
       "escribeEmail": "To confirm, type your email: {email}",
       "borrarSi": "Delete my account forever",
       "borrando": "Deleting…",
@@ -236,7 +236,8 @@
       "errorBorrar": "The account couldn't be deleted. Try again or write to contacto@techtojob.com."
     },
     "dondeVives": "Where you live",
-    "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here."
+    "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here.",
+    "misProyectos": "My projects"
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -262,7 +263,8 @@
     "ofertas": "Job offers",
     "talento": "Talent",
     "principal": "Job board menu",
-    "abrir": "Open menu"
+    "abrir": "Open menu",
+    "proyectos": "Projects"
   },
   "pie": {
     "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",
@@ -275,7 +277,8 @@
     "privacidad": "Privacy",
     "avisoLegal": "Legal notice",
     "talento": "Talent",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "proyectos": "Projects"
   },
   "talento": {
     "titulo": "Community talent",
@@ -334,7 +337,93 @@
         "otro": "It couldn't be sent. Try again."
       }
     },
-    "nivelConAnos": "{nivel} · {anos, plural, one {# year} =16 {15+ years} other {# years}}"
+    "nivelConAnos": "{nivel} · {anos, plural, one {# year} =16 {15+ years} other {# years}}",
+    "megustaProyectos": "{count, plural, one {# like} other {# likes}} on their projects",
+    "proyectos": "{count, plural, =0 {Projects} one {Project} other {Projects (#)}}",
+    "gestionarProyectos": "Manage my projects",
+    "subirProyecto": "Share your first project"
+  },
+  "proyectos": {
+    "titulo": "Projects",
+    "portadaTitulo": "What the <resaltado>community</resaltado> builds",
+    "entradilla": "Projects by TechToJob people: repositories, demos and works in progress. Like the ones you enjoy.",
+    "postitTitulo": "Built something cool?",
+    "postitTexto": "Share it: it shows up here and on your profile, where people hiring can see it. Every month we feature the most liked.",
+    "subir": "Share a project",
+    "error": "Projects couldn't be loaded. Try again in a moment.",
+    "tituloSeccion": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
+    "verProyectos": "{count, plural, =0 {No projects} one {See # project} other {See # projects}}",
+    "pistaTecnologia": "To filter by technology, type it in the search box and press Enter (for example, “python”).",
+    "buscadorEjemplo": "Search a project or a technology…",
+    "vacio": "No projects yet. Be the first to share one!",
+    "vacioConFiltros": "No projects match these filters.",
+    "vacioRanking": "Nobody has liked anything in this period yet.",
+    "verNuevos": "See the newest",
+    "paginas": "Project pages",
+    "anteriores": "Previous",
+    "mas": "More projects",
+    "puesto": "#{puesto}",
+    "fijado": "Pinned",
+    "oculto": "Hidden",
+    "enPeriodo": "{count} {periodo}",
+    "periodos": {
+      "semana": "this week",
+      "mes": "this month",
+      "enMes": "in {mes}"
+    },
+    "estados": {
+      "en_curso": "In progress",
+      "terminado": "Finished"
+    },
+    "ordenes": {
+      "titulo": "Sort projects",
+      "mes": "This month",
+      "tendencia": "Trending",
+      "siempre": "All time",
+      "nuevos": "Newest",
+      "elegirMes": "Ranking month",
+      "esteMes": "This month"
+    },
+    "megusta": {
+      "tuyo": "It's your project: you can't like it",
+      "cuantos": "{count, plural, one {# like} other {# likes}}",
+      "entra": "{count, plural, one {# like} other {# likes}}. Log in to add yours",
+      "dar": "Like ({count})",
+      "quitar": "Unlike ({count})",
+      "error": "Your like couldn't be saved. Try again.",
+      "entraTexto": "Log in to like it.",
+      "conTexto": "{count, plural, =0 {Like} other {Like · #}}"
+    },
+    "reportar": {
+      "boton": "Report project",
+      "titulo": "Report this project",
+      "motivo": "What's wrong? (not theirs, spam, offensive content, dangerous link…)",
+      "enviar": "Send report",
+      "enviando": "Sending…",
+      "cancelar": "Cancel",
+      "cerrar": "Close",
+      "gracias": "Thanks. The staff will review it.",
+      "entraAntes": "You need to be logged in to report a project.",
+      "entrar": "Log in",
+      "errores": {
+        "motivo": "Tell us what's wrong (5 to 500 characters).",
+        "propio": "You can't report your own project.",
+        "otro": "It couldn't be sent. Try again."
+      }
+    },
+    "enlaces": {
+      "repo": "See the code",
+      "demo": "Try the demo",
+      "video": "Watch the video"
+    },
+    "de": "A project by {nombre}",
+    "subido": "Shared on {fecha}",
+    "ocultoAviso": "The staff hid this project after a report: only you can see it. If you think it's a mistake, write to us.",
+    "esMio": "It's your project.",
+    "editar": "Edit",
+    "tecnologias": "Built with",
+    "autor": "Author",
+    "verPerfil": "See their profile"
   },
   "staff": {
     "titulo": "Staff panel",
@@ -650,7 +739,8 @@
       "de": {
         "perfiles": "Profiles",
         "ofertas": "Jobs",
-        "recruiters": "Recruiters"
+        "recruiters": "Recruiters",
+        "proyectos": "Projects"
       },
       "verOferta": "See job",
       "verEnPanel": "Open in the panel",
@@ -659,7 +749,10 @@
       "cancelar": "Cancel",
       "motivoBloqueo": "Why they're blocked",
       "motivoBloqueoAyuda": "The person will see it. Their pending jobs are discarded.",
-      "error": "It couldn't be done. Please try again."
+      "error": "It couldn't be done. Please try again.",
+      "ocultarProyecto": "Hide the project",
+      "verProyecto": "View project",
+      "oculto": "Hidden"
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -935,7 +1028,7 @@
     "errorGuardar": "It couldn't be saved. Try again.",
     "verComoQueda": "See how it looks",
     "borrar": "Delete my profile",
-    "borrarSeguro": "Sure? It disappears from Talent. Your account stays.",
+    "borrarSeguro": "Sure? It disappears from Talent, and your projects with it. Your account stays.",
     "borrarSi": "Yes, delete it",
     "cancelar": "Cancel",
     "borrado": "Profile deleted. You can create another whenever you want.",
@@ -983,7 +1076,15 @@
     "anosOpcion": "{anos, plural, =0 {None yet} one {# year (or less)} =16 {More than 15 years} other {# years}}",
     "anosAyuda": "Working, not studying. An internship counts as half a year (round down). Your level comes from this.",
     "lidera": "I've led a team or a technical project",
-    "nivelCalculado": "Your level: {nivel}"
+    "nivelCalculado": "Your level: {nivel}",
+    "errorSinVerificar": "To create your profile you first need to verify your account (Discord linked and in the server).",
+    "sinVerificar": {
+      "titulo": "First, verify your account",
+      "texto": "To create a talent profile (and share projects) you need to be part of the community: link your Discord and join the TechToJob server. This keeps fake profiles out.",
+      "textoUnirse": "Your Discord is linked, but you're not in the TechToJob server yet. Join it and check again in My account.",
+      "boton": "Link Discord",
+      "botonUnirse": "Go to My account"
+    }
   },
   "errorPagina": {
     "etiqueta": "Error",
@@ -1014,9 +1115,11 @@
         "<b>Where you live:</b> the country and region (autonomous community, state or province) you enter the first time you sign in, to show you the offers you can do from there. You can change it in My account.",
         "<b>Your Discord, if you link it:</b> your id and username, whether you're in the TechToJob server and your roles there. We only ask for permission to identify you, not your messages or servers.",
         "<b>Your talent profile, if you create one:</b> what you write (headline, about me, stack, languages, links…) and the visibility you choose.",
+        "<b>Your projects, if you share them:</b> what you write (name, description, technologies, links) and which ones you pin. They show up in Projects and on your profile, with the same visibility as your profile.",
+        "<b>Your likes:</b> which projects you like and when. Others only see how many likes each project has, never who gave them.",
         "<b>If you sign up as a recruiter:</b> your role, your company, its website, your LinkedIn and anything you tell us, so staff can review your jobs. Your name, role and company show on the jobs you post.",
         "<b>The jobs you post, if you do:</b> what you write in the form and that you posted them. Staff see your name and email so they can review them.",
-        "<b>The reports you make:</b> which profile, job or recruiter you report and why. We don't tell them who reported them.",
+        "<b>The reports you make:</b> which profile, job, recruiter or project you report and why. We don't tell them who reported them.",
         "<b>Your sessions:</b> when you logged in, the IP address and the browser, to keep you logged in and detect unusual access.",
         "<b>The country you connect from (not stored):</b> our provider (Cloudflare) tells us which country you're connecting from, to pick the site's language and show you the offers you can do from there. You can change it in the listing.",
         "<b>If you're staff:</b> which offers you've reviewed."
@@ -1044,6 +1147,7 @@
       "titulo": "How long",
       "items": [
         "<b>Your account and profile:</b> until you delete them.",
+        "<b>Your projects and likes:</b> until you delete them; they're also deleted if you delete your profile or your account.",
         "<b>Your sessions:</b> they expire after 30 days without use.",
         "<b>Reports:</b> as long as they're needed for moderation; they're deleted if your account or the reported account is deleted.",
         "<b>The jobs you post:</b> those not yet reviewed are deleted if you delete your account; published ones stay on the board without your name."
@@ -1163,6 +1267,94 @@
     "editadaPendiente": "Changes saved. The job is pending review (if you changed the link, we review it again before publishing).",
     "volverAPublicar": "Post again",
     "copiando": "Copying…"
+  },
+  "misProyectos": {
+    "titulo": "My projects",
+    "entradilla": "What you share shows up in Projects and on your profile. Pin up to 3 to show them first.",
+    "nuevo": "Share a project",
+    "nuevoEntradilla": "Say what it is, what you built it with and where to see it. With a GitHub repository, the cover is automatic.",
+    "editarTitulo": "Edit the project",
+    "editar": "Edit",
+    "fijar": "Pin to my profile",
+    "desfijar": "Unpin",
+    "borrar": "Delete",
+    "borrarSeguro": "Yes, delete it",
+    "cancelar": "Cancel",
+    "subido": "Project shared! It now shows up in Projects and on your profile.",
+    "guardado": "Changes saved.",
+    "cuantos": "{count, plural, =0 {You haven't shared any yet.} one {# project} other {# projects}} · {fijados} of {maxFijados} pinned",
+    "verEnMiPerfil": "See my profile",
+    "subir": "Share a project",
+    "vacio": "You haven't shared any projects yet.",
+    "vacioTexto": "It can be anything: a website, a data analysis, a bot, a script that saves you time… Even better if it's on GitHub.",
+    "antes": {
+      "titulo": "Before sharing projects",
+      "verificar": "To share projects you need a talent profile, and for the profile you need to be verified: link your Discord and join the TechToJob server.",
+      "perfil": "Projects show up on your talent profile, so create yours first. It takes a few minutes.",
+      "botonVerificar": "Go to My account",
+      "botonPerfil": "Create my profile"
+    },
+    "errores": {
+      "fijados": "You already have 3 pinned. Unpin one before pinning another.",
+      "demasiados": "You've reached the maximum number of projects. Delete one to share another.",
+      "sin_perfil": "You need to create your talent profile first.",
+      "sin_verificar": "You need to verify your account first (Discord linked and in the server).",
+      "no_existe": "This project no longer exists.",
+      "sin_sesion": "Your session has expired. Log in again.",
+      "desconocido": "It couldn't be done. Try again."
+    },
+    "formulario": {
+      "titulo": "Project name",
+      "tituloEjemplo": "Holiday rental lakehouse in the Canary Islands",
+      "descripcion": "What it is",
+      "descripcionAyuda": "What it does, why you built it and what you learned. {usados}/{max}",
+      "area": "Area",
+      "elegirArea": "Choose an area",
+      "estado": "How is it going?",
+      "enlaces": "Links",
+      "enlacesAyuda": "Add at least the repository or the demo, so people can see it.",
+      "repo": "Repository",
+      "repoAyuda": "If it's on GitHub, we use its image as the cover.",
+      "demo": "Demo (optional if there's a repository)",
+      "video": "Video (optional)",
+      "guardando": "Saving…",
+      "guardar": "Save changes",
+      "subir": "Share project",
+      "cancelar": "Cancel",
+      "portada": "Cover",
+      "portadaGithub": "This is how it will look: GitHub's image of your repository, with its description and stars. It updates by itself.",
+      "portadaSinGithub": "With a GitHub repository, its image would show here. Otherwise we use the project's initial.",
+      "revisa": "Check the highlighted fields.",
+      "errores": {
+        "titulo": {
+          "falta": "Give it a name.",
+          "corto": "Too short: at least 3 characters.",
+          "largo": "Too long: 80 characters at most."
+        },
+        "descripcion": {
+          "falta": "Say what it is.",
+          "corto": "Tell us a bit more: at least 20 characters.",
+          "largo": "Too long: 600 characters at most."
+        },
+        "area": {
+          "falta": "Choose the area."
+        },
+        "tecnologias": {
+          "desconocida": "Some technology isn't on the list.",
+          "demasiadas": "10 technologies at most."
+        },
+        "repo": {
+          "url": "That doesn't look like a link (for example, github.com/your-user/project).",
+          "repoODemo": "Add the repository or the demo."
+        },
+        "demo": {
+          "url": "That doesn't look like a link."
+        },
+        "video": {
+          "url": "That doesn't look like a link."
+        }
+      }
+    }
   },
   "recruiter": {
     "titulo": "Recruiter",

@@ -1,5 +1,5 @@
 import "server-only";
-import type { Area, Cuenta, ErrorValidacion, Idioma, MiOfertaEntera, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
+import type { Area, Cuenta, ErrorValidacion, Idioma, MiOfertaEntera, MiPerfil, MiRecruiter, MisOfertas, OfertaImportada, PerfilPublico, ProyectoListado, ResultadoProyectos, ResultadoTalento, Modalidad, OfertaDetalle, ResultadoOfertas, Seniority } from "@techtojob/shared";
 import { cache } from "react";
 
 /**
@@ -226,4 +226,57 @@ export function reportarOfertaEnApi(cookie: string, id: string, motivo: string, 
 /** Solo manda la cookie si es de sesión (si no, el API la ignoraría igual). */
 function conCookie(cookie: string | null): Record<string, string> {
   return cookie && tieneCookieDeSesion(cookie) ? { cookie } : {};
+}
+
+/* ───────────── Proyectos ───────────── */
+
+/** Proyectos para la página de proyectos (con los filtros ya en forma de dirección). */
+export function obtenerProyectos(parametros: Record<string, string>, cookie: string | null): Promise<ResultadoProyectos> {
+  return pedir<ResultadoProyectos>(`/proyectos?${new URLSearchParams(parametros)}`, { headers: conCookie(cookie) });
+}
+
+/** Un proyecto, o null si no existe (o no se puede ver). */
+export const obtenerProyecto = cache(async (id: string, cookie: string | null): Promise<ProyectoListado | null> => {
+  try {
+    return await pedir<ProyectoListado>(`/proyectos/${encodeURIComponent(id)}`, { headers: conCookie(cookie) });
+  } catch (error) {
+    if (error instanceof ErrorDeApi && error.estado === 404) return null;
+    throw error;
+  }
+});
+
+export function megustaEnApi(cookie: string, id: string, dar: boolean): Promise<{ megusta: number; meGusta: boolean }> {
+  return pedir(`/proyectos/${encodeURIComponent(id)}/megusta`, { method: dar ? "POST" : "DELETE", headers: { cookie } });
+}
+
+export function reportarProyectoEnApi(cookie: string, id: string, motivo: string): Promise<{ ok: true }> {
+  return pedir(`/proyectos/${encodeURIComponent(id)}/reportar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ motivo }),
+  });
+}
+
+export function misProyectosEnApi(cookie: string): Promise<ProyectoListado[]> {
+  return pedir<ProyectoListado[]>("/cuenta/proyectos", { headers: { cookie } });
+}
+
+export function guardarProyectoEnApi(cookie: string, id: string | null, datos: unknown): Promise<{ id?: string; ok?: true }> {
+  return pedir(id ? `/cuenta/proyectos/${encodeURIComponent(id)}` : "/cuenta/proyectos", {
+    method: id ? "PUT" : "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+}
+
+export function borrarProyectoEnApi(cookie: string, id: string): Promise<{ ok: true }> {
+  return pedir(`/cuenta/proyectos/${encodeURIComponent(id)}`, { method: "DELETE", headers: { cookie } });
+}
+
+export function fijarProyectoEnApi(cookie: string, id: string, fijado: boolean): Promise<{ ok: true }> {
+  return pedir(`/cuenta/proyectos/${encodeURIComponent(id)}/fijar`, {
+    method: "POST",
+    headers: { cookie, "content-type": "application/json" },
+    body: JSON.stringify({ fijado }),
+  });
 }

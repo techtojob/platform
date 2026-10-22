@@ -203,3 +203,10 @@ describe("editar, borrar, reportar y ocultar", () => {
     expect(await db.select().from(proyectos).where(eq(proyectos.id, ids.web!))).toHaveLength(0);
   });
 });
+
+describe("borrar el perfil", () => {
+  it("se lleva sus proyectos", async () => {
+    expect((await pedir("/cuenta/perfil", "bea", { method: "DELETE" })).status).toBe(200);
+    expect(await db.select().from(proyectos).where(eq(proyectos.userId, ids.bea!))).toHaveLength(0);
+  });
+});

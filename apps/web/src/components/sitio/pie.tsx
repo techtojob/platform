@@ -50,6 +50,11 @@ export async function Pie() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/proyectos" className={enlace}>
+                    {t("proyectos")}
+                  </Link>
+                </li>
+                <li>
                   <Link href="/cuenta/ajustes" className={enlace}>
                     {t("miCuenta")}
                   </Link>

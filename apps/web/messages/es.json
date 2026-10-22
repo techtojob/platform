@@ -226,7 +226,7 @@
       "descargando": "Preparando…",
       "borrar": "Borrar mi cuenta",
       "borrarTitulo": "Borrar tu cuenta",
-      "borrarTexto": "Se borran tu cuenta, tu perfil de talento, tus emblemas, tu Discord vinculado y los reportes que hayas hecho. No se puede deshacer. Podrás volver a registrarte cuando quieras, pero empezarás de cero.",
+      "borrarTexto": "Se borran tu cuenta, tu perfil de talento, tus proyectos y tus me gusta, tus emblemas, tu Discord vinculado y los reportes que hayas hecho. No se puede deshacer. Podrás volver a registrarte cuando quieras, pero empezarás de cero.",
       "escribeEmail": "Para confirmar, escribe tu email: {email}",
       "borrarSi": "Borrar mi cuenta para siempre",
       "borrando": "Borrando…",
@@ -236,7 +236,8 @@
       "errorBorrar": "No se ha podido borrar la cuenta. Inténtalo de nuevo o escríbenos a contacto@techtojob.com."
     },
     "dondeVives": "Dónde vives",
-    "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí."
+    "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí.",
+    "misProyectos": "Mis proyectos"
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -262,7 +263,8 @@
     "ofertas": "Ofertas",
     "talento": "Talento",
     "principal": "Menú de la bolsa",
-    "abrir": "Abrir menú"
+    "abrir": "Abrir menú",
+    "proyectos": "Proyectos"
   },
   "pie": {
     "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",
@@ -275,7 +277,8 @@
     "privacidad": "Privacidad",
     "avisoLegal": "Aviso legal",
     "talento": "Talento",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "proyectos": "Proyectos"
   },
   "talento": {
     "titulo": "Talento de la comunidad",
@@ -334,7 +337,93 @@
         "otro": "No se ha podido enviar. Inténtalo de nuevo."
       }
     },
-    "nivelConAnos": "{nivel} · {anos, plural, one {# año} =16 {+15 años} other {# años}}"
+    "nivelConAnos": "{nivel} · {anos, plural, one {# año} =16 {+15 años} other {# años}}",
+    "megustaProyectos": "{count, plural, one {# me gusta} other {# me gusta}} en sus proyectos",
+    "proyectos": "{count, plural, =0 {Proyectos} one {Proyecto} other {Proyectos (#)}}",
+    "gestionarProyectos": "Gestionar mis proyectos",
+    "subirProyecto": "Sube tu primer proyecto"
+  },
+  "proyectos": {
+    "titulo": "Proyectos",
+    "portadaTitulo": "Lo que construye la <resaltado>comunidad</resaltado>",
+    "entradilla": "Proyectos de la gente de TechToJob: repositorios, demos y lo que estén haciendo. Dale me gusta a los que te gusten.",
+    "postitTitulo": "¿Has hecho algo chulo?",
+    "postitTexto": "Súbelo: sale aquí y en tu perfil, y quien busca talento lo ve. Cada mes destacamos los que más gustan.",
+    "subir": "Subir un proyecto",
+    "error": "No se han podido cargar los proyectos. Inténtalo en un momento.",
+    "tituloSeccion": "{count, plural, =0 {Ningún proyecto} one {# proyecto} other {# proyectos}}",
+    "verProyectos": "{count, plural, =0 {Ningún proyecto} one {Ver # proyecto} other {Ver # proyectos}}",
+    "pistaTecnologia": "Para filtrar por tecnología, escríbela en el buscador y pulsa Enter (por ejemplo, «python»).",
+    "buscadorEjemplo": "Busca un proyecto o una tecnología…",
+    "vacio": "Todavía no hay proyectos. ¡Sé la primera persona en subir uno!",
+    "vacioConFiltros": "No hay proyectos con estos filtros.",
+    "vacioRanking": "En este periodo nadie ha dado me gusta todavía.",
+    "verNuevos": "Ver los más nuevos",
+    "paginas": "Páginas de proyectos",
+    "anteriores": "Anteriores",
+    "mas": "Más proyectos",
+    "puesto": "#{puesto}",
+    "fijado": "Fijado",
+    "oculto": "Oculto",
+    "enPeriodo": "{count} {periodo}",
+    "periodos": {
+      "semana": "esta semana",
+      "mes": "este mes",
+      "enMes": "en {mes}"
+    },
+    "estados": {
+      "en_curso": "En curso",
+      "terminado": "Terminado"
+    },
+    "ordenes": {
+      "titulo": "Ordenar proyectos",
+      "mes": "Este mes",
+      "tendencia": "Tendencia",
+      "siempre": "De siempre",
+      "nuevos": "Nuevos",
+      "elegirMes": "Mes del ranking",
+      "esteMes": "Este mes"
+    },
+    "megusta": {
+      "tuyo": "Es tu proyecto: no puedes darle me gusta",
+      "cuantos": "{count, plural, one {# me gusta} other {# me gusta}}",
+      "entra": "{count, plural, one {# me gusta} other {# me gusta}}. Entra para dar el tuyo",
+      "dar": "Me gusta ({count})",
+      "quitar": "Quitar me gusta ({count})",
+      "error": "No se ha podido guardar tu me gusta. Inténtalo de nuevo.",
+      "entraTexto": "Entra para darle me gusta.",
+      "conTexto": "{count, plural, =0 {Me gusta} other {Me gusta · #}}"
+    },
+    "reportar": {
+      "boton": "Reportar proyecto",
+      "titulo": "Reportar este proyecto",
+      "motivo": "¿Qué pasa? (no es suyo, spam, contenido ofensivo, enlace peligroso…)",
+      "enviar": "Enviar reporte",
+      "enviando": "Enviando…",
+      "cancelar": "Cancelar",
+      "cerrar": "Cerrar",
+      "gracias": "Gracias. El staff lo revisará.",
+      "entraAntes": "Para reportar un proyecto tienes que haber iniciado sesión.",
+      "entrar": "Entrar",
+      "errores": {
+        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+        "propio": "No puedes reportar tu propio proyecto.",
+        "otro": "No se ha podido enviar. Inténtalo de nuevo."
+      }
+    },
+    "enlaces": {
+      "repo": "Ver el código",
+      "demo": "Probar la demo",
+      "video": "Ver el vídeo"
+    },
+    "de": "Un proyecto de {nombre}",
+    "subido": "Subido el {fecha}",
+    "ocultoAviso": "El staff ha ocultado este proyecto después de un reporte: solo lo ves tú. Si crees que es un error, escríbenos.",
+    "esMio": "Es tu proyecto.",
+    "editar": "Editar",
+    "tecnologias": "Hecho con",
+    "autor": "Autor",
+    "verPerfil": "Ver su perfil"
   },
   "staff": {
     "titulo": "Panel de staff",
@@ -650,7 +739,8 @@
       "de": {
         "perfiles": "Perfiles",
         "ofertas": "Ofertas",
-        "recruiters": "Recruiters"
+        "recruiters": "Recruiters",
+        "proyectos": "Proyectos"
       },
       "verOferta": "Ver oferta",
       "verEnPanel": "Abrir en el panel",
@@ -659,7 +749,10 @@
       "cancelar": "Cancelar",
       "motivoBloqueo": "Por qué se bloquea",
       "motivoBloqueoAyuda": "Lo verá la persona. Sus ofertas pendientes se descartan.",
-      "error": "No se ha podido hacer. Inténtalo de nuevo."
+      "error": "No se ha podido hacer. Inténtalo de nuevo.",
+      "ocultarProyecto": "Ocultar el proyecto",
+      "verProyecto": "Ver proyecto",
+      "oculto": "Oculto"
     },
     "recruiters": {
       "pestana": "Recruiters",
@@ -935,7 +1028,7 @@
     "errorGuardar": "No se ha podido guardar. Inténtalo de nuevo.",
     "verComoQueda": "Ver cómo queda",
     "borrar": "Borrar mi perfil",
-    "borrarSeguro": "¿Seguro? Desaparece de Talento. Tu cuenta sigue.",
+    "borrarSeguro": "¿Seguro? Desaparece de Talento, y tus proyectos con él. Tu cuenta sigue.",
     "borrarSi": "Sí, borrarlo",
     "cancelar": "Cancelar",
     "borrado": "Perfil borrado. Puedes crear otro cuando quieras.",
@@ -983,7 +1076,15 @@
     "anosOpcion": "{anos, plural, =0 {Ninguno todavía} one {# año (o menos)} =16 {Más de 15 años} other {# años}}",
     "anosAyuda": "Trabajando, no estudiando. Unas prácticas cuentan como medio año (redondea hacia abajo). Tu nivel sale de aquí.",
     "lidera": "He liderado un equipo o un proyecto técnico",
-    "nivelCalculado": "Tu nivel: {nivel}"
+    "nivelCalculado": "Tu nivel: {nivel}",
+    "errorSinVerificar": "Para crear tu perfil, antes tienes que verificar tu cuenta (Discord vinculado y en el servidor).",
+    "sinVerificar": {
+      "titulo": "Antes, verifica tu cuenta",
+      "texto": "Para crear tu perfil de talento (y subir proyectos) tienes que ser de la comunidad: vincula tu Discord y únete al servidor de TechToJob. Así evitamos perfiles falsos.",
+      "textoUnirse": "Ya tienes Discord vinculado, pero no estás en el servidor de TechToJob. Únete y vuelve a comprobarlo en Mi cuenta.",
+      "boton": "Vincular Discord",
+      "botonUnirse": "Ir a Mi cuenta"
+    }
   },
   "errorPagina": {
     "etiqueta": "Error",
@@ -1014,9 +1115,11 @@
         "<b>Dónde vives:</b> el país y la región (comunidad autónoma, estado o provincia) que pones al entrar por primera vez, para enseñarte las ofertas que puedes hacer desde allí. Lo puedes cambiar en Mi cuenta.",
         "<b>Tu Discord, si lo vinculas:</b> tu id y tu nombre de usuario, si estás en el servidor de TechToJob y tus roles allí. Solo pedimos el permiso de identificarte, no tus mensajes ni tus servidores.",
         "<b>Tu perfil de talento, si lo creas:</b> lo que escribes tú (titular, sobre mí, stack, idiomas, enlaces…) y la visibilidad que eliges.",
+        "<b>Tus proyectos, si los subes:</b> lo que escribes (nombre, descripción, tecnologías, enlaces) y cuáles fijas. Salen en Proyectos y en tu perfil, con la misma visibilidad que tu perfil.",
+        "<b>Tus me gusta:</b> a qué proyectos les das me gusta y cuándo. Los demás solo ven cuántos tiene cada proyecto, nunca quién se los ha dado.",
         "<b>Si te registras como recruiter:</b> tu cargo, tu empresa, su web, tu LinkedIn y lo que nos cuentes, para que el staff revise tus ofertas. Tu nombre, tu cargo y tu empresa salen en las ofertas que publiques.",
         "<b>Las ofertas que subes, si lo haces:</b> lo que escribes en el formulario y que las subiste tú. El staff ve tu nombre y tu email para poder revisarlas.",
-        "<b>Los reportes que haces:</b> qué perfil, oferta o recruiter reportas y por qué. A quien reportas no le decimos quién ha sido.",
+        "<b>Los reportes que haces:</b> qué perfil, oferta, recruiter o proyecto reportas y por qué. A quien reportas no le decimos quién ha sido.",
         "<b>Tus sesiones:</b> cuándo entraste, la dirección IP y el navegador, para mantenerte dentro y detectar accesos raros.",
         "<b>El país de tu conexión (no se guarda):</b> nuestro proveedor (Cloudflare) nos dice de qué país te conectas, para elegir el idioma de la web y enseñarte las ofertas que puedes hacer desde allí. Puedes cambiarlo en el listado.",
         "<b>Si eres del staff:</b> qué ofertas has revisado."
@@ -1044,6 +1147,7 @@
       "titulo": "Cuánto tiempo",
       "items": [
         "<b>Tu cuenta y tu perfil:</b> hasta que los borres.",
+        "<b>Tus proyectos y tus me gusta:</b> hasta que los borres; se borran también si borras tu perfil o tu cuenta.",
         "<b>Tus sesiones:</b> caducan a los 30 días sin usarlas.",
         "<b>Los reportes:</b> mientras hagan falta para moderar; se borran si se borra tu cuenta o la cuenta reportada.",
         "<b>Las ofertas que subes:</b> las que aún no se han revisado se borran si borras tu cuenta; las publicadas se quedan en la bolsa sin tu nombre."
@@ -1163,6 +1267,94 @@
     "editadaPendiente": "Cambios guardados. La oferta está pendiente de revisar (si cambiaste el enlace, la volvemos a revisar antes de publicarla).",
     "volverAPublicar": "Volver a publicar",
     "copiando": "Copiando…"
+  },
+  "misProyectos": {
+    "titulo": "Mis proyectos",
+    "entradilla": "Lo que subes sale en Proyectos y en tu perfil. Fija hasta 3 para que salgan los primeros.",
+    "nuevo": "Subir un proyecto",
+    "nuevoEntradilla": "Cuenta qué es, con qué lo has hecho y dónde verlo. Con el repositorio de GitHub, la portada sale sola.",
+    "editarTitulo": "Editar el proyecto",
+    "editar": "Editar",
+    "fijar": "Fijar en mi perfil",
+    "desfijar": "Quitar de fijados",
+    "borrar": "Borrar",
+    "borrarSeguro": "Sí, borrarlo",
+    "cancelar": "Cancelar",
+    "subido": "¡Proyecto subido! Ya sale en Proyectos y en tu perfil.",
+    "guardado": "Cambios guardados.",
+    "cuantos": "{count, plural, =0 {Aún no has subido ninguno.} one {# proyecto} other {# proyectos}} · {fijados} de {maxFijados} fijados",
+    "verEnMiPerfil": "Ver mi perfil",
+    "subir": "Subir un proyecto",
+    "vacio": "Todavía no has subido ningún proyecto.",
+    "vacioTexto": "Puede ser cualquier cosa: una web, un análisis de datos, un bot, un script que te ahorra tiempo… Si está en GitHub, mejor.",
+    "antes": {
+      "titulo": "Antes de subir proyectos",
+      "verificar": "Para subir proyectos hace falta tener perfil de talento, y para el perfil, estar verificado: vincula tu Discord y únete al servidor de TechToJob.",
+      "perfil": "Los proyectos salen en tu perfil de talento, así que antes crea el tuyo. Son unos minutos.",
+      "botonVerificar": "Ir a Mi cuenta",
+      "botonPerfil": "Crear mi perfil"
+    },
+    "errores": {
+      "fijados": "Ya tienes 3 fijados. Quita uno antes de fijar otro.",
+      "demasiados": "Has llegado al máximo de proyectos. Borra alguno para subir otro.",
+      "sin_perfil": "Antes tienes que crear tu perfil de talento.",
+      "sin_verificar": "Antes tienes que verificar tu cuenta (Discord vinculado y en el servidor).",
+      "no_existe": "Este proyecto ya no existe.",
+      "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
+      "desconocido": "No se ha podido hacer. Inténtalo de nuevo."
+    },
+    "formulario": {
+      "titulo": "Nombre del proyecto",
+      "tituloEjemplo": "Lakehouse de vivienda vacacional en Canarias",
+      "descripcion": "Qué es",
+      "descripcionAyuda": "Qué hace, para qué lo hiciste y qué aprendiste. {usados}/{max}",
+      "area": "Área",
+      "elegirArea": "Elige un área",
+      "estado": "¿Cómo va?",
+      "enlaces": "Enlaces",
+      "enlacesAyuda": "Pon al menos el repositorio o la demo, para que se pueda ver.",
+      "repo": "Repositorio",
+      "repoAyuda": "Si es de GitHub, usamos su imagen como portada.",
+      "demo": "Demo (opcional si hay repositorio)",
+      "video": "Vídeo (opcional)",
+      "guardando": "Guardando…",
+      "guardar": "Guardar cambios",
+      "subir": "Subir proyecto",
+      "cancelar": "Cancelar",
+      "portada": "Portada",
+      "portadaGithub": "Así se verá: es la imagen que hace GitHub de tu repositorio, con su descripción y estrellas. Se actualiza sola.",
+      "portadaSinGithub": "Con un repositorio de GitHub, aquí saldría su imagen. Si no, ponemos la inicial del proyecto.",
+      "revisa": "Revisa los campos marcados.",
+      "errores": {
+        "titulo": {
+          "falta": "Ponle un nombre.",
+          "corto": "Muy corto: al menos 3 caracteres.",
+          "largo": "Muy largo: como mucho 80 caracteres."
+        },
+        "descripcion": {
+          "falta": "Cuenta qué es.",
+          "corto": "Cuéntalo un poco más: al menos 20 caracteres.",
+          "largo": "Muy largo: como mucho 600 caracteres."
+        },
+        "area": {
+          "falta": "Elige el área."
+        },
+        "tecnologias": {
+          "desconocida": "Alguna tecnología no está en la lista.",
+          "demasiadas": "Como mucho 10 tecnologías."
+        },
+        "repo": {
+          "url": "No parece un enlace (por ejemplo, github.com/tu-usuario/proyecto).",
+          "repoODemo": "Pon el repositorio o la demo."
+        },
+        "demo": {
+          "url": "No parece un enlace."
+        },
+        "video": {
+          "url": "No parece un enlace."
+        }
+      }
+    }
   },
   "recruiter": {
     "titulo": "Recruiter",

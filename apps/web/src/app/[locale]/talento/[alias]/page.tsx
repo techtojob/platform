@@ -9,6 +9,7 @@ import { Portada } from "@/components/sitio/portada";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { useLugarPerfil } from "@/components/talento/datos-perfil";
 import { Emblemas, EtiquetaDisponibilidad, Verificado } from "@/components/talento/insignias";
+import { TarjetaProyecto } from "@/components/proyectos/tarjeta-proyecto";
 import { ReportarPerfil } from "@/components/talento/reportar-perfil";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
@@ -97,6 +98,7 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
           <Etiqueta tono="borde" className="py-2">{t(`areas.${perfil.area}`)}</Etiqueta>
           {perfil.verificado && <Verificado conTexto className="ml-1" />}
         </p>
+        {perfil.megusta > 0 && <p className="mt-3 font-bold text-suave">{t("talento.megustaProyectos", { count: perfil.megusta })}</p>}
         {lugar && <p className="mt-3 font-bold text-suave">{lugar}</p>}
       </Portada>
 
@@ -154,6 +156,30 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
                 </ul>
               </div>
             </Tarjeta>
+
+            {(perfil.proyectos.length > 0 || perfil.esMio) && (
+              <section aria-labelledby="titulo-proyectos" className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <h2 id="titulo-proyectos" className="text-titulo-3 font-bold">
+                    {t("talento.proyectos", { count: perfil.proyectos.length })}
+                  </h2>
+                  {perfil.esMio && (
+                    <Link href="/cuenta/proyectos" className="font-bold text-enlace underline">
+                      {perfil.proyectos.length ? t("talento.gestionarProyectos") : t("talento.subirProyecto")}
+                    </Link>
+                  )}
+                </div>
+                {perfil.proyectos.length > 0 && (
+                  <ul className="grid gap-4 sm:grid-cols-2">
+                    {perfil.proyectos.map((p) => (
+                      <li key={p.id}>
+                        <TarjetaProyecto proyecto={p} conSesion={conSesion} sinAutor />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
           </div>
 
           <aside className="flex flex-col gap-5 lg:sticky lg:top-28 lg:self-start">

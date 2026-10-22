@@ -20,7 +20,7 @@ import {
 } from "@techtojob/shared";
 import { and, arrayOverlaps, asc, count, desc, eq, exists, gt, ilike, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { emblemas, estadoDiscord, perfiles, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
+import { emblemas, estadoDiscord, perfiles, proyectos, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
 
 /**
  * Talento: perfiles de la comunidad. Quién ve qué:
@@ -306,7 +306,9 @@ export async function guardarPerfil(db: Db, userId: string, d: DatosPerfil) {
     .onConflictDoUpdate({ target: perfiles.userId, set: valores });
 }
 
+/** Borra el perfil y, con él, sus proyectos (sin perfil no se ven en ningún sitio). */
 export async function borrarPerfil(db: Db, userId: string) {
+  await db.delete(proyectos).where(eq(proyectos.userId, userId));
   await db.delete(perfiles).where(eq(perfiles.userId, userId));
 }
 

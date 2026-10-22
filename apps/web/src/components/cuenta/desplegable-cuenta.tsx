@@ -60,6 +60,9 @@ export function DesplegableCuenta({
           <Link href="/cuenta/perfil" className={clasesOpcion}>
             {t("miPerfil")}
           </Link>
+          <Link href="/cuenta/proyectos" className={clasesOpcion}>
+            {t("misProyectos")}
+          </Link>
           {recruiter === "activo" ? (
             <Link href="/cuenta/ofertas" className={clasesOpcion}>
               {t("misOfertas")}

@@ -8,10 +8,11 @@ import { Link, usePathname } from "@/i18n/navigation";
 const SECCIONES = [
   { clave: "ofertas", href: "/", activa: (ruta: string) => ruta === "/" || ruta.startsWith("/ofertas") },
   { clave: "talento", href: "/talento", activa: (ruta: string) => ruta.startsWith("/talento") },
+  { clave: "proyectos", href: "/proyectos", activa: (ruta: string) => ruta.startsWith("/proyectos") },
 ] as const;
 
 /**
- * Menú de la bolsa (no el de la landing): Ofertas y Talento.
+ * Menú de la bolsa (no el de la landing): Ofertas, Talento y Proyectos.
  * Marca la sección en la que se está; eso depende de la dirección, que solo se conoce
  * al visitar la página, así que mientras tanto se ve el menú sin marcar.
  */
