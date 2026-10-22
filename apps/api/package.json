@@ -13,6 +13,8 @@
     "db:migrar": "tsx --env-file=.dev.vars scripts/migrar.ts",
     "db:datos-prueba": "tsx --env-file=.dev.vars scripts/datos-prueba.ts",
     "db:quitar-datos-prueba": "tsx --env-file=.dev.vars scripts/quitar-datos-prueba.ts",
+    "db:demo": "tsx --env-file=.dev.vars scripts/demo.ts",
+    "db:quitar-demo": "tsx --env-file=.dev.vars scripts/quitar-demo.ts",
     "ofertas:probar": "tsx scripts/probar-pagina.ts",
     "ofertas:common-crawl": "tsx --env-file=.dev.vars scripts/common-crawl.ts",
     "ofertas:common-crawl:ci": "tsx scripts/common-crawl.ts",
