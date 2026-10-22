@@ -1,3 +1,4 @@
+import { BuscadorTalento } from "./buscador-talento";
 import { TECNOLOGIAS } from "@techtojob/shared";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
@@ -51,6 +52,8 @@ export async function ListadoTalento({ searchParams }: { searchParams: PageProps
       </aside>
 
       <div className="flex min-w-0 flex-col gap-4">
+        {/* El buscador, encima de los resultados (como en Ofertas). */}
+        <BuscadorTalento />
         <h2 className="text-titulo-2 font-bold" aria-live="polite">
           {t("talento.tituloSeccion", { count: r.total })}
         </h2>
