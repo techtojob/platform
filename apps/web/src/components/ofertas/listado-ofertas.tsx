@@ -1,3 +1,4 @@
+import { Buscador } from "@/components/buscador";
 import type { Idioma } from "@techtojob/shared";
 import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { cookies, headers } from "next/headers";
@@ -65,6 +66,8 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
       </aside>
 
       <div className="flex min-w-0 flex-col gap-4">
+        {/* El buscador, encima de los resultados: todo lo que cambia el listado, en la misma columna. */}
+        <Buscador />
         <header className="flex flex-col gap-2">
           <h2 className="text-titulo-2 font-bold" aria-live="polite">
             {t("ofertas.tituloSeccion", { count: resultado.total })}

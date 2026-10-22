@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense, use } from "react";
-import { Buscador } from "@/components/buscador";
 import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
 import { Portada, Resaltado } from "@/components/sitio/portada";
 import { Aviso } from "@/components/ui";
@@ -23,8 +22,7 @@ export default function Inicio({ params, searchParams }: PageProps<"/[locale]">)
         entradilla={t("ofertas.portadaTexto")}
         lado={<PostitRevision />}
       >
-        <div className="mt-8 w-full max-w-2xl">
-          <Buscador />
+        <div className="mt-6 w-full max-w-2xl">
           {/* Para quien contrata: cualquiera con cuenta puede subir ofertas (las revisa el staff). */}
           <p className="mt-4 text-sm text-suave">
             {t.rich("ofertas.publicarLlamada", {

@@ -4,7 +4,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { Suspense, use } from "react";
 import { Portada, Resaltado } from "@/components/sitio/portada";
-import { BuscadorTalento } from "@/components/talento/buscador-talento";
 import { ListadoTalento } from "@/components/talento/listado-talento";
 import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
@@ -34,11 +33,7 @@ export default function PaginaTalento({ params, searchParams }: PageProps<"/[loc
             <PostitMiPerfil />
           </Suspense>
         }
-      >
-        <div className="mt-8 w-full max-w-2xl">
-          <BuscadorTalento />
-        </div>
-      </Portada>
+      />
 
       <section className="rejilla flex-1 px-[var(--margen)] py-10 sm:py-14">
         <div className="mx-auto max-w-[80rem]">
