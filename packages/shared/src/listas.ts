@@ -51,8 +51,9 @@ export const VISIBILIDAD_PERFIL = [
  * - fundador: entre los 1.000 primeros registrados en la bolsa (sale solo);
  * - torneo: ganador de un torneo de la comunidad;
  * - quiz: primero del ranking del quiz del Discord.
+ * - juicio: su portfolio pasó por "Tu portfolio a juicio" (el directo de los viernes).
  */
-export const TIPOS_EMBLEMA = ["fundador", "torneo", "quiz"] as const;
+export const TIPOS_EMBLEMA = ["fundador", "torneo", "quiz", "juicio"] as const;
 
 /** Visibilidad por defecto de un perfil nuevo. */
 export const VISIBILIDAD_POR_DEFECTO = "registrados" satisfies VisibilidadPerfil;

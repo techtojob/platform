@@ -29,7 +29,7 @@ import { fotoElegida } from "@techtojob/shared";
 
 export class ErrorProyecto extends Error {
   constructor(
-    public readonly codigo: "no_existe" | "sin_perfil" | "sin_verificar" | "propio" | "fijados" | "demasiados" | "motivo",
+    public readonly codigo: "no_existe" | "sin_perfil" | "sin_verificar" | "propio" | "fijados" | "demasiados" | "este_mes" | "motivo",
     mensaje: string,
   ) {
     super(mensaje);
@@ -37,10 +37,12 @@ export class ErrorProyecto extends Error {
 }
 
 /** Me gusta que cuentan: de cuentas con unos días (y, si se da, dentro de [desde, hasta)). */
-function megustaQueCuentan(desde?: SQL, hasta?: SQL) {
+// La tabla va escrita entera: en las consultas de una sola tabla, drizzle no la pone y la columna
+// se confundiría con la de dentro de la subconsulta.
+function megustaQueCuentanProyecto(desde?: SQL, hasta?: SQL) {
   return sql<number>`(
     select count(*) from ${megustaProyectos} m join ${usuarios} u on u.id = m.usuario_id
-    where m.proyecto_id = ${proyectos.id}
+    where m.proyecto_id = "proyectos"."id"
       and u.creado_en <= now() - make_interval(days => ${DIAS_PARA_CONTAR_MEGUSTA})
       ${desde ? sql`and m.creado_en >= ${desde}` : sql``}
       ${hasta ? sql`and m.creado_en < ${hasta}` : sql``}
@@ -48,19 +50,19 @@ function megustaQueCuentan(desde?: SQL, hasta?: SQL) {
 }
 
 /** Inicio del mes "2026-10" en España. */
-const inicioMes = (mes: string) => sql`(${`${mes}-01`}::timestamp at time zone 'Europe/Madrid')`;
+export const inicioMes = (mes: string) => sql`(${`${mes}-01`}::timestamp at time zone 'Europe/Madrid')`;
 
 /** Perfiles que puede ver quien mira (como en Talento). */
-const perfilVisible = (visitante: Visitante): SQL =>
+export const perfilVisible = (visitante: Visitante): SQL =>
   visitante ? inArray(perfiles.visibilidad, ["publico", "registrados"]) : eq(perfiles.visibilidad, "publico");
 
-const verificado = (userId: string) =>
+export const verificado = (userId: string) =>
   sql<boolean>`exists (select 1 from ${estadoDiscord} where ${estadoDiscord.userId} = ${userId} and ${estadoDiscord.enServidor} = true)`;
 
 const columnas = {
   p: proyectos,
   autor: { alias: perfiles.alias, nombre: perfiles.nombre, foto: perfiles.foto, disponibilidad: perfiles.disponibilidad },
-  megusta: megustaQueCuentan(),
+  megusta: megustaQueCuentanProyecto(),
 };
 
 type Fila = { p: typeof proyectos.$inferSelect; autor: { alias: string; nombre: string; foto: "google" | "github" | "ninguna"; disponibilidad: ProyectoListado["autor"]["disponibilidad"] }; megusta: number; periodo?: number };
@@ -108,7 +110,7 @@ export async function listarProyectos(db: Db, f: FiltrosProyectos, visitante: Vi
     c.push(or(ilike(proyectos.titulo, patron), ilike(proyectos.descripcion, patron), ilike(perfiles.nombre, patron))!);
   }
   const periodo =
-    f.orden === "mes" ? megustaQueCuentan(inicioMes(mes), sql`${inicioMes(mes)} + interval '1 month'`) : f.orden === "tendencia" ? megustaQueCuentan(sql`now() - interval '7 days'`) : null;
+    f.orden === "mes" ? megustaQueCuentanProyecto(inicioMes(mes), sql`${inicioMes(mes)} + interval '1 month'`) : f.orden === "tendencia" ? megustaQueCuentanProyecto(sql`now() - interval '7 days'`) : null;
   const orden =
     f.orden === "nuevos"
       ? [desc(proyectos.creadaEn), desc(proyectos.id)]
@@ -172,7 +174,7 @@ export async function megustaDe(db: Db, userIds: string[]): Promise<Map<string, 
   return new Map(filas.map((f) => [f.userId, Number(f.n)]));
 }
 
-async function puedeSubir(db: Db, userId: string) {
+export async function puedeSubir(db: Db, userId: string) {
   const [perfil] = await db.select({ id: perfiles.userId }).from(perfiles).where(eq(perfiles.userId, userId)).limit(1);
   if (!perfil) throw new ErrorProyecto("sin_perfil", "Para subir proyectos, crea antes tu perfil de talento.");
   const [{ ok }] = await db.select({ ok: verificado(userId) }).from(usuarios).where(eq(usuarios.id, userId));
@@ -183,6 +185,13 @@ export async function crearProyecto(db: Db, userId: string, d: DatosProyecto): P
   await puedeSubir(db, userId);
   const [{ n }] = await db.select({ n: count() }).from(proyectos).where(eq(proyectos.userId, userId));
   if (Number(n) >= LIMITES_PROYECTO.porPersona) throw new ErrorProyecto("demasiados", `Como mucho ${LIMITES_PROYECTO.porPersona} proyectos.`);
+  // Uno al mes: así cada uno sube el mejor y los rankings son justos.
+  const mes = mesDe(new Date());
+  const [{ esteMes }] = await db
+    .select({ esteMes: count() })
+    .from(proyectos)
+    .where(and(eq(proyectos.userId, userId), sql`${proyectos.creadaEn} >= ${inicioMes(mes)}`));
+  if (Number(esteMes) >= LIMITES_PROYECTO.porMes) throw new ErrorProyecto("este_mes", "Ya has subido tu proyecto de este mes. El día 1 podrás subir otro.");
   const id = nuevoId();
   await db.insert(proyectos).values({ id, userId, ...d });
   return id;

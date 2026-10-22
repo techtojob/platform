@@ -14,3 +14,4 @@ export * from "./recruiters";
 export * from "./respuesta-ia";
 export * from "./experiencia";
 export * from "./proyectos";
+export * from "./portfolios";

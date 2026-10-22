@@ -355,7 +355,7 @@ describe("subir ofertas (recruiters)", () => {
     expect((await reportar(bea, { motivo: "Se hace pasar por la empresa.", sobre: "recruiter" })).status).toBe(200);
     expect((await pedir("/ofertas/no-existe/reportar", bea, { method: "POST", body: { motivo: "No existe esta oferta." } })).status).toBe(404);
 
-    expect(await (await pedir("/staff/reportes/resumen", pablo)).json()).toEqual({ perfiles: 0, ofertas: 1, recruiters: 1, proyectos: 0 });
+    expect(await (await pedir("/staff/reportes/resumen", pablo)).json()).toEqual({ perfiles: 0, ofertas: 1, recruiters: 1, proyectos: 0, portfolios: 0 });
     expect(((await (await pedir("/staff/ofertas", pablo)).json()) as { reportes: number }).reportes).toBe(2);
     expect((await pedir("/staff/reportes-ofertas", bea)).status).toBe(403);
     const deOfertas = (await (await pedir("/staff/reportes-ofertas", pablo)).json()) as Array<{ id: string; motivo: string; oferta: { id: string; empresa: string } }>;

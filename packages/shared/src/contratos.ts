@@ -336,6 +336,8 @@ export type PerfilPublico = PerfilListado & {
   esMio: boolean;
   /** Sus proyectos: primero los fijados, luego los más nuevos. */
   proyectos: import("./proyectos").ProyectoListado[];
+  /** Su portfolio, si lo ha puesto. */
+  portfolio: import("./portfolios").PortfolioListado | null;
 };
 
 /** Respuesta de GET /talento. */
@@ -411,7 +413,7 @@ export type ReporteProyecto = {
 };
 
 /** Cuántos reportes hay sin revisar de cada cosa (para las pestañas del panel). */
-export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number; proyectos: number };
+export type ResumenReportes = { perfiles: number; ofertas: number; recruiters: number; proyectos: number; portfolios: number };
 
 export type ReportePerfil = {
   id: string;

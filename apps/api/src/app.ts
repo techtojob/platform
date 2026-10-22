@@ -1,3 +1,4 @@
+import { rutasPortfolios } from "./rutas/portfolios";
 import { rutasProyectos } from "./rutas/proyectos";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -76,6 +77,7 @@ export function crearApp(opciones: Opciones = {}) {
   app.use("/staff/*", conDb, conAuth).route("/staff", rutasStaff);
   app.use("/talento", conDb, conAuth).use("/talento/*", conDb, conAuth).route("/talento", rutasTalento);
   app.use("/proyectos", conDb, conAuth).use("/proyectos/*", conDb, conAuth).route("/proyectos", rutasProyectos);
+  app.use("/portfolios", conDb, conAuth).use("/portfolios/*", conDb, conAuth).route("/portfolios", rutasPortfolios);
 
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));

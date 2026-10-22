@@ -449,6 +449,45 @@ export const megustaProyectos = pgTable(
 );
 
 /**
+ * Portfolios de la comunidad: uno por persona (con perfil de talento verificado).
+ * "Tu portfolio a juicio": juicioPedidoEn (lo pide) → juicioRevisadoEn + juicioVideo (lo marca el staff).
+ */
+export const portfolios = pgTable(
+  "portfolios",
+  {
+    userId: text("usuario_id")
+      .primaryKey()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    url: text("url").notNull(),
+    descripcion: text("descripcion"),
+    /** La og:image de la web (se lee al guardar). */
+    imagen: text("imagen"),
+    oculto: boolean("oculto").notNull().default(false),
+    juicioPedidoEn: timestamp("juicio_pedido_en", { withTimezone: true }),
+    juicioRevisadoEn: timestamp("juicio_revisado_en", { withTimezone: true }),
+    juicioVideo: text("juicio_video"),
+    juicioRevisadoPor: text("juicio_revisado_por").references(() => usuarios.id, { onDelete: "set null" }),
+    ...fechas,
+  },
+  (t) => [index("portfolios_creado_idx").on(t.creadaEn), index("portfolios_juicio_idx").on(t.juicioPedidoEn)],
+);
+
+/** Me gusta a portfolios: uno por persona y portfolio. */
+export const megustaPortfolios = pgTable(
+  "megusta_portfolios",
+  {
+    portfolioId: text("portfolio_id")
+      .notNull()
+      .references(() => portfolios.userId, { onDelete: "cascade" }),
+    userId: text("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.portfolioId, t.userId] }), index("megusta_portfolios_fecha_idx").on(t.creadoEn)],
+);
+
+/**
  * Reportes de ofertas y de recruiters (los de perfiles van en reportes_perfil). Hay que haber iniciado sesión
  * y cada persona reporta cada cosa una vez. Una fila es de una oferta o de un recruiter (la otra columna, vacía).
  */
@@ -459,6 +498,7 @@ export const reportes = pgTable(
     ofertaId: text("oferta_id").references(() => ofertas.id, { onDelete: "cascade" }),
     recruiterId: text("recruiter_id").references(() => recruiters.userId, { onDelete: "cascade" }),
     proyectoId: text("proyecto_id").references(() => proyectos.id, { onDelete: "cascade" }),
+    portfolioId: text("portfolio_id").references(() => portfolios.userId, { onDelete: "cascade" }),
     reportadoPor: text("reportado_por")
       .notNull()
       .references(() => usuarios.id, { onDelete: "cascade" }),
@@ -470,6 +510,7 @@ export const reportes = pgTable(
     uniqueIndex("reportes_oferta_unico_idx").on(t.ofertaId, t.reportadoPor),
     uniqueIndex("reportes_recruiter_unico_idx").on(t.recruiterId, t.reportadoPor),
     uniqueIndex("reportes_proyecto_unico_idx").on(t.proyectoId, t.reportadoPor),
+    uniqueIndex("reportes_portfolio_unico_idx").on(t.portfolioId, t.reportadoPor),
     index("reportes_estado_idx").on(t.estado, t.creadoEn),
   ],
 );
