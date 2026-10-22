@@ -148,6 +148,13 @@
       "when": 1792664272679,
       "tag": "0020_portfolios",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792712450588,
+      "tag": "0021_limite-acceso",
+      "breakpoints": true
     }
   ]
 }

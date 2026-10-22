@@ -231,7 +231,9 @@
       "otro": "Couldn't log in. Please try again."
     },
     "privacidadTitulo": "Only what's needed",
-    "avisoPrivacidad": "By logging in you agree that we store your name, email and photo for your account. More in <enlace>Privacy</enlace>."
+    "avisoPrivacidad": "By logging in you agree that we store your name, email and photo for your account. More in <enlace>Privacy</enlace>.",
+    "demasiadosIntentos": "Too many attempts in a row. Wait a minute and try again.",
+    "errorEntrar": "We couldn't start the login. Try again."
   },
   "navegacion": {
     "empleo": "Jobs",

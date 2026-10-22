@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "./db/cliente";
-import { cuentas, sesiones, usuarios, verificaciones } from "./db/esquema";
+import { cuentas, limitesAcceso, sesiones, usuarios, verificaciones } from "./db/esquema";
 import { actualizarEstadoDiscord, type ConfigDiscord } from "./servicios/discord";
 
 /**
@@ -97,8 +97,27 @@ export function opcionesAuth(db: Db, env: EnvAuth) {
     trustedOrigins: [env.WEB_URL],
     database: drizzleAdapter(db, {
       provider: "pg",
-      schema: { user: usuarios, session: sesiones, account: cuentas, verification: verificaciones },
+      schema: { user: usuarios, session: sesiones, account: cuentas, verification: verificaciones, rateLimit: limitesAcceso },
     }),
+    // Límite de intentos por IP (en la base de datos: vale igual en todos los servidores de Cloudflare).
+    // Entrar y vincular: 10 por minuto. Lo demás: 100 por minuto. Saber si hay sesión (lo pide la
+    // landing en cada página) no cuenta.
+    rateLimit: {
+      enabled: true,
+      storage: "database" as const,
+      window: 60,
+      max: 100,
+      customRules: {
+        "/sign-in/*": { window: 60, max: 10 },
+        "/link-social": { window: 60, max: 10 },
+        "/callback/*": { window: 60, max: 20 },
+        "/get-session": false as const,
+      },
+    },
+    advanced: {
+      // La IP de verdad la da Cloudflare en esta cabecera (las demás se pueden falsear).
+      ipAddress: { ipAddressHeaders: ["cf-connecting-ip"] },
+    },
     socialProviders: proveedores,
     session: {
       expiresIn: 60 * 60 * 24 * 30, // 30 días

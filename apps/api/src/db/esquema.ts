@@ -14,6 +14,7 @@ import type {
 import type { CargoRecruiter, EstadoProyecto, EstadoRecruiter, FotoPerfil } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -259,6 +260,18 @@ export const cuentas = pgTable(
 );
 
 /** Códigos temporales de Better Auth (el "state" del inicio de sesión con Google o GitHub…). */
+/**
+ * Límite de intentos del inicio de sesión (Better Auth, rateLimit con storage "database"): una fila por
+ * IP y ruta, con cuántas peticiones lleva en la ventana actual. Se guarda en la base de datos para que el
+ * límite valga igual en todos los servidores de Cloudflare.
+ */
+export const limitesAcceso = pgTable("limites_acceso", {
+  id: text("id").primaryKey(),
+  key: text("clave").notNull().unique(),
+  count: integer("cuenta").notNull(),
+  lastRequest: bigint("ultima_peticion", { mode: "number" }).notNull(),
+});
+
 export const verificaciones = pgTable(
   "verificaciones",
   {
