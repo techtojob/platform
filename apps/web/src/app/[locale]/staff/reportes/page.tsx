@@ -6,14 +6,14 @@ import { BotonesReporte } from "@/components/staff/botones-reporte";
 import { BotonesReporteDe } from "@/components/staff/botones-reporte-de";
 import { Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { exigirStaff, listarReportes, listarReportesOfertas, listarReportesRecruiters, resumenReportes } from "@/lib/api-staff";
+import { exigirStaff, listarReportes, listarReportesOfertas, listarReportesProyectos, listarReportesRecruiters, resumenReportes } from "@/lib/api-staff";
 import { cn } from "@/lib/cn";
 import { slugDeOferta } from "@/lib/ofertas";
 
-const PESTANAS = ["perfiles", "ofertas", "recruiters"] as const;
+const PESTANAS = ["perfiles", "ofertas", "recruiters", "proyectos"] as const;
 type Pestana = (typeof PESTANAS)[number];
 
-/** Reportes de la comunidad: perfiles, ofertas y recruiters, para que el staff los revise. */
+/** Reportes de la comunidad: perfiles, ofertas, recruiters y proyectos, para que el staff los revise. */
 export default function PaginaReportes({ searchParams }: PageProps<"/[locale]/staff/reportes">) {
   const t = useTranslations();
   return (
@@ -97,6 +97,44 @@ async function Lista({ searchParams }: Pick<PageProps<"/[locale]/staff/reportes"
                       {r.oferta.estado !== "publicada" && <Etiqueta tono="borde">{t(`staff.estados.${r.oferta.estado}`)}</Etiqueta>}
                     </span>
                     <BotonesReporteDe id={r.id} de="ofertas" />
+                  </div>
+                </Tarjeta>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  if (pestana === "proyectos") {
+    const reportes = await listarReportesProyectos();
+    return (
+      <div className="flex flex-col gap-6">
+        {pestanas}
+        {!reportes.length ? vacio : (
+          <ul className="flex flex-col gap-3">
+            {reportes.map((r) => (
+              <li key={r.id}>
+                <Tarjeta className="flex flex-col gap-3 p-5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="text-lg font-bold">
+                      {r.proyecto.titulo} <span className="text-sm font-normal text-suave">· {r.proyecto.autor.nombre}</span>
+                    </p>
+                    <p className="text-sm text-suave">{cuando(r.creadoEn)}</p>
+                  </div>
+                  <blockquote className="rounded-2xl bg-postit px-4 py-3 font-bold text-ink">{r.motivo}</blockquote>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="flex flex-wrap items-center gap-3">
+                      <Link href={{ pathname: "/proyectos/[slug]", params: { slug: `${r.proyecto.slug}-${r.proyecto.id}` } }} className="font-bold text-enlace underline">
+                        {t("staff.reportes.verProyecto")}
+                      </Link>
+                      <Link href={{ pathname: "/talento/[alias]", params: { alias: r.proyecto.autor.alias } }} className="font-bold text-enlace underline">
+                        {t("staff.reportes.verPerfil")}
+                      </Link>
+                      {r.proyecto.oculto && <Etiqueta tono="borde">{t("staff.reportes.oculto")}</Etiqueta>}
+                    </span>
+                    <BotonesReporteDe id={r.id} de="proyectos" bloqueado={r.proyecto.oculto} />
                   </div>
                 </Tarjeta>
               </li>

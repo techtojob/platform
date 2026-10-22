@@ -1,3 +1,4 @@
+import { ErrorProyecto, listarReportesProyectos, resolverReporteProyecto } from "../servicios/proyectos";
 import { leerFiltrosStaff, validarOferta, type ListaStaff } from "@techtojob/shared";
 import { Hono, type Context } from "hono";
 import type { Entorno } from "../app";
@@ -65,6 +66,7 @@ import { conSesion, soloStaff } from "./sesion";
  * GET  /staff/reportes/resumen            → cuántos reportes sin revisar hay de perfiles, ofertas y recruiters
  * GET  /staff/reportes-ofertas · POST /staff/reportes-ofertas/:id/descartar · /cerrar
  * GET  /staff/reportes-recruiters · POST /staff/reportes-recruiters/:id/descartar · /bloquear { motivo }
+ * GET  /staff/reportes-proyectos · POST /staff/reportes-proyectos/:id/descartar · /ocultar
  * GET  /staff/recruiters?estado=activo|bloqueado → recruiters (se registran solos; el staff revisa sus ofertas)
  * POST /staff/recruiters/:userId/bloquear { motivo } · /desbloquear · /agencia { agencia }
  */
@@ -192,6 +194,16 @@ export const rutasStaff = new Hono<Entorno>()
   .get("/reportes/resumen", async (c) => c.json(await resumenReportes(c.var.db)))
   .get("/reportes-ofertas", async (c) => c.json(await listarReportesOfertas(c.var.db)))
   .get("/reportes-recruiters", async (c) => c.json(await listarReportesRecruiters(c.var.db)))
+  .get("/reportes-proyectos", async (c) => c.json(await listarReportesProyectos(c.var.db)))
+  .post("/reportes-proyectos/:id/:accion{descartar|ocultar}", async (c) => {
+    try {
+      await resolverReporteProyecto(c.var.db, c.req.param("id"), c.req.param("accion") as "descartar" | "ocultar");
+      return c.json({ ok: true });
+    } catch (e) {
+      if (e instanceof ErrorProyecto) return c.json({ error: { codigo: e.codigo, mensaje: e.message } }, 404);
+      throw e;
+    }
+  })
   .post("/reportes-ofertas/:id/:accion{descartar|cerrar}", async (c) => {
     try {
       await resolverReporteOferta(c.var.db, c.req.param("id"), c.var.usuario.id, c.req.param("accion") as "descartar" | "cerrar");

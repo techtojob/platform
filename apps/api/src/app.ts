@@ -1,3 +1,4 @@
+import { rutasProyectos } from "./rutas/proyectos";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { createMiddleware } from "hono/factory";
@@ -74,6 +75,7 @@ export function crearApp(opciones: Opciones = {}) {
   app.use("/cuenta", conDb, conAuth).use("/cuenta/*", conDb, conAuth).route("/cuenta", rutasCuenta);
   app.use("/staff/*", conDb, conAuth).route("/staff", rutasStaff);
   app.use("/talento", conDb, conAuth).use("/talento/*", conDb, conAuth).route("/talento", rutasTalento);
+  app.use("/proyectos", conDb, conAuth).use("/proyectos/*", conDb, conAuth).route("/proyectos", rutasProyectos);
 
   // Respuestas de error siempre en el mismo formato: { error: { codigo, mensaje } }.
   app.notFound((c) => c.json({ error: { codigo: "no_encontrado", mensaje: "Esta ruta no existe." } }, 404));

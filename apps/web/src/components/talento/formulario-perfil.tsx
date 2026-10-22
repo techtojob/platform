@@ -98,7 +98,7 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, ve
     empezar(async () => {
       const r = await guardarMiPerfil(v);
       if (r.errores) ponerErroresServidor(r.errores);
-      if (r.error) ponerAviso({ tono: "mal", texto: t("errorGuardar") });
+      if (r.error) ponerAviso({ tono: "mal", texto: r.error === "sin_verificar" ? t("errorSinVerificar") : t("errorGuardar") });
       if (r.guardado) {
         ponerGuardado(r.guardado);
         ponerAviso({ tono: "bien", texto: guardadoInicial || guardado ? t("guardado") : t("creado") });
@@ -133,6 +133,7 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, ve
     tecnologias: v.tecnologias,
     verificado,
     emblemas: [],
+    megusta: 0,
     actualizadoEn: guardado?.actualizadoEn ?? new Date(0).toISOString(),
   };
 

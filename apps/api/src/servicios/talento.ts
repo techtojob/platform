@@ -1,4 +1,5 @@
 import { fotosDe } from "./fotos";
+import { megustaDe, proyectosDe } from "./proyectos";
 import {
   fotoElegida,
   type FotosCuenta,
@@ -19,7 +20,7 @@ import {
 } from "@techtojob/shared";
 import { and, arrayOverlaps, asc, count, desc, eq, exists, gt, ilike, inArray, isNull, lt, ne, or, sql, type SQL } from "drizzle-orm";
 import type { Db } from "../db/cliente";
-import { emblemas, estadoDiscord, perfiles, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
+import { emblemas, estadoDiscord, perfiles, proyectos, reportesPerfil, usuarios, type Perfil } from "../db/esquema";
 
 /**
  * Talento: perfiles de la comunidad. Quién ve qué:
@@ -35,7 +36,7 @@ export const LIMITE_TALENTO = 24;
 
 export class ErrorTalento extends Error {
   constructor(
-    public readonly codigo: "alias_ocupado" | "no_existe" | "solo_registrados" | "motivo" | "propio" | "reporte",
+    public readonly codigo: "alias_ocupado" | "no_existe" | "solo_registrados" | "motivo" | "propio" | "reporte" | "sin_verificar",
     mensaje: string,
   ) {
     super(mensaje);
@@ -105,8 +106,8 @@ function condiciones(f: FiltrosTalento, sinPais = false): SQL[] {
 
 /** Emblemas y verificación de varios usuarios de una vez. */
 async function extras(db: Db, ids: string[]) {
-  if (!ids.length) return { emblemasDe: () => [] as Emblema[], verificado: () => false, fotosDe: () => ({ google: null, github: null }) };
-  const [fundadores, ganados, discord, fotos] = await Promise.all([
+  if (!ids.length) return { emblemasDe: () => [] as Emblema[], verificado: () => false, fotosDe: () => ({ google: null, github: null }), megustaDe: () => 0 };
+  const [fundadores, ganados, discord, fotos, megusta] = await Promise.all([
     db
       .select({ id: usuarios.id, creadoEn: usuarios.createdAt })
       .from(usuarios)
@@ -119,6 +120,7 @@ async function extras(db: Db, ids: string[]) {
       .orderBy(desc(emblemas.otorgadoEn)),
     db.select({ id: estadoDiscord.userId }).from(estadoDiscord).where(and(inArray(estadoDiscord.userId, ids), eq(estadoDiscord.enServidor, true))),
     fotosDe(db, ids),
+    megustaDe(db, ids),
   ]);
   const fundador = new Map(fundadores.map((f) => [f.id, f.creadoEn]));
   const verificados = new Set(discord.map((d) => d.id));
@@ -129,6 +131,7 @@ async function extras(db: Db, ids: string[]) {
     ],
     verificado: (id: string) => verificados.has(id),
     fotosDe: (id: string): FotosCuenta => fotos.get(id) ?? { google: null, github: null },
+    megustaDe: (id: string) => megusta.get(id) ?? 0,
   };
 }
 
@@ -150,6 +153,7 @@ function aListado(f: Fila, x: Awaited<ReturnType<typeof extras>>): PerfilListado
     disponibilidad: p.disponibilidad,
     tecnologias: p.tecnologias,
     verificado: x.verificado(p.userId),
+    megusta: x.megustaDe(p.userId),
     emblemas: x.emblemasDe(p.userId),
     actualizadoEn: p.actualizadaEn.toISOString(),
   };
@@ -228,6 +232,7 @@ export async function obtenerPerfil(db: Db, alias: string, visitante: Visitante)
     enlaces: { linkedin: p.linkedin, github: p.github, portfolio: p.portfolio },
     visibilidad: p.visibilidad,
     esMio,
+    proyectos: await proyectosDe(db, p.userId, visitante),
   };
 }
 
@@ -278,8 +283,16 @@ export async function miPerfil(db: Db, usuario: { id: string; name: string; imag
   };
 }
 
-/** Crea o actualiza el perfil. El alias no puede ser de otra persona. */
+/**
+ * Crea o actualiza el perfil. El alias no puede ser de otra persona.
+ * Para crearlo hay que estar verificado (Discord vinculado y en el servidor); quien ya lo tenía puede editarlo.
+ */
 export async function guardarPerfil(db: Db, userId: string, d: DatosPerfil) {
+  const [yaTiene] = await db.select({ id: perfiles.userId }).from(perfiles).where(eq(perfiles.userId, userId)).limit(1);
+  if (!yaTiene) {
+    const [discord] = await db.select({ enServidor: estadoDiscord.enServidor }).from(estadoDiscord).where(eq(estadoDiscord.userId, userId)).limit(1);
+    if (!discord?.enServidor) throw new ErrorTalento("sin_verificar", "Para crear tu perfil tienes que estar verificado: vincula tu Discord y entra en el servidor.");
+  }
   const [otro] = await db
     .select({ id: perfiles.userId })
     .from(perfiles)
@@ -293,7 +306,9 @@ export async function guardarPerfil(db: Db, userId: string, d: DatosPerfil) {
     .onConflictDoUpdate({ target: perfiles.userId, set: valores });
 }
 
+/** Borra el perfil y, con él, sus proyectos (sin perfil no se ven en ningún sitio). */
 export async function borrarPerfil(db: Db, userId: string) {
+  await db.delete(proyectos).where(eq(proyectos.userId, userId));
   await db.delete(perfiles).where(eq(perfiles.userId, userId));
 }
 

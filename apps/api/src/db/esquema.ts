@@ -11,7 +11,7 @@ import type {
   TipoEmblema,
   VisibilidadPerfil,
 } from "@techtojob/shared";
-import type { CargoRecruiter, EstadoRecruiter, FotoPerfil } from "@techtojob/shared";
+import type { CargoRecruiter, EstadoProyecto, EstadoRecruiter, FotoPerfil } from "@techtojob/shared";
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -408,6 +408,46 @@ export const recruiters = pgTable(
   (t) => [index("recruiters_estado_idx").on(t.estado, t.creadaEn)],
 );
 
+/** Proyectos de la comunidad (los sube quien tiene perfil de talento verificado). */
+export const proyectos = pgTable(
+  "proyectos",
+  {
+    id: text("id").primaryKey(),
+    userId: text("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    titulo: text("titulo").notNull(),
+    descripcion: text("descripcion").notNull(),
+    area: text("area").$type<Area>().notNull(),
+    tecnologias: text("tecnologias").array().$type<string[]>().notNull().default(sql`'{}'::text[]`),
+    repo: text("repo"),
+    demo: text("demo"),
+    video: text("video"),
+    estado: text("estado").$type<EstadoProyecto>().notNull().default("terminado"),
+    /** Fijado en su perfil (como mucho 3). */
+    fijado: boolean("fijado").notNull().default(false),
+    /** El staff lo ha ocultado (reportes): no sale en ningún sitio salvo a su autor. */
+    oculto: boolean("oculto").notNull().default(false),
+    ...fechas,
+  },
+  (t) => [index("proyectos_usuario_idx").on(t.userId), index("proyectos_creado_idx").on(t.creadaEn)],
+);
+
+/** Me gusta a proyectos: uno por persona y proyecto. */
+export const megustaProyectos = pgTable(
+  "megusta_proyectos",
+  {
+    proyectoId: text("proyecto_id")
+      .notNull()
+      .references(() => proyectos.id, { onDelete: "cascade" }),
+    userId: text("usuario_id")
+      .notNull()
+      .references(() => usuarios.id, { onDelete: "cascade" }),
+    creadoEn: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.proyectoId, t.userId] }), index("megusta_proyectos_fecha_idx").on(t.creadoEn)],
+);
+
 /**
  * Reportes de ofertas y de recruiters (los de perfiles van en reportes_perfil). Hay que haber iniciado sesión
  * y cada persona reporta cada cosa una vez. Una fila es de una oferta o de un recruiter (la otra columna, vacía).
@@ -418,6 +458,7 @@ export const reportes = pgTable(
     id: text("id").primaryKey(),
     ofertaId: text("oferta_id").references(() => ofertas.id, { onDelete: "cascade" }),
     recruiterId: text("recruiter_id").references(() => recruiters.userId, { onDelete: "cascade" }),
+    proyectoId: text("proyecto_id").references(() => proyectos.id, { onDelete: "cascade" }),
     reportadoPor: text("reportado_por")
       .notNull()
       .references(() => usuarios.id, { onDelete: "cascade" }),
@@ -428,6 +469,7 @@ export const reportes = pgTable(
   (t) => [
     uniqueIndex("reportes_oferta_unico_idx").on(t.ofertaId, t.reportadoPor),
     uniqueIndex("reportes_recruiter_unico_idx").on(t.recruiterId, t.reportadoPor),
+    uniqueIndex("reportes_proyecto_unico_idx").on(t.proyectoId, t.reportadoPor),
     index("reportes_estado_idx").on(t.estado, t.creadoEn),
   ],
 );

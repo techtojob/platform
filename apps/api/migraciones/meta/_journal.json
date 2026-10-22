@@ -134,6 +134,13 @@
       "when": 1792625685405,
       "tag": "0018_foto-y-experiencia",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792627971095,
+      "tag": "0019_proyectos",
+      "breakpoints": true
     }
   ]
 }

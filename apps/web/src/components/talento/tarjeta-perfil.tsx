@@ -11,7 +11,7 @@ const MAX_TECNOLOGIAS = 6;
 
 /**
  * Un perfil en el buscador de talento: foto o blob, nombre y verificado, titular, dónde,
- * disponibilidad, tecnologías y emblemas. Se pulsa entera.
+ * disponibilidad, tecnologías, emblemas y los me gusta de sus proyectos. Se pulsa entera.
  * `enlace={false}`: solo para mirar (vista previa en "Mi perfil").
  */
 export function TarjetaPerfil({ perfil, enlace = true }: { perfil: PerfilListado; enlace?: boolean }) {
@@ -51,6 +51,14 @@ export function TarjetaPerfil({ perfil, enlace = true }: { perfil: PerfilListado
         </p>
       )}
       <Emblemas emblemas={perfil.emblemas} />
+      {perfil.megusta > 0 && (
+        <p className="mt-auto flex items-center gap-1.5 text-sm font-bold text-suave">
+          <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-peligro">
+            <path d="M12 20.5s-7.5-4.6-9.3-9.2C1.5 8.1 3.6 4.5 7.2 4.5c2 0 3.5 1.1 4.8 2.8 1.3-1.7 2.8-2.8 4.8-2.8 3.6 0 5.7 3.6 4.5 6.8-1.8 4.6-9.3 9.2-9.3 9.2Z" />
+          </svg>
+          {t("talento.megustaProyectos", { count: perfil.megusta })}
+        </p>
+      )}
     </>
   );
   const clases =

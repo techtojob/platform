@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { LANDING_URL } from "@/lib/sitio";
 
-type Miga = { texto: string; href?: "/" | "/staff" | "/talento" | "/cuenta/ajustes" | "/cuenta/ofertas" };
+type Miga = { texto: string; href?: "/" | "/staff" | "/talento" | "/cuenta/ajustes" | "/cuenta/ofertas" | "/proyectos" | "/cuenta/proyectos" };
 
 /**
  * Cabecera grande de cada página, como las páginas interiores de la landing (PageHero):

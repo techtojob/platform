@@ -11,6 +11,7 @@ import {
   type OfertaRepetida,
   type OfertaStaff,
   type ReporteOferta,
+  type ReporteProyecto,
   type ReportePerfil,
   type ReporteRecruiter,
   type ResumenReportes,
@@ -163,8 +164,13 @@ export async function listarReportesRecruiters(): Promise<ReporteRecruiter[]> {
   return pedir<ReporteRecruiter[]>("/staff/reportes-recruiters", await conCookie());
 }
 
+export async function listarReportesProyectos(): Promise<ReporteProyecto[]> {
+  return pedir<ReporteProyecto[]>("/staff/reportes-proyectos", await conCookie());
+}
+
 export type AccionReporte =
   | { de: "ofertas"; accion: "descartar" | "cerrar" }
+  | { de: "proyectos"; accion: "descartar" | "ocultar" }
   | { de: "recruiters"; accion: "descartar" }
   | { de: "recruiters"; accion: "bloquear"; motivo: string };
 
