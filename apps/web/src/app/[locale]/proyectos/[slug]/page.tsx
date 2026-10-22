@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BotonMegusta } from "@/components/proyectos/boton-megusta";
 import { PortadaProyecto } from "@/components/proyectos/portada-proyecto";
-import { ReportarProyecto } from "@/components/proyectos/reportar-proyecto";
+import { Reportar } from "@/components/reportar/reportar";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
@@ -146,7 +146,7 @@ function Ficha({ proyecto: p, conSesion }: { proyecto: ProyectoListado; conSesio
                 <span className="text-sm font-bold text-enlace">{t("proyectos.verPerfil")}</span>
               </span>
             </Link>
-            {!p.esMio && <ReportarProyecto id={p.id} conSesion={conSesion} />}
+            {!p.esMio && <Reportar className="self-start" cosas={[{ tipo: "proyecto", id: p.id }]} conSesion={conSesion} />}
           </aside>
         </div>
       </section>

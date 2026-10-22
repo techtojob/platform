@@ -1,7 +1,8 @@
 import { TECNOLOGIAS, type OfertaListado } from "@techtojob/shared";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { MenuTarjeta } from "@/components/reportar/menu-tarjeta";
 import { AvatarBlob, Etiqueta } from "@/components/ui";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import { slugDeOferta } from "@/lib/ofertas";
 import { codigosIdiomas, useLugarCorto, useSalario } from "./datos-oferta";
 
@@ -17,11 +18,16 @@ const UN_DIA = 24 * 60 * 60 * 1000;
 export function FilaOferta({
   oferta,
   ahora,
+  menu,
 }: {
   oferta: OfertaListado;
   ahora: number;
+  /** Con el menú "⋯" (copiar enlace y reportar). En la vista previa del staff, sin él. */
+  menu?: { conSesion: boolean };
 }) {
   const t = useTranslations();
+  const locale = useLocale();
+  const ruta = { pathname: "/ofertas/[slug]" as const, params: { slug: slugDeOferta(oferta) } };
   const format = useFormatter();
   const lugar = useLugarCorto(oferta);
   const salario = useSalario(oferta);
@@ -30,13 +36,9 @@ export function FilaOferta({
 
   return (
     // @container: la tarjeta se coloca según su propio ancho (en el listado o en la vista previa del staff).
-    <div className="@container">
-      <Link
-        href={{
-          pathname: "/ofertas/[slug]",
-          params: { slug: slugDeOferta(oferta) },
-        }}
-        className="group grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-3 rounded-tarjeta border border-borde bg-tarjeta p-4 text-texto shadow-tarjeta transition hover:-translate-y-0.5 hover:border-acento/60 hover:bg-tarjeta-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0 @xl:grid-cols-[auto_minmax(0,1fr)_auto] @xl:p-5"
+    <div className="relative @container">
+      <div
+        className={`group relative grid ${menu ? "pr-16 @xl:pr-16" : ""} grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-3 rounded-tarjeta border border-borde bg-tarjeta p-4 text-texto shadow-tarjeta transition hover:-translate-y-0.5 hover:border-acento/60 hover:bg-tarjeta-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0 @xl:grid-cols-[auto_minmax(0,1fr)_auto] @xl:p-5`}
       >
         <AvatarBlob
           nombre={oferta.empresa.nombre}
@@ -49,12 +51,14 @@ export function FilaOferta({
             {oferta.empresa.nombre}
             {nueva && <Etiqueta tono="acento">{t("ofertas.nueva")}</Etiqueta>}
           </span>
-          <span
+          {/* El enlace se estira por toda la tarjeta; el menú "⋯" va por encima. */}
+          <Link
+            href={ruta}
             lang={oferta.idioma}
-            className="text-titulo-3 font-bold group-hover:text-enlace group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4"
+            className="text-titulo-3 font-bold after:absolute after:inset-0 after:rounded-tarjeta group-hover:text-enlace group-hover:underline group-hover:decoration-2 group-hover:underline-offset-4"
           >
             {oferta.titulo}
-          </span>
+          </Link>
           <span className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-suave">
             <span>{lugar}</span>
             {salario && <span className="font-bold text-texto">{salario}</span>}
@@ -86,7 +90,15 @@ export function FilaOferta({
             ))}
           </span>
         )}
-      </Link>
+      </div>
+      {menu && (
+        <MenuTarjeta
+          className="!absolute right-3 top-3"
+          enlace={getPathname({ href: ruta, locale })}
+          conSesion={menu.conSesion}
+          cosas={[{ tipo: "oferta", id: oferta.id }]}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { TECNOLOGIAS, type ProyectoListado } from "@techtojob/shared";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { MenuTarjeta } from "@/components/reportar/menu-tarjeta";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { Etiqueta } from "@/components/ui";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import { slugDeProyecto } from "@/lib/filtros-proyectos";
 import { BotonMegusta } from "./boton-megusta";
 import { PortadaProyecto } from "./portada-proyecto";
@@ -27,7 +28,9 @@ type Props = {
  */
 export function TarjetaProyecto({ proyecto: p, conSesion, puesto, periodo, sinAutor = false }: Props) {
   const t = useTranslations("proyectos");
+  const locale = useLocale();
   const sobran = p.tecnologias.length - MAX_TECNOLOGIAS;
+  const enlace = getPathname({ href: { pathname: "/proyectos/[slug]", params: { slug: slugDeProyecto(p) } }, locale });
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-tarjeta border border-borde bg-tarjeta text-texto shadow-tarjeta transition hover:-translate-y-0.5 hover:border-acento/60 hover:bg-tarjeta-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div className="relative">
@@ -42,6 +45,7 @@ export function TarjetaProyecto({ proyecto: p, conSesion, puesto, periodo, sinAu
           {p.estado === "en_curso" && <span className="rounded-full bg-fondo/85 px-3 py-1 text-xs font-bold shadow-tarjeta">{t("estados.en_curso")}</span>}
           {p.oculto && <span className="rounded-full bg-peligro px-3 py-1 text-xs font-bold text-fondo shadow-tarjeta">{t("oculto")}</span>}
         </div>
+        <MenuTarjeta className="!absolute right-3 top-3" enlace={enlace} conSesion={conSesion} cosas={p.esMio ? [] : [{ tipo: "proyecto", id: p.id }]} />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <h3 className="text-titulo-3 font-bold leading-tight">

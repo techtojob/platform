@@ -127,28 +127,6 @@
     "puedesDesde": "You can work from {pais}",
     "noDesde": "Heads up: this offer can't be done from {pais}.",
     "publicarLlamada": "Are you a recruiter? <enlace>Post your jobs for free</enlace>: we review each one before it goes live.",
-    "reportar": {
-      "boton": "Report",
-      "titulo": "Report",
-      "sobre": "What do you want to report?",
-      "laOferta": "The job",
-      "elRecruiter": "Whoever posted it ({nombre})",
-      "motivoOferta": "What's wrong? (fake job, broken link, no longer available, discriminatory…)",
-      "motivoRecruiter": "What's wrong? (pretends to be the company, spam, inappropriate behaviour…)",
-      "enviar": "Send report",
-      "enviando": "Sending…",
-      "cancelar": "Cancel",
-      "cerrar": "Close",
-      "gracias": "Thanks. Staff will review it.",
-      "entraAntes": "You need to log in to report.",
-      "entrar": "Log in",
-      "errores": {
-        "motivo": "Tell us what's wrong (5 to 500 characters).",
-        "propio": "You can't report your own job.",
-        "no_existe": "This job is no longer published.",
-        "otro": "It couldn't be sent. Please try again."
-      }
-    },
     "responsabilidades": "Responsibilities",
     "requisitos": "Requirements",
     "descripcionEmpresa": "The job, as written by the company"
@@ -321,23 +299,6 @@
     "idiomas": "Languages",
     "enlaces": "Where to see their work",
     "portfolio": "Portfolio",
-    "reportar": {
-      "boton": "Report profile",
-      "titulo": "Report this profile",
-      "motivo": "What's wrong? (spam, fake profile, offensive content…)",
-      "enviar": "Send report",
-      "enviando": "Sending…",
-      "cancelar": "Cancel",
-      "cerrar": "Close",
-      "gracias": "Thanks. The staff will review it.",
-      "entraAntes": "You need to be logged in to report a profile.",
-      "entrar": "Log in",
-      "errores": {
-        "motivo": "Tell us what's wrong (5 to 500 characters).",
-        "propio": "You can't report your own profile.",
-        "otro": "It couldn't be sent. Try again."
-      }
-    },
     "nivelConAnos": "{nivel} · {anos, plural, one {# year} =16 {15+ years} other {# years}}",
     "megustaProyectos": "{count, plural, one {# like} other {# likes}} on their projects and portfolio",
     "proyectos": "{count, plural, =0 {Projects} one {Project} other {Projects (#)}}",
@@ -398,23 +359,6 @@
       "entraTexto": "Log in to like it.",
       "conTexto": "{count, plural, =0 {Like} other {Like · #}}"
     },
-    "reportar": {
-      "boton": "Report project",
-      "titulo": "Report this project",
-      "motivo": "What's wrong? (not theirs, spam, offensive content, dangerous link…)",
-      "enviar": "Send report",
-      "enviando": "Sending…",
-      "cancelar": "Cancel",
-      "cerrar": "Close",
-      "gracias": "Thanks. The staff will review it.",
-      "entraAntes": "You need to be logged in to report a project.",
-      "entrar": "Log in",
-      "errores": {
-        "motivo": "Tell us what's wrong (5 to 500 characters).",
-        "propio": "You can't report your own project.",
-        "otro": "It couldn't be sent. Try again."
-      }
-    },
     "enlaces": {
       "repo": "See the code",
       "demo": "Try the demo",
@@ -454,23 +398,6 @@
       "quitar": "Unlike ({count})",
       "error": "Your like couldn't be saved. Try again.",
       "entraTexto": "Log in to like it."
-    },
-    "reportar": {
-      "boton": "Report portfolio",
-      "titulo": "Report this portfolio",
-      "motivo": "What's wrong? (not theirs, spam, offensive content, dangerous link…)",
-      "enviar": "Send report",
-      "enviando": "Sending…",
-      "cancelar": "Cancel",
-      "cerrar": "Close",
-      "gracias": "Thanks. The staff will review it.",
-      "entraAntes": "You need to be logged in to report a portfolio.",
-      "entrar": "Log in",
-      "errores": {
-        "motivo": "Tell us what's wrong (5 to 500 characters).",
-        "propio": "You can't report your own portfolio.",
-        "otro": "It couldn't be sent. Try again."
-      }
     }
   },
   "staff": {
@@ -1524,5 +1451,79 @@
     "bloqueado": "Your recruiter account is blocked: you can't post jobs.",
     "bloqueadoAyuda": "If you think it's a mistake, contact us on Discord.",
     "variasEmpresas": "Need to post jobs for more than one company (agency or headhunter)? Email us at <correo>contacto@techtojob.com</correo> or <ticket>open a ticket on Discord</ticket>."
+  },
+  "reportar": {
+    "boton": "Report",
+    "titulos": {
+      "oferta": "Report this job",
+      "recruiter": "Report who posted it",
+      "perfil": "Report this profile",
+      "proyecto": "Report this project",
+      "portfolio": "Report this portfolio"
+    },
+    "que": "What do you want to report?",
+    "opciones": {
+      "oferta": "The job",
+      "recruiter": "Who posted it ({nombre})"
+    },
+    "porQue": "What's wrong?",
+    "motivos": {
+      "oferta": {
+        "no_disponible": "It's no longer available",
+        "enlace_roto": "The link doesn't work",
+        "falsa": "It's fake or misleading",
+        "discriminatoria": "It's discriminatory",
+        "spam": "Spam or advertising",
+        "otro": "Something else"
+      },
+      "recruiter": {
+        "suplanta": "Pretends to be the company",
+        "spam": "Spam or advertising",
+        "trato": "Inappropriate behaviour",
+        "otro": "Something else"
+      },
+      "perfil": {
+        "falso": "Fake profile",
+        "spam": "Spam or advertising",
+        "ofensivo": "Offensive content",
+        "otro": "Something else"
+      },
+      "proyecto": {
+        "no_es_suyo": "Not theirs",
+        "spam": "Spam or advertising",
+        "ofensivo": "Offensive content",
+        "enlace": "Broken or dangerous link",
+        "otro": "Something else"
+      },
+      "portfolio": {
+        "no_es_suyo": "Not theirs",
+        "spam": "Spam or advertising",
+        "ofensivo": "Offensive content",
+        "enlace": "Broken or dangerous link",
+        "otro": "Something else"
+      }
+    },
+    "detalle": "Tell us more (optional)",
+    "cuentanos": "Tell us what's wrong",
+    "privado": "Only the staff sees it. We never tell anyone who reported them.",
+    "enviar": "Send report",
+    "enviando": "Sending…",
+    "cancelar": "Cancel",
+    "cerrar": "Close",
+    "gracias": "Thanks. The staff will review it.",
+    "entraAntes": "You need to be logged in to report.",
+    "entrar": "Log in",
+    "errores": {
+      "motivo": "Tell us what's wrong (5 to 500 characters).",
+      "propio": "You can't report something of your own.",
+      "no_existe": "It no longer exists.",
+      "otro": "It couldn't be sent. Try again."
+    },
+    "menu": {
+      "abrir": "More options",
+      "copiar": "Copy link",
+      "copiado": "Link copied!",
+      "reportar": "Report"
+    }
   }
 }

@@ -127,28 +127,6 @@
     "puedesDesde": "Puedes trabajar desde {pais}",
     "noDesde": "Ojo: esta oferta no se puede hacer desde {pais}.",
     "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga.",
-    "reportar": {
-      "boton": "Reportar",
-      "titulo": "Reportar",
-      "sobre": "¿Qué quieres reportar?",
-      "laOferta": "La oferta",
-      "elRecruiter": "A quien la publicó ({nombre})",
-      "motivoOferta": "¿Qué pasa? (oferta falsa, el enlace no funciona, ya no está disponible, discriminatoria…)",
-      "motivoRecruiter": "¿Qué pasa? (se hace pasar por la empresa, spam, trato inadecuado…)",
-      "enviar": "Enviar reporte",
-      "enviando": "Enviando…",
-      "cancelar": "Cancelar",
-      "cerrar": "Cerrar",
-      "gracias": "Gracias. El staff lo revisará.",
-      "entraAntes": "Para reportar tienes que haber iniciado sesión.",
-      "entrar": "Entrar",
-      "errores": {
-        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
-        "propio": "No puedes reportar tu propia oferta.",
-        "no_existe": "Esta oferta ya no está publicada.",
-        "otro": "No se ha podido enviar. Inténtalo de nuevo."
-      }
-    },
     "responsabilidades": "Responsabilidades",
     "requisitos": "Requisitos",
     "descripcionEmpresa": "La oferta, tal cual la escribe la empresa"
@@ -321,23 +299,6 @@
     "idiomas": "Idiomas",
     "enlaces": "Dónde ver su trabajo",
     "portfolio": "Portfolio",
-    "reportar": {
-      "boton": "Reportar perfil",
-      "titulo": "Reportar este perfil",
-      "motivo": "¿Qué pasa? (spam, perfil falso, contenido ofensivo…)",
-      "enviar": "Enviar reporte",
-      "enviando": "Enviando…",
-      "cancelar": "Cancelar",
-      "cerrar": "Cerrar",
-      "gracias": "Gracias. El staff lo revisará.",
-      "entraAntes": "Para reportar un perfil tienes que haber iniciado sesión.",
-      "entrar": "Entrar",
-      "errores": {
-        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
-        "propio": "No puedes reportar tu propio perfil.",
-        "otro": "No se ha podido enviar. Inténtalo de nuevo."
-      }
-    },
     "nivelConAnos": "{nivel} · {anos, plural, one {# año} =16 {+15 años} other {# años}}",
     "megustaProyectos": "{count, plural, one {# me gusta} other {# me gusta}} en sus proyectos y portfolio",
     "proyectos": "{count, plural, =0 {Proyectos} one {Proyecto} other {Proyectos (#)}}",
@@ -398,23 +359,6 @@
       "entraTexto": "Entra para darle me gusta.",
       "conTexto": "{count, plural, =0 {Me gusta} other {Me gusta · #}}"
     },
-    "reportar": {
-      "boton": "Reportar proyecto",
-      "titulo": "Reportar este proyecto",
-      "motivo": "¿Qué pasa? (no es suyo, spam, contenido ofensivo, enlace peligroso…)",
-      "enviar": "Enviar reporte",
-      "enviando": "Enviando…",
-      "cancelar": "Cancelar",
-      "cerrar": "Cerrar",
-      "gracias": "Gracias. El staff lo revisará.",
-      "entraAntes": "Para reportar un proyecto tienes que haber iniciado sesión.",
-      "entrar": "Entrar",
-      "errores": {
-        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
-        "propio": "No puedes reportar tu propio proyecto.",
-        "otro": "No se ha podido enviar. Inténtalo de nuevo."
-      }
-    },
     "enlaces": {
       "repo": "Ver el código",
       "demo": "Probar la demo",
@@ -454,23 +398,6 @@
       "quitar": "Quitar me gusta ({count})",
       "error": "No se ha podido guardar tu me gusta. Inténtalo de nuevo.",
       "entraTexto": "Entra para darle me gusta."
-    },
-    "reportar": {
-      "boton": "Reportar portfolio",
-      "titulo": "Reportar este portfolio",
-      "motivo": "¿Qué pasa? (no es suyo, spam, contenido ofensivo, enlace peligroso…)",
-      "enviar": "Enviar reporte",
-      "enviando": "Enviando…",
-      "cancelar": "Cancelar",
-      "cerrar": "Cerrar",
-      "gracias": "Gracias. El staff lo revisará.",
-      "entraAntes": "Para reportar un portfolio tienes que haber iniciado sesión.",
-      "entrar": "Entrar",
-      "errores": {
-        "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
-        "propio": "No puedes reportar tu propio portfolio.",
-        "otro": "No se ha podido enviar. Inténtalo de nuevo."
-      }
     }
   },
   "staff": {
@@ -1524,5 +1451,79 @@
     "bloqueado": "Tu cuenta de recruiter está bloqueada: no puedes publicar ofertas.",
     "bloqueadoAyuda": "Si crees que es un error, escríbenos por Discord.",
     "variasEmpresas": "¿Necesitas publicar ofertas de más de una empresa (agencia o headhunter)? Escríbenos a <correo>contacto@techtojob.com</correo> o <ticket>crea un ticket en el Discord</ticket>."
+  },
+  "reportar": {
+    "boton": "Reportar",
+    "titulos": {
+      "oferta": "Reportar esta oferta",
+      "recruiter": "Reportar a quien la publicó",
+      "perfil": "Reportar este perfil",
+      "proyecto": "Reportar este proyecto",
+      "portfolio": "Reportar este portfolio"
+    },
+    "que": "¿Qué quieres reportar?",
+    "opciones": {
+      "oferta": "La oferta",
+      "recruiter": "A quien la publicó ({nombre})"
+    },
+    "porQue": "¿Qué pasa?",
+    "motivos": {
+      "oferta": {
+        "no_disponible": "Ya no está disponible",
+        "enlace_roto": "El enlace no funciona",
+        "falsa": "Es falsa o engañosa",
+        "discriminatoria": "Es discriminatoria",
+        "spam": "Spam o publicidad",
+        "otro": "Otra cosa"
+      },
+      "recruiter": {
+        "suplanta": "Se hace pasar por la empresa",
+        "spam": "Spam o publicidad",
+        "trato": "Trato inadecuado",
+        "otro": "Otra cosa"
+      },
+      "perfil": {
+        "falso": "Perfil falso",
+        "spam": "Spam o publicidad",
+        "ofensivo": "Contenido ofensivo",
+        "otro": "Otra cosa"
+      },
+      "proyecto": {
+        "no_es_suyo": "No es suyo",
+        "spam": "Spam o publicidad",
+        "ofensivo": "Contenido ofensivo",
+        "enlace": "Enlace roto o peligroso",
+        "otro": "Otra cosa"
+      },
+      "portfolio": {
+        "no_es_suyo": "No es suyo",
+        "spam": "Spam o publicidad",
+        "ofensivo": "Contenido ofensivo",
+        "enlace": "Enlace roto o peligroso",
+        "otro": "Otra cosa"
+      }
+    },
+    "detalle": "Cuéntanos más (opcional)",
+    "cuentanos": "Cuéntanos qué pasa",
+    "privado": "Solo lo ve el staff. A quien reportas no le decimos quién ha sido.",
+    "enviar": "Enviar reporte",
+    "enviando": "Enviando…",
+    "cancelar": "Cancelar",
+    "cerrar": "Cerrar",
+    "gracias": "Gracias. El staff lo revisará.",
+    "entraAntes": "Para reportar tienes que haber iniciado sesión.",
+    "entrar": "Entrar",
+    "errores": {
+      "motivo": "Cuéntanos qué pasa (de 5 a 500 caracteres).",
+      "propio": "No puedes reportar algo tuyo.",
+      "no_existe": "Ya no existe.",
+      "otro": "No se ha podido enviar. Inténtalo de nuevo."
+    },
+    "menu": {
+      "abrir": "Más opciones",
+      "copiar": "Copiar enlace",
+      "copiado": "¡Enlace copiado!",
+      "reportar": "Reportar"
+    }
   }
 }

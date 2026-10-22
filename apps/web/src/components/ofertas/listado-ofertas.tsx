@@ -4,7 +4,7 @@ import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { obtenerCuenta, obtenerOfertas } from "@/lib/api";
+import { obtenerCuenta, obtenerOfertas, tieneCookieDeSesion } from "@/lib/api";
 import { aParametros, hayFiltros, leerFiltros } from "@/lib/filtros";
 import { COOKIE_HABLO, idiomasDelUsuario, nombreIdioma } from "@/lib/idiomas-usuario";
 import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
@@ -28,6 +28,8 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
   ]);
 
   const filtros = leerFiltros(parametros);
+  const cookieSesion = cabeceras.get("cookie");
+  const conSesion = !!cookieSesion && tieneCookieDeSesion(cookieSesion);
   const idiomas = idiomasDelUsuario({
     cookie: almacen.get(COOKIE_HABLO)?.value,
     acceptLanguage: cabeceras.get("accept-language"),
@@ -97,7 +99,7 @@ export async function ListadoOfertas({ searchParams }: { searchParams: PageProps
           <ul className="flex flex-col gap-3">
             {resultado.ofertas.map((oferta) => (
               <li key={oferta.id}>
-                <FilaOferta oferta={oferta} ahora={ahora} />
+                <FilaOferta oferta={oferta} ahora={ahora} menu={{ conSesion }} />
               </li>
             ))}
           </ul>
