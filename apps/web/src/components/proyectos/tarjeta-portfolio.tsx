@@ -91,10 +91,12 @@ export function TarjetaPortfolio({
           href={p.url}
           target="_blank"
           rel="noopener noreferrer nofollow"
-          className="inline-flex items-center gap-1.5 self-start font-bold text-enlace hover:underline"
+          className="inline-flex max-w-full items-center gap-1.5 self-start font-bold text-enlace hover:underline"
         >
-          {p.dominio}
+          {/* Un dominio largo se corta con "…" en vez de ensanchar la tarjeta (en el móvil se salía). */}
+          <span className="truncate">{p.dominio}</span>
           <svg
+            className="shrink-0"
             aria-hidden="true"
             width="14"
             height="14"

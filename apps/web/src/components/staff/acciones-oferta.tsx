@@ -69,7 +69,7 @@ export function AccionesOferta({ oferta, accion, editadaHace = null }: Props) {
       <p className="text-xl font-bold">{oferta.estado === "pendiente" ? t("acciones.revisar") : t("acciones.volverAPublicar")}</p>
       <form action={enviar} className="flex flex-col gap-4" aria-busy={enviando}>
         <fieldset className="flex flex-col gap-1">
-          <legend className="mb-1 text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("acciones.antesDePublicar")}</legend>
+          <legend className="mb-1 text-xs font-bold uppercase tracking-[0.12em] text-ink/80">{t("acciones.antesDePublicar")}</legend>
           {COMPROBACIONES.map((c) => (
             <Casilla
               key={c}

@@ -1,4 +1,4 @@
-import { fotoElegida, type Cuenta } from "@techtojob/shared";
+import { FORMAS_DE_ENTRAR, fotoElegida, type Cuenta, type FormaDeEntrar } from "@techtojob/shared";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "../db/cliente";
 import { cuentas, emblemas, estadoDiscord, megustaPortfolios, megustaProyectos, ofertas, portfolios, perfiles, proyectos, recruiters, reportes, reportesPerfil, sesiones, usuarios } from "../db/esquema";
@@ -14,7 +14,7 @@ type Usuario = { id: string; name: string; email: string; image?: string | null 
 export async function datosCuenta(
   db: Db,
   usuario: Usuario,
-  opciones: { discordDisponible: boolean; invitacion: string | null; esStaff: boolean },
+  opciones: { discordDisponible: boolean; invitacion: string | null; esStaff: boolean; formasDeEntrar: FormaDeEntrar[] },
 ): Promise<Cuenta> {
   const [vinculadas, [estado], [perfil], recruiter] = await Promise.all([
     db.select({ id: cuentas.id, proveedor: cuentas.providerId, idExterno: cuentas.accountId }).from(cuentas).where(eq(cuentas.userId, usuario.id)),
@@ -39,6 +39,10 @@ export async function datosCuenta(
     },
     esStaff: opciones.esStaff,
     proveedores: vinculadas.map((c) => c.proveedor),
+    // Siempre en el mismo orden (Google, GitHub): las configuradas aquí y las que ya tenga vinculadas.
+    formasDeEntrar: FORMAS_DE_ENTRAR.filter((p) => opciones.formasDeEntrar.includes(p) || vinculadas.some((c) => c.proveedor === p)).map(
+      (proveedor) => ({ proveedor, cuentaId: vinculadas.find((c) => c.proveedor === proveedor)?.id ?? null }),
+    ),
     ubicacion: ubicacion?.pais ? { pais: ubicacion.pais, region: ubicacion.region } : null,
     pais: ubicacion?.pais ?? perfil?.pais ?? null,
     recruiter,

@@ -165,7 +165,6 @@
     "miCuenta": "My account",
     "titulo": "My account",
     "formasDeEntrar": "How you log in",
-    "mismoEmail": "If you log in with Google and GitHub using the same email, it's the same account.",
     "cerrarSesion": "Log out",
     "discord": {
       "noDisponible": "Linking Discord isn't available yet.",
@@ -215,7 +214,25 @@
     },
     "dondeVives": "Where you live",
     "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here.",
-    "misProyectos": "My projects"
+    "misProyectos": "My projects",
+    "formas": {
+      "vinculada": "Linked",
+      "sinVincular": "Not linked",
+      "vincular": "Link {proveedor}",
+      "quitar": "Remove {proveedor}",
+      "vinculadaOk": "Done: {proveedor} linked. You can now log in with it.",
+      "quitadaOk": "{proveedor} removed. You can no longer log in with it.",
+      "ayudaUna": "Link the other one too and you can log in with either, even if they use different emails.",
+      "ayudaDos": "You can log in with either one: it is the same account.",
+      "errorVincular": "Could not link {proveedor}. Please try again.",
+      "errorDemasiados": "Too many attempts in a row. Wait a minute and try again.",
+      "errorCancelado": "You cancelled linking {proveedor}.",
+      "errorDeOtraCuenta": "That {proveedor} account already belongs to another TechToJob account. If it is also yours, log in with it, delete that account from My account and link it here again.",
+      "errorEmailSinVerificar": "{proveedor} has not confirmed your email. Verify it there and try again.",
+      "errorUltima": "It is your only way to log in: link another one before removing {proveedor}.",
+      "errorSesionAntigua": "For security, to remove {proveedor} you must have logged in less than a day ago. Log out, log in again and try once more.",
+      "errorQuitar": "Could not remove {proveedor}. Please try again."
+    }
   },
   "entrar": {
     "titulo": "Log in to TechToJob",
@@ -233,7 +250,8 @@
     "privacidadTitulo": "Only what's needed",
     "avisoPrivacidad": "By logging in you agree that we store your name, email and photo for your account. More in <enlace>Privacy</enlace>.",
     "demasiadosIntentos": "Too many attempts in a row. Wait a minute and try again.",
-    "errorEntrar": "We couldn't start the login. Try again."
+    "errorEntrar": "We couldn't start the login. Try again.",
+    "yaTienesCuenta": "Logged in before? Use the same one as the first time and, if you also want to log in with the other, link it in My account, so you do not end up with two accounts."
   },
   "navegacion": {
     "empleo": "Jobs",
@@ -244,8 +262,7 @@
     "talento": "Talent",
     "principal": "Job board menu",
     "abrir": "Open menu",
-    "proyectos": "Projects",
-    "discord": "Discord"
+    "proyectos": "Projects"
   },
   "pie": {
     "lema": "The TechToJob community job board: tech job offers reviewed by the staff.",

@@ -137,11 +137,11 @@ export async function ListadoProyectos({ searchParams }: { searchParams: PagePro
             {r.elementos.map((e, i) => {
               const puesto = conRanking && r.pagina === 1 && (e.p.megustaPeriodo ?? 0) > 0 ? i + 1 : undefined;
               return e.tipo === "portfolio" ? (
-                <li key={e.p.alias}>
+                <li key={e.p.alias} className="min-w-0">
                   <TarjetaPortfolio portfolio={e.p} conSesion={conSesion} periodo={periodo} puesto={puesto} />
                 </li>
               ) : (
-                <li key={e.p.id}>
+                <li key={e.p.id} className="min-w-0">
                   <TarjetaProyecto proyecto={e.p} conSesion={conSesion} periodo={periodo} puesto={puesto} />
                 </li>
               );

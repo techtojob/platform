@@ -4,6 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { crearApp } from "../src/app";
 import { guardiaDiscord, opcionesAuth } from "../src/auth";
 import type { Db } from "../src/db/cliente";
+import { eq } from "drizzle-orm";
 import { cuentas } from "../src/db/esquema";
 import { consultarDiscord } from "../src/servicios/discord";
 import { crearDbPrueba } from "./db";
@@ -150,5 +151,89 @@ describe("unir cuentas", () => {
   it("Google y GitHub solo unen cuentas con el email verificado; Discord (solo para vincular) va sin email", () => {
     const opciones = opcionesAuth(db, env);
     expect(opciones.account.accountLinking.trustedProviders).toEqual(["discord"]);
+  });
+});
+
+describe("formas de entrar: vincular GitHub o Google sin salir", () => {
+  const envAmbas = {
+    ...(env as object),
+    GITHUB_CLIENT_ID: "id-github",
+    GITHUB_CLIENT_SECRET: "secreto",
+    GOOGLE_CLIENT_ID: "id-google",
+    GOOGLE_CLIENT_SECRET: "secreto",
+  } as never;
+  let cabecerasMarta: Headers;
+  let idMarta: string;
+
+  beforeAll(async () => {
+    const auth = betterAuth({ ...opcionesAuth(db, envAmbas), user: {}, plugins: [testUtils()] });
+    const pruebas = (await auth.$context).test;
+    const marta = await pruebas.saveUser(pruebas.createUser({ email: "marta.vincula@example.com", name: "Marta" }));
+    idMarta = marta.id;
+    // Entró con Google y tiene Discord vinculado.
+    await db.insert(cuentas).values([
+      { id: "cta-google-marta", accountId: "g-111", providerId: "google", userId: idMarta },
+      { id: "cta-discord-marta", accountId: "d-222", providerId: "discord", userId: idMarta },
+    ]);
+    cabecerasMarta = (await pruebas.login({ userId: idMarta })).headers;
+  });
+
+  const conMarta = (ruta: string, init: RequestInit = {}) =>
+    crearApp({ db }).request(
+      ruta,
+      { ...init, headers: { ...Object.fromEntries(cabecerasMarta), "content-type": "application/json", origin: "http://localhost:3000" } },
+      envAmbas,
+    );
+  const quitar = (accountId: string) => conMarta("/api/auth/unlink-account", { method: "POST", body: JSON.stringify({ accountId }) });
+  const tiene = async (id: string) => (await db.select().from(cuentas).where(eq(cuentas.id, id))).length === 1;
+
+  it("Mi cuenta enseña Google (vinculado) y GitHub (por vincular), siempre en ese orden", async () => {
+    const cuenta = (await (await conMarta("/cuenta")).json()) as { formasDeEntrar: unknown };
+    expect(cuenta.formasDeEntrar).toEqual([
+      { proveedor: "google", cuentaId: "cta-google-marta" },
+      { proveedor: "github", cuentaId: null },
+    ]);
+  });
+
+  it("sin GitHub configurado, no se ofrece (pero lo que ya tiene vinculado sí sale)", async () => {
+    const res = await crearApp({ db }).request("/cuenta", { headers: cabecerasMarta }, env);
+    expect(((await res.json()) as { formasDeEntrar: unknown }).formasDeEntrar).toEqual([{ proveedor: "google", cuentaId: "cta-google-marta" }]);
+  });
+
+  it("con sesión, vincular GitHub lleva a github.com (y vuelve a Mi cuenta)", async () => {
+    const res = await conMarta("/api/auth/link-social", {
+      method: "POST",
+      body: JSON.stringify({ provider: "github", callbackURL: "/empleo/cuenta/ajustes?vinculada=github", errorCallbackURL: "/empleo/cuenta/ajustes" }),
+    });
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { url: string }).url).toMatch(/^https:\/\/github\.com\/login\/oauth\/authorize\?.*state=/);
+  });
+
+  it("sin sesión no se puede vincular", async () => {
+    const res = await crearApp({ db }).request(
+      "/api/auth/link-social",
+      { method: "POST", headers: { "content-type": "application/json", origin: "http://localhost:3000" }, body: JSON.stringify({ provider: "github", callbackURL: "/empleo" }) },
+      envAmbas,
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it("no deja quitar la única forma de entrar, aunque tenga Discord vinculado", async () => {
+    const res = await quitar("cta-google-marta");
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { code: string }).code).toBe("ultima_forma_de_entrar");
+    expect(await tiene("cta-google-marta")).toBe(true);
+  });
+
+  it("con Google y GitHub, sí deja quitar una (y después ya no la otra)", async () => {
+    await db.insert(cuentas).values({ id: "cta-github-marta", accountId: "gh-333", providerId: "github", userId: idMarta });
+    expect((await quitar("cta-github-marta")).status).toBe(200);
+    expect(await tiene("cta-github-marta")).toBe(false);
+    expect((await quitar("cta-google-marta")).status).toBe(400);
+  });
+
+  it("desvincular Discord sigue funcionando", async () => {
+    expect((await quitar("cta-discord-marta")).status).toBe(200);
+    expect(await tiene("cta-discord-marta")).toBe(false);
   });
 });

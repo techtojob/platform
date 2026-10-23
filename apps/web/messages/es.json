@@ -165,7 +165,6 @@
     "miCuenta": "Mi cuenta",
     "titulo": "Mi cuenta",
     "formasDeEntrar": "Cómo entras",
-    "mismoEmail": "Si entras con Google y con GitHub usando el mismo email, es la misma cuenta.",
     "cerrarSesion": "Cerrar sesión",
     "discord": {
       "noDisponible": "Vincular Discord aún no está disponible.",
@@ -215,7 +214,25 @@
     },
     "dondeVives": "Dónde vives",
     "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí.",
-    "misProyectos": "Mis proyectos"
+    "misProyectos": "Mis proyectos",
+    "formas": {
+      "vinculada": "Vinculada",
+      "sinVincular": "Sin vincular",
+      "vincular": "Vincular {proveedor}",
+      "quitar": "Quitar {proveedor}",
+      "vinculadaOk": "Listo: {proveedor} vinculado. Ya puedes entrar con él.",
+      "quitadaOk": "{proveedor} quitado. Ya no puedes entrar con él.",
+      "ayudaUna": "Vincula también la otra y podrás entrar con cualquiera de las dos, aunque usen emails distintos.",
+      "ayudaDos": "Puedes entrar con cualquiera de las dos: es la misma cuenta.",
+      "errorVincular": "No se ha podido vincular {proveedor}. Inténtalo de nuevo.",
+      "errorDemasiados": "Demasiados intentos seguidos. Espera un minuto y vuelve a probar.",
+      "errorCancelado": "Has cancelado la vinculación con {proveedor}.",
+      "errorDeOtraCuenta": "Esa cuenta de {proveedor} ya está en otra cuenta de TechToJob. Si también es tuya, entra con ella, bórrala desde Mi cuenta y vuelve a vincularla aquí.",
+      "errorEmailSinVerificar": "{proveedor} no ha confirmado tu email. Verifícalo allí y vuelve a probar.",
+      "errorUltima": "Es tu única forma de entrar: vincula otra antes de quitar {proveedor}.",
+      "errorSesionAntigua": "Por seguridad, para quitar {proveedor} tienes que haber entrado hace menos de un día. Cierra sesión, vuelve a entrar y pruébalo otra vez.",
+      "errorQuitar": "No se ha podido quitar {proveedor}. Inténtalo de nuevo."
+    }
   },
   "entrar": {
     "titulo": "Entra en TechToJob",
@@ -233,7 +250,8 @@
     "privacidadTitulo": "Solo lo justo",
     "avisoPrivacidad": "Al entrar aceptas que guardemos tu nombre, email y foto para tu cuenta. Más en <enlace>Privacidad</enlace>.",
     "demasiadosIntentos": "Demasiados intentos seguidos. Espera un minuto y vuelve a probar.",
-    "errorEntrar": "No se ha podido empezar a entrar. Inténtalo de nuevo."
+    "errorEntrar": "No se ha podido empezar a entrar. Inténtalo de nuevo.",
+    "yaTienesCuenta": "¿Ya entraste antes? Usa el mismo que la primera vez y, si quieres entrar también con el otro, vincúlalo en Mi cuenta: así no tendrás dos cuentas."
   },
   "navegacion": {
     "empleo": "Empleo",
@@ -244,8 +262,7 @@
     "talento": "Talento",
     "principal": "Menú de la bolsa",
     "abrir": "Abrir menú",
-    "proyectos": "Proyectos",
-    "discord": "Discord"
+    "proyectos": "Proyectos"
   },
   "pie": {
     "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",

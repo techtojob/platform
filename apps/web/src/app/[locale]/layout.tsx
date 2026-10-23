@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { Cabecera } from "@/components/cabecera";
 import { Pie } from "@/components/sitio/pie";
 import { routing } from "@/i18n/routing";
+import { IMAGEN_COMPARTIR } from "@/lib/metadatos";
+import { LANDING_URL } from "@/lib/sitio";
 import "../globals.css";
 
 // Tipografías alojadas en el propio proyecto (paquetes @fontsource-variable/…):
@@ -27,7 +29,14 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("titulo"), description: t("descripcion") };
+  // Por defecto (las páginas públicas ponen además su canonical y sus idiomas: ver lib/metadatos.ts).
+  return {
+    metadataBase: new URL(LANDING_URL),
+    title: t("titulo"),
+    description: t("descripcion"),
+    openGraph: { siteName: "TechToJob", title: t("titulo"), description: t("descripcion"), images: [IMAGEN_COMPARTIR] },
+    twitter: { card: "summary_large_image", title: t("titulo"), description: t("descripcion"), images: [IMAGEN_COMPARTIR.url] },
+  };
 }
 
 export default async function LayoutIdioma({ children, params }: LayoutProps<"/[locale]">) {

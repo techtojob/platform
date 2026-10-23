@@ -76,6 +76,11 @@ export type ResultadoOfertas = {
 /** Respuesta de error de cualquier ruta. */
 export type ErrorApi = { error: { codigo: string; mensaje: string } };
 
+/** Con qué se puede entrar en TechToJob. Discord no: solo se vincula, para saber si es de la comunidad. */
+export const FORMAS_DE_ENTRAR = ["google", "github"] as const;
+export type FormaDeEntrar = (typeof FORMAS_DE_ENTRAR)[number];
+export const esFormaDeEntrar = (proveedor: string): proveedor is FormaDeEntrar => (FORMAS_DE_ENTRAR as readonly string[]).includes(proveedor);
+
 /** Respuesta de GET /cuenta: quién ha iniciado sesión y su Discord. 401 si nadie. */
 export type Cuenta = {
   usuario: { id: string; nombre: string; email: string; imagen: string | null };
@@ -83,6 +88,11 @@ export type Cuenta = {
   esStaff: boolean;
   /** Con qué puede entrar o qué tiene vinculado: "google", "github", "discord". */
   proveedores: string[];
+  /**
+   * Google y GitHub (los que estén configurados aquí): si los tiene vinculados, con el id para
+   * quitarlos. Desde Mi cuenta se puede vincular el que falte sin salir de la sesión.
+   */
+  formasDeEntrar: Array<{ proveedor: FormaDeEntrar; cuentaId: string | null }>;
   /**
    * Dónde vive (lo pide al completar la cuenta): país (ISO) y región (comunidad autónoma, estado…;
    * null si su país no la pide). null si aún no lo ha puesto: la web le pide que lo ponga.

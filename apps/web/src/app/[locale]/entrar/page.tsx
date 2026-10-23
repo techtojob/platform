@@ -75,6 +75,8 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/entrar">, "
         volverA={getPathname({ href: destino, locale: locale as Locale })}
         siFalla={getPathname({ href: "/entrar", locale: locale as Locale })}
       />
+      {/* Para no acabar con dos cuentas: se entra con la de siempre y la otra se vincula. */}
+      <p className="text-sm text-suave">{t("yaTienesCuenta")}</p>
       <p className="text-sm text-suave lg:hidden">{t("privacidad")}</p>
       <p className="max-w-md text-sm text-suave">
         {t.rich("avisoPrivacidad", { enlace: (texto) => <Link href="/privacidad" className="font-bold text-enlace underline">{texto}</Link> })}

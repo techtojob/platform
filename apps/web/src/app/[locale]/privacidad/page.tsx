@@ -6,12 +6,13 @@ import { Portada } from "@/components/sitio/portada";
 import { Aviso, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { metadatos } from "@/lib/metadatos";
 import { LANDING_URL, sitio } from "@/lib/sitio";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/privacidad">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale: locale as Locale, namespace: "privacidad" });
-  return { title: `${t("titulo")} – TechToJob`, description: t("entradilla") };
+  const locale = (await params).locale as Locale;
+  const t = await getTranslations({ locale, namespace: "privacidad" });
+  return metadatos({ titulo: `${t("titulo")} – TechToJob`, descripcion: t("entradilla"), href: "/privacidad", locale });
 }
 
 /**
