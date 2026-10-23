@@ -15,11 +15,19 @@ const REDES: ReadonlyArray<{ red: RedSocial; nombre: string; href: string }> = [
 // El año se calcula al cargar el archivo, no en cada visita.
 const ANO = new Date().getFullYear();
 
+/** Páginas de la landing (solo en español: la landing solo tiene español). */
+const DE_LA_LANDING = [
+  { clave: "torneos", ruta: "/torneos" },
+  { clave: "noticias", ruta: "/noticias" },
+  { clave: "empresas", ruta: "/empresas" },
+  { clave: "quienesSomos", ruta: "/quienes-somos" },
+] as const;
+
 const enlace = "enlace-subrayado inline-flex min-h-11 items-center text-sm font-bold text-texto/85 transition-colors hover:text-enlace";
 
 /**
- * Pie de la bolsa, con el aspecto del de la landing. Solo lleva a la portada de la landing
- * (no a sus secciones), al Discord, a las redes y a las páginas legales.
+ * Pie de la bolsa, con el aspecto del de la landing. Lleva a la bolsa, a las páginas de la landing
+ * (que no están en el menú), al Discord, a las redes y a las páginas legales.
  */
 export async function Pie() {
   const t = await getTranslations("pie");
@@ -69,6 +77,13 @@ export async function Pie() {
                     {t("irALanding")}
                   </a>
                 </li>
+                {DE_LA_LANDING.map(({ clave, ruta }) => (
+                  <li key={clave}>
+                    <a href={`${LANDING_URL}${ruta}`} className={enlace}>
+                      {t(clave)}
+                    </a>
+                  </li>
+                ))}
                 <li>
                   <a href={sitio.discord} className={enlace}>
                     {t("discord")}
