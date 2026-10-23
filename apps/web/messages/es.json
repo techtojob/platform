@@ -214,7 +214,7 @@
     },
     "dondeVives": "Dónde vives",
     "dondeVivesAyuda": "Con esto te enseñamos por defecto las ofertas que puedes hacer desde tu país. En el listado de ofertas puedes mirar las de otro sin cambiarlo aquí.",
-    "misProyectos": "Mis proyectos",
+    "misProyectos": "Portfolio y proyectos",
     "formas": {
       "vinculada": "Vinculada",
       "sinVincular": "Sin vincular",
@@ -337,7 +337,7 @@
     "portadaTitulo": "Lo que construye la <resaltado>comunidad</resaltado>",
     "entradilla": "Proyectos y portfolios de la gente de TechToJob: repositorios, demos y webs personales. Dale me gusta a los que te gusten.",
     "postitTitulo": "¿Has hecho algo chulo?",
-    "postitTexto": "Sube tu proyecto del mes y tu portfolio: salen aquí y en tu perfil, y quien busca talento los ve. Cada mes destacamos los que más gustan.",
+    "postitTexto": "Sube un proyecto al mes y pon tu portfolio (tu web personal). Salen aquí y en tu perfil, y quien busca talento los ve.",
     "subir": "Subir un proyecto",
     "error": "No se han podido cargar los proyectos. Inténtalo en un momento.",
     "tituloSeccion": "{count, plural, =0 {Ningún proyecto} one {# proyecto} other {# proyectos}}",
@@ -404,7 +404,9 @@
       "titulo": "Qué ver",
       "proyectos": "Proyectos",
       "portfolios": "Portfolios"
-    }
+    },
+    "ponerPortfolio": "Poner mi portfolio",
+    "cambiarPortfolio": "Cambiar mi portfolio"
   },
   "portfolios": {
     "tituloSeccion": "{count, plural, =0 {Ningún portfolio} one {# portfolio} other {# portfolios}}",
@@ -428,7 +430,9 @@
       "sinVerificar": "Para dar me gusta tienes que estar verificado: vincula tu Discord y entra en el servidor.",
       "verificar": "Verificarme",
       "limite": "Has dado muchos me gusta seguidos. Espera un rato."
-    }
+    },
+    "queEsTitulo": "Tu portfolio: tu web personal",
+    "queEsTexto": "Uno por persona y lo cambias cuando quieras. Sale aquí y en tu perfil, y puedes pedir que lo revisemos en directo los viernes en «Tu portfolio a juicio»."
   },
   "staff": {
     "titulo": "Panel de staff",
@@ -1299,8 +1303,8 @@
     "copiando": "Copiando…"
   },
   "misProyectos": {
-    "titulo": "Mis proyectos",
-    "entradilla": "Tu portfolio y tus proyectos salen en Proyectos y en tu perfil. Puedes subir un proyecto al mes: sube el mejor.",
+    "titulo": "Mi portfolio y mis proyectos",
+    "entradilla": "Tu portfolio (tu web personal) y tus proyectos salen en Proyectos y en tu perfil. Un proyecto al mes: sube el mejor.",
     "nuevo": "Subir un proyecto",
     "nuevoEntradilla": "Cuenta qué es, con qué lo has hecho y dónde verlo. Con el repositorio de GitHub, la portada sale sola.",
     "editarTitulo": "Editar el proyecto",
@@ -1318,9 +1322,9 @@
     "vacio": "Todavía no has subido ningún proyecto.",
     "vacioTexto": "Puede ser cualquier cosa: una web, un análisis de datos, un bot, un script que te ahorra tiempo… Si está en GitHub, mejor.",
     "antes": {
-      "titulo": "Antes de subir proyectos",
-      "verificar": "Para subir proyectos hace falta tener perfil de talento, y para el perfil, estar verificado: vincula tu Discord y únete al servidor de TechToJob.",
-      "perfil": "Los proyectos salen en tu perfil de talento, así que antes crea el tuyo. Son unos minutos.",
+      "titulo": "Antes de poner tu portfolio o subir proyectos",
+      "verificar": "Para poner tu portfolio o subir proyectos hace falta tener perfil de talento, y para el perfil, estar verificado: vincula tu Discord y únete al servidor de TechToJob.",
+      "perfil": "Tu portfolio y tus proyectos salen en tu perfil de talento, así que antes crea el tuyo. Son unos minutos.",
       "botonVerificar": "Ir a Mi cuenta",
       "botonPerfil": "Crear mi perfil"
     },

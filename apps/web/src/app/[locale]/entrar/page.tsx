@@ -13,9 +13,10 @@ import { obtenerCuenta } from "@/lib/api";
 export const metadata: Metadata = { robots: { index: false } };
 
 /** ?volver=… → a dónde ir después de entrar. */
-const VOLVER: Record<string, "/cuenta/ofertas" | "/cuenta/ofertas/nueva"> = {
+const VOLVER: Record<string, "/cuenta/ofertas" | "/cuenta/ofertas/nueva" | "/cuenta/proyectos"> = {
   ofertas: "/cuenta/ofertas",
   publicar: "/cuenta/ofertas/nueva",
+  proyectos: "/cuenta/proyectos",
 };
 
 /** Errores que puede devolver el inicio de sesión (?error=…) y su texto. */

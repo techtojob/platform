@@ -72,7 +72,8 @@ async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/proy
           <p className="font-bold">{subido === "1" ? t("subido") : t("guardado")}</p>
         </Aviso>
       )}
-      <Tarjeta className="flex flex-col gap-4 p-5 sm:p-7">
+      {/* #portfolio: "Poner mi portfolio" (en Proyectos) lleva aquí. */}
+      <Tarjeta id="portfolio" className="flex scroll-mt-28 flex-col gap-4 p-5 sm:p-7">
         <div className="flex flex-col gap-1">
           <h2 className="text-titulo-3 font-bold">{t("portfolio.titulo")}</h2>
           <p className="text-sm text-suave">{t("portfolio.entradilla")}</p>

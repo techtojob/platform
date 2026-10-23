@@ -8,7 +8,7 @@ import { Portada, Resaltado } from "@/components/sitio/portada";
 import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { obtenerCuenta } from "@/lib/api";
+import { miPortfolioEnApi, obtenerCuenta } from "@/lib/api";
 import { metadatos } from "@/lib/metadatos";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/proyectos">): Promise<Metadata> {
@@ -31,10 +31,17 @@ export default function PaginaProyectos({ params, searchParams }: PageProps<"/[l
         entradilla={t("proyectos.entradilla")}
         lado={
           <Suspense fallback={null}>
-            <PostitSubir />
+            <PostitSubir searchParams={searchParams} />
           </Suspense>
         }
-      />
+      >
+        {/* En el móvil no se ve el post-it: los mismos botones, debajo del título. */}
+        <div className="mt-6 lg:hidden">
+          <Suspense fallback={null}>
+            <BotonesSubir searchParams={searchParams} />
+          </Suspense>
+        </div>
+      </Portada>
 
       <section className="rejilla flex-1 px-[var(--margen)] py-10 sm:py-14">
         <div className="mx-auto max-w-[80rem]">
@@ -47,17 +54,50 @@ export default function PaginaProyectos({ params, searchParams }: PageProps<"/[l
   );
 }
 
-/** El post-it de la portada: sube tu proyecto. */
-async function PostitSubir() {
-  const [t, cabeceras] = await Promise.all([getTranslations("proyectos"), headers()]);
-  const cuenta = await obtenerCuenta(cabeceras.get("cookie")).catch(() => null);
+type Busqueda = PageProps<"/[locale]/proyectos">["searchParams"];
+
+/**
+ * A dónde llevan "Subir un proyecto" y "Poner mi portfolio" (los dos viven en Mis proyectos).
+ * Sin sesión, a entrar y de vuelta a Mis proyectos. En la vista de portfolios, el portfolio va primero.
+ */
+async function destinos(searchParams: Busqueda) {
+  const [cabeceras, { ver }] = await Promise.all([headers(), searchParams]);
+  const cookie = cabeceras.get("cookie");
+  const cuenta = await obtenerCuenta(cookie).catch(() => null);
+  const portfolio = cuenta && cookie ? await miPortfolioEnApi(cookie).catch(() => null) : null;
+  return {
+    verPortfolios: ver === "portfolios",
+    tienePortfolio: !!portfolio,
+    proyecto: cuenta ? ("/cuenta/proyectos/nuevo" as const) : { pathname: "/entrar" as const, query: { volver: "proyectos" } },
+    portfolio: cuenta ? { pathname: "/cuenta/proyectos" as const, hash: "portfolio" } : { pathname: "/entrar" as const, query: { volver: "proyectos" } },
+  };
+}
+
+async function BotonesSubir({ searchParams, sobrePostit = false }: { searchParams: Busqueda; sobrePostit?: boolean }) {
+  const [t, d] = await Promise.all([getTranslations("proyectos"), destinos(searchParams)]);
+  const proyecto = (
+    <Link key="proyecto" href={d.proyecto} className={clasesBoton({ variante: sobrePostit ? (d.verPortfolios ? "sobreAcento" : "sobrePostit") : d.verPortfolios ? "secundario" : "primario" })}>
+      {t("subir")}
+    </Link>
+  );
+  const portfolio = (
+    <Link key="portfolio" href={d.portfolio} className={clasesBoton({ variante: sobrePostit ? (d.verPortfolios ? "sobrePostit" : "sobreAcento") : d.verPortfolios ? "primario" : "secundario" })}>
+      {d.tienePortfolio ? t("cambiarPortfolio") : t("ponerPortfolio")}
+    </Link>
+  );
+  return <div className="flex flex-wrap gap-2">{d.verPortfolios ? [portfolio, proyecto] : [proyecto, portfolio]}</div>;
+}
+
+/** El post-it de la portada: sube tu proyecto o pon tu portfolio. */
+async function PostitSubir({ searchParams }: { searchParams: Busqueda }) {
+  const t = await getTranslations("proyectos");
   return (
-    <Aviso giro="rotate-[2deg]" className="w-[21rem] p-7">
+    <Aviso giro="rotate-[2deg]" className="w-[22rem] p-7">
       <p className="text-xl font-bold leading-tight tracking-tight">{t("postitTitulo")}</p>
       <p className="mt-2 text-sm leading-relaxed text-ink/80">{t("postitTexto")}</p>
-      <Link href={cuenta ? "/cuenta/proyectos/nuevo" : "/entrar"} className={clasesBoton({ variante: "sobrePostit", className: "mt-5" })}>
-        {t("subir")}
-      </Link>
+      <div className="mt-5">
+        <BotonesSubir searchParams={searchParams} sobrePostit />
+      </div>
     </Aviso>
   );
 }

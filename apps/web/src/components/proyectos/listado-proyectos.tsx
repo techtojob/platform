@@ -115,6 +115,19 @@ export async function ListadoProyectos({ searchParams }: { searchParams: PagePro
           </ul>
         )}
 
+        {/* Portfolios: qué es y cómo poner el tuyo (que no se quede escondido en Mis proyectos). */}
+        {verPortfolios && (
+          <div className="flex flex-col gap-3 rounded-tarjeta border border-acento/50 bg-tarjeta p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <p className="font-bold">{t("portfolios.queEsTitulo")}</p>
+              <p className="text-sm text-suave">{t("portfolios.queEsTexto")}</p>
+            </div>
+            <Link href={conSesion ? { pathname: "/cuenta/proyectos", hash: "portfolio" } : { pathname: "/entrar", query: { volver: "proyectos" } }} className={clasesBoton({ className: "shrink-0" })}>
+              {t("proyectos.ponerPortfolio")}
+            </Link>
+          </div>
+        )}
+
         {r.elementos.length === 0 ? (
           <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta">
             <p className="font-bold">
