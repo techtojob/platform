@@ -4,7 +4,7 @@ import { Portada } from "@/components/sitio/portada";
 import { IconoRed, type RedSocial } from "@/components/sitio/icono-red";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { jsonSeguro } from "@/lib/datos-google";
+import { ID_ORGANIZACION, jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL, sitio } from "@/lib/sitio";
 
 /**
@@ -107,6 +107,7 @@ export function FichaOficial() {
   const organizacion = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": ID_ORGANIZACION,
     name: "TechToJob",
     url: LANDING_URL,
     logo: `${LANDING_URL}/images/brand-mark-512.png`,

@@ -14,7 +14,7 @@ import { metadatos } from "@/lib/metadatos";
 export async function generateMetadata({ params }: PageProps<"/[locale]/talento">): Promise<Metadata> {
   const locale = (await params).locale as Locale;
   const t = await getTranslations({ locale, namespace: "talento" });
-  return metadatos({ titulo: `${t("titulo")} – TechToJob`, descripcion: t("entradilla"), href: "/talento", locale });
+  return metadatos({ titulo: t("metaTitulo"), descripcion: t("entradilla"), href: "/talento", locale });
 }
 
 /** Talento: perfiles de la comunidad, con buscador y filtros. */

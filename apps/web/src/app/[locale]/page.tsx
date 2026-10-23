@@ -12,8 +12,8 @@ import { metadatos } from "@/lib/metadatos";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const locale = (await params).locale as Locale;
-  const t = await getTranslations({ locale, namespace: "metadata" });
-  return metadatos({ titulo: t("titulo"), descripcion: t("descripcion"), href: "/", locale });
+  const t = await getTranslations({ locale, namespace: "ofertas" });
+  return metadatos({ titulo: t("metaTitulo"), descripcion: t("metaDescripcionListado"), href: "/", locale });
 }
 
 /** Inicio de la bolsa: portada con el buscador y, debajo, el listado de ofertas. */

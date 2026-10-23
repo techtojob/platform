@@ -38,7 +38,7 @@ export function AvatarPerfil({
       {imagen ? (
         // Fotos de Google y GitHub: tal cual, sin el optimizador de imágenes.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imagen} alt="" referrerPolicy="no-referrer" width={dentro} height={dentro} className="rounded-full object-cover" style={{ width: dentro, height: dentro }} />
+        <img src={imagen} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" width={dentro} height={dentro} className="rounded-full object-cover" style={{ width: dentro, height: dentro }} />
       ) : (
         <AvatarBlob nombre={nombre} tamano={dentro} />
       )}

@@ -11,7 +11,7 @@ describe("fotos de Google y GitHub", () => {
     expect(fotoDelIdToken(jwt({ picture: "javascript:alert(1)" }))).toBeNull();
     expect(fotoDelIdToken("no-es-un-jwt")).toBeNull();
     expect(fotoDelIdToken(null)).toBeNull();
-    expect(fotoGithub("12345")).toBe("https://avatars.githubusercontent.com/u/12345?v=4");
+    expect(fotoGithub("12345")).toBe("https://avatars.githubusercontent.com/u/12345?v=4&s=192");
   });
 
   it("se enseña la elegida; si esa cuenta no está, ninguna", () => {

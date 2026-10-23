@@ -6,6 +6,10 @@
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
+  // El API habla mucho con la base de datos (Neon, en Frankfurt): Cloudflare lo ejecuta cerca de
+  // ella en vez de cerca de cada visitante. Una sola ida y vuelta lejana (web → API) en vez de
+  // una por consulta: mucho más rápido desde Latinoamérica.
+  "placement": { "mode": "smart" },
   "vars": {
     // Webs que pueden llamar al API desde el navegador (CORS), separadas por comas.
     "ORIGENES_PERMITIDOS": "https://techtojob.com,http://localhost:3000",
@@ -23,6 +27,7 @@
   "env": {
     "production": {
       "name": "techtojob-api",
+      "placement": { "mode": "smart" },
       "routes": [
         // El API, para la web (desde el servidor) y para lo que venga después.
         { "pattern": "api.techtojob.com", "custom_domain": true },

@@ -14,7 +14,7 @@ import { metadatos } from "@/lib/metadatos";
 export async function generateMetadata({ params }: PageProps<"/[locale]/proyectos">): Promise<Metadata> {
   const locale = (await params).locale as Locale;
   const t = await getTranslations({ locale, namespace: "proyectos" });
-  return metadatos({ titulo: `${t("titulo")} – TechToJob`, descripcion: t("entradilla"), href: "/proyectos", locale });
+  return metadatos({ titulo: t("metaTitulo"), descripcion: t("entradilla"), href: "/proyectos", locale });
 }
 
 /** Proyectos de la comunidad: lo que ha construido la gente, con me gusta y rankings. */

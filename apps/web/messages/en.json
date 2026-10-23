@@ -129,7 +129,11 @@
     "publicarLlamada": "Are you a recruiter? <enlace>Post your jobs for free</enlace>: we review each one before it goes live.",
     "responsabilidades": "Responsibilities",
     "requisitos": "Requirements",
-    "descripcionEmpresa": "The job, as written by the company"
+    "descripcionEmpresa": "The job, as written by the company",
+    "metaPuesto": "{titulo} at {empresa}",
+    "metaRevisada": "Tech job reviewed by the TechToJob staff.",
+    "metaTitulo": "Reviewed tech jobs – TechToJob",
+    "metaDescripcionListado": "Programming, data & AI, cybersecurity, DevOps and design jobs, remote or on-site. Every offer is reviewed by the staff: no ghost jobs."
   },
   "regiones": {
     "eu": "Europe",
@@ -330,7 +334,8 @@
     "subirProyecto": "Share your first project",
     "portfolioTitulo": "Portfolio",
     "cambiarPortfolio": "Change my portfolio",
-    "ponerPortfolio": "Add your portfolio"
+    "ponerPortfolio": "Add your portfolio",
+    "metaTitulo": "Tech talent profiles – TechToJob"
   },
   "proyectos": {
     "titulo": "Projects",
@@ -406,7 +411,8 @@
       "portfolios": "Portfolios"
     },
     "ponerPortfolio": "Add my portfolio",
-    "cambiarPortfolio": "Change my portfolio"
+    "cambiarPortfolio": "Change my portfolio",
+    "metaTitulo": "Community tech projects and portfolios – TechToJob"
   },
   "portfolios": {
     "tituloSeccion": "{count, plural, =0 {No portfolios} one {# portfolio} other {# portfolios}}",

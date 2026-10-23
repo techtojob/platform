@@ -22,7 +22,8 @@ export function fotoDelIdToken(idToken: string | null): string | null {
   }
 }
 
-export const fotoGithub = (accountId: string) => `https://avatars.githubusercontent.com/u/${encodeURIComponent(accountId)}?v=4`;
+// A 192 px (lo más grande que se enseña son 96 px, x2 para pantallas retina): GitHub la da a 460 si no se pide tamaño.
+export const fotoGithub = (accountId: string) => `https://avatars.githubusercontent.com/u/${encodeURIComponent(accountId)}?v=4&s=192`;
 
 export async function fotosDe(db: Db, userIds: string[]): Promise<Map<string, FotosCuenta>> {
   const r = new Map<string, FotosCuenta>(userIds.map((id) => [id, { google: null, github: null }]));

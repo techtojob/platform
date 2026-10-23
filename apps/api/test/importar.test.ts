@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Db } from "../src/db/cliente";
-import { buscarRepetida, htmlATexto, importarOferta, type Pedir } from "../src/servicios/importar";
+import { buscarRepetida, htmlATexto, importarOferta, leerHasta, type Pedir } from "../src/servicios/importar";
 import { crearDbPrueba } from "./db";
 
 let db: Db;
@@ -150,5 +150,24 @@ describe("htmlATexto", () => {
   it("convierte párrafos, listas y entidades", () => {
     expect(htmlATexto("<p>Hola &amp; adi&oacute;s</p><ul><li>Uno</li><li>Dos</li></ul>")).toBe("Hola & adiós\n\n• Uno\n• Dos");
     expect(htmlATexto("&lt;p&gt;Escapado&lt;/p&gt;")).toBe("Escapado");
+  });
+});
+
+describe("leer páginas de fuera", () => {
+  it("deja de leer al llegar al máximo (no carga entera una página enorme)", async () => {
+    let trozosPedidos = 0;
+    const enorme = new ReadableStream<Uint8Array>({
+      pull(controlador) {
+        trozosPedidos++;
+        controlador.enqueue(new TextEncoder().encode("a".repeat(1000)));
+      },
+    });
+    const texto = await leerHasta(new Response(enorme), 2500);
+    expect(texto.length).toBe(2500);
+    expect(trozosPedidos).toBeLessThan(10);
+  });
+
+  it("con una respuesta normal, la lee entera", async () => {
+    expect(await leerHasta(new Response("<html>ñandú</html>"), 1000)).toBe("<html>ñandú</html>");
   });
 });

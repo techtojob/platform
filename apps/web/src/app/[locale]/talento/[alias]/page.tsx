@@ -13,10 +13,12 @@ import { TarjetaPortfolio } from "@/components/proyectos/tarjeta-portfolio";
 import { TarjetaProyecto } from "@/components/proyectos/tarjeta-proyecto";
 import { Reportar } from "@/components/reportar/reportar";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import { obtenerPerfilPublico, tieneCookieDeSesion } from "@/lib/api";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
+import { jsonSeguro, paginaPerfil } from "@/lib/datos-google";
 import { metadatos } from "@/lib/metadatos";
+import { LANDING_URL } from "@/lib/sitio";
 import { ALIAS_OFICIAL, FichaOficial } from "@/components/talento/perfil-oficial";
 import type { Locale } from "@/i18n/routing";
 
@@ -36,8 +38,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
   }
   const cookie = (await headers()).get("cookie");
-  const perfil = await obtenerPerfilPublico(alias, cookie).catch(() => null);
-  if (!perfil || perfil === "solo_registrados") return { robots: { index: false } };
+  const perfil = await obtenerPerfilPublico(alias, cookie);
+  // 404 de verdad (antes de mandar la página). "Solo registrados" sí existe: sin índice.
+  if (!perfil) notFound();
+  if (perfil === "solo_registrados") return { robots: { index: false } };
   return {
     ...metadatos({
       titulo: `${perfil.nombre} · ${perfil.titular} – TechToJob`,
@@ -52,7 +56,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** Perfil de una persona de la comunidad: /empleo/talento/<alias>. */
-export default function PaginaPerfil({ params }: Props) {
+export default async function PaginaPerfil({ params }: Props) {
+  // Antes de empezar a mandar la página: 404 de verdad si no existe (ver la oferta).
+  const [{ alias }, cabeceras] = await Promise.all([params, headers()]);
+  if (alias !== ALIAS_OFICIAL && !(await obtenerPerfilPublico(alias, cabeceras.get("cookie")))) notFound();
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       <Suspense fallback={<div aria-busy="true" className="fondo-portada h-[30rem] animate-pulse" />}>
@@ -99,9 +106,14 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
       ["portfolio", t("talento.portfolio")],
     ] as const
   ).filter(([clave]) => perfil.enlaces[clave]);
+  const url = `${LANDING_URL}${getPathname({ href: { pathname: "/talento/[alias]", params: { alias: perfil.alias } }, locale: locale as Locale })}`;
 
   return (
     <>
+      {/* Para Google y los asistentes de IA, solo si el perfil es público. */}
+      {perfil.visibilidad === "publico" && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(paginaPerfil(perfil, url, nombresTec)) }} />
+      )}
       <Portada
         migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("talento.titulo"), href: "/talento" }, { texto: perfil.nombre }]}
         antesDelTitulo={<AvatarPerfil nombre={perfil.nombre} imagen={perfil.imagen} disponibilidad={perfil.disponibilidad} tamano={96} className="mb-2" />}
