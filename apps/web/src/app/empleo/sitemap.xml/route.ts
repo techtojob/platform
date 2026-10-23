@@ -34,6 +34,7 @@ export async function GET() {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
     entrada("/"),
     entrada("/talento"),
+    entrada({ pathname: "/talento/[alias]", params: { alias: "techtojob" } }),
     entrada("/proyectos"),
     entrada("/privacidad"),
     ...ofertas.map((o) => entrada({ pathname: "/ofertas/[slug]", params: { slug: o.ruta } }, o.actualizadaEn)),

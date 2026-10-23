@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { obtenerTalento, tieneCookieDeSesion } from "@/lib/api";
 import { aParametrosTalento, alternarTalento, cambiarTalento, cuantosFiltrosTalento, leerFiltrosTalento, PARAMETROS_TALENTO, SIN_FILTROS_TALENTO, type GrupoTalento } from "@/lib/filtros-talento";
 import { FiltrosTalento } from "./filtros-talento";
+import { TarjetaOficial } from "./perfil-oficial";
 import { TarjetaPerfil } from "./tarjeta-perfil";
 
 const nombresTec = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
@@ -69,6 +70,9 @@ export async function ListadoTalento({ searchParams }: { searchParams: PageProps
             ))}
           </ul>
         )}
+
+        {/* El perfil oficial de TechToJob, el primero (sin filtros ni búsqueda, en la primera página). */}
+        {!conFiltros && !filtros.despues && <TarjetaOficial />}
 
         {r.perfiles.length === 0 ? (
           <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta">

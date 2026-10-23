@@ -1556,5 +1556,37 @@
       "copiado": "¡Enlace copiado!",
       "reportar": "Reportar"
     }
+  },
+  "oficial": {
+    "sello": "Oficial",
+    "titular": "La comunidad tech donde tu trabajo habla",
+    "resumen": "Torneos, proyectos reales y empresas tech en español. Únete y que te conozcan antes de que salga la vacante.",
+    "unirme": "Únete al Discord",
+    "sobreTitulo": "Qué es TechToJob",
+    "sobre": [
+      "TechToJob es una comunidad tech en español que nació en agosto de 2026 para que conseguir trabajo no dependa de mandar CV que nadie lee.",
+      "Aquí demuestras lo que sabes: participas en torneos abiertos, subes tus proyectos, enseñas tu portfolio y conoces a empresas que buscan gente.",
+      "Todas las ofertas de la bolsa las revisa el staff antes de publicarlas: sin ofertas fantasma."
+    ],
+    "aquiTitulo": "Qué puedes hacer aquí",
+    "aqui": {
+      "ofertas": {
+        "titulo": "Buscar trabajo",
+        "texto": "Ofertas tech revisadas por el staff, que puedes hacer desde tu país."
+      },
+      "talento": {
+        "titulo": "Crear tu perfil",
+        "texto": "Que las empresas de la comunidad te encuentren por lo que sabes hacer."
+      },
+      "proyectos": {
+        "titulo": "Subir tu proyecto",
+        "texto": "Uno al mes. La comunidad le da me gusta y los mejores salen arriba."
+      }
+    },
+    "torneos": "Ver los torneos en techtojob.com",
+    "redesTitulo": "Síguenos",
+    "redesTexto": "Noticias, torneos, ofertas y lo que va pasando en la comunidad.",
+    "escribenosTitulo": "¿Eres una empresa o quieres colaborar?",
+    "escribenosTexto": "Escríbenos y te contamos cómo encontrar talento o patrocinar un torneo."
   }
 }

@@ -1556,5 +1556,37 @@
       "copiado": "Link copied!",
       "reportar": "Report"
     }
+  },
+  "oficial": {
+    "sello": "Official",
+    "titular": "The tech community where your work speaks for you",
+    "resumen": "Tournaments, real projects and tech companies, in Spanish. Join and get noticed before the job is posted.",
+    "unirme": "Join the Discord",
+    "sobreTitulo": "What is TechToJob",
+    "sobre": [
+      "TechToJob is a Spanish-speaking tech community born in August 2026 so that getting a job does not depend on sending CVs nobody reads.",
+      "Here you show what you can do: join open tournaments, share your projects, show your portfolio and meet companies looking for people.",
+      "Every offer on the job board is reviewed by the staff before it is published: no ghost jobs."
+    ],
+    "aquiTitulo": "What you can do here",
+    "aqui": {
+      "ofertas": {
+        "titulo": "Find a job",
+        "texto": "Tech offers reviewed by the staff that you can do from your country."
+      },
+      "talento": {
+        "titulo": "Create your profile",
+        "texto": "Let the community's companies find you for what you can do."
+      },
+      "proyectos": {
+        "titulo": "Share your project",
+        "texto": "One a month. The community likes them and the best ones rise to the top."
+      }
+    },
+    "torneos": "See the tournaments on techtojob.com",
+    "redesTitulo": "Follow us",
+    "redesTexto": "News, tournaments, offers and what is happening in the community.",
+    "escribenosTitulo": "Are you a company or want to collaborate?",
+    "escribenosTexto": "Write to us and we will tell you how to find talent or sponsor a tournament."
   }
 }
