@@ -81,7 +81,7 @@ describe("importar una oferta desde su enlace", () => {
   it("sin JobPosting, usa el título y la descripción de la página", async () => {
     const html = `<html><head><title>QA Tester | Teide Software</title><meta name="description" content="Buscamos QA con Playwright y TypeScript"></head></html>`;
     const r = await importarOferta(db, "https://teide.example.com/qa", pagina(html));
-    expect(r).toMatchObject({ fuente: "pagina", titulo: "QA Tester | Teide Software", tecnologias: ["typescript"] });
+    expect(r).toMatchObject({ fuente: "pagina", titulo: "QA Tester | Teide Software", tecnologias: ["typescript", "playwright"] });
   });
 
   it("si la página no abre, no es HTML o es una dirección interna, fuente 'nada'", async () => {

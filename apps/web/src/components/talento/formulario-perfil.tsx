@@ -185,9 +185,10 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, ve
         <Seccion id="seccion-sobre" numero={2} titulo={t("seccionSobre")}>
           <AreaTexto
             etiqueta={t("sobreMi")}
-            ayuda={t("sobreMiAyuda", { quedan: LIMITES_PERFIL.sobreMi.max - v.sobreMi.length })}
-            rows={6}
+            ayuda={t("sobreMiAyuda")}
+            rows={8}
             maxLength={LIMITES_PERFIL.sobreMi.max}
+            contador
             value={v.sobreMi}
             onChange={(e) => cambiar({ sobreMi: e.target.value })}
             error={mensaje("sobreMi")}

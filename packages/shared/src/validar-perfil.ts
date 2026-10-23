@@ -13,7 +13,7 @@ export const LIMITES_PERFIL = {
   alias: { min: 3, max: 30 },
   nombre: { min: 2, max: 60 },
   titular: { min: 5, max: 80 },
-  sobreMi: { max: 500 },
+  sobreMi: { max: 2000 },
   ciudad: { max: 80 },
   tecnologias: { max: 15 },
   idiomas: { max: 6 },

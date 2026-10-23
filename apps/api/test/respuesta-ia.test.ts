@@ -23,7 +23,7 @@ TECNOLOGÍAS: Excel, SQL, Python`);
       requisitos: ["Inglés fluido", "2 años de experiencia"],
       seniority: "junior",
       idiomas: [{ idioma: "en", nivel: "c1" }, { idioma: "es", nivel: "nativo" }],
-      tecnologias: ["python", "sql"],
+      tecnologias: ["python", "sql", "excel"],
     });
   });
 

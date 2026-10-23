@@ -76,7 +76,8 @@ export function FormularioPortfolio({ actual, sugerencia }: { actual: PortfolioL
       />
       <AreaTexto
         etiqueta={t("descripcion")}
-        ayuda={t("descripcionAyuda", { usados: descripcion.trim().length, max: LIMITES_PORTFOLIO.descripcion.max })}
+        ayuda={t("descripcionAyuda")}
+        contador
         rows={2}
         maxLength={LIMITES_PORTFOLIO.descripcion.max}
         value={descripcion}

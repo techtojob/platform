@@ -74,7 +74,8 @@ export function FormularioProyecto({ id = null, inicial }: { id?: string | null;
         />
         <AreaTexto
           etiqueta={t("descripcion")}
-          ayuda={t("descripcionAyuda", { usados: v.descripcion.trim().length, max: LIMITES_PROYECTO.descripcion.max })}
+          ayuda={t("descripcionAyuda")}
+          contador
           rows={6}
           maxLength={LIMITES_PROYECTO.descripcion.max}
           value={v.descripcion}

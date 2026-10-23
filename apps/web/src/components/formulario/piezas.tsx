@@ -45,9 +45,19 @@ export function AreaTexto({
   ayuda,
   error,
   className,
+  contador = false,
   ...props
-}: ComponentProps<"textarea"> & { etiqueta: string; ayuda?: ReactNode; error?: string }) {
+}: ComponentProps<"textarea"> & {
+  etiqueta: string;
+  ayuda?: ReactNode;
+  error?: string;
+  /** Enseña "usados/máximo" debajo, a la derecha (hace falta `maxLength`). */
+  contador?: boolean;
+}) {
   const id = useId();
+  const usados = String(props.value ?? "").length;
+  const maximo = props.maxLength;
+  const cerca = !!maximo && usados >= maximo * 0.9;
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <label htmlFor={id} className="text-sm font-bold">
@@ -60,10 +70,22 @@ export function AreaTexto({
         className={clasesControl}
         {...props}
       />
-      {ayuda && (
-        <p id={`${id}-ayuda`} className="text-sm text-suave">
-          {ayuda}
-        </p>
+      {(ayuda || (contador && maximo)) && (
+        <div className="flex items-start justify-between gap-4">
+          {ayuda ? (
+            <p id={`${id}-ayuda`} className="text-sm text-suave">
+              {ayuda}
+            </p>
+          ) : (
+            <span />
+          )}
+          {contador && maximo && (
+            // Solo se anuncia al lector de pantalla cuando queda poco.
+            <p aria-live={cerca ? "polite" : "off"} className={cn("shrink-0 text-sm tabular-nums", cerca ? "font-bold text-peligro" : "text-suave")}>
+              {usados.toLocaleString()}/{maximo.toLocaleString()}
+            </p>
+          )}
+        </div>
       )}
       <TextoError id={`${id}-error`}>{error}</TextoError>
     </div>

@@ -14,10 +14,8 @@ export const ORDENES_PROYECTOS = ["mes", "tendencia", "siempre", "nuevos"] as co
 export type OrdenProyectos = (typeof ORDENES_PROYECTOS)[number];
 
 /** porMes: proyectos nuevos al mes (hora de España; editar no cuenta). */
-export const LIMITES_PROYECTO = { titulo: { min: 3, max: 80 }, descripcion: { min: 20, max: 600 }, tecnologias: 10, fijados: 3, porPersona: 30, porMes: 1 } as const;
+export const LIMITES_PROYECTO = { titulo: { min: 3, max: 80 }, descripcion: { min: 20, max: 2000 }, tecnologias: 10, fijados: 3, porPersona: 30, porMes: 1 } as const;
 export const PROYECTOS_POR_PAGINA = 24;
-/** Una cuenta recién creada no cuenta en los me gusta hasta que tiene estos días (contra trampas). */
-export const DIAS_PARA_CONTAR_MEGUSTA = 3;
 
 export type DatosProyecto = {
   titulo: string;
