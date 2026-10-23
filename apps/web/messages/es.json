@@ -245,21 +245,7 @@
     "principal": "Menú de la bolsa",
     "abrir": "Abrir menú",
     "proyectos": "Proyectos",
-    "torneos": "Torneos",
-    "noticias": "Noticias",
-    "paraEmpresas": "Para empresas",
-    "quienesSomos": "Quiénes somos",
-    "discord": "Discord",
-    "grupoEmpleo": "Empleo",
-    "grupoComunidad": "Comunidad",
-    "queEs": "¿Qué es TechToJob?",
-    "ayuda": {
-      "queEs": "La comunidad en Discord y cómo funciona",
-      "torneos": "Retos para ganar experiencia real",
-      "noticias": "Lo último de la comunidad",
-      "paraEmpresas": "Publica ofertas y encuentra talento",
-      "quienesSomos": "Quién está detrás"
-    }
+    "discord": "Discord"
   },
   "pie": {
     "lema": "La bolsa de empleo de la comunidad TechToJob: ofertas tech revisadas por el staff.",
@@ -273,7 +259,11 @@
     "avisoLegal": "Aviso legal",
     "talento": "Talento",
     "cookies": "Cookies",
-    "proyectos": "Proyectos"
+    "proyectos": "Proyectos",
+    "torneos": "Torneos",
+    "noticias": "Noticias",
+    "empresas": "Para empresas",
+    "quienesSomos": "Quiénes somos"
   },
   "talento": {
     "titulo": "Talento de la comunidad",

@@ -10,7 +10,7 @@ import { NavBolsa } from "./sitio/nav-bolsa";
 
 /**
  * Cabecera, con la píldora flotante de la landing y el MISMO menú que la landing
- * (Ofertas · Talento · Proyectos · Torneos · Más): para quien la usa, techtojob.com es una sola web.
+ * (Ofertas · Talento · Proyectos): para quien la usa, techtojob.com es una sola web.
  *
  * - El logo lleva a la portada (techtojob.com).
  * - A la derecha, idioma, el botón del Discord y la cuenta. En el móvil, el menú, el idioma y
