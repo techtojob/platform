@@ -4,7 +4,8 @@
     "descripcion": "Ofertas de empleo tech revisadas por la comunidad y perfiles de talento."
   },
   "selectorIdioma": {
-    "etiqueta": "Idioma"
+    "etiqueta": "Idioma",
+    "cambiar": "Idioma: {idioma}. Cambiar"
   },
   "inicio": {
     "etiqueta": "TechToJob · Fase 0",
@@ -1598,5 +1599,8 @@
     "redesTexto": "Noticias, torneos, ofertas y lo que va pasando en la comunidad.",
     "escribenosTitulo": "¿Eres una empresa o quieres colaborar?",
     "escribenosTexto": "Escríbenos y te contamos cómo encontrar talento o patrocinar un torneo."
+  },
+  "cargando": {
+    "texto": "Cargando…"
   }
 }

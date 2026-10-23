@@ -4,7 +4,8 @@
     "descripcion": "Tech job offers reviewed by the community, and talent profiles."
   },
   "selectorIdioma": {
-    "etiqueta": "Language"
+    "etiqueta": "Language",
+    "cambiar": "Language: {idioma}. Change"
   },
   "inicio": {
     "etiqueta": "TechToJob · Phase 0",
@@ -1598,5 +1599,8 @@
     "redesTexto": "News, tournaments, offers and what is happening in the community.",
     "escribenosTitulo": "Are you a company or want to collaborate?",
     "escribenosTexto": "Write to us and we will tell you how to find talent or sponsor a tournament."
+  },
+  "cargando": {
+    "texto": "Loading…"
   }
 }

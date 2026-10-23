@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormatter } from "next-intl";
 import { useId, type ComponentProps, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
@@ -55,6 +56,8 @@ export function AreaTexto({
   contador?: boolean;
 }) {
   const id = useId();
+  // Con el formato del idioma de la página (igual en el servidor y en el navegador).
+  const formato = useFormatter();
   const usados = String(props.value ?? "").length;
   const maximo = props.maxLength;
   const cerca = !!maximo && usados >= maximo * 0.9;
@@ -82,7 +85,7 @@ export function AreaTexto({
           {contador && maximo && (
             // Solo se anuncia al lector de pantalla cuando queda poco.
             <p aria-live={cerca ? "polite" : "off"} className={cn("shrink-0 text-sm tabular-nums", cerca ? "font-bold text-peligro" : "text-suave")}>
-              {usados.toLocaleString()}/{maximo.toLocaleString()}
+              {formato.number(usados)}/{formato.number(maximo)}
             </p>
           )}
         </div>

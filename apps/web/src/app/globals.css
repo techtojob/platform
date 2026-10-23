@@ -142,3 +142,17 @@ body {
   background-size: 0% 2px;
   background-position: right bottom;
 }
+
+/* Barra de carga al cambiar de página (components/sitio/barra-navegacion.tsx):
+   avanza rápido al principio y se frena, como si esperase a la página. */
+@keyframes barra-navegacion {
+  0% { transform: translateX(-100%); }
+  40% { transform: translateX(-35%); }
+  100% { transform: translateX(-8%); }
+}
+.barra-navegacion {
+  animation: barra-navegacion 8s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .barra-navegacion { animation: none; transform: translateX(-30%); }
+}

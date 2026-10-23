@@ -50,8 +50,8 @@ export async function Cabecera() {
             <nav aria-label={t("principal")}>
               <NavBolsa movil />
             </nav>
-            <div className="mt-2 flex flex-col gap-2 border-t border-borde px-2 pt-2">
-              <SelectorIdioma />
+            <div className="mt-2 flex flex-col gap-2 border-t border-borde px-2 pt-3">
+              <SelectorIdioma enLinea />
             </div>
           </MenuMovil>
         </div>
