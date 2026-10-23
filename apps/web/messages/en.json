@@ -214,7 +214,7 @@
     },
     "dondeVives": "Where you live",
     "dondeVivesAyuda": "We use this to show you, by default, the offers you can do from your country. In the offers list you can look at another country's without changing it here.",
-    "misProyectos": "My projects",
+    "misProyectos": "Portfolio and projects",
     "formas": {
       "vinculada": "Linked",
       "sinVincular": "Not linked",
@@ -337,7 +337,7 @@
     "portadaTitulo": "What the <resaltado>community</resaltado> builds",
     "entradilla": "Projects and portfolios by TechToJob people: repositories, demos and personal websites. Like the ones you enjoy.",
     "postitTitulo": "Built something cool?",
-    "postitTexto": "Share your project of the month and your portfolio: they show up here and on your profile, where people hiring can see them. Every month we feature the most liked.",
+    "postitTexto": "Share one project a month and add your portfolio (your personal website). They show up here and on your profile, where companies look for talent.",
     "subir": "Share a project",
     "error": "Projects couldn't be loaded. Try again in a moment.",
     "tituloSeccion": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
@@ -404,7 +404,9 @@
       "titulo": "What to see",
       "proyectos": "Projects",
       "portfolios": "Portfolios"
-    }
+    },
+    "ponerPortfolio": "Add my portfolio",
+    "cambiarPortfolio": "Change my portfolio"
   },
   "portfolios": {
     "tituloSeccion": "{count, plural, =0 {No portfolios} one {# portfolio} other {# portfolios}}",
@@ -428,7 +430,9 @@
       "sinVerificar": "To like you need to be verified: link your Discord and join the server.",
       "verificar": "Verify me",
       "limite": "You've liked a lot in a short time. Wait a little."
-    }
+    },
+    "queEsTitulo": "Your portfolio: your personal website",
+    "queEsTexto": "One per person, and you can change it whenever you like. It shows up here and on your profile, and you can ask us to review it live on Fridays in our Portfolio review."
   },
   "staff": {
     "titulo": "Staff panel",
@@ -1299,8 +1303,8 @@
     "copiando": "Copying…"
   },
   "misProyectos": {
-    "titulo": "My projects",
-    "entradilla": "Your portfolio and projects show up in Projects and on your profile. You can share one project a month: share your best.",
+    "titulo": "My portfolio and projects",
+    "entradilla": "Your portfolio (your personal website) and your projects show up in Projects and on your profile. One project a month: share your best.",
     "nuevo": "Share a project",
     "nuevoEntradilla": "Say what it is, what you built it with and where to see it. With a GitHub repository, the cover is automatic.",
     "editarTitulo": "Edit the project",
@@ -1318,9 +1322,9 @@
     "vacio": "You haven't shared any projects yet.",
     "vacioTexto": "It can be anything: a website, a data analysis, a bot, a script that saves you time… Even better if it's on GitHub.",
     "antes": {
-      "titulo": "Before sharing projects",
-      "verificar": "To share projects you need a talent profile, and for the profile you need to be verified: link your Discord and join the TechToJob server.",
-      "perfil": "Projects show up on your talent profile, so create yours first. It takes a few minutes.",
+      "titulo": "Before adding your portfolio or projects",
+      "verificar": "To add your portfolio or share projects you need a talent profile, and for the profile you need to be verified: link your Discord and join the TechToJob server.",
+      "perfil": "Your portfolio and projects show up on your talent profile, so create yours first. It only takes a few minutes.",
       "botonVerificar": "Go to My account",
       "botonPerfil": "Create my profile"
     },
