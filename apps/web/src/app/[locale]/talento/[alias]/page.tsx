@@ -17,6 +17,7 @@ import { Link } from "@/i18n/navigation";
 import { obtenerPerfilPublico, tieneCookieDeSesion } from "@/lib/api";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
 import { metadatos } from "@/lib/metadatos";
+import { ALIAS_OFICIAL, FichaOficial } from "@/components/talento/perfil-oficial";
 import type { Locale } from "@/i18n/routing";
 
 type Props = PageProps<"/[locale]/talento/[alias]">;
@@ -24,6 +25,16 @@ const nombresTec = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombr
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { alias, locale } = await params;
+  if (alias === ALIAS_OFICIAL) {
+    const t = await getTranslations({ locale: locale as Locale, namespace: "oficial" });
+    return metadatos({
+      titulo: `TechToJob · ${t("titular")}`,
+      descripcion: t("resumen"),
+      href: { pathname: "/talento/[alias]", params: { alias } },
+      locale: locale as Locale,
+      tipo: "profile",
+    });
+  }
   const cookie = (await headers()).get("cookie");
   const perfil = await obtenerPerfilPublico(alias, cookie).catch(() => null);
   if (!perfil || perfil === "solo_registrados") return { robots: { index: false } };
@@ -53,6 +64,8 @@ export default function PaginaPerfil({ params }: Props) {
 
 async function Cargar({ params }: Pick<Props, "params">) {
   const [{ alias }, cabeceras, t] = await Promise.all([params, headers(), getTranslations()]);
+  // El perfil oficial no está en la base de datos: sale siempre igual.
+  if (alias === ALIAS_OFICIAL) return <FichaOficial />;
   const cookie = cabeceras.get("cookie");
   const perfil = await obtenerPerfilPublico(alias, cookie);
   if (!perfil) notFound();
