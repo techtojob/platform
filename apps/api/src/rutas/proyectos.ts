@@ -9,6 +9,7 @@ import {
   ErrorProyecto,
   fijarProyecto,
   listarProyectos,
+  mapaProyectos,
   megusta,
   obtenerProyecto,
   proyectosDe,
@@ -36,12 +37,15 @@ const invalido = (c: Context<Entorno>, campos: Record<string, string>) =>
  * Proyectos de la comunidad.
  *
  * GET    /proyectos?orden=mes|tendencia|siempre|nuevos&mes=2026-09&area=&tec=&q=&pagina=
+ * GET    /proyectos/mapa                                          (para el mapa del sitio)
  * GET    /proyectos/:id
  * POST   /proyectos/:id/megusta · DELETE /proyectos/:id/megusta   (con sesión)
  * POST   /proyectos/:id/reportar { motivo }                       (con sesión)
  */
 export const rutasProyectos = new Hono<Entorno>()
   .get("/", async (c) => c.json(await listarProyectos(c.var.db, leerFiltrosProyectos(c.req.query()), await visitante(c))))
+  // Antes de "/:id", que si no se lo come.
+  .get("/mapa", async (c) => c.json(await mapaProyectos(c.var.db)))
   .get("/:id", async (c) => {
     try {
       return c.json(await obtenerProyecto(c.var.db, c.req.param("id"), await visitante(c)));

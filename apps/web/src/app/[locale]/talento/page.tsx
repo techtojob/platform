@@ -9,11 +9,12 @@ import { Aviso, clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
+import { metadatos } from "@/lib/metadatos";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/talento">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale: locale as Locale, namespace: "talento" });
-  return { title: `${t("titulo")} – TechToJob`, description: t("entradilla") };
+  const locale = (await params).locale as Locale;
+  const t = await getTranslations({ locale, namespace: "talento" });
+  return metadatos({ titulo: `${t("titulo")} – TechToJob`, descripcion: t("entradilla"), href: "/talento", locale });
 }
 
 /** Talento: perfiles de la comunidad, con buscador y filtros. */

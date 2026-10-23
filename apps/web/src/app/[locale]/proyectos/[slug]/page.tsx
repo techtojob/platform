@@ -15,18 +15,26 @@ import { Link, redirect } from "@/i18n/navigation";
 import { obtenerProyecto, tieneCookieDeSesion } from "@/lib/api";
 import { separarSlug } from "@/lib/ofertas";
 import { slugDeProyecto } from "@/lib/filtros-proyectos";
+import { metadatos } from "@/lib/metadatos";
+import type { Locale } from "@/i18n/routing";
 
 type Props = PageProps<"/[locale]/proyectos/[slug]">;
 const nombresTec = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const p = await obtenerProyecto(separarSlug(slug).id, (await headers()).get("cookie")).catch(() => null);
   if (!p) return { robots: { index: false } };
   return {
-    title: `${p.titulo} · ${p.autor.nombre} – TechToJob`,
-    description: p.descripcion.slice(0, 160),
-    ...(p.portada && { openGraph: { images: [p.portada] } }),
+    ...metadatos({
+      titulo: `${p.titulo} · ${p.autor.nombre} – TechToJob`,
+      descripcion: p.descripcion.slice(0, 160),
+      href: { pathname: "/proyectos/[slug]", params: { slug: slugDeProyecto(p) } },
+      locale: locale as Locale,
+      // La portada del repositorio de GitHub, si la tiene.
+      imagen: p.portada,
+      tipo: "article",
+    }),
     ...(p.oculto && { robots: { index: false } }),
   };
 }
@@ -124,7 +132,7 @@ function Ficha({ proyecto: p, conSesion }: { proyecto: ProyectoListado; conSesio
           <aside className="flex flex-col gap-5 lg:sticky lg:top-28 lg:self-start">
             <div className="flex flex-col gap-3 rounded-tarjeta bg-acento p-6 text-ink shadow-tarjeta">
               <BotonMegusta id={p.id} megusta={p.megusta} meGusta={p.meGusta} conSesion={conSesion} esMio={p.esMio} grande />
-              {!conSesion && !p.esMio && <p className="text-sm text-ink/80">{t("proyectos.megusta.entraTexto")}</p>}
+              {!conSesion && !p.esMio && <p className="text-sm text-ink">{t("proyectos.megusta.entraTexto")}</p>}
               {enlaces.map(([clave, nombre]) => (
                 <a key={clave} href={p[clave]!} target="_blank" rel="noopener noreferrer nofollow" className={clasesBoton({ variante: "sobreAcento", className: "w-full justify-between" })}>
                   {nombre}

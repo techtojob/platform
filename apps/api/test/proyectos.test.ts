@@ -214,6 +214,13 @@ describe("editar, borrar, reportar y ocultar", () => {
     expect((await pedir("/proyectos?orden=nuevos", null)).json.proyectos.map((p) => p.titulo)).not.toContain("Bot de Discord");
   });
 
+  it("el mapa del sitio lleva los visibles (con su dirección) y no los ocultos", async () => {
+    const mapa = (await pedir("/proyectos/mapa", null)).json as unknown as Array<{ ruta: string; actualizadaEn: string }>;
+    const rutas = mapa.map((m) => m.ruta);
+    expect(rutas).toContain(`lakehouse-de-vivienda-vacacional-${ids.lakehouse}`);
+    expect(rutas.some((r) => r.endsWith(ids.bot!))).toBe(false);
+  });
+
   it("borrar", async () => {
     expect((await pedir(`/cuenta/proyectos/${ids.web}`, "ana", { method: "DELETE" })).status).toBe(200);
     expect(await db.select().from(proyectos).where(eq(proyectos.id, ids.web!))).toHaveLength(0);

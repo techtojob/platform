@@ -1,12 +1,20 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense, use } from "react";
 import { ListadoOfertas } from "@/components/ofertas/listado-ofertas";
 import { Portada, Resaltado } from "@/components/sitio/portada";
 import { Aviso } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { metadatos } from "@/lib/metadatos";
+
+export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
+  const locale = (await params).locale as Locale;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+  return metadatos({ titulo: t("titulo"), descripcion: t("descripcion"), href: "/", locale });
+}
 
 /** Inicio de la bolsa: portada con el buscador y, debajo, el listado de ofertas. */
 export default function Inicio({ params, searchParams }: PageProps<"/[locale]">) {

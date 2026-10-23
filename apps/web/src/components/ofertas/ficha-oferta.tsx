@@ -108,7 +108,7 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
               <h2 className="text-2xl font-bold tracking-tight">{t("ofertas.loQuePide")}</h2>
               <dl className="mt-5 grid gap-5 sm:grid-cols-3">
                 <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
-                  <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("ofertas.idiomas")}</dt>
+                  <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/80">{t("ofertas.idiomas")}</dt>
                   {oferta.idiomasRequeridos.map(({ idioma, nivel }) => (
                     <dd key={idioma} className="flex items-center gap-1.5 font-bold">
                       {hablo.includes(idioma) && (
@@ -125,7 +125,7 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
                 </div>
                 {donde && (
                   <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
-                    <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("ofertas.desdeDonde")}</dt>
+                    <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/80">{t("ofertas.desdeDonde")}</dt>
                     <dd className="flex items-center gap-1.5 font-bold">
                       {puede && <Image src="/empleo-recursos/check.svg" alt="" width={22} height={26} unoptimized className="h-5 w-auto" />}
                       {donde}
@@ -134,12 +134,12 @@ export function FichaOferta({ oferta, hablo, desde, parecidas, ahora, conSesion 
                   </div>
                 )}
                 <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
-                  <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("filtros.nivel")}</dt>
+                  <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/80">{t("filtros.nivel")}</dt>
                   <dd className="font-bold">{t(`seniority.${oferta.seniority}`)}</dd>
                 </div>
                 {oferta.tecnologias.length > 0 && (
                   <div className="flex flex-col gap-1.5 border-t border-ink/15 pt-3">
-                    <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/70">{t("ofertas.tecnologias")}</dt>
+                    <dt className="text-xs font-bold uppercase tracking-[0.12em] text-ink/80">{t("ofertas.tecnologias")}</dt>
                     <dd className="flex flex-wrap gap-1.5">
                       {oferta.tecnologias.map((id) => (
                         <span key={id} className="rounded-full bg-ink px-3 py-1 text-xs font-bold text-white">

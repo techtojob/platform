@@ -10,18 +10,24 @@ import { LANDING_URL } from "@/lib/sitio";
 import { obtenerCuenta, obtenerOferta, obtenerOfertas, tieneCookieDeSesion } from "@/lib/api";
 import { COOKIE_HABLO, idiomasDelUsuario } from "@/lib/idiomas-usuario";
 import { COOKIE_DESDE, paisDelUsuario } from "@/lib/pais-usuario";
+import { metadatos } from "@/lib/metadatos";
 import { separarSlug, slugDeOferta } from "@/lib/ofertas";
+import type { Locale } from "@/i18n/routing";
 
 type Props = PageProps<"/[locale]/ofertas/[slug]">;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const oferta = await obtenerOferta(separarSlug(slug).id);
   if (!oferta) return {};
-  return {
-    title: `${oferta.titulo} · ${oferta.empresa.nombre} – TechToJob`,
-    description: oferta.resumen ?? undefined,
-  };
+  return metadatos({
+    titulo: `${oferta.titulo} · ${oferta.empresa.nombre} – TechToJob`,
+    descripcion: oferta.resumen ?? undefined,
+    // Con su dirección buena aunque se entre por otra (el slug viejo de un título cambiado).
+    href: { pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } },
+    locale: locale as Locale,
+    tipo: "article",
+  });
 }
 
 /** Página de una oferta: /empleo/ofertas/<slug>-<id> o /jobs/offers/<slug>-<id>. */

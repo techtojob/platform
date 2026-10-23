@@ -93,7 +93,7 @@ export function Emblemas({ emblemas, detalle = false }: { emblemas: Emblema[]; d
           </span>
           <span className="flex flex-col">
             <span className="font-bold">{nombre(e)}</span>
-            <span className="text-xs text-ink/70">{format.dateTime(new Date(e.fecha), { month: "long", year: "numeric" })}</span>
+            <span className="text-xs text-ink/80">{format.dateTime(new Date(e.fecha), { month: "long", year: "numeric" })}</span>
           </span>
         </li>
       ))}

@@ -16,18 +16,25 @@ import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
 import { obtenerPerfilPublico, tieneCookieDeSesion } from "@/lib/api";
 import { nombreIdioma } from "@/lib/idiomas-usuario";
+import { metadatos } from "@/lib/metadatos";
+import type { Locale } from "@/i18n/routing";
 
 type Props = PageProps<"/[locale]/talento/[alias]">;
 const nombresTec = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombre]));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { alias } = await params;
+  const { alias, locale } = await params;
   const cookie = (await headers()).get("cookie");
   const perfil = await obtenerPerfilPublico(alias, cookie).catch(() => null);
   if (!perfil || perfil === "solo_registrados") return { robots: { index: false } };
   return {
-    title: `${perfil.nombre} · ${perfil.titular} – TechToJob`,
-    description: perfil.sobreMi?.slice(0, 160) ?? perfil.titular,
+    ...metadatos({
+      titulo: `${perfil.nombre} · ${perfil.titular} – TechToJob`,
+      descripcion: perfil.sobreMi?.slice(0, 160) ?? perfil.titular,
+      href: { pathname: "/talento/[alias]", params: { alias: perfil.alias } },
+      locale: locale as Locale,
+      tipo: "profile",
+    }),
     // Solo los públicos pueden salir en buscadores.
     robots: perfil.visibilidad === "publico" ? undefined : { index: false },
   };

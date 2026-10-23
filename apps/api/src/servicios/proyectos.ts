@@ -6,6 +6,7 @@ import {
   PROYECTOS_POR_PAGINA,
   slugProyecto,
   type DatosProyecto,
+  type EntradaMapa,
   type FiltrosProyectos,
   type ProyectoListado,
   type ReporteProyecto,
@@ -152,6 +153,18 @@ export async function obtenerProyecto(db: Db, id: string, visitante: Visitante):
     f && (esMio || visitante?.esStaff || (!f.p.oculto && (perfil?.visibilidad === "publico" || (perfil?.visibilidad === "registrados" && !!visitante))));
   if (!f || !puede) throw new ErrorProyecto("no_existe", "Este proyecto no existe.");
   return (await aListado(db, [f], visitante))[0]!;
+}
+
+/** Para el mapa del sitio: los que cualquiera puede ver (sin ocultar y de perfiles públicos). */
+export async function mapaProyectos(db: Db): Promise<EntradaMapa[]> {
+  const filas = await db
+    .select({ id: proyectos.id, titulo: proyectos.titulo, actualizadaEn: proyectos.actualizadaEn })
+    .from(proyectos)
+    .innerJoin(perfiles, eq(perfiles.userId, proyectos.userId))
+    .where(and(eq(proyectos.oculto, false), eq(perfiles.visibilidad, "publico")))
+    .orderBy(desc(proyectos.actualizadaEn))
+    .limit(5000);
+  return filas.map((f) => ({ ruta: `${slugProyecto(f.titulo)}-${f.id}`, actualizadaEn: f.actualizadaEn.toISOString() }));
 }
 
 /** Los de una persona (para su perfil): primero los fijados, luego los más nuevos. */
