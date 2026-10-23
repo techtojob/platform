@@ -67,6 +67,31 @@ const MAXIMO_SALTOS = 5;
  * Lee la página. Las redirecciones se siguen a mano para comprobar cada dirección:
  * si no, una web pública podría mandar a una interna.
  */
+/**
+ * El texto de la respuesta, como mucho `maximo` bytes: deja de leer al llegar (no carga entera
+ * una página enorme en memoria; un Worker tiene 128 MB).
+ */
+export async function leerHasta(res: Response, maximo: number): Promise<string> {
+  if (!res.body) return "";
+  const lector = res.body.getReader();
+  const decodificador = new TextDecoder();
+  let texto = "";
+  let leidos = 0;
+  try {
+    while (leidos < maximo) {
+      const { done, value } = await lector.read();
+      if (done) break;
+      const trozo = value.byteLength > maximo - leidos ? value.subarray(0, maximo - leidos) : value;
+      leidos += trozo.byteLength;
+      texto += decodificador.decode(trozo, { stream: true });
+    }
+  } finally {
+    // Lo que queda sin leer, se descarta.
+    await lector.cancel().catch(() => {});
+  }
+  return texto + decodificador.decode();
+}
+
 export async function leerPagina(url: URL, pedir: Pedir): Promise<string | null> {
   let actual = url;
   try {
@@ -88,7 +113,7 @@ export async function leerPagina(url: URL, pedir: Pedir): Promise<string | null>
         continue;
       }
       if (!res.ok || !(res.headers.get("content-type") ?? "text/html").includes("html")) return null;
-      return (await res.text()).slice(0, MAXIMO_BYTES);
+      return await leerHasta(res, MAXIMO_BYTES);
     }
     return null;
   } catch {

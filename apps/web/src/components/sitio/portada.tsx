@@ -1,7 +1,9 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
-import { Link } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
+import { jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL } from "@/lib/sitio";
 
 type Miga = { texto: string; href?: "/" | "/staff" | "/talento" | "/cuenta/ajustes" | "/cuenta/ofertas" | "/proyectos" | "/cuenta/proyectos" };
@@ -31,8 +33,21 @@ export async function Portada({
   antesDelTitulo?: ReactNode;
   compacta?: boolean;
 }) {
-  const t = await getTranslations("navegacion");
+  const [t, locale] = await Promise.all([getTranslations("navegacion"), getLocale()]);
   const todas = [{ texto: t("inicio"), externo: LANDING_URL }, ...migas.map((m) => ({ ...m, externo: undefined }))];
+  // Las migas también para Google (BreadcrumbList): con su dirección completa, menos la página actual.
+  const migasGoogle = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: todas.map((m, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: m.texto,
+      ...(i < todas.length - 1 && {
+        item: m.externo ?? `${LANDING_URL}${getPathname({ href: ("href" in m && m.href) || "/", locale: locale as Locale })}`,
+      }),
+    })),
+  };
 
   return (
     <section
@@ -62,7 +77,7 @@ export async function Portada({
                       {miga.texto}
                     </a>
                   ) : (
-                    <Link href="/" className="inline-flex min-h-11 items-center transition-colors hover:text-enlace">
+                    <Link href={("href" in miga && miga.href) || "/"} className="inline-flex min-h-11 items-center transition-colors hover:text-enlace">
                       {miga.texto}
                     </Link>
                   )}
@@ -70,6 +85,7 @@ export async function Portada({
               ))}
             </ol>
           </nav>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(migasGoogle) }} />
           {antesDelTitulo && <div className="mt-3">{antesDelTitulo}</div>}
           <h1 lang={tituloLang} className="mt-2 max-w-[20ch] text-balance text-titulo-1 font-bold">
             {titulo}

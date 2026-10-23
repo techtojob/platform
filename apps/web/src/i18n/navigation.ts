@@ -6,5 +6,5 @@ import { routing } from "./routing";
  * escriben la dirección en el idioma de quien navega (/empleo/talento o /jobs/talent).
  * Se les pasa la ruta interna: <Link href="/talento">.
  */
-export const { Link, redirect, usePathname, useRouter, getPathname } =
+export const { Link, redirect, permanentRedirect, usePathname, useRouter, getPathname } =
   createNavigation(routing);

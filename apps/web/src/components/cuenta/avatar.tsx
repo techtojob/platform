@@ -6,7 +6,7 @@ export function Avatar({ nombre, imagen, grande = false }: { nombre: string; ima
   if (imagen) {
     // Fotos de Google y GitHub: se enseñan tal cual, sin pasar por el optimizador de imágenes.
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={imagen} alt="" referrerPolicy="no-referrer" className={cn("shrink-0 rounded-full object-cover", tamano)} />;
+    return <img src={imagen} alt="" decoding="async" referrerPolicy="no-referrer" className={cn("shrink-0 rounded-full object-cover", tamano)} />;
   }
   return (
     <span aria-hidden="true" className={cn("grid shrink-0 place-items-center rounded-full bg-acento font-bold text-sobre-acento", tamano)}>

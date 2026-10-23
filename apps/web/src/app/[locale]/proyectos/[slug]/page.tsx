@@ -1,6 +1,6 @@
 import { TECNOLOGIAS, type ProyectoListado } from "@techtojob/shared";
 import type { Metadata } from "next";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
@@ -11,7 +11,9 @@ import { Reportar } from "@/components/reportar/reportar";
 import { Portada } from "@/components/sitio/portada";
 import { AvatarPerfil } from "@/components/talento/avatar-perfil";
 import { Aviso, clasesBoton, Etiqueta, Tarjeta } from "@/components/ui";
-import { Link, redirect } from "@/i18n/navigation";
+import { getPathname, Link, permanentRedirect, redirect } from "@/i18n/navigation";
+import { datosProyecto, jsonSeguro } from "@/lib/datos-google";
+import { LANDING_URL } from "@/lib/sitio";
 import { obtenerProyecto, tieneCookieDeSesion } from "@/lib/api";
 import { separarSlug } from "@/lib/ofertas";
 import { slugDeProyecto } from "@/lib/filtros-proyectos";
@@ -23,8 +25,10 @@ const nombresTec = new Map<string, string>(TECNOLOGIAS.map((t) => [t.id, t.nombr
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
-  const p = await obtenerProyecto(separarSlug(slug).id, (await headers()).get("cookie")).catch(() => null);
-  if (!p) return { robots: { index: false } };
+  const p = await obtenerProyecto(separarSlug(slug).id, (await headers()).get("cookie"));
+  // 404 de verdad y redirección permanente si cambió el título (antes de mandar la página).
+  if (!p) notFound();
+  if (slug !== slugDeProyecto(p)) permanentRedirect({ href: { pathname: "/proyectos/[slug]", params: { slug: slugDeProyecto(p) } }, locale: locale as Locale });
   return {
     ...metadatos({
       titulo: `${p.titulo} · ${p.autor.nombre} – TechToJob`,
@@ -40,7 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** Un proyecto: /empleo/proyectos/<slug>-<id>. */
-export default function PaginaProyecto({ params }: Props) {
+export default async function PaginaProyecto({ params }: Props) {
+  // Antes de empezar a mandar la página: 404 de verdad o redirección permanente (ver la oferta).
+  const [{ slug, locale }, cabeceras] = await Promise.all([params, headers()]);
+  const p = await obtenerProyecto(separarSlug(slug).id, cabeceras.get("cookie"));
+  if (!p) notFound();
+  if (slug !== slugDeProyecto(p)) permanentRedirect({ href: { pathname: "/proyectos/[slug]", params: { slug: slugDeProyecto(p) } }, locale: locale as Locale });
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       <Suspense fallback={<div aria-busy="true" className="fondo-portada h-[30rem] animate-pulse" />}>
@@ -71,9 +80,13 @@ function Ficha({ proyecto: p, conSesion }: { proyecto: ProyectoListado; conSesio
     ] as const
   ).filter(([clave]) => p[clave]);
   const parrafos = p.descripcion.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+  const locale = useLocale() as Locale;
+  const url = `${LANDING_URL}${getPathname({ href: { pathname: "/proyectos/[slug]", params: { slug: slugDeProyecto(p) } }, locale })}`;
+  const urlAutor = `${LANDING_URL}${getPathname({ href: { pathname: "/talento/[alias]", params: { alias: p.autor.alias } }, locale })}`;
 
   return (
     <>
+      {!p.oculto && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(datosProyecto(p, url, urlAutor)) }} />}
       <Portada
         migas={[{ texto: t("navegacion.empleo"), href: "/" }, { texto: t("proyectos.titulo"), href: "/proyectos" }, { texto: p.titulo }]}
         titulo={p.titulo}

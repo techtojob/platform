@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale, getNow } from "next-intl/server";
+import { getLocale, getNow, getTranslations } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { Suspense } from "react";
 import { FichaOferta } from "@/components/ofertas/ficha-oferta";
-import { getPathname, redirect } from "@/i18n/navigation";
+import { getPathname, permanentRedirect, redirect } from "@/i18n/navigation";
 import { jobPosting, jsonSeguro } from "@/lib/datos-google";
 import { LANDING_URL } from "@/lib/sitio";
 import { obtenerCuenta, obtenerOferta, obtenerOfertas, tieneCookieDeSesion } from "@/lib/api";
@@ -19,10 +19,20 @@ type Props = PageProps<"/[locale]/ofertas/[slug]">;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const oferta = await obtenerOferta(separarSlug(slug).id);
-  if (!oferta) return {};
+  // Aquí (antes de empezar a mandar la página) para que Google reciba un 404 de verdad
+  // y, si el título cambió, una redirección permanente a la dirección buena.
+  if (!oferta) notFound();
+  if (slug !== slugDeOferta(oferta)) {
+    permanentRedirect({ href: { pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } }, locale: locale as Locale });
+  }
+  const t = await getTranslations({ locale: locale as Locale });
+  const lugar = [oferta.ciudad, oferta.pais && new Intl.DisplayNames([locale], { type: "region" }).of(oferta.pais)].filter(Boolean).join(", ");
   return metadatos({
     titulo: `${oferta.titulo} · ${oferta.empresa.nombre} – TechToJob`,
-    descripcion: oferta.resumen ?? undefined,
+    // Sin resumen, una frase con lo básico (si no, la página se quedaba sin descripción).
+    descripcion:
+      oferta.resumen ??
+      `${[t("ofertas.metaPuesto", { titulo: oferta.titulo, empresa: oferta.empresa.nombre }), t(`modalidades.${oferta.modalidad}`), lugar].filter(Boolean).join(" · ")}. ${t("ofertas.metaRevisada")}`,
     // Con su dirección buena aunque se entre por otra (el slug viejo de un título cambiado).
     href: { pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } },
     locale: locale as Locale,
@@ -31,7 +41,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** Página de una oferta: /empleo/ofertas/<slug>-<id> o /jobs/offers/<slug>-<id>. */
-export default function PaginaOferta({ params }: Props) {
+export default async function PaginaOferta({ params }: Props) {
+  // Antes de empezar a mandar la página (y de cualquier <Suspense>): si no existe, un 404 de
+  // verdad, y si cambió el título, una redirección permanente. Una vez empezada, ya solo se
+  // puede responder 200 (y Google se queda con "soft 404"). La llamada se reutiliza abajo (cache).
+  const { slug, locale } = await params;
+  const oferta = await obtenerOferta(separarSlug(slug).id);
+  if (!oferta) notFound();
+  if (slug !== slugDeOferta(oferta)) {
+    permanentRedirect({ href: { pathname: "/ofertas/[slug]", params: { slug: slugDeOferta(oferta) } }, locale: locale as Locale });
+  }
   return (
     <main id="contenido" className="flex flex-1 flex-col">
       {/* La oferta se pide en cada visita: así siempre sale la versión revisada por el staff. */}

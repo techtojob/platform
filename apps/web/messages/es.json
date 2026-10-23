@@ -129,7 +129,11 @@
     "publicarLlamada": "¿Eres recruiter? <enlace>Publica tus ofertas gratis</enlace>: revisamos cada una antes de que salga.",
     "responsabilidades": "Responsabilidades",
     "requisitos": "Requisitos",
-    "descripcionEmpresa": "La oferta, tal cual la escribe la empresa"
+    "descripcionEmpresa": "La oferta, tal cual la escribe la empresa",
+    "metaPuesto": "{titulo} en {empresa}",
+    "metaRevisada": "Oferta de empleo tech revisada por el staff de TechToJob.",
+    "metaTitulo": "Ofertas de trabajo tech revisadas – TechToJob",
+    "metaDescripcionListado": "Empleo de programación, datos e IA, ciberseguridad, DevOps y diseño, en remoto o presencial. Cada oferta la revisa el staff: sin ofertas fantasma."
   },
   "regiones": {
     "eu": "Europa",
@@ -330,7 +334,8 @@
     "subirProyecto": "Sube tu primer proyecto",
     "portfolioTitulo": "Portfolio",
     "cambiarPortfolio": "Cambiar mi portfolio",
-    "ponerPortfolio": "Pon tu portfolio"
+    "ponerPortfolio": "Pon tu portfolio",
+    "metaTitulo": "Perfiles de talento tech – TechToJob"
   },
   "proyectos": {
     "titulo": "Proyectos",
@@ -406,7 +411,8 @@
       "portfolios": "Portfolios"
     },
     "ponerPortfolio": "Poner mi portfolio",
-    "cambiarPortfolio": "Cambiar mi portfolio"
+    "cambiarPortfolio": "Cambiar mi portfolio",
+    "metaTitulo": "Proyectos y portfolios tech de la comunidad – TechToJob"
   },
   "portfolios": {
     "tituloSeccion": "{count, plural, =0 {Ningún portfolio} one {# portfolio} other {# portfolios}}",
