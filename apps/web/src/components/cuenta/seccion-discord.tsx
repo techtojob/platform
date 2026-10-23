@@ -7,24 +7,32 @@ import { comprobarDiscord } from "@/app/[locale]/cuenta/ajustes/acciones";
 import { Boton, clasesBoton, Etiqueta } from "@/components/ui";
 import { useRouter } from "@/i18n/navigation";
 import { authCliente } from "@/lib/auth-cliente";
+import { errorAlQuitar, errorAlVincular, NOMBRES, type Retorno, useLimpiarDireccion, vueltas } from "./formas-de-entrar";
 
 /**
  * Discord en "Mi cuenta": vincular, ver si está en el servidor y volver a comprobarlo.
  * Discord no sirve para entrar; solo para saber si la persona es de la comunidad.
  */
-/** `ahora`: la hora del servidor, para "Comprobado hace 5 min" (así sale igual en el servidor y en el navegador). */
-export function SeccionDiscord({ discord, ahora }: { discord: Cuenta["discord"]; ahora: number }) {
+/**
+ * `ahora`: la hora del servidor, para "Comprobado hace 5 min" (así sale igual en el servidor y en el navegador).
+ * `retorno`: si se acaba de volver de Discord con un error al vincular.
+ */
+export function SeccionDiscord({ discord, ahora, retorno }: { discord: Cuenta["discord"]; ahora: number; retorno: Retorno }) {
   const t = useTranslations("cuenta.discord");
+  const tFormas = useTranslations("cuenta.formas");
   const format = useFormatter();
   const router = useRouter();
   const [pendiente, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() =>
+    retorno?.proveedor === "discord" && retorno.error ? tFormas(errorAlVincular(retorno.error), { proveedor: NOMBRES.discord }) : null,
+  );
+  useLimpiarDireccion(retorno?.proveedor === "discord" ? retorno : null);
 
   function vincular() {
     setError(null);
     startTransition(async () => {
-      // callbackURL: volver a esta misma página, en este idioma.
-      const { error } = await authCliente.linkSocial({ provider: "discord", callbackURL: window.location.pathname });
+      // Vuelve a esta misma página, en este idioma (si falla, con el motivo).
+      const { error } = await authCliente.linkSocial({ provider: "discord", ...vueltas("discord") });
       if (error) setError(t("errorVincular"));
     });
   }
@@ -34,8 +42,10 @@ export function SeccionDiscord({ discord, ahora }: { discord: Cuenta["discord"];
     startTransition(async () => {
       if (!discord.cuentaId) return;
       const { error } = await authCliente.unlinkAccount({ accountId: discord.cuentaId });
-      if (error) setError(t("errorDesvincular"));
-      else router.refresh();
+      if (error) {
+        const clave = errorAlQuitar(error.code);
+        setError(clave === "errorSesionAntigua" ? tFormas(clave, { proveedor: NOMBRES.discord }) : t("errorDesvincular"));
+      } else router.refresh();
     });
   }
 

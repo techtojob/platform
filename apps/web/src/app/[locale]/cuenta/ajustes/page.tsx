@@ -5,21 +5,30 @@ import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Avatar } from "@/components/cuenta/avatar";
 import { CerrarSesion } from "@/components/cuenta/cerrar-sesion";
+import { FormasDeEntrar, type Retorno } from "@/components/cuenta/formas-de-entrar";
 import { FormularioUbicacion } from "@/components/cuenta/formulario-ubicacion";
 import { SeccionDiscord } from "@/components/cuenta/seccion-discord";
 import { TusDatos } from "@/components/cuenta/tus-datos";
 import { Portada } from "@/components/sitio/portada";
-import { clasesBoton, Etiqueta, Tarjeta, Ventana } from "@/components/ui";
+import { clasesBoton, Tarjeta, Ventana } from "@/components/ui";
 import { getPathname, Link, redirect } from "@/i18n/navigation";
 import { obtenerCuenta, obtenerMiPerfil } from "@/lib/api";
 import { LANDING_URL } from "@/lib/sitio";
 
 export const metadata: Metadata = { robots: { index: false } };
 
-const NOMBRES_PROVEEDOR: Record<string, string> = { google: "Google", github: "GitHub" };
+const VINCULABLES = ["google", "github", "discord"] as const;
+
+/** Al volver de vincular: ?vinculada=github (bien) o ?vincular=github&error=… (mal). */
+function leerRetorno(parametros: Record<string, string | string[] | undefined>): Retorno {
+  const { vinculada, vincular, error } = parametros;
+  const proveedor = VINCULABLES.find((p) => p === vinculada || p === vincular);
+  if (!proveedor) return null;
+  return { proveedor, error: vincular === proveedor ? (typeof error === "string" ? error : "otro") : null };
+}
 
 /** Mi cuenta: quién eres, con qué entras, tu Discord y cerrar sesión. */
-export default function PaginaAjustes() {
+export default function PaginaAjustes({ searchParams }: PageProps<"/[locale]/cuenta/ajustes">) {
   const t = useTranslations();
   return (
     <main id="contenido" className="flex flex-1 flex-col">
@@ -27,7 +36,7 @@ export default function PaginaAjustes() {
       <section className="rejilla flex-1 px-[var(--margen)] py-12">
         <div className="mx-auto max-w-3xl">
           <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-tarjeta bg-tarjeta" />}>
-            <Contenido />
+            <Contenido searchParams={searchParams} />
           </Suspense>
         </div>
       </section>
@@ -35,14 +44,14 @@ export default function PaginaAjustes() {
   );
 }
 
-async function Contenido() {
-  const [t, locale, cabeceras] = await Promise.all([getTranslations("cuenta"), getLocale(), headers()]);
+async function Contenido({ searchParams }: Pick<PageProps<"/[locale]/cuenta/ajustes">, "searchParams">) {
+  const [t, locale, cabeceras, parametros] = await Promise.all([getTranslations("cuenta"), getLocale(), headers(), searchParams]);
+  const retorno = leerRetorno(parametros);
   const cookie = cabeceras.get("cookie");
   const cuenta = await obtenerCuenta(cookie);
   if (!cuenta) redirect({ href: "/entrar", locale });
   const mio = cookie ? await obtenerMiPerfil(cookie).catch(() => null) : null;
-  const { usuario, proveedores, discord } = cuenta!;
-  const formasDeEntrar = proveedores.filter((p) => p in NOMBRES_PROVEEDOR);
+  const { usuario, formasDeEntrar, discord } = cuenta!;
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,18 +70,10 @@ async function Contenido() {
         <FormularioUbicacion inicial={cuenta!.ubicacion} alGuardar="aviso" />
       </Tarjeta>
 
+      {/* Google y GitHub: vincular la que falte sin salir de la sesión */}
       <Tarjeta className="flex flex-col gap-3 p-5">
-        <h2 className="text-titulo-3 font-bold">
-          {t("formasDeEntrar")}
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {formasDeEntrar.map((p) => (
-            <Etiqueta key={p} tono="borde">
-              {NOMBRES_PROVEEDOR[p]}
-            </Etiqueta>
-          ))}
-        </div>
-        <p className="text-sm text-suave">{t("mismoEmail")}</p>
+        <h2 className="text-titulo-3 font-bold">{t("formasDeEntrar")}</h2>
+        <FormasDeEntrar formas={formasDeEntrar} retorno={retorno} />
       </Tarjeta>
 
       {/* Perfil de talento: crearlo o ir a él */}
@@ -100,7 +101,7 @@ async function Contenido() {
       {/* Discord, en su ventana tipo Discord */}
       <Ventana canal="discord" aria-label="Discord">
         <div className="rounded-xl bg-tarjeta/60 p-4 sm:p-5">
-          <SeccionDiscord discord={discord} ahora={(await getNow()).getTime()} />
+          <SeccionDiscord discord={discord} ahora={(await getNow()).getTime()} retorno={retorno} />
         </div>
       </Ventana>
 

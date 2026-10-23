@@ -1,6 +1,7 @@
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
+import { esFormaDeEntrar, FORMAS_DE_ENTRAR, type FormaDeEntrar } from "@techtojob/shared";
 import { and, eq } from "drizzle-orm";
 import type { Db } from "./db/cliente";
 import { cuentas, limitesAcceso, sesiones, usuarios, verificaciones } from "./db/esquema";
@@ -57,6 +58,26 @@ async function comprobarDiscordDe(db: Db, env: EnvAuth, userId: string) {
   } catch (error) {
     console.error("No se pudo comprobar el Discord del usuario:", error);
   }
+}
+
+/** Las formas de entrar configuradas en este entorno (sin el client id de una, esa no sale). */
+export function formasDeEntrarDisponibles(env: EnvAuth): FormaDeEntrar[] {
+  return FORMAS_DE_ENTRAR.filter((p) =>
+    p === "google" ? !!(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) : !!(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
+  );
+}
+
+/**
+ * No se puede quitar la última forma de entrar (Google o GitHub). Better Auth solo impide quitar
+ * la última cuenta vinculada, y Discord cuenta como una: con Google + Discord dejaría quitar Google
+ * y la persona se quedaría sin poder entrar. Devuelve el error, o null si se puede quitar.
+ */
+export async function guardiaUltimaForma(db: Db, userId: string, cuentaId: string) {
+  const suyas = await db.select({ id: cuentas.id, proveedor: cuentas.providerId }).from(cuentas).where(eq(cuentas.userId, userId));
+  const quitar = suyas.find((c) => c.id === cuentaId);
+  if (!quitar || !esFormaDeEntrar(quitar.proveedor)) return null;
+  const otras = suyas.filter((c) => c.id !== cuentaId && esFormaDeEntrar(c.proveedor));
+  return otras.length ? null : { code: "ultima_forma_de_entrar", message: "Es tu única forma de entrar: vincula otra antes de quitarla." };
 }
 
 /** Discord solo para vincular: rechaza entrar o crear una cuenta con él. */
@@ -146,10 +167,19 @@ export function opcionesAuth(db: Db, env: EnvAuth) {
       validateUserInfo: ({ source }) => guardiaDiscord(source),
     },
     hooks: {
-      // Ni siquiera se empieza a entrar con Discord: se corta antes de ir a discord.com.
       before: createAuthMiddleware(async (ctx) => {
+        // Ni siquiera se empieza a entrar con Discord: se corta antes de ir a discord.com.
         if (ctx.path === "/sign-in/social" && (ctx.body as { provider?: string } | undefined)?.provider === "discord") {
           throw new APIError("FORBIDDEN", { code: "discord_solo_vincular", message: "Discord solo se puede vincular desde Mi cuenta." });
+        }
+        // Quitar Google o GitHub: nunca la última forma de entrar.
+        if (ctx.path === "/unlink-account") {
+          const cuentaId = (ctx.body as { accountId?: unknown } | undefined)?.accountId;
+          const sesion = await getSessionFromCtx(ctx);
+          if (sesion && typeof cuentaId === "string") {
+            const error = await guardiaUltimaForma(db, sesion.user.id, cuentaId);
+            if (error) throw new APIError("BAD_REQUEST", error);
+          }
         }
       }),
     },

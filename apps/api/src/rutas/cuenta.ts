@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import type { Entorno } from "../app";
-import { configDiscord } from "../auth";
+import { configDiscord, formasDeEntrarDisponibles } from "../auth";
 import { cuentas } from "../db/esquema";
 import type { Db } from "../db/cliente";
 import { borrarCuenta, datosCuenta, exportarDatos, guardarUbicacion } from "../servicios/cuenta";
@@ -130,6 +130,7 @@ export const rutasCuenta = new Hono<Entorno>()
 async function opciones(db: Db, env: Entorno["Bindings"], usuario: Entorno["Variables"]["usuario"]) {
   return {
     discordDisponible: !!(env.DISCORD_CLIENT_ID && configDiscord(env)),
+    formasDeEntrar: formasDeEntrarDisponibles(env),
     invitacion: env.DISCORD_INVITACION || null,
     esStaff: await esStaff(db, env, usuario),
   };
