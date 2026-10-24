@@ -1102,6 +1102,9 @@
       },
       "anosExperiencia": {
         "falta": "Choose how many years of experience you have."
+      },
+      "otrasAreas": {
+        "demasiadas": "At most 2 areas besides the main one."
       }
     },
     "foto": {
@@ -1124,7 +1127,9 @@
       "textoUnirse": "Your Discord is linked, but you're not in the TechToJob server yet. Join it and check again in My account.",
       "boton": "Link Discord",
       "botonUnirse": "Go to My account"
-    }
+    },
+    "otrasAreas": "Other areas (optional)",
+    "otrasAreasAyuda": "If you also work in something else, mark it (up to {max}). You will show up in those searches."
   },
   "errorPagina": {
     "etiqueta": "Error",

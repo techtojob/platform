@@ -97,7 +97,8 @@ function condiciones(f: FiltrosTalento, sinPais = false): SQL[] {
     );
   }
   if (f.disponibilidad?.length) c.push(inArray(perfiles.disponibilidad, f.disponibilidad));
-  if (f.areas?.length) c.push(inArray(perfiles.area, f.areas));
+  // Por la principal o por cualquiera de las otras.
+  if (f.areas?.length) c.push(or(inArray(perfiles.area, f.areas), arrayOverlaps(perfiles.otrasAreas, f.areas))!);
   if (f.seniority?.length) c.push(inArray(perfiles.seniority, f.seniority));
   if (f.modalidades?.length) c.push(arrayOverlaps(perfiles.modalidades, f.modalidades));
   if (f.tecnologias?.length) c.push(arrayOverlaps(perfiles.tecnologias, f.tecnologias));
@@ -149,6 +150,7 @@ function aListado(f: Fila, x: Awaited<ReturnType<typeof extras>>): PerfilListado
     titular: p.titular,
     imagen: fotoElegida(p.foto, x.fotosDe(p.userId)),
     area: p.area,
+    otrasAreas: p.otrasAreas,
     seniority: p.seniority,
     anosExperiencia: p.anosExperiencia,
     ciudad: p.ciudad,
@@ -264,6 +266,7 @@ export async function miPerfil(db: Db, usuario: { id: string; name: string; imag
           titular: p.titular,
           sobreMi: p.sobreMi,
           area: p.area,
+          otrasAreas: p.otrasAreas,
           // Perfiles de antes de pedir los años: se queda vacío hasta que los ponga (el formulario lo pide).
           anosExperiencia: p.anosExperiencia ?? (null as unknown as number),
           lidera: p.lidera,

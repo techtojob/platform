@@ -160,6 +160,16 @@ describe("mi perfil", () => {
     expect(lista.json.perfiles[0].alias).toBe("lucia");
   });
 
+  it("otras áreas: sin repetir la principal, como mucho 2, y sale al buscar por cualquiera", async () => {
+    const r = await pedir("/cuenta/perfil", lucia, { method: "PUT", body: { ...miPerfil, otrasAreas: ["producto-diseno", "desarrollo", "producto-diseno"] } });
+    expect(r.json.perfil).toMatchObject({ area: "desarrollo", otrasAreas: ["producto-diseno"] });
+    expect(alias(await pedir("/talento?area=producto-diseno", anonimo))).toContain("lucia");
+    const demasiadas = await pedir("/cuenta/perfil", lucia, { method: "PUT", body: { ...miPerfil, otrasAreas: ["datos", "ia", "ciberseguridad"] } });
+    expect(demasiadas.status).toBe(400);
+    await pedir("/cuenta/perfil", lucia, { method: "PUT", body: miPerfil });
+    expect(alias(await pedir("/talento?area=producto-diseno", anonimo))).not.toContain("lucia");
+  });
+
   it("oculto: solo lo ve su dueña", async () => {
     await pedir("/cuenta/perfil", lucia, { method: "PUT", body: { ...miPerfil, visibilidad: "oculto" } });
     expect((await pedir("/talento/lucia", lucia)).json.esMio).toBe(true);

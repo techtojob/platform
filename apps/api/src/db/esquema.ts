@@ -322,6 +322,8 @@ export const perfiles = pgTable(
     titular: text("titular").notNull(),
     sobreMi: text("sobre_mi"),
     area: text("area").$type<Area>().notNull(),
+    /** Otras áreas además de la principal (como mucho 2): "Desarrollo y también Producto y diseño". */
+    otrasAreas: text("otras_areas").array().$type<Area[]>().notNull().default(sql`'{}'::text[]`),
     /** Calculado con nivelPorExperiencia (años + lidera): no lo elige la persona. */
     seniority: text("seniority").$type<Seniority>().notNull(),
     /** Años trabajando en tech (16 = más de 15). null: perfil de antes de pedirlo. */

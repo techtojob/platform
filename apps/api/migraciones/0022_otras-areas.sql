@@ -1,0 +1,1 @@
+ALTER TABLE "perfiles" ADD COLUMN "otras_areas" text[] DEFAULT '{}'::text[] NOT NULL;

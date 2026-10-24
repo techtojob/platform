@@ -7,6 +7,8 @@ export type ValoresPerfil = {
   titular: string;
   sobreMi: string;
   area: string;
+  /** Otras áreas, además de la principal (como mucho 2). */
+  otrasAreas: string[];
   /** "" mientras no lo elija; "0"…"16" (16 = más de 15). */
   anosExperiencia: string;
   lidera: boolean;
@@ -33,6 +35,7 @@ export function valoresIniciales(mio: MiPerfil, idiomaWeb: string): ValoresPerfi
       titular: "",
       sobreMi: "",
       area: "",
+      otrasAreas: [],
       anosExperiencia: "",
       lidera: false,
       ciudad: "",

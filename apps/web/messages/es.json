@@ -1102,6 +1102,9 @@
       },
       "anosExperiencia": {
         "falta": "Elige cuántos años de experiencia tienes."
+      },
+      "otrasAreas": {
+        "demasiadas": "Como mucho 2 áreas además de la principal."
       }
     },
     "foto": {
@@ -1124,7 +1127,9 @@
       "textoUnirse": "Ya tienes Discord vinculado, pero no estás en el servidor de TechToJob. Únete y vuelve a comprobarlo en Mi cuenta.",
       "boton": "Vincular Discord",
       "botonUnirse": "Ir a Mi cuenta"
-    }
+    },
+    "otrasAreas": "Otras áreas (opcional)",
+    "otrasAreasAyuda": "Si también te dedicas a otra cosa, márcala (hasta {max}). Saldrás en esas búsquedas."
   },
   "errorPagina": {
     "etiqueta": "Error",

@@ -23,7 +23,7 @@ import { borrarMiPerfil, guardarMiPerfil } from "@/app/[locale]/cuenta/perfil/ac
 import { AreaTexto, BotonesOpcion, clasesControl, Seccion, TextoError } from "@/components/formulario/piezas";
 import { SelectorIdiomas } from "@/components/formulario/selector-idiomas";
 import { SelectorTecnologias } from "@/components/formulario/selector-tecnologias";
-import { Boton, Campo, Casilla, clasesBoton } from "@/components/ui";
+import { Boton, Campo, Casilla, ChipFiltro, clasesBoton } from "@/components/ui";
 import { ElegirFoto } from "./elegir-foto";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
@@ -32,7 +32,7 @@ import { TarjetaPerfil } from "./tarjeta-perfil";
 
 const SECCION_DE: Record<string, string> = {
   alias: "seccion-tu", nombre: "seccion-tu", titular: "seccion-tu",
-  sobreMi: "seccion-sobre", area: "seccion-haces", anosExperiencia: "seccion-haces", tecnologias: "seccion-haces",
+  sobreMi: "seccion-sobre", area: "seccion-haces", otrasAreas: "seccion-haces", anosExperiencia: "seccion-haces", tecnologias: "seccion-haces",
   ciudad: "seccion-donde", pais: "seccion-donde", modalidades: "seccion-donde", disponibilidad: "seccion-donde",
   idiomas: "seccion-idiomas", linkedin: "seccion-enlaces", github: "seccion-enlaces", portfolio: "seccion-enlaces",
   visibilidad: "seccion-visibilidad",
@@ -124,6 +124,7 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, ve
     titular: v.titular || t("vistaTitular"),
     imagen: fotoElegida(v.foto, fotos),
     area: (v.area || "desarrollo") as PerfilListado["area"],
+    otrasAreas: v.otrasAreas.filter((a) => a !== v.area) as PerfilListado["otrasAreas"],
     seniority: v.anosExperiencia === "" ? "junior" : nivelPorExperiencia(Number(v.anosExperiencia), v.lidera),
     anosExperiencia: v.anosExperiencia === "" ? null : Number(v.anosExperiencia),
     ciudad: v.ciudad || null,
@@ -196,7 +197,38 @@ export function FormularioPerfil({ inicial, guardado: guardadoInicial, fotos, ve
         </Seccion>
 
         <Seccion id="seccion-haces" numero={3} titulo={t("seccionHaces")}>
-          <BotonesOpcion nombre="area" etiqueta={t("area")} opciones={AREAS.map((a) => ({ valor: a, texto: tr(`areas.${a}`) }))} valor={v.area} onCambio={(area) => cambiar({ area })} error={mensaje("area")} />
+          <BotonesOpcion
+            nombre="area"
+            etiqueta={t("area")}
+            opciones={AREAS.map((a) => ({ valor: a, texto: tr(`areas.${a}`) }))}
+            valor={v.area}
+            // La principal no puede estar también entre las otras.
+            onCambio={(area) => cambiar({ area, otrasAreas: v.otrasAreas.filter((x) => x !== area) })}
+            error={mensaje("area")}
+          />
+          {/* Otras áreas (opcional): "Desarrollo y también Producto y diseño". */}
+          <fieldset className="flex flex-col gap-2">
+            <legend className="text-sm font-bold">{t("otrasAreas")}</legend>
+            <p className="text-sm text-suave">{t("otrasAreasAyuda", { max: LIMITES_PERFIL.otrasAreas.max })}</p>
+            <div className="flex flex-wrap gap-2">
+              {AREAS.filter((a) => a !== v.area).map((a) => {
+                const marcada = v.otrasAreas.includes(a);
+                const lleno = !marcada && v.otrasAreas.length >= LIMITES_PERFIL.otrasAreas.max;
+                return (
+                  <ChipFiltro
+                    key={a}
+                    type="button"
+                    activo={marcada}
+                    disabled={lleno}
+                    onClick={() => cambiar({ otrasAreas: marcada ? v.otrasAreas.filter((x) => x !== a) : [...v.otrasAreas, a] })}
+                  >
+                    {tr(`areas.${a}`)}
+                  </ChipFiltro>
+                );
+              })}
+            </div>
+            <TextoError>{mensaje("otrasAreas")}</TextoError>
+          </fieldset>
           {/* El nivel no se elige: sale de los años de experiencia (y de si ha liderado). */}
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-2">
