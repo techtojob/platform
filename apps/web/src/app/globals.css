@@ -68,8 +68,9 @@
   --font-titulo: var(--font-sora), system-ui, sans-serif;
 
   /* Tamaños de título: text-titulo-1 (cabecera de página), -2 (secciones), -3 (tarjetas) */
-  --text-titulo-1: clamp(2.5rem, 6vw, 4.75rem);
-  --text-titulo-1--line-height: 1.03;
+  /* La bolsa es una herramienta: títulos de página más contenidos que en la landing. */
+  --text-titulo-1: clamp(2rem, 3.6vw, 3.25rem);
+  --text-titulo-1--line-height: 1.05;
   --text-titulo-1--letter-spacing: -0.04em;
   --text-titulo-2: clamp(1.75rem, 3.4vw, 2.75rem);
   --text-titulo-2--line-height: 1.05;
@@ -111,22 +112,19 @@ body {
 }
 
 /* Cabecera de página: el degradado con brillo turquesa de la landing */
+/* Cabecera de página: lisa, con una línea abajo (la landing lleva el brillo turquesa y los círculos). */
 .fondo-portada {
-  background:
-    radial-gradient(circle at 78% 24%, rgb(132 192 191 / 18%), transparent 31rem),
-    linear-gradient(180deg, var(--fondo) 0%, var(--fondo-hondo) 100%);
+  background: linear-gradient(180deg, var(--fondo) 0%, var(--fondo-hondo) 100%);
+  border-bottom: 1px solid var(--borde);
 }
 
-/* Sección con cuadrícula turquesa, como "Cómo funciona" en la landing */
+/* Fondo del contenido de cada página */
 .rejilla {
+  /* Contenido de las páginas: liso, con una sombra suave arriba (la cuadrícula es de la landing). */
   background-color: var(--superficie);
-  background-image:
-    linear-gradient(to bottom, rgb(0 0 0 / 18%), transparent),
-    linear-gradient(to right, var(--rejilla) 1px, transparent 2px),
-    linear-gradient(to bottom, var(--rejilla) 1px, transparent 2px);
-  background-position: top, center, center;
-  background-repeat: no-repeat, repeat, repeat;
-  background-size: 100% clamp(4rem, 8vw, 8rem), 5rem 5rem, 5rem 5rem;
+  background-image: linear-gradient(to bottom, rgb(0 0 0 / 14%), transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 4rem;
 }
 
 /* Enlace subrayado en turquesa, como "Ver todas las noticias" en la landing */

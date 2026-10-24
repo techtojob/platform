@@ -15,7 +15,7 @@ export function CargandoPagina({ tipo = "listado" }: { tipo?: "listado" | "formu
         {t("texto")}
       </p>
       {/* La portada, con la misma altura que la de verdad para que nada salte al llegar. */}
-      <section className="fondo-portada -mt-[4.25rem] px-[var(--margen)] pb-10 pt-[calc(4.25rem+clamp(2rem,5vw,4rem))] min-[50rem]:-mt-[5.25rem] min-[50rem]:pt-[calc(5.25rem+clamp(2rem,5vw,4rem))]">
+      <section className="fondo-portada -mt-[4.25rem] px-[var(--margen)] pb-8 pt-[calc(4.25rem+clamp(1.25rem,3vw,2.25rem))] min-[50rem]:-mt-[5.25rem] min-[50rem]:pt-[calc(5.25rem+clamp(1.25rem,3vw,2.25rem))]">
         <div className="mx-auto flex max-w-[80rem] flex-col gap-4">
           <div className={`h-4 w-48 ${gris}`} />
           <div className={`h-12 w-full max-w-xl ${gris}`} />
