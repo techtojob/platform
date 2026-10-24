@@ -1,5 +1,4 @@
 import {
-  DIAS_PARA_CONTAR_MEGUSTA,
   dominioDe,
   fotoElegida,
   mesDe,
@@ -40,9 +39,8 @@ export class ErrorPortfolio extends Error {
 // se confundiría con la de dentro de la subconsulta.
 function megustaQueCuentan(desde?: SQL, hasta?: SQL) {
   return sql<number>`(
-    select count(*) from ${megustaPortfolios} m join ${usuarios} u on u.id = m.usuario_id
+    select count(*) from ${megustaPortfolios} m
     where m.portfolio_id = "portfolios"."usuario_id"
-      and u.creado_en <= now() - make_interval(days => ${DIAS_PARA_CONTAR_MEGUSTA})
       and exists (select 1 from estado_discord d where d.usuario_id = m.usuario_id and d.en_servidor = true)
       ${desde ? sql`and m.creado_en >= ${desde}` : sql``}
       ${hasta ? sql`and m.creado_en < ${hasta}` : sql``}

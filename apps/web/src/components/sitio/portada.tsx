@@ -52,15 +52,10 @@ export async function Portada({
   return (
     <section
       className={cn(
-        "fondo-portada relative isolate -mt-[4.25rem] overflow-hidden px-[var(--margen)] pt-[calc(4.25rem+clamp(2rem,5vw,4rem))] min-[50rem]:-mt-[5.25rem] min-[50rem]:pt-[calc(5.25rem+clamp(2rem,5vw,4rem))]",
-        compacta ? "pb-10" : "pb-[clamp(3rem,6vw,5rem)]",
+        "fondo-portada relative isolate -mt-[4.25rem] overflow-hidden px-[var(--margen)] pt-[calc(4.25rem+clamp(1.25rem,3vw,2.25rem))] min-[50rem]:-mt-[5.25rem] min-[50rem]:pt-[calc(5.25rem+clamp(1.25rem,3vw,2.25rem))]",
+        compacta ? "pb-8" : "pb-10",
       )}
     >
-      {/* Los círculos finos del fondo de la landing */}
-      <div
-        aria-hidden="true"
-        className="absolute -right-40 -top-40 -z-10 hidden size-[42rem] rounded-full border border-borde before:absolute before:inset-[12%] before:rounded-full before:border before:border-borde before:content-[''] after:absolute after:inset-[26%] after:rounded-full after:border after:border-borde after:content-[''] lg:block"
-      />
       <div className="mx-auto grid max-w-[80rem] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div className="flex min-w-0 flex-col items-start">
           <nav aria-label={t("migas")}>
@@ -87,10 +82,10 @@ export async function Portada({
           </nav>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSeguro(migasGoogle) }} />
           {antesDelTitulo && <div className="mt-3">{antesDelTitulo}</div>}
-          <h1 lang={tituloLang} className="mt-2 max-w-[20ch] text-balance text-titulo-1 font-bold">
+          <h1 lang={tituloLang} className="mt-1 max-w-[28ch] text-balance text-titulo-1 font-bold">
             {titulo}
           </h1>
-          {entradilla && <div className="mt-5 max-w-[58ch] text-lg leading-relaxed text-suave">{entradilla}</div>}
+          {entradilla && <div className="mt-3 max-w-[64ch] text-base leading-relaxed text-suave sm:text-lg">{entradilla}</div>}
           {children}
         </div>
         {lado && <div className="hidden lg:block">{lado}</div>}

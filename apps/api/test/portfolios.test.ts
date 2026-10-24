@@ -69,7 +69,7 @@ describe("validar", () => {
     expect(validarPortfolio({ url: "ana.dev" }).datos).toEqual({ url: "https://ana.dev", descripcion: null, quiereJuicio: false });
     expect(validarPortfolio({}).errores).toEqual({ url: "falta" });
     expect(validarPortfolio({ url: "no es una web" }).errores).toEqual({ url: "url" });
-    expect(validarPortfolio({ url: "ana.dev", descripcion: "x".repeat(301) }).errores).toEqual({ descripcion: "largo" });
+    expect(validarPortfolio({ url: "ana.dev", descripcion: "x".repeat(501) }).errores).toEqual({ descripcion: "largo" });
     expect(dominioDe("https://www.ana.dev/")).toBe("ana.dev");
     expect(validarVideoJuicio("youtube.com/watch?v=1")).toBe("https://youtube.com/watch?v=1");
     expect(validarVideoJuicio("https://example.com/video")).toBe("mal");

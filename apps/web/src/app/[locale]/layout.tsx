@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { Cabecera } from "@/components/cabecera";
+import { BarraNavegacion } from "@/components/sitio/barra-navegacion";
 import { Pie } from "@/components/sitio/pie";
 import { routing } from "@/i18n/routing";
 import { IMAGEN_COMPARTIR } from "@/lib/metadatos";
@@ -48,6 +49,7 @@ export default async function LayoutIdioma({ children, params }: LayoutProps<"/[
     <html lang={locale} className={`${sora.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
+          <BarraNavegacion />
           <Cabecera />
           <div className="flex flex-1 flex-col">{children}</div>
           <Pie />

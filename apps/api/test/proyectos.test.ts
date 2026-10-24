@@ -31,7 +31,7 @@ beforeAll(async () => {
     ["bea", true, true, true],
     ["carla", true, false, true], // sin perfil
     ["dani", false, true, true], // con perfil de antes, sin verificar
-    ["eva", true, false, false], // cuenta recién creada: sus me gusta aún no cuentan
+    ["eva", true, false, false], // cuenta recién creada: sus me gusta cuentan igual (si está verificada)
     ["pablo", true, false, true],
   ] as const) {
     const u = await t.saveUser(t.createUser({ email: `${nombre}@example.com`, name: nombre }));
@@ -152,9 +152,11 @@ describe("me gusta", () => {
     await db.delete(megustaProyectos).where(eq(megustaProyectos.userId, ids.dani!));
   });
 
-  it("los de una cuenta recién creada no cuentan (contra trampas)", async () => {
+  it("los de una cuenta recién creada cuentan al momento (si está verificada)", async () => {
     const r = await pedir(`/proyectos/${ids.bot}/megusta`, "eva", { method: "POST" });
-    expect(r.json).toEqual({ megusta: 1, meGusta: true });
+    expect(r.json).toEqual({ megusta: 2, meGusta: true });
+    // Se quita para no cambiar las cuentas de las pruebas siguientes.
+    expect((await pedir(`/proyectos/${ids.bot}/megusta`, "eva", { method: "DELETE" })).json).toEqual({ megusta: 1, meGusta: false });
   });
 
   it("rankings: este mes, tendencia, de siempre y meses pasados", async () => {

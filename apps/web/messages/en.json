@@ -4,7 +4,8 @@
     "descripcion": "Tech job offers reviewed by the community, and talent profiles."
   },
   "selectorIdioma": {
-    "etiqueta": "Language"
+    "etiqueta": "Language",
+    "cambiar": "Language: {idioma}. Change"
   },
   "inicio": {
     "etiqueta": "TechToJob · Phase 0",
@@ -583,7 +584,7 @@
       "pareceEstarEn": "It looks like it's in {idioma}.",
       "cambiarA": "Change to {idioma}",
       "resumen": "Summary (optional)",
-      "resumenAyuda": "One or two sentences in your own words: it's the first thing people read. {quedan} characters left.",
+      "resumenAyuda": "One or two sentences in your own words: it's the first thing people read.",
       "descripcion": "Description (optional)",
       "descripcionAyuda": "Leave a blank line between paragraphs. We suggest the technologies that appear here below.",
       "area": "Area",
@@ -1011,7 +1012,7 @@
     "titularEjemplo": "Junior frontend developer",
     "seccionSobre": "About you",
     "sobreMi": "About me (optional)",
-    "sobreMiAyuda": "What you do, what you like, what you're looking for. We suggest the technologies you mention below. {quedan} characters left.",
+    "sobreMiAyuda": "What you do, what you like, what you're looking for. We suggest the technologies you mention below.",
     "seccionHaces": "What you do",
     "area": "Area",
     "tecnologias": "Your stack",
@@ -1101,6 +1102,9 @@
       },
       "anosExperiencia": {
         "falta": "Choose how many years of experience you have."
+      },
+      "otrasAreas": {
+        "demasiadas": "At most 2 areas besides the main one."
       }
     },
     "foto": {
@@ -1123,7 +1127,9 @@
       "textoUnirse": "Your Discord is linked, but you're not in the TechToJob server yet. Join it and check again in My account.",
       "boton": "Link Discord",
       "botonUnirse": "Go to My account"
-    }
+    },
+    "otrasAreas": "Other areas (optional)",
+    "otrasAreasAyuda": "If you also work in something else, mark it (up to {max}). You will show up in those searches."
   },
   "errorPagina": {
     "etiqueta": "Error",
@@ -1348,7 +1354,7 @@
       "titulo": "Project name",
       "tituloEjemplo": "Holiday rental lakehouse in the Canary Islands",
       "descripcion": "What it is",
-      "descripcionAyuda": "What it does, why you built it and what you learned. {usados}/{max}",
+      "descripcionAyuda": "What it does, why you built it and what you learned.",
       "area": "Area",
       "elegirArea": "Choose an area",
       "estado": "How is it going?",
@@ -1375,7 +1381,7 @@
         "descripcion": {
           "falta": "Say what it is.",
           "corto": "Tell us a bit more: at least 20 characters.",
-          "largo": "Too long: 600 characters at most."
+          "largo": "Too long: 2,000 characters at most."
         },
         "area": {
           "falta": "Choose the area."
@@ -1404,7 +1410,7 @@
       "url": "Your portfolio's address",
       "urlAyuda": "If your website has a sharing image (og:image), we use it as the cover.",
       "descripcion": "One sentence (optional)",
-      "descripcionAyuda": "What people will find in it. {usados}/{max}",
+      "descripcionAyuda": "What people will find in it.",
       "juicio": {
         "titulo": "Portfolio review",
         "texto": "On Fridays we review portfolios live and give you ideas to improve them. Once yours is reviewed, you get the badge.",
@@ -1426,7 +1432,7 @@
           "falta": "Add your portfolio's address.",
           "url": "That doesn't look like an address (for example, your-name.dev)."
         },
-        "descripcion": "Too long: 300 characters at most.",
+        "descripcion": "Too long: 500 characters at most.",
         "sin_perfil": "You need to create your talent profile first.",
         "sin_verificar": "You need to verify your account first (Discord linked and in the server).",
         "sin_sesion": "Your session has expired. Log in again.",
@@ -1598,5 +1604,8 @@
     "redesTexto": "News, tournaments, offers and what is happening in the community.",
     "escribenosTitulo": "Are you a company or want to collaborate?",
     "escribenosTexto": "Write to us and we will tell you how to find talent or sponsor a tournament."
+  },
+  "cargando": {
+    "texto": "Loading…"
   }
 }

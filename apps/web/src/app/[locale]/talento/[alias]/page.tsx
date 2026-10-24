@@ -129,6 +129,11 @@ function Ficha({ perfil, conSesion }: { perfil: PerfilPublico; conSesion: boolea
               : t(`seniority.${perfil.seniority}`)}
           </Etiqueta>
           <Etiqueta tono="borde" className="py-2">{t(`areas.${perfil.area}`)}</Etiqueta>
+          {perfil.otrasAreas.map((a) => (
+            <Etiqueta key={a} tono="borde" className="py-2">
+              {t(`areas.${a}`)}
+            </Etiqueta>
+          ))}
           {perfil.verificado && <Verificado conTexto className="ml-1" />}
         </p>
         {perfil.megusta > 0 && <p className="mt-3 font-bold text-suave">{t("talento.megustaProyectos", { count: perfil.megusta })}</p>}

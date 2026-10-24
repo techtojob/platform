@@ -51,6 +51,11 @@ export function TarjetaPerfil({ perfil, enlace = true, conSesion }: { perfil: Pe
             : t(`seniority.${perfil.seniority}`)}
         </Etiqueta>
         <Etiqueta tono="borde">{t(`areas.${perfil.area}`)}</Etiqueta>
+        {perfil.otrasAreas.map((a) => (
+          <Etiqueta key={a} tono="borde">
+            {t(`areas.${a}`)}
+          </Etiqueta>
+        ))}
       </div>
       {perfil.tecnologias.length > 0 && (
         <p className="flex flex-wrap gap-1.5">

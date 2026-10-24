@@ -1,7 +1,7 @@
 import { FOTOS_PERFIL, MAXIMO_ANOS_EXPERIENCIA, nivelPorExperiencia } from "./experiencia";
 import type { DatosPerfil } from "./contratos";
 import { esIdioma, NIVELES_IDIOMA } from "./idiomas";
-import { AREAS, DISPONIBILIDAD, MODALIDADES, VISIBILIDAD_PERFIL } from "./listas";
+import { AREAS, DISPONIBILIDAD, MODALIDADES, VISIBILIDAD_PERFIL, type Area } from "./listas";
 import { TECNOLOGIAS } from "./tecnologias";
 
 /**
@@ -13,9 +13,10 @@ export const LIMITES_PERFIL = {
   alias: { min: 3, max: 30 },
   nombre: { min: 2, max: 60 },
   titular: { min: 5, max: 80 },
-  sobreMi: { max: 500 },
+  sobreMi: { max: 2000 },
   ciudad: { max: 80 },
   tecnologias: { max: 15 },
+  otrasAreas: { max: 2 },
   idiomas: { max: 6 },
 } as const;
 
@@ -97,6 +98,9 @@ export function validarPerfil(entrada: unknown): Resultado {
 
   const area = de(AREAS, e.area);
   if (!area) errores.area = "falta";
+  // Otras áreas: válidas, sin repetir y sin la principal.
+  const otrasAreas = [...new Set((Array.isArray(e.otrasAreas) ? e.otrasAreas : []).map((a) => de(AREAS, a)).filter((a): a is Area => !!a && a !== area))];
+  if (otrasAreas.length > LIMITES_PERFIL.otrasAreas.max) errores.otrasAreas = "demasiadas";
   // El nivel no se elige: sale de los años de experiencia (y de si ha liderado).
   const anos = typeof e.anosExperiencia === "number" ? e.anosExperiencia : Number.parseInt(String(e.anosExperiencia ?? ""), 10);
   const anosExperiencia = Number.isInteger(anos) && anos >= 0 && anos <= MAXIMO_ANOS_EXPERIENCIA ? anos : null;
@@ -159,6 +163,7 @@ export function validarPerfil(entrada: unknown): Resultado {
       titular: titular!,
       sobreMi,
       area: area!,
+      otrasAreas,
       anosExperiencia: anosExperiencia!,
       lidera,
       seniority: nivelPorExperiencia(anosExperiencia!, lidera),

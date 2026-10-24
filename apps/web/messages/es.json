@@ -4,7 +4,8 @@
     "descripcion": "Ofertas de empleo tech revisadas por la comunidad y perfiles de talento."
   },
   "selectorIdioma": {
-    "etiqueta": "Idioma"
+    "etiqueta": "Idioma",
+    "cambiar": "Idioma: {idioma}. Cambiar"
   },
   "inicio": {
     "etiqueta": "TechToJob · Fase 0",
@@ -583,7 +584,7 @@
       "pareceEstarEn": "Parece que está en {idioma}.",
       "cambiarA": "Cambiar a {idioma}",
       "resumen": "Resumen (opcional)",
-      "resumenAyuda": "Una o dos frases con tus palabras: es lo primero que se lee. Quedan {quedan} caracteres.",
+      "resumenAyuda": "Una o dos frases con tus palabras: es lo primero que se lee.",
       "descripcion": "Descripción (opcional)",
       "descripcionAyuda": "Deja una línea en blanco entre párrafos. Las tecnologías que aparezcan aquí te las proponemos abajo.",
       "area": "Área",
@@ -1011,7 +1012,7 @@
     "titularEjemplo": "Desarrolladora frontend junior",
     "seccionSobre": "Sobre ti",
     "sobreMi": "Sobre mí (opcional)",
-    "sobreMiAyuda": "Qué haces, qué te gusta, qué buscas. Las tecnologías que nombres te las proponemos abajo. Quedan {quedan} caracteres.",
+    "sobreMiAyuda": "Qué haces, qué te gusta, qué buscas. Las tecnologías que nombres te las proponemos abajo.",
     "seccionHaces": "Lo que haces",
     "area": "Área",
     "tecnologias": "Tu stack",
@@ -1101,6 +1102,9 @@
       },
       "anosExperiencia": {
         "falta": "Elige cuántos años de experiencia tienes."
+      },
+      "otrasAreas": {
+        "demasiadas": "Como mucho 2 áreas además de la principal."
       }
     },
     "foto": {
@@ -1123,7 +1127,9 @@
       "textoUnirse": "Ya tienes Discord vinculado, pero no estás en el servidor de TechToJob. Únete y vuelve a comprobarlo en Mi cuenta.",
       "boton": "Vincular Discord",
       "botonUnirse": "Ir a Mi cuenta"
-    }
+    },
+    "otrasAreas": "Otras áreas (opcional)",
+    "otrasAreasAyuda": "Si también te dedicas a otra cosa, márcala (hasta {max}). Saldrás en esas búsquedas."
   },
   "errorPagina": {
     "etiqueta": "Error",
@@ -1348,7 +1354,7 @@
       "titulo": "Nombre del proyecto",
       "tituloEjemplo": "Lakehouse de vivienda vacacional en Canarias",
       "descripcion": "Qué es",
-      "descripcionAyuda": "Qué hace, para qué lo hiciste y qué aprendiste. {usados}/{max}",
+      "descripcionAyuda": "Qué hace, para qué lo hiciste y qué aprendiste.",
       "area": "Área",
       "elegirArea": "Elige un área",
       "estado": "¿Cómo va?",
@@ -1375,7 +1381,7 @@
         "descripcion": {
           "falta": "Cuenta qué es.",
           "corto": "Cuéntalo un poco más: al menos 20 caracteres.",
-          "largo": "Muy largo: como mucho 600 caracteres."
+          "largo": "Muy largo: como mucho 2.000 caracteres."
         },
         "area": {
           "falta": "Elige el área."
@@ -1404,7 +1410,7 @@
       "url": "Dirección de tu portfolio",
       "urlAyuda": "Si tu web tiene imagen para compartir (og:image), la usamos de portada.",
       "descripcion": "Una frase (opcional)",
-      "descripcionAyuda": "Qué vas a encontrar en él. {usados}/{max}",
+      "descripcionAyuda": "Qué vas a encontrar en él.",
       "juicio": {
         "titulo": "Tu portfolio a juicio",
         "texto": "Los viernes revisamos portfolios en directo y te damos ideas para mejorarlo. Al pasar por él, ganas el emblema.",
@@ -1426,7 +1432,7 @@
           "falta": "Pon la dirección de tu portfolio.",
           "url": "No parece una dirección (por ejemplo, tu-nombre.dev)."
         },
-        "descripcion": "Muy largo: como mucho 300 caracteres.",
+        "descripcion": "Muy largo: como mucho 500 caracteres.",
         "sin_perfil": "Antes tienes que crear tu perfil de talento.",
         "sin_verificar": "Antes tienes que verificar tu cuenta (Discord vinculado y en el servidor).",
         "sin_sesion": "Tu sesión ha caducado. Vuelve a entrar.",
@@ -1598,5 +1604,8 @@
     "redesTexto": "Noticias, torneos, ofertas y lo que va pasando en la comunidad.",
     "escribenosTitulo": "¿Eres una empresa o quieres colaborar?",
     "escribenosTexto": "Escríbenos y te contamos cómo encontrar talento o patrocinar un torneo."
+  },
+  "cargando": {
+    "texto": "Cargando…"
   }
 }

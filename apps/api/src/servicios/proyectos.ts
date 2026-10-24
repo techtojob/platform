@@ -1,5 +1,4 @@
 import {
-  DIAS_PARA_CONTAR_MEGUSTA,
   LIMITES_PROYECTO,
   mesDe,
   portadaGithub,
@@ -25,8 +24,9 @@ import { fotoElegida } from "@techtojob/shared";
  * Proyectos de la comunidad y sus me gusta.
  * - Subir: hace falta perfil de talento y estar verificado (Discord vinculado y en el servidor).
  * - Me gusta: con sesión y verificado (Discord vinculado y en el servidor), uno por persona, nunca al propio.
- *   Solo cuentan los de gente verificada con una cuenta de más de DIAS_PARA_CONTAR_MEGUSTA días
- *   (ni en el número ni en los rankings), contra trampas. Si alguien deja el servidor, sus me gusta dejan de contar.
+ *   Solo cuentan los de gente verificada (en el número y en los rankings), contra trampas: si alguien
+ *   deja el servidor, sus me gusta dejan de contar. (Antes además había que tener la cuenta 3 días:
+ *   al abrir la bolsa todas las cuentas eran nuevas y los me gusta se quedaban en 0.)
  * - Se ven si el perfil de su autor se ve (público, o "solo registrados" con sesión) y no está oculto por el staff.
  */
 
@@ -44,9 +44,8 @@ export class ErrorProyecto extends Error {
 // se confundiría con la de dentro de la subconsulta.
 function megustaQueCuentanProyecto(desde?: SQL, hasta?: SQL) {
   return sql<number>`(
-    select count(*) from ${megustaProyectos} m join ${usuarios} u on u.id = m.usuario_id
+    select count(*) from ${megustaProyectos} m
     where m.proyecto_id = "proyectos"."id"
-      and u.creado_en <= now() - make_interval(days => ${DIAS_PARA_CONTAR_MEGUSTA})
       and exists (select 1 from estado_discord d where d.usuario_id = m.usuario_id and d.en_servidor = true)
       ${desde ? sql`and m.creado_en >= ${desde}` : sql``}
       ${hasta ? sql`and m.creado_en < ${hasta}` : sql``}

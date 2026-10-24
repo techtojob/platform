@@ -317,6 +317,8 @@ export type PerfilListado = {
   /** Foto de Google o GitHub (la que elija), o null si prefiere no mostrarla. */
   imagen: string | null;
   area: Area;
+  /** Otras áreas además de la principal (como mucho 2). */
+  otrasAreas: Area[];
   /** Calculado a partir de los años de experiencia (ver experiencia.ts). */
   seniority: Seniority;
   /** Años trabajando en tech (16 = más de 15). null en perfiles de antes de pedirlo. */
@@ -369,6 +371,8 @@ export type DatosPerfil = {
   titular: string;
   sobreMi: string | null;
   area: Area;
+  /** Otras áreas además de la principal (como mucho 2, sin repetir la principal). */
+  otrasAreas: Area[];
   /** Años trabajando en tech (0 = ninguno todavía; 16 = más de 15). */
   anosExperiencia: number;
   /** Ha liderado un equipo o un proyecto técnico (con 6+ años, el nivel es Lead). */

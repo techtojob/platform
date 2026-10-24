@@ -9,7 +9,7 @@ import { leerFiltrosProyectos, type OrdenProyectos } from "./proyectos";
  * el staff elige cuáles (sin orden) y, al revisarlo, apunta la fecha y el enlace al vídeo. Da el emblema "juicio".
  */
 
-export const LIMITES_PORTFOLIO = { descripcion: { max: 300 } } as const;
+export const LIMITES_PORTFOLIO = { descripcion: { max: 500 } } as const;
 export const PORTFOLIOS_POR_PAGINA = 24;
 
 export type DatosPortfolio = {
