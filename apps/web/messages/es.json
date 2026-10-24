@@ -439,7 +439,8 @@
       "limite": "Has dado muchos me gusta seguidos. Espera un rato."
     },
     "queEsTitulo": "Tu portfolio: tu web personal",
-    "queEsTexto": "Uno por persona y lo cambias cuando quieras. Sale aquí y en tu perfil, y puedes pedir que lo revisemos en directo los viernes en «Tu portfolio a juicio»."
+    "queEsTexto": "Uno por persona y lo cambias cuando quieras. Sale aquí y en tu perfil, y puedes pedir que lo revisemos en directo los viernes en «Tu portfolio a juicio».",
+    "yaTienes": "Tu portfolio ya está publicado. <enlace>Cambiarlo</enlace>"
   },
   "staff": {
     "titulo": "Panel de staff",
