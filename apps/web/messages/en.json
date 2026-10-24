@@ -439,7 +439,8 @@
       "limite": "You've liked a lot in a short time. Wait a little."
     },
     "queEsTitulo": "Your portfolio: your personal website",
-    "queEsTexto": "One per person, and you can change it whenever you like. It shows up here and on your profile, and you can ask us to review it live on Fridays in our Portfolio review."
+    "queEsTexto": "One per person, and you can change it whenever you like. It shows up here and on your profile, and you can ask us to review it live on Fridays in our Portfolio review.",
+    "yaTienes": "Your portfolio is already published. <enlace>Change it</enlace>"
   },
   "staff": {
     "titulo": "Staff panel",

@@ -3,7 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { clasesBoton } from "@/components/ui";
 import { Link } from "@/i18n/navigation";
-import { obtenerPortfolios, obtenerProyectos, tieneCookieDeSesion } from "@/lib/api";
+import { miPortfolioEnApi, obtenerPortfolios, obtenerProyectos, tieneCookieDeSesion } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { aParametrosProyectos, alternarArea, alternarTecnologia, cambiarProyectos, leerFiltrosProyectos, mesesDelRanking, type FiltrosVista as Filtros } from "@/lib/filtros-proyectos";
 import { BuscadorProyectos } from "./buscador-proyectos";
@@ -22,6 +22,8 @@ export async function ListadoProyectos({ searchParams }: { searchParams: PagePro
   const conSesion = !!cookie && tieneCookieDeSesion(cookie);
 
   const verPortfolios = filtros.ver === "portfolios";
+  // Si ya tiene portfolio, no se le invita a ponerlo (solo a cambiarlo).
+  const tengoPortfolio = verPortfolios && conSesion && cookie ? !!(await miPortfolioEnApi(cookie).catch(() => null)) : false;
   let r;
   try {
     r = verPortfolios
@@ -116,17 +118,29 @@ export async function ListadoProyectos({ searchParams }: { searchParams: PagePro
         )}
 
         {/* Portfolios: qué es y cómo poner el tuyo (que no se quede escondido en Mis proyectos). */}
-        {verPortfolios && (
-          <div className="flex flex-col gap-3 rounded-tarjeta border border-acento/50 bg-tarjeta p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-1">
-              <p className="font-bold">{t("portfolios.queEsTitulo")}</p>
-              <p className="text-sm text-suave">{t("portfolios.queEsTexto")}</p>
+        {/* Portfolios: qué es y cómo poner el tuyo. Si ya lo tienes, solo una línea para cambiarlo. */}
+        {verPortfolios &&
+          (tengoPortfolio ? (
+            <p className="text-sm text-suave">
+              {t.rich("portfolios.yaTienes", {
+                enlace: (texto) => (
+                  <Link href={{ pathname: "/cuenta/proyectos", hash: "portfolio" }} className="font-bold text-enlace underline">
+                    {texto}
+                  </Link>
+                ),
+              })}
+            </p>
+          ) : (
+            <div className="flex flex-col gap-3 rounded-tarjeta border border-acento/50 bg-tarjeta p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1">
+                <p className="font-bold">{t("portfolios.queEsTitulo")}</p>
+                <p className="text-sm text-suave">{t("portfolios.queEsTexto")}</p>
+              </div>
+              <Link href={conSesion ? { pathname: "/cuenta/proyectos", hash: "portfolio" } : { pathname: "/entrar", query: { volver: "proyectos" } }} className={clasesBoton({ className: "shrink-0" })}>
+                {t("proyectos.ponerPortfolio")}
+              </Link>
             </div>
-            <Link href={conSesion ? { pathname: "/cuenta/proyectos", hash: "portfolio" } : { pathname: "/entrar", query: { volver: "proyectos" } }} className={clasesBoton({ className: "shrink-0" })}>
-              {t("proyectos.ponerPortfolio")}
-            </Link>
-          </div>
-        )}
+          ))}
 
         {r.elementos.length === 0 ? (
           <div className="flex flex-col items-start gap-4 rounded-tarjeta border border-borde bg-tarjeta p-6 shadow-tarjeta">
